@@ -1,0 +1,25 @@
+---
+name: dunia-koperasi
+description: Membangun dan mengubah Dunia Koperasi 3D (Three.js) — ruang kantor, gerai, gudang, pulau, figur chibi, kamera, pin, kartu monitoring, tautan dunia-web, performa render. Pakai saat menyentuh src/features/dunia-3d.
+---
+
+# Dunia Koperasi 3D
+
+Kontrak gaya, data, dan peta kode: `docs/DUNIA-KOPERASI.md`. Model dibangun dari kode (diorama isometrik lembut); tanpa aset gambar.
+
+## Peta berkas
+- `MonitoringDashboard.tsx`: lokasi, KPI, panel detail per ruang, pelacak, daftar bertab, dok bawah, lonceng, tautan masuk (`tautan.ts`).
+- `MonitoringStage.tsx` + `monitoring-scene.ts`: kamera, cahaya, putar 15°–75°, pin HTML, siku pilihan, penanda ruang SVG, raycast, geser/cubit, disposal GPU.
+- Ruang dan objek: `monitoring-room.ts`, `bidang.ts` (kantor), `gerai.ts`, `gerai-room.ts`, `warehouse-room.ts`, `pulau.ts`, `suasana.ts`, `karakter.ts`, `tulisan.ts`.
+- Data murni: `monitor-data.ts`, `character-plan.ts`; model di `model/world-model.ts` (adapter workspace), `model/district.ts` (unit ke bangunan), `model/schedule.ts` (jadwal figur, pencocokan nama).
+- Gaya: `monitoring.css` (kelas `mt-*`, terisolasi; dasar tombol memakai `:where(.mt-root)` agar warna kelas menang). Ikon: `src/components/ui/Ikon3D.tsx`.
+
+## Aturan
+- Data asli saja; simulasi berlabel; belum aktif/galat ≠ nol (tampilkan —); tanpa nama atau angka karangan.
+- Dunia tidak menulis data; aksi membuka formulir web (`?baru=1&isi.<kolom>=`).
+- Render hanya saat perubahan atau selama figur/kamera bergerak; tanpa loop idle. Reduced-motion: langsung di tempat.
+- Pin (≤5) hanya untuk hal yang perlu perhatian. Dunia selalu terang, aksen biru `#2F5BEA`, huruf Inter.
+
+## Verifikasi
+- `npm test`, typecheck, lint, build; `/dev/dunia-3d?contoh=1` atau `npm run dev:demo` di 375/768/1024/1440 px; klik ruang, figur, zoom, putar.
+- Catat paket di CHANGELOG; perbarui DUNIA-KOPERASI/STATUS hanya bila keadaan atau aturan berubah.

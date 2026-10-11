@@ -1,0 +1,1922 @@
+/* Monitoring 3D bergaya panel logistik referensi: kanvas penuh, kartu putih bersih melayang,
+   aksen biru #2F5BEA, ikon biru kilap. Dunia selalu terang. Gaya dibatasi .mt-root.
+   Tata letak: ≥1280 persis referensi; 768–1279 panel sempit, pelacak + daftar bertumpuk di kiri
+   bawah; <768 bilah ringkas, KPI bergeser, detail dalam lembar bawah (intip/setengah/penuh). */
+.mt-root {
+  --mt-ink: #0f1b3d;
+  --mt-text: #0f1b3d;
+  --mt-muted: #6b7690;
+  --mt-line: #e6eaf2;
+  --mt-soft: #f5f7fc;
+  --mt-card: rgba(255, 255, 255, 0.97);
+  --mt-blue: #2f5bea;
+  --mt-blue-ink: #2148c7;
+  --mt-blue-soft: #eaf0ff;
+  --mt-green: #15803d;
+  --mt-green-bar: #22a55a;
+  --mt-green-soft: #e3f6ea;
+  --mt-yellow: #a16207;
+  --mt-yellow-bar: #f0a92e;
+  --mt-yellow-soft: #fdf3dc;
+  --mt-red: #c62828;
+  --mt-red-soft: #fde8e8;
+  --mt-gray: #6b7690;
+  --mt-gray-soft: #eef1f6;
+  --mt-radius: 16px;
+  --mt-shadow: 0 12px 32px rgba(28, 45, 95, 0.09), 0 1px 2px rgba(28, 45, 95, 0.06);
+  --mt-gap: 20px;
+  --mt-top: 64px;
+  --mt-panel-w: 360px;
+  --mt-tabs-w: 420px;
+  --mt-tabs-h: 236px;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 45% 50%, #f8f9fd 0%, #eef0f8 55%, #e4e7f2 100%);
+  color: var(--mt-ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.4;
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+}
+.mt-root *,
+.mt-root *::before,
+.mt-root *::after {
+  box-sizing: border-box;
+}
+.mt-root[data-fase='senja'] {
+  background: radial-gradient(ellipse at 45% 50%, #fff6ee, #f3e9f1 58%, #e3ddef);
+}
+.mt-root[data-fase='malam'] {
+  background: radial-gradient(ellipse at 45% 50%, #e9edf8, #d9e0ef 58%, #c8d0e5);
+}
+.mt-root[data-cuaca='hujan'] {
+  background: radial-gradient(ellipse at 45% 50%, #eef1f7, #dfe4ef 58%, #cfd6e7);
+}
+.mt-root a {
+  color: inherit;
+  text-decoration: none;
+}
+.mt-root :is(h1, h2, h3, p, ul, ol, dl, dd) {
+  margin: 0;
+  padding: 0;
+}
+.mt-root :is(ul, ol) {
+  list-style: none;
+}
+/* :where agar warna dari kelas tombol (mis. .mt-add putih) tidak kalah oleh aturan dasar ini. */
+:where(.mt-root) button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.mt-root :focus-visible {
+  outline: 3px solid #8fb0ff;
+  outline-offset: 2px;
+}
+.mt-root :is(small, em) {
+  font-style: normal;
+}
+.mt-root select {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--mt-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--mt-ink);
+  font: inherit;
+}
+
+/* ---------- Dasar ---------- */
+.mt-card {
+  background: var(--mt-card);
+  border: 1px solid rgba(230, 234, 242, 0.9);
+  border-radius: var(--mt-radius);
+  box-shadow: var(--mt-shadow);
+}
+.mt-tile {
+  /* Ikon sudah membawa ubin timbulnya sendiri; pembungkus hanya mengatur posisi. */
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.mt-tile .ikon3d {
+  overflow: visible;
+}
+.mt-pill {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding: 3px 9px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.mt-pill.is-biru {
+  color: var(--mt-blue-ink);
+  background: var(--mt-blue-soft);
+}
+.mt-pill.is-hijau {
+  color: var(--mt-green);
+  background: var(--mt-green-soft);
+}
+.mt-pill.is-kuning {
+  color: var(--mt-yellow);
+  background: var(--mt-yellow-soft);
+}
+.mt-pill.is-merah {
+  color: var(--mt-red);
+  background: var(--mt-red-soft);
+}
+.mt-pill.is-abu {
+  color: var(--mt-gray);
+  background: var(--mt-gray-soft);
+}
+.mt-btn,
+.mt-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--mt-line);
+  border-radius: 10px;
+  background: #fff;
+  font-weight: 600;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background-color 0.15s;
+}
+.mt-btn.is-primary {
+  border-color: var(--mt-blue);
+  background: var(--mt-blue);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(47, 91, 234, 0.25);
+}
+.mt-btn.is-primary:hover {
+  background: var(--mt-blue-ink);
+  color: #fff;
+}
+.mt-icon-btn {
+  position: relative;
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
+  color: var(--mt-muted);
+}
+.mt-icon-btn.is-small {
+  width: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 8px;
+}
+.mt-btn:hover,
+.mt-icon-btn:hover {
+  border-color: #c9d6fb;
+  color: var(--mt-blue);
+}
+.mt-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.mt-bar {
+  display: block;
+  height: 5px;
+  border-radius: 99px;
+  background: #e8ecf4;
+  overflow: hidden;
+}
+.mt-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--mt-blue);
+}
+.mt-bar.is-hijau i {
+  background: var(--mt-green-bar);
+}
+.mt-bar.is-kuning i {
+  background: var(--mt-yellow-bar);
+}
+.mt-bar.is-merah i {
+  background: var(--mt-red);
+}
+.mt-empty {
+  padding: 14px 4px;
+  color: var(--mt-muted);
+  line-height: 1.6;
+}
+.mt-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--mt-soft);
+  font-size: 12px;
+  color: var(--mt-text);
+  line-height: 1.5;
+}
+.mt-note.is-warn {
+  background: var(--mt-yellow-soft);
+  color: var(--mt-yellow);
+}
+.mt-note a {
+  color: var(--mt-blue);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* ---------- Panggung 3D ---------- */
+.mt-stage {
+  position: absolute;
+  inset: 0;
+}
+.mt-canvas {
+  position: absolute;
+  inset: 0;
+  /* Area tertutup kartu; kamera memusatkan adegan di ruang kosong. */
+  --inset-top: 168px;
+  --inset-right: 400px;
+  --inset-bottom: 210px;
+  --inset-left: 0px;
+}
+.mt-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.mt-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: var(--mt-muted);
+}
+.mt-stage > .mt-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #eceff7;
+}
+.mt-pins {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.mt-pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 30px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  background: none;
+  pointer-events: auto;
+  filter: drop-shadow(0 4px 6px rgba(29, 58, 158, 0.25));
+  transition: filter 0.15s;
+}
+.mt-pin:hover {
+  filter: drop-shadow(0 6px 10px rgba(29, 58, 158, 0.4)) brightness(1.08);
+}
+.mt-pin svg {
+  display: block;
+}
+/* Bingkai pilihan: kotak tipis biru muda dan empat siku tebal mengikuti ukuran objek di layar. */
+.mt-mark {
+  --siku: 16px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  pointer-events: none;
+  border: 1.5px solid rgba(47, 91, 234, 0.32);
+  border-radius: 10px;
+  background: rgba(47, 91, 234, 0.06);
+  box-shadow: 0 0 0 4px rgba(47, 91, 234, 0.06);
+}
+.mt-mark[data-jenis='orang'] {
+  border-radius: 14px;
+}
+.mt-mark i {
+  position: absolute;
+  width: var(--siku);
+  height: var(--siku);
+  border: 3px solid var(--mt-blue);
+  filter: drop-shadow(0 2px 4px rgba(47, 91, 234, 0.35));
+}
+.mt-mark i:nth-child(1) {
+  top: -3px;
+  left: -3px;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-left-radius: 10px;
+}
+.mt-mark i:nth-child(2) {
+  top: -3px;
+  right: -3px;
+  border-left: 0;
+  border-bottom: 0;
+  border-top-right-radius: 10px;
+}
+.mt-mark i:nth-child(3) {
+  bottom: -3px;
+  left: -3px;
+  border-right: 0;
+  border-top: 0;
+  border-bottom-left-radius: 10px;
+}
+.mt-mark i:nth-child(4) {
+  bottom: -3px;
+  right: -3px;
+  border-left: 0;
+  border-top: 0;
+  border-bottom-right-radius: 10px;
+}
+.mt-mark-ruang {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.mt-mark-ruang:not([data-on]) {
+  display: none;
+}
+.mt-mark-ruang polygon {
+  fill: rgba(47, 91, 234, 0.07);
+  stroke: rgba(47, 91, 234, 0.38);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.mt-mark-ruang path {
+  fill: none;
+  stroke: var(--mt-blue);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 4px rgba(47, 91, 234, 0.35));
+}
+/* Label pilihan ala "TRK-2307 Docking": nama di pil biru, status di bagian muda. */
+.mt-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(47, 91, 234, 0.28);
+}
+.mt-tag b {
+  padding: 5px 9px;
+  background: var(--mt-blue);
+  color: #fff;
+}
+.mt-tag span {
+  padding: 5px 9px;
+  background: #dfe8ff;
+  color: var(--mt-blue-ink);
+  font-weight: 600;
+}
+/* Nama objek di bawah kursor; tidak ada papan nama tetap di kanvas. */
+.mt-hover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  pointer-events: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--mt-ink);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: var(--mt-shadow);
+}
+.mt-map-tools {
+  position: absolute;
+  top: calc(var(--mt-top) + 16px);
+  right: calc(var(--mt-gap) + var(--mt-panel-w) + 14px);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px;
+  border-radius: 14px;
+}
+.mt-map-tools button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--mt-text);
+}
+.mt-map-tools button:hover {
+  background: var(--mt-blue-soft);
+  color: var(--mt-blue);
+}
+.mt-map-tools hr {
+  width: 22px;
+  margin: 4px 0;
+  border: 0;
+  border-top: 1px solid var(--mt-line);
+}
+
+/* ---------- Bilah atas ---------- */
+.mt-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: var(--mt-top);
+  padding: 0 var(--mt-gap);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(230, 234, 242, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.mt-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 44px;
+}
+.mt-brand strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  white-space: nowrap;
+}
+.mt-demo {
+  display: inline-block;
+  margin-top: 1px;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: var(--mt-yellow-soft);
+  color: var(--mt-yellow);
+  font-size: 10px;
+  font-weight: 700;
+}
+.mt-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 1 380px;
+  min-width: 0;
+  height: 40px;
+  margin-left: 18px;
+  padding: 0 8px 0 12px;
+  border: 1px solid var(--mt-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--mt-muted);
+}
+.mt-search input {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  color: var(--mt-ink);
+  font: inherit;
+  outline: none;
+}
+.mt-search input::placeholder {
+  color: #98a2b8;
+}
+.mt-search kbd {
+  display: grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  border: 1px solid var(--mt-line);
+  border-radius: 6px;
+  background: var(--mt-soft);
+  color: var(--mt-muted);
+  font: 600 11px/1 var(--font-sans);
+}
+.mt-search:focus-within {
+  border-color: #b9cbf8;
+  box-shadow: 0 0 0 3px rgba(47, 91, 234, 0.14);
+}
+.mt-search-close,
+.mt-search-open {
+  display: none;
+}
+.mt-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 8;
+  max-height: 320px;
+  overflow: auto;
+  padding: 6px;
+}
+.mt-results a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  color: var(--mt-ink);
+}
+.mt-results a:hover {
+  background: var(--mt-blue-soft);
+}
+.mt-results small {
+  color: var(--mt-muted);
+}
+.mt-lokasi {
+  position: relative;
+  margin-left: auto;
+}
+.mt-lokasi-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 10px 4px 5px;
+  border: 1px solid var(--mt-line);
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+}
+.mt-lokasi-btn:hover {
+  border-color: #c9d6fb;
+}
+.mt-badge {
+  display: grid;
+  place-items: center;
+  min-width: 38px;
+  height: 32px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--mt-blue);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+.mt-lokasi-btn strong,
+.mt-lokasi-list strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.mt-lokasi-btn small,
+.mt-lokasi-list small {
+  display: block;
+  font-size: 11px;
+  color: var(--mt-muted);
+  white-space: nowrap;
+}
+.mt-lokasi-btn svg {
+  color: var(--mt-muted);
+}
+.mt-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 9;
+  min-width: 260px;
+  padding: 6px;
+}
+.mt-lokasi-list {
+  left: 0;
+  right: auto;
+}
+.mt-lokasi-list button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+}
+.mt-lokasi-list button > span {
+  flex: 1;
+}
+.mt-lokasi-list button:hover,
+.mt-lokasi-list [aria-selected='true'] button {
+  background: var(--mt-blue-soft);
+}
+.mt-lokasi-list svg {
+  color: var(--mt-blue);
+}
+.mt-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px;
+  border-radius: 99px;
+  background: var(--mt-green-soft);
+  color: var(--mt-green);
+  font-weight: 700;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.mt-live small {
+  font-weight: 600;
+  opacity: 0.8;
+}
+.mt-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+.mt-menu {
+  position: relative;
+}
+.mt-bell {
+  border-color: transparent;
+}
+.mt-bell b {
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  display: grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border: 2px solid #fff;
+  border-radius: 99px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+}
+.mt-bell-pop {
+  width: 360px;
+  max-height: min(70vh, 460px);
+  overflow: auto;
+  padding: 10px 12px;
+}
+.mt-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 2px 4px 2px 2px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+}
+.mt-user:hover {
+  background: var(--mt-soft);
+}
+.mt-user strong {
+  display: block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.mt-user small {
+  display: block;
+  font-size: 11px;
+  color: var(--mt-muted);
+}
+.mt-user > svg {
+  color: var(--mt-muted);
+}
+.mt-avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #7f9dff, var(--mt-blue));
+  color: #fff;
+  font-weight: 800;
+  box-shadow:
+    inset 0 -3px 0 rgba(20, 40, 120, 0.25),
+    0 0 0 2px #fff,
+    0 2px 6px rgba(28, 45, 95, 0.2);
+}
+.mt-user-pop {
+  display: grid;
+  gap: 4px;
+  width: 270px;
+  padding: 10px;
+}
+.mt-pop-title {
+  padding: 4px 6px 8px;
+  border-bottom: 1px solid var(--mt-line);
+}
+.mt-pop-title strong {
+  display: block;
+  font-size: 14px;
+}
+.mt-pop-title small {
+  display: block;
+  color: var(--mt-muted);
+  font-size: 12px;
+}
+.mt-pop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  font-weight: 600;
+  text-align: left;
+}
+.mt-pop-item:hover {
+  background: var(--mt-blue-soft);
+  color: var(--mt-blue);
+}
+.mt-pop-item svg {
+  color: var(--mt-muted);
+}
+.mt-pop-field {
+  display: grid;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--mt-muted);
+}
+
+/* ---------- KPI kiri atas ---------- */
+.mt-left {
+  position: absolute;
+  top: calc(var(--mt-top) + 16px);
+  left: var(--mt-gap);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: calc(100% - var(--mt-panel-w) - 3 * var(--mt-gap) - 60px);
+}
+.mt-kpis {
+  display: flex;
+  gap: 12px;
+}
+.mt-kpi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 230px;
+  min-width: 0;
+  padding: 12px 14px 12px 12px;
+  text-align: left;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.mt-root .mt-kpi:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.mt-kpi:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(28, 45, 95, 0.13);
+}
+
+.mt-kpi-body {
+  display: grid;
+  min-width: 0;
+}
+.mt-kpi-body small {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mt-text);
+}
+.mt-kpi-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.mt-kpi-value strong {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.mt-kpi-value em {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.mt-kpi-value em.is-hijau {
+  color: var(--mt-green);
+}
+.mt-kpi-value em.is-kuning {
+  color: var(--mt-yellow);
+}
+.mt-kpi-value em.is-merah {
+  color: var(--mt-red);
+}
+.mt-kpi-value em.is-biru {
+  color: var(--mt-blue);
+}
+.mt-kpi-value em.is-abu {
+  color: var(--mt-muted);
+}
+.mt-kpi-foot {
+  overflow: hidden;
+  font-size: 11px;
+  color: var(--mt-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mt-alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 720px;
+  padding: 10px 12px;
+  border-color: #f2d7a6;
+  background: #fff8e8;
+}
+
+/* ---------- Lembar (pembungkus panel, pelacak, daftar) ---------- */
+.mt-sheet {
+  display: contents;
+}
+.mt-sheet-handle {
+  display: none;
+}
+.mt-sheet-body {
+  display: contents;
+}
+
+/* ---------- Panel detail kanan ---------- */
+.mt-panel {
+  position: absolute;
+  top: calc(var(--mt-top) + 16px);
+  right: var(--mt-gap);
+  z-index: 3;
+  width: var(--mt-panel-w);
+  max-height: calc(100% - var(--mt-top) - 16px - var(--mt-tabs-h) - 2 * var(--mt-gap) + 8px);
+  overflow: auto;
+  padding: 16px;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.mt-panel-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.mt-panel-head > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.mt-panel-head small {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: var(--mt-blue);
+}
+.mt-panel-head h2 {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+}
+.mt-panel-head em {
+  display: block;
+  margin-top: 1px;
+  font-size: 12px;
+  color: var(--mt-muted);
+  line-height: 1.45;
+}
+.mt-head-actions {
+  display: flex;
+  gap: 4px;
+}
+.mt-head-actions .mt-icon-btn {
+  width: 34px;
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: 9px;
+}
+.mt-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--mt-muted);
+  font-size: 12px;
+}
+.mt-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.mt-stats > div {
+  padding: 10px 12px;
+  border: 1px solid var(--mt-line);
+  border-radius: 12px;
+  background: #fff;
+}
+.mt-stats small {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mt-muted);
+}
+.mt-stats strong {
+  display: block;
+  margin: 2px 0 6px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  font-variant-numeric: tabular-nums;
+}
+.mt-stats strong span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--mt-muted);
+}
+.mt-seg {
+  display: inline-flex;
+  gap: 2px;
+  margin-top: 12px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--mt-gray-soft);
+}
+.mt-seg button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mt-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.mt-seg button[aria-pressed='true'] {
+  background: #fff;
+  color: var(--mt-ink);
+  box-shadow: 0 1px 4px rgba(28, 45, 95, 0.12);
+}
+.mt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.mt-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--mt-line);
+}
+.mt-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: var(--mt-blue-soft);
+  color: var(--mt-blue-ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+.mt-links a:hover {
+  background: #dce6ff;
+}
+.mt-links a.is-baru {
+  background: var(--mt-blue);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(47, 91, 234, 0.25);
+}
+.mt-links a.is-baru:hover {
+  background: var(--mt-blue-ink);
+}
+.mt-add {
+  border-color: var(--mt-blue);
+  background: var(--mt-blue);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(47, 91, 234, 0.3);
+}
+.mt-add:hover {
+  background: var(--mt-blue-ink);
+  color: #fff;
+}
+.mt-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+.mt-progress .mt-bar {
+  flex: 1;
+}
+.mt-progress small {
+  font-size: 11px;
+  color: var(--mt-muted);
+  white-space: nowrap;
+}
+.mt-kv {
+  margin-top: 12px;
+}
+.mt-kv > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #eef1f7;
+}
+.mt-kv dt {
+  color: var(--mt-muted);
+}
+.mt-kv dd {
+  font-weight: 600;
+  text-align: right;
+}
+.mt-sub {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 16px 0 4px;
+  font-size: 13px;
+  font-weight: 800;
+}
+.mt-sub small {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mt-muted);
+}
+.mt-rows li + li {
+  border-top: 1px solid #eef1f7;
+}
+.mt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 7px 6px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+}
+.mt-row:hover,
+.mt-row[aria-pressed='true'] {
+  background: var(--mt-blue-soft);
+}
+.mt-row-ikon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--mt-soft);
+}
+.mt-row-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #e3eaff, #c7d5fd);
+  color: var(--mt-blue-ink);
+  font-size: 12px;
+  font-weight: 800;
+}
+.mt-row-text {
+  flex: 1;
+  min-width: 0;
+}
+.mt-row-text strong {
+  display: block;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mt-row-text small {
+  display: block;
+  overflow: hidden;
+  font-size: 11px;
+  color: var(--mt-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mt-row-value {
+  font-size: 13px;
+  font-weight: 800;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.mt-row-value small {
+  display: block;
+  color: var(--mt-muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+.mt-row-bar {
+  display: grid;
+  gap: 2px;
+  width: 46px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.mt-row-bar small {
+  font-size: 10px;
+  color: var(--mt-muted);
+  font-variant-numeric: tabular-nums;
+}
+.mt-row-arrow {
+  flex-shrink: 0;
+  color: #a8b1c6;
+}
+
+/* ---------- Pelacak kiri bawah ---------- */
+.mt-tracker {
+  position: absolute;
+  left: var(--mt-gap);
+  bottom: var(--mt-gap);
+  z-index: 3;
+  width: min(720px, calc(100% - var(--mt-tabs-w) - 3 * var(--mt-gap)));
+  padding: 14px 16px 16px;
+}
+.mt-tracker > header,
+.mt-tabs > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.mt-tracker > header .mt-tile,
+.mt-tabs > header .mt-tile {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+.mt-tracker h2 {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+.mt-tracker > header > small {
+  margin-left: auto;
+  overflow: hidden;
+  color: var(--mt-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mt-pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--mt-muted);
+}
+.mt-tracker-body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+.mt-steps {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+.mt-steps li {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+}
+.mt-steps li + li::before {
+  content: '';
+  position: absolute;
+  top: 17px;
+  right: calc(50% + 21px);
+  left: calc(-50% + 21px);
+  height: 2px;
+  border-radius: 2px;
+  background: #dde3ee;
+}
+.mt-steps li.is-done::before,
+.mt-steps li.is-now::before {
+  background: var(--mt-blue);
+}
+.mt-step-dot {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #dde3ee;
+  background: #fff;
+  color: #a3adc2;
+}
+.mt-steps .is-done .mt-step-dot {
+  border-color: var(--mt-blue);
+  background: var(--mt-blue);
+  color: #fff;
+  box-shadow: inset 0 -2px 0 rgba(20, 40, 120, 0.25);
+}
+.mt-steps .is-now .mt-step-dot {
+  border: 3px solid var(--mt-blue);
+  background: #fff;
+  color: var(--mt-blue);
+  box-shadow: 0 0 0 5px rgba(47, 91, 234, 0.14);
+}
+.mt-steps strong {
+  max-width: 100%;
+  margin-top: 4px;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mt-steps .is-now strong {
+  color: var(--mt-blue);
+}
+.mt-steps small {
+  font-size: 11px;
+  color: var(--mt-muted);
+  white-space: nowrap;
+}
+.mt-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 236px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--mt-line);
+  border-radius: 14px;
+  background: var(--mt-soft);
+}
+.mt-mini:hover {
+  border-color: #c9d6fb;
+  background: #fff;
+}
+.mt-mini-art {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #fff;
+}
+.mt-mini > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+.mt-mini strong {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mt-mini small {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 11px;
+  color: var(--mt-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mt-mini-go {
+  flex-shrink: 0;
+  color: var(--mt-muted);
+}
+
+/* ---------- Daftar bertab kanan bawah ---------- */
+.mt-tabs {
+  position: absolute;
+  right: var(--mt-gap);
+  bottom: var(--mt-gap);
+  z-index: 3;
+  width: var(--mt-tabs-w);
+  height: var(--mt-tabs-h);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px 8px;
+}
+.mt-tabs [role='tablist'] {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+  padding: 3px;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: var(--mt-gray-soft);
+  scrollbar-width: none;
+}
+.mt-tabs [role='tab'] {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mt-muted);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.mt-tabs [role='tab'] span {
+  margin-left: 2px;
+  color: #a0a9be;
+  font-weight: 600;
+}
+.mt-tabs [role='tab'][aria-selected='true'] {
+  background: #fff;
+  color: var(--mt-ink);
+  box-shadow: 0 1px 4px rgba(28, 45, 95, 0.12);
+}
+.mt-tabs > header > small {
+  margin-left: auto;
+  max-width: 120px;
+  overflow: hidden;
+  color: var(--mt-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mt-tabs [role='tabpanel'] {
+  flex: 1;
+  min-height: 0;
+  margin-top: 6px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+/* ---------- Layar menengah: tata letak referensi diperkecil ---------- */
+@media (max-width: 1279px) {
+  .mt-root {
+    --mt-gap: 14px;
+    --mt-panel-w: 320px;
+    --mt-tabs-w: 340px;
+    --mt-tabs-h: 214px;
+  }
+  .mt-canvas {
+    --inset-top: 156px;
+    --inset-right: 340px;
+    --inset-bottom: 200px;
+  }
+  .mt-top {
+    gap: 10px;
+  }
+  .mt-search {
+    flex-basis: 260px;
+    margin-left: 6px;
+  }
+  .mt-user-text,
+  .mt-user > svg,
+  .mt-live small {
+    display: none;
+  }
+  .mt-kpi {
+    width: auto;
+    flex: 1 1 0;
+    max-width: 230px;
+    padding: 10px;
+    gap: 10px;
+  }
+  .mt-kpi .mt-tile {
+    width: 40px;
+    height: 40px;
+  }
+  .mt-kpi-value strong {
+    font-size: 20px;
+  }
+  .mt-left {
+    right: calc(var(--mt-panel-w) + 2 * var(--mt-gap) + 52px);
+    max-width: none;
+  }
+  .mt-tracker {
+    width: calc(100% - var(--mt-tabs-w) - 3 * var(--mt-gap));
+    padding: 12px 14px;
+  }
+  .mt-mini {
+    flex-basis: 200px;
+  }
+  .mt-mini-art {
+    width: 44px;
+    height: 44px;
+  }
+}
+/* ---------- Tablet tegak: panel setinggi layar, pelacak + daftar bertumpuk di kiri bawah ---------- */
+@media (max-width: 1023px) {
+  .mt-canvas {
+    --inset-top: 150px;
+    --inset-bottom: 440px;
+  }
+  .mt-brand strong {
+    font-size: 16px;
+  }
+  .mt-live {
+    display: none;
+  }
+  .mt-left {
+    right: calc(var(--mt-panel-w) + 2 * var(--mt-gap));
+  }
+  .mt-kpis {
+    gap: 8px;
+  }
+  .mt-kpi {
+    max-width: none;
+  }
+  .mt-kpi .mt-tile {
+    display: none;
+  }
+  .mt-map-tools {
+    top: calc(var(--mt-top) + 112px);
+  }
+  .mt-panel {
+    bottom: var(--mt-gap);
+    max-height: none;
+  }
+  .mt-tabs,
+  .mt-tracker {
+    left: var(--mt-gap);
+    right: calc(var(--mt-panel-w) + 2 * var(--mt-gap));
+    width: auto;
+  }
+  .mt-tracker {
+    bottom: calc(var(--mt-tabs-h) + 2 * var(--mt-gap) - 4px);
+  }
+  .mt-tracker-body {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .mt-mini {
+    flex-basis: auto;
+  }
+}
+
+/* ---------- Ponsel: bilah ringkas, KPI bergeser, detail di lembar bawah ---------- */
+@media (max-width: 767px) {
+  .mt-root {
+    --mt-top: 56px;
+    --mt-gap: 12px;
+  }
+  .mt-canvas {
+    --inset-top: 150px;
+    --inset-right: 0px;
+    --inset-bottom: 190px;
+  }
+  .mt-top {
+    gap: 6px;
+    padding: 0 max(10px, env(safe-area-inset-right)) 0 max(10px, env(safe-area-inset-left));
+  }
+  .mt-brand strong {
+    display: none;
+  }
+  .mt-brand .mt-demo {
+    display: none;
+  }
+  .mt-search {
+    display: none;
+  }
+  .mt-search-open {
+    display: inline-flex;
+    margin-left: auto;
+    border-color: transparent;
+  }
+  .mt-top[data-search] .mt-search {
+    position: absolute;
+    inset: 8px 10px;
+    z-index: 2;
+    display: flex;
+    height: auto;
+    margin: 0;
+  }
+  .mt-top[data-search] .mt-search kbd {
+    display: none;
+  }
+  .mt-top[data-search] .mt-search-close {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--mt-muted);
+  }
+  .mt-lokasi {
+    margin-left: 0;
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+  .mt-lokasi-btn {
+    padding-right: 6px;
+    gap: 6px;
+  }
+  .mt-lokasi-btn small {
+    display: none;
+  }
+  .mt-badge {
+    min-width: 32px;
+    height: 28px;
+    font-size: 10px;
+  }
+  .mt-pop {
+    position: fixed;
+    top: calc(var(--mt-top) + 6px);
+    left: 10px;
+    right: 10px;
+    width: auto;
+    min-width: 0;
+  }
+  .mt-avatar {
+    width: 34px;
+    height: 34px;
+  }
+  .mt-map-tools {
+    display: none;
+  }
+  .mt-left {
+    left: 0;
+    right: 0;
+    max-width: none;
+    top: calc(var(--mt-top) + 10px);
+  }
+  .mt-kpis {
+    gap: 10px;
+    padding: 0 12px 4px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .mt-kpi {
+    flex: 0 0 auto;
+    width: min(240px, 72vw);
+    scroll-snap-align: start;
+  }
+  .mt-kpi .mt-tile {
+    display: grid;
+  }
+  .mt-alert {
+    margin: 0 12px;
+  }
+  /* Lembar bawah: kartu-kartu menjadi bagian datar di dalamnya. */
+  .mt-sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    height: 180px;
+    padding-bottom: env(safe-area-inset-bottom);
+    border-radius: 22px 22px 0 0;
+    background: #fff;
+    box-shadow: 0 -10px 34px rgba(28, 45, 95, 0.16);
+    transition: height 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .mt-root[data-sheet='setengah'] .mt-sheet {
+    height: 56dvh;
+  }
+  .mt-root[data-sheet='penuh'] .mt-sheet {
+    height: calc(100dvh - var(--mt-top) - 8px);
+  }
+  .mt-sheet-handle {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 100%;
+    height: 28px;
+    border: 0;
+    background: transparent;
+    touch-action: none;
+  }
+  .mt-sheet-handle i {
+    width: 40px;
+    height: 5px;
+    border-radius: 99px;
+    background: #d4dae7;
+  }
+  .mt-sheet-body {
+    display: block;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 0 14px 16px;
+  }
+  .mt-sheet-body > .mt-card {
+    position: static;
+    width: auto;
+    height: auto;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .mt-sheet-body > .mt-card + .mt-card {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--mt-line);
+  }
+  .mt-tabs [role='tabpanel'] {
+    overflow: visible;
+  }
+  .mt-tracker-body {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .mt-steps strong {
+    display: none;
+  }
+  .mt-steps .is-now strong {
+    display: block;
+  }
+  .mt-tabs > header > small,
+  .mt-tracker > header > small {
+    display: none;
+  }
+  .mt-stats strong {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mt-kpi,
+  .mt-sheet,
+  .mt-btn,
+  .mt-icon-btn,
+  .mt-pin {
+    transition: none;
+  }
+  .mt-kpi:not(:disabled):hover {
+    transform: none;
+  }
+}
+
+/* Satu panel sesuai kebutuhan; ruang kanvas benar-benar menyusut, bukan tertutup kartu. */
+.mt-root [hidden] {
+  display: none;
+}
+.mt-root .mt-stage {
+  inset: var(--mt-top) 0 88px;
+}
+.mt-root[data-panel] .mt-stage {
+  right: 396px;
+}
+.mt-root .mt-canvas {
+  --inset-top: 24px;
+  --inset-right: 24px;
+  --inset-bottom: 24px;
+  --inset-left: 24px;
+}
+.mt-root .mt-map-tools {
+  top: 16px;
+  right: 16px;
+}
+.mt-root .mt-left {
+  top: calc(var(--mt-top) + 12px);
+  left: 16px;
+  right: auto;
+  max-width: min(520px, calc(100% - 32px));
+}
+.mt-left:empty {
+  display: none;
+}
+.mt-dock {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+}
+.mt-dock button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 4px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--mt-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.mt-dock button:hover,
+.mt-dock button[aria-expanded='true'] {
+  background: var(--mt-blue-soft);
+  color: var(--mt-blue);
+}
+.mt-inspector {
+  position: absolute;
+  z-index: 4;
+  top: calc(var(--mt-top) + 16px);
+  bottom: 88px;
+  right: 16px;
+  width: 364px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.mt-inspector-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--mt-line);
+}
+.mt-inspector-head strong {
+  font-size: 13px;
+}
+.mt-inspector-head button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.mt-inspector-body {
+  overflow: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+  padding: 18px;
+  scrollbar-width: thin;
+}
+.mt-inspector :is(.mt-panel, .mt-tracker, .mt-tabs) {
+  position: static;
+  width: auto;
+  height: auto;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.mt-inspector .mt-kpis {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  overflow: visible;
+}
+.mt-inspector .mt-kpi {
+  width: 100%;
+  max-width: none;
+  padding: 16px;
+}
+.mt-inspector .mt-kpi .mt-tile {
+  display: grid;
+}
+.mt-inspector .mt-tracker-body {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+}
+.mt-inspector .mt-mini {
+  flex-basis: auto;
+}
+.mt-inspector .mt-tabs > header {
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.mt-inspector .mt-tabs [role='tablist'] {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 4px;
+}
+.mt-inspector .mt-tabs [role='tab'] {
+  min-height: 44px;
+  flex: 1 1 auto;
+}
+.mt-inspector .mt-tabs [role='tabpanel'] {
+  overflow: visible;
+}
+.mt-inspector .mt-empty {
+  padding: 20px 4px;
+  line-height: 1.65;
+}
+.mt-root .mt-tile {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+}
+@media (max-width: 1023px) {
+  .mt-root[data-panel] .mt-stage {
+    right: 344px;
+  }
+  .mt-inspector {
+    width: 320px;
+    right: 12px;
+  }
+}
+@media (max-width: 767px) {
+  .mt-root .mt-stage {
+    bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+  .mt-root[data-panel] .mt-stage {
+    right: 0;
+    bottom: calc(44dvh + 100px + env(safe-area-inset-bottom));
+  }
+  .mt-inspector {
+    top: auto;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    left: 10px;
+    right: 10px;
+    width: auto;
+    height: 44dvh;
+  }
+  .mt-inspector-body {
+    padding: 16px;
+  }
+  .mt-dock {
+    width: calc(100% - 20px);
+    bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .mt-dock button {
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px;
+    font-size: 11px;
+  }
+  .mt-dock .ikon3d {
+    width: 28px;
+    height: 28px;
+  }
+}

@@ -1,0 +1,294 @@
+{
+  "tasks": [
+    {
+      "code": "KEL",
+      "title": "Bertemu Ketua & pengurus; sepakati peran, wewenang, dan cara kerja manajer",
+      "day": 7,
+      "required": true
+    },
+    {
+      "code": "KEL",
+      "title": "Bertemu Pengawas dan Kepala Desa; sepakati jadwal dan format pelaporan",
+      "day": 7,
+      "required": true
+    },
+    {
+      "code": "LEG",
+      "title": "Kumpulkan & periksa dokumen dasar: akta pendirian, AD/ART, SK pengesahan, NIB, NPWP, rekening",
+      "day": 7,
+      "required": true
+    },
+    {
+      "code": "LEG",
+      "title": "Catat dokumen yang belum ada / kedaluwarsa dan penanggung jawabnya",
+      "day": 7,
+      "required": true
+    },
+    {
+      "code": "MIT",
+      "title": "Petakan pemangku kepentingan (Dinas Koperasi, pendamping, bank, camat, BPD, vendor)",
+      "day": 7,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Siapkan aplikasi ini: profil koperasi, PIN, template 90 hari",
+      "day": 7,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Mulai jurnal kerja harian",
+      "day": 7,
+      "required": false
+    },
+    {
+      "code": "FIS",
+      "title": "Survei lokasi tiap gerai; foto & catatan kondisi (bangunan, listrik, air, akses)",
+      "day": 14,
+      "required": true
+    },
+    {
+      "code": "FIS",
+      "title": "Inventaris peralatan yang sudah ada dan yang dibutuhkan",
+      "day": 14,
+      "required": true
+    },
+    {
+      "code": "KEL",
+      "title": "Tinjau status pembentukan dan kewajiban pelaporan ke Dinas",
+      "day": 14,
+      "required": true
+    },
+    {
+      "code": "SDM",
+      "title": "Petakan kebutuhan petugas per gerai",
+      "day": 14,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Susun daftar risiko awal (≥ 10 risiko)",
+      "day": 14,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Laporan mingguan pertama ke Pengurus/Pengawas",
+      "day": 14,
+      "required": true
+    },
+    {
+      "code": "LEG",
+      "title": "Lengkapi/urus dokumen yang kurang; jadwalkan pengingat kedaluwarsa",
+      "day": 28,
+      "required": true
+    },
+    {
+      "code": "KEL",
+      "title": "Susun Rencana Kerja periode berjalan (tujuan, indikator, program, PJ, tenggat)",
+      "day": 28,
+      "required": true
+    },
+    {
+      "code": "KEL",
+      "title": "Rapat pengurus: bahas & setujui rencana kerja; catat keputusan",
+      "day": 28,
+      "required": true
+    },
+    {
+      "code": "FIS",
+      "title": "Tetapkan gerai prioritas dan urutan pembukaan bertahap",
+      "day": 28,
+      "required": true
+    },
+    {
+      "code": "FIS",
+      "title": "Susun daftar kebutuhan renovasi/perlengkapan per gerai",
+      "day": 28,
+      "required": true
+    },
+    {
+      "code": "MIT",
+      "title": "Hubungi bank terkait skema pembiayaan/rekening; catat persyaratan",
+      "day": 28,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Laporan mingguan rutin (tiap Jumat)",
+      "day": 28,
+      "required": true
+    },
+    {
+      "code": "SIS",
+      "title": "Rancang alur kerja tiap gerai prioritas (dari pemesanan sampai pelaporan)",
+      "day": 42,
+      "required": true
+    },
+    {
+      "code": "SIS",
+      "title": "Tulis draf SOP gerai prioritas (layanan, kas, barang, kebersihan, keselamatan)",
+      "day": 42,
+      "required": true
+    },
+    {
+      "code": "SDM",
+      "title": "Susun deskripsi tugas & kriteria petugas",
+      "day": 42,
+      "required": true
+    },
+    {
+      "code": "MIT",
+      "title": "Daftar calon pemasok/mitra; minta penawaran/perbandingan",
+      "day": 42,
+      "required": true
+    },
+    {
+      "code": "KEL",
+      "title": "Rencanakan agenda RAT (jadwal, bahan, dokumen), tanpa data anggota di aplikasi ini",
+      "day": 42,
+      "required": false
+    },
+    {
+      "code": "FIS",
+      "title": "Pantau progres pembangunan/renovasi mingguan; foto bukti",
+      "day": 56,
+      "required": true
+    },
+    {
+      "code": "FIS",
+      "title": "Pengadaan peralatan gerai prioritas; lacak status pesan → terima",
+      "day": 56,
+      "required": true
+    },
+    {
+      "code": "SDM",
+      "title": "Rekrut/tunjuk petugas gerai prioritas",
+      "day": 56,
+      "required": true
+    },
+    {
+      "code": "SDM",
+      "title": "Jadwal pelatihan (layanan, pencatatan, keselamatan, etika)",
+      "day": 56,
+      "required": true
+    },
+    {
+      "code": "MIT",
+      "title": "Tetapkan pemasok terpilih; catat kesepakatan/MoU",
+      "day": 56,
+      "required": true
+    },
+    {
+      "code": "LEG",
+      "title": "Periksa izin khusus gerai (mis. klinik/apotek bila direncanakan)",
+      "day": 56,
+      "required": true
+    },
+    {
+      "code": "SIS",
+      "title": "Finalkan SOP; ajukan ke pengurus",
+      "day": 70,
+      "required": true
+    },
+    {
+      "code": "SDM",
+      "title": "Pelaksanaan pelatihan; catat kehadiran & hasil",
+      "day": 70,
+      "required": true
+    },
+    {
+      "code": "SIS",
+      "title": "Siapkan sistem pencatatan operasional yang akan dipakai petugas",
+      "day": 70,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Sosialisasi ke warga/pemangku (materi, jadwal, kanal)",
+      "day": 70,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Tinjau ulang risiko; perbarui matriks",
+      "day": 70,
+      "required": true
+    },
+    {
+      "code": "FIS",
+      "title": "Periksa kelayakan akhir gerai prioritas (daftar periksa keselamatan & kebersihan)",
+      "day": 90,
+      "required": true
+    },
+    {
+      "code": "SIS",
+      "title": "Uji coba operasional terbatas (simulasi/soft-run); catat temuan",
+      "day": 90,
+      "required": true
+    },
+    {
+      "code": "SIS",
+      "title": "Perbaiki temuan uji coba; uji ulang bagian kritis",
+      "day": 90,
+      "required": true
+    },
+    {
+      "code": "KEL",
+      "title": "Rapat pengurus: keputusan pembukaan (ya/tunda/bertahap) dengan alasan",
+      "day": 90,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Susun Laporan 90 Hari: capaian, pelajaran, risiko, rencana 90 hari berikut",
+      "day": 90,
+      "required": true
+    },
+    {
+      "code": "KOM",
+      "title": "Presentasikan laporan ke Pengurus, Pengawas, Kepala Desa",
+      "day": 90,
+      "required": true
+    },
+    {
+      "code": "KEL",
+      "title": "Rencanakan 90 hari berikutnya (buat proyek/milestone baru)",
+      "day": 90,
+      "required": true
+    }
+  ],
+  "milestones": [
+    {
+      "code": "M1",
+      "day": 14,
+      "title": "Baseline kondisi terkonfirmasi"
+    },
+    {
+      "code": "M2",
+      "day": 30,
+      "title": "Rencana Kerja disetujui pengurus"
+    },
+    {
+      "code": "M2b",
+      "day": 45,
+      "title": "Gerai prioritas & urutan pembukaan ditetapkan"
+    },
+    {
+      "code": "M3",
+      "day": 60,
+      "title": "Peralatan & petugas gerai prioritas siap"
+    },
+    {
+      "code": "M4",
+      "day": 75,
+      "title": "SOP disetujui & pelatihan tuntas"
+    },
+    {
+      "code": "M5",
+      "day": 90,
+      "title": "Laporan 90 hari disampaikan & keputusan pembukaan tercatat"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+/test-results/
+/playwright-report/
+
+# Next.js build output
+/.next/
+/.next-demo/
+/.next-*/
+/out/
+
+# Production
+/build
+
+# Vercel & Turborepo
+.vercel/
+.turbo/
+
+# TypeScript build cache
+*.tsbuildinfo
+next-env.d.ts.bak
+
+# Environment variables
+.env*
+!.env.example
+
+# Cadangan dan artefak lokal
+.local-backup/
+backups/
+*.bundle
+*.key
+*.p12
+*.pfx
+supabase/.temp/
+supabase/.branches/
+artifacts/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# System Files
+.DS_Store
+Thumbs.db
+*.pem
+
+# IDE & Editor files
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.sublime-workspace
+
+
+# Peta kode Graphify: dibuat ulang dengan "graphify update ." (hanya kode, tanpa AI)
+graphify-out/
+# Hook Graphify lokal: berisi path komputer pemilik (dibuat ulang dengan "graphify <platform> install")
+.claude/settings.json
+.codex/
+.gemini/settings.json
+
+# Berkas tidak terpakai yang menunggu dihapus pemilik
+not-use/
