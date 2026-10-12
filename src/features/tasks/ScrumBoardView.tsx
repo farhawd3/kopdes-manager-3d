@@ -1,5 +1,4 @@
 'use client';
-import { AppIcon } from '@/components/ui/AppIcon';
 import { useDragSort } from '@/components/ui/useDragSort';
 import { DragOverlay } from '@/components/ui/DragOverlay';
 import { IconButton } from '@/components/ui/Button';
@@ -7,7 +6,7 @@ import { GripVertical } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Plus, AlertCircle, CheckCircle2, Calendar, Flame, CheckSquare } from 'lucide-react';
+import { Plus, AlertCircle, Check, CheckCircle2, Calendar, Flame, CheckSquare } from 'lucide-react';
 import { taskProgress } from '@/lib/progress';
 import { type Item } from '../records/schemas';
 import { type Workspace } from '../workspace/useWorkspace';
@@ -428,7 +427,7 @@ export function ScrumBoardView({
                                   title="Tandai tugas selesai"
                                   aria-label="Tandai tugas selesai"
                                 >
-                                  <span><AppIcon name="complete" size={16} /> Selesai</span>
+                                  <span><Check size={14} aria-hidden="true" /> Selesai</span>
                                 </Button>
                               </div>
                             )}

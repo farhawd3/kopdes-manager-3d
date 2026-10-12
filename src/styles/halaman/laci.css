@@ -100,7 +100,7 @@ dialog.task-detail-drawer[open] { display: block; }
 .task-detail-backdrop { display: none; }
 .task-detail-panel { display: grid; gap: 18px; padding: 16px 20px 24px; }
 .drawer-mobile-handle { display: none; }
-.drawer-top-bar { position: sticky; z-index: 2; top: -16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin: -16px -20px 0; padding: 12px 20px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(8px); }
+.drawer-top-bar { position: sticky; z-index: 2; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin: -16px -20px 0; padding: 12px 20px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(8px); }
 .left-controls, .right-controls, .drawer-nav-group { display: flex; align-items: center; gap: 6px; }
 :is(.btn-mark-complete, .btn-drawer-action, .btn-icon).ui-btn { min-height: 36px; padding: 0 12px; font-size: 13px; }
 .btn-icon.ui-btn { width: 36px; padding: 0; }
@@ -248,7 +248,7 @@ dialog.editor > form { display: flex; flex: 1 1 auto; flex-direction: column; mi
   .drawer-mobile-handle { display: grid; place-items: center; height: 14px; }
   .drawer-mobile-handle::before { content: ''; width: 40px; height: 4px; border-radius: 4px; background: var(--line-strong); }
   .task-detail-panel { padding: 8px 16px 24px; }
-  .drawer-top-bar { margin: 0 -16px; padding: 10px 16px; }
+  .drawer-top-bar { margin: 0 -16px; padding: 12px 16px 10px; }
   .drawer-prop-row { grid-template-columns: 110px minmax(0, 1fr); }
   .record-dl > div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   dialog.editor { width: 100vw; max-height: 94dvh; margin: auto 0 0; border-radius: var(--r-xl) var(--r-xl) 0 0; }

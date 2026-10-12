@@ -191,7 +191,6 @@ export function ManagerActionModal({ open, onClose }: { open: boolean; onClose: 
       <div className="action-modal-container">
         <header className="action-modal-header">
           <div>
-            <div className="action-modal-badge">Ruang kerja koperasi</div>
             <h2 id="action-modal-title">Tambah catatan & kegiatan</h2>
             <p>
               Pilih tindakan cepat. Tekan angka <kbd>1</kbd> s.d. <kbd>9</kbd> untuk membuka formulir langsung.

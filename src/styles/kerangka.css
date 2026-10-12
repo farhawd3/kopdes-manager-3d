@@ -409,10 +409,21 @@ dialog.command-dialog[open] { animation: muncul-dialog 240ms var(--ease-out); }
 /* ---------- Pusat aksi ---------- */
 dialog.manager-action-dialog { width: min(720px, calc(100vw - 32px)); padding: 0; }
 .action-modal-container { display: grid; gap: 18px; padding: 24px; }
-.action-modal-header { display: flex; align-items: flex-start; gap: 14px; }
+/* Kepala lengket: judul dan tombol tutup tetap terlihat saat daftar aksi digulir */
+.action-modal-header {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: -24px -24px 0;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
 .action-modal-header h2 { font-size: 20px; }
 .action-modal-header p { margin-top: 4px; color: var(--ink-muted); }
-.action-modal-badge { display: grid; place-items: center; width: 48px; height: 48px; flex-shrink: 0; border-radius: 14px; background: var(--brand-soft); }
 .ui-btn.action-modal-close { width: 38px; min-height: 38px; margin-left: auto; padding: 0; }
 .action-modal-sections { display: grid; gap: 18px; }
 .action-group-box { display: grid; gap: 8px; }
@@ -438,7 +449,10 @@ dialog.manager-action-dialog { width: min(720px, calc(100vw - 32px)); padding: 0
 @media (max-width: 767px) {
   .action-modal-grid { grid-template-columns: minmax(0, 1fr); }
   .action-key { display: none; }
+  .action-modal-header { padding: 16px 20px 12px; }
 }
+/* Petunjuk tombol angka hanya berguna bila ada papan ketik */
+@media (pointer: coarse) { .action-modal-header p { display: none; } }
 
 /* ---------- Rel tablet ---------- */
 .tablet-rail { display: none; }
