@@ -291,8 +291,8 @@ export function RadialProgressRing({
   const offset = circumference - ((mounted ? safePct : 0) / 100) * circumference;
 
   return (
-    <div ref={motionRef} className="stat-radial-wrap" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="stat-radial-svg" aria-hidden="true">
+    <div ref={motionRef} className="stat-radial-wrap">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="stat-radial-svg" aria-hidden="true">
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -313,7 +313,6 @@ export function RadialProgressRing({
           strokeLinecap="round"
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
           className="stat-radial-circle"
-          
         />
       </svg>
       <span className="stat-radial-val">{percentage}%</span>
