@@ -11,11 +11,11 @@
   padding: 18px 0 6px;
 }
 .beranda-head h1 { display: flex; align-items: center; gap: 12px; }
+.home-heading-text { display: grid; justify-items: start; gap: 8px; }
 .home-date-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 6px;
   color: var(--ink-muted);
   font-size: 13px;
   font-weight: 600;
@@ -197,16 +197,18 @@
 .beranda-lipat > details > summary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
+  min-height: 32px;
   font-size: var(--fs-h2);
   font-weight: 700;
   list-style: none;
   cursor: pointer;
 }
 .beranda-lipat > details > summary::-webkit-details-marker { display: none; }
-.beranda-lipat > details > summary::after { content: '+'; color: var(--ink-subtle); font-size: 20px; font-weight: 400; }
+.beranda-lipat > details > summary::after { content: '+'; margin-left: auto; color: var(--ink-subtle); font-size: 20px; font-weight: 400; }
 .beranda-lipat > details[open] > summary::after { content: '–'; }
+/* Detail tertutup tetap punya slot isi kosong; tanpa jarak agar judul di tengah kartu */
+.beranda-lipat > details:not([open]) { gap: 0; }
 .home-routine-card { display: grid; gap: 10px; }
 .routine-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .routine-title-wrap { display: flex; align-items: center; gap: 8px; color: var(--brand-ink); }
@@ -219,6 +221,8 @@
 .routine-time { min-width: 44px; color: var(--brand-ink); font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .routine-text { flex: 1 1 auto; font-size: 13.5px; }
 .dash-analytics-row { display: grid; gap: 18px; }
+/* Tiap grafik dipisah garis dari judul lipatan dan grafik sebelumnya */
+.analytics-panel { display: grid; gap: 14px; padding-top: 16px; border-top: 1px solid var(--line); }
 .home-panel .section-head h2 { font-size: var(--fs-h3); }
 .routine-add-form { display: grid; gap: 8px; }
 .routine-add-inputs { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 8px; }

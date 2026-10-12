@@ -12,7 +12,7 @@
   --stat-tone-bg: var(--brand-soft);
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 6px;
+  gap: 8px;
   height: 100%;
   padding: 16px 18px;
   border: 1px solid var(--line);
@@ -65,28 +65,36 @@
 .week-metric-pill.peak-pill { background: var(--brand-soft); color: var(--brand-ink); }
 .week-filter-reset-chip { min-height: 28px; padding: 0 10px; border: 0; border-radius: var(--r-full); background: var(--brand-soft); color: var(--brand-ink); font: inherit; font-size: 12px; font-weight: 650; cursor: pointer; }
 .dash-bar-chart { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); align-items: end; gap: 8px; height: 170px; }
-.dash-bar-col {
+.ui-btn.dash-bar-col {
   display: grid;
   grid-template-rows: auto 1fr auto;
+  align-items: stretch;
+  justify-content: stretch;
+  justify-items: center;
   gap: 6px;
   height: 100%;
-  padding: 0;
+  min-height: 0;
+  padding: 6px 0 4px;
   border: 0;
+  border-radius: var(--r-md);
   background: transparent;
+  box-shadow: none;
   color: inherit;
   font: inherit;
   cursor: pointer;
 }
+.ui-btn.dash-bar-col:hover, .ui-btn.dash-bar-col[aria-pressed='true'] { background: var(--surface-2); }
 .dash-bar-count { font-size: 11.5px; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums; }
 .dash-bar-count.zero-value { color: var(--ink-subtle); }
-.dash-bar-track { position: relative; display: flex; align-items: flex-end; overflow: hidden; border-radius: 10px; background: var(--surface-3); }
-.dash-bar-fill { width: 100%; border-radius: 10px; background: linear-gradient(180deg, var(--brand-bright), var(--brand)); }
+.dash-bar-track { position: relative; display: flex; align-items: flex-end; width: min(28px, 70%); overflow: hidden; border-radius: 8px; background: var(--surface-3); }
+.dash-bar-fill { width: 100%; border-radius: 8px; background: linear-gradient(180deg, var(--brand-bright), var(--brand)); }
 .bar-today .dash-bar-track { box-shadow: inset 0 0 0 1.5px var(--wood-deep); }
 .bar-today .dash-bar-fill { background: linear-gradient(180deg, var(--wood), var(--wood-deep)); }
-.dash-bar-labels-wrap { display: grid; justify-items: center; gap: 2px; }
+.dash-bar-labels-wrap { position: relative; display: grid; justify-items: center; gap: 2px; }
 .dash-bar-label { color: var(--ink-muted); font-size: 11.5px; font-weight: 600; }
 .dash-bar-daynum { color: var(--ink-subtle); font-size: 11px; }
-.today-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--wood-deep); }
+/* Titik hari ini tidak menambah tinggi label agar semua batang sama tinggi */
+.today-badge-dot { position: absolute; bottom: -7px; left: 50%; width: 6px; height: 6px; border-radius: 50%; background: var(--wood-deep); transform: translateX(-50%); }
 .dash-chart-caption { color: var(--ink-muted); font-size: 12px; }
 
 /* Donat */
@@ -123,7 +131,7 @@
 }
 @media (max-width: 767px) {
   .ui-stats-grid { gap: 10px; }
-  .ui-stat-card { padding: 12px 14px; gap: 4px; }
+  .ui-stat-card { padding: 12px 14px; gap: 6px; }
   .ui-stat-icon-wrap, .stat-radial-wrap, .stat-radial-svg { width: 36px; height: 36px; }
   .ui-stat-value { font-size: 24px; }
 }
