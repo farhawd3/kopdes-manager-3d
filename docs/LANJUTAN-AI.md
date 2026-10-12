@@ -16,7 +16,7 @@
 ## Lanjutan
 
 1. Penilaian pemilik di mode demo; reset + seed cloud oleh pemilik.
-2. Penilaian pemilik atas sistem gaya baru (cabang `tampilan/sistem-gaya-baru`) sebelum digabung.
+2. Penilaian pemilik atas sistem gaya baru (sudah di `main` sejak 12 Oktober 2026); laporkan bagian yang belum serasi per halaman.
 3. Pemeriksaan perangkat fisik dan UAT cloud.
 
 Jangan menambahkan render idle ke dunia. Tidak ada migrasi, deploy, atau push tanpa permintaan pemilik.

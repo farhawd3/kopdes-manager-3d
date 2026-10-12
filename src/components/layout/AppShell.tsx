@@ -194,7 +194,7 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
     };
   }, [setDesktopSidebarHidden, router]);
   const name = String(workspace?.organization?.[0]?.data.manager || 'Manajer');
-  const current = navigation.find(([href]) => href === path)?.[1] || 'Beranda';
+  const current = navigation.find(([href]) => href === path)?.[1] || 'Ruang kerja';
   if (path === '/dunia-koperasi') return <>{children}</>;
   return (
     <div className={`manager-shell ${desktopSidebarHidden === 'true' ? 'sidebar-collapsed' : ''}`}>

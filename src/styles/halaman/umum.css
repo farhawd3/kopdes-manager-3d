@@ -100,7 +100,7 @@
 .radar { max-width: 220px; margin: 0 auto; }
 
 /* Layar masuk PIN: kantor diorama di pintu masuk */
-main.auth {
+.auth {
   display: grid;
   place-items: center;
   min-height: 100dvh;
@@ -110,15 +110,15 @@ main.auth {
     repeating-linear-gradient(153.43deg, transparent 0 46px, var(--lantai-garis) 46px 47px),
     var(--lantai-buku);
 }
-main.auth::after {
+.auth::after {
   content: '';
   position: fixed;
   inset: auto 0 0;
   height: 10px;
   background: var(--wood-deep);
 }
-main.auth > .card,
-main.auth > section.card {
+.auth > .card,
+.auth > section.card {
   display: grid;
   justify-items: center;
   gap: 10px;
@@ -128,12 +128,12 @@ main.auth > section.card {
   text-align: center;
   box-shadow: var(--shadow-lg), inset 0 -5px 0 color-mix(in srgb, var(--wood) 60%, transparent);
 }
-main.auth h1 { font-size: 24px; }
-main.auth p { color: var(--ink-muted); }
-main.auth form { display: grid; gap: 12px; width: 100%; margin-top: 8px; text-align: left; }
-main.auth label { display: grid; gap: 6px; font-size: var(--fs-meta); font-weight: 600; }
-main.auth label small { color: var(--ink-muted); font-weight: 500; }
-main.auth .ui-btn { width: 100%; min-height: 46px; }
+.auth h1 { font-size: 24px; }
+.auth p { color: var(--ink-muted); }
+.auth form { display: grid; gap: 12px; width: 100%; margin-top: 8px; text-align: left; }
+.auth label { display: grid; gap: 6px; font-size: var(--fs-meta); font-weight: 600; }
+.auth label small { color: var(--ink-muted); font-weight: 500; }
+.auth .ui-btn { width: 100%; min-height: 46px; }
 
 @media (max-width: 767px) {
   .guide-steps, .guide-books { grid-template-columns: minmax(0, 1fr); }
@@ -142,5 +142,5 @@ main.auth .ui-btn { width: 100%; min-height: 46px; }
 }
 
 /* Halaman tidak ditemukan di dalam kerangka: kartu saja, tanpa diorama layar masuk. */
-.manager-main main.auth { min-height: 50dvh; padding: 48px 0; background: none; }
-.manager-main main.auth::after { content: none; }
+.manager-main .auth { min-height: 50dvh; padding: 48px 0; background: none; }
+.manager-main .auth::after { content: none; }
