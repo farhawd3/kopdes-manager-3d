@@ -145,7 +145,7 @@ flowchart LR
 
 ```text
 src/
-├── app/                 # Rute, API, tema (tema.css), pratinjau /dev
+├── app/                 # Rute, API, pratinjau /dev
 ├── components/          # UI bersama: AppShell, tombol, modal, ikon dua nada
 ├── features/
 │   ├── dunia-3d/        # Dunia Koperasi 3D dan kartu monitoring

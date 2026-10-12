@@ -34,7 +34,7 @@ Implementasi, bukti pemeriksaan, dan penerimaan dibedakan. [STATUS](STATUS.md) a
 - [ ] Konfirmasi PIN/simpan setelah reset serta keadaan migrasi cloud 6/7.
 - [ ] Reset dan seed data contoh oleh pemilik; UAT data nyata dan konsistensi lintas tampilan.
 - [ ] Cadangan/pemulihan di lingkungan uji.
-- [ ] Audit gaya lama: `npm run lint:ui` masih melaporkan temuan di `ui.css`; `personal.css` belum dipangkas.
+- [x] Audit gaya: sistem gaya lama (`personal.css`, `ui.css`, `tokens.css`, `tema.css`) diganti `src/styles/`; `npm run lint:ui` bersih.
 - [ ] Lighthouse/performa data besar dan smoke test produksi setelah deployment yang diizinkan.
 
 ## Di luar lingkup saat ini

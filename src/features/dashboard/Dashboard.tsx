@@ -203,17 +203,14 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
       {/* ── Kepala: tanggal, judul, filter proyek, aksi ─────────── */}
       <header className="home-heading beranda-head">
         <div className="home-heading-text">
-          <div className="home-eyebrow-row">
-            <span className="home-eyebrow">Ruang kerja</span>
-            <span className="home-date-chip">
-              <CalendarDays size={13} />
-              <span>{formatDate(now)}</span>
-            </span>
-          </div>
           <h1>
             <Ikon3D kind="rumah" size={30} />
             Ringkasan pekerjaan
           </h1>
+          <p className="home-date-chip">
+            <CalendarDays size={14} aria-hidden />
+            <span>{formatDate(now)}</span>
+          </p>
         </div>
         <div className="home-heading-actions">
           <label className="beranda-proyek">

@@ -44,7 +44,7 @@ Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya d
 - Periksa 360, 768, 1024, 1440 px. Halaman operasional memakai navigasi bawah/rel/sidebar; Dunia Koperasi memakai bilah dan panel sendiri.
 - Area sentuh minimal 44 px, fokus keyboard, label form, status memakai teks selain warna.
 - Tabel/Gantt bergulir dalam kontainer atau berubah menjadi kartu di area sempit; hormati reduced-motion dan safe area.
-- Tema web dan dunia satu keluarga: kanvas lavender muda, kartu putih, aksen biru `#2F5BEA`, huruf Inter. Lapisan akhir `src/app/tema.css` (token dan pola bersama); dunia di `src/features/dunia-3d/monitoring.css`. Warna status hanya token `--pastel-*`. Mode gelap tersedia untuk web; dunia selalu terang.
+- Tema web dan dunia satu keluarga: kanvas lavender muda, kartu putih, aksen biru `#2F5BEA`, huruf Inter. Sistem gaya web di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); warna mentah hanya di `token.css`, tanpa `!important` (`npm run lint:ui`). Dunia di `src/features/dunia-3d/monitoring.css`. Warna status hanya token `--ok/--late/--warn` (alias `--pastel-*`). Mode gelap tersedia untuk web; dunia selalu terang.
 - Hindari angka operasional palsu, tombol dekoratif, dan slogan. Buku kas hanya uang masuk/keluar tercatat, bukan saldo atau laba.
 
 ## Proses

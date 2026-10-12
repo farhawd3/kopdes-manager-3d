@@ -11,7 +11,7 @@ Penghematan hanya pada cara kerja dan laporan; pemeriksaan wajib di AGENTS tetap
 - Bila `graphify-out/graph.json` ada, orientasi dulu dengan `graphify query "<pertanyaan>"`, `graphify explain "<nama>"`, atau `graphify path "A" "B"`; perbarui dengan `graphify update .` setelah mengubah kode.
 - Mulai dari `docs/LANJUTAN-AI.md` dan bagian relevan `docs/DUNIA-KOPERASI.md`; jangan membaca semua MD.
 - Pakai `grep -n` untuk menemukan baris, lalu baca potongan kecil (`sed -n a,bp`). Jangan membaca ulang berkas yang baru diedit.
-- Jangan membuka berkas besar (`personal.css`, `tema.css`, `Records.tsx`, `Operations.tsx`, `MonitoringDashboard.tsx`, `monitoring-scene.ts`) utuh; grep lalu baca potongan.
+- Jangan membuka berkas besar (`src/styles/halaman/catatan.css`, `Records.tsx`, `Operations.tsx`, `MonitoringDashboard.tsx`, `monitoring-scene.ts`) utuh; grep lalu baca potongan.
 - Abaikan `not-use/` dan `graphify-out/` kecuali diminta.
 
 ## Mengedit

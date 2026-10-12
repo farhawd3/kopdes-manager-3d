@@ -1,0 +1,641 @@
+/*
+  Halaman daftar catatan (Records): kepala, angka, pilihan tampilan, filter, tabel tugas,
+  kartu catatan, papan, kalender, linimasa kegiatan, arsip selesai.
+*/
+
+.workspace-page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; container: halaman / inline-size; }
+.domain-records { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+.workspace-page > * { min-width: 0; }
+
+/* ---------- Kepala daftar ---------- */
+.records-head { align-items: flex-end; padding: 18px 0 4px; }
+.records-head h2,
+.judul-halaman {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink-heading);
+  font-size: var(--fs-title);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+.records-head > div > p { max-width: 62ch; margin-top: 6px; color: var(--ink-muted); }
+.records-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+/* Ringkasan status sebagai pil ganda ala label dunia: angka biru · keterangan */
+.records-stats span {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm), 0 0 0 1px var(--line);
+  color: var(--ink-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.records-stats span strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  padding: 4px 8px;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+.records-stats span:not(:first-child) strong { background: var(--brand-soft); color: var(--brand-ink); }
+.records-stats span > :not(strong),
+.records-stats span { padding-right: 9px; }
+.records-stats span strong { margin-right: 7px; }
+
+/* ---------- Angka ringkasan (kegiatan dan buku) ---------- */
+.recording-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.metric-card {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.metric-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.metric-label { color: var(--ink-muted); font-size: 12.5px; font-weight: 600; }
+.metric-icon-wrap { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--brand-soft); color: var(--brand); }
+.metric-value { color: var(--ink-heading); font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; white-space: nowrap; }
+.metric-sub { color: var(--ink-muted); font-size: 12px; }
+.metric-income .metric-value { color: var(--ok); }
+.metric-expense .metric-value { color: var(--late); }
+
+/* ---------- Pilihan tampilan ---------- */
+.database-views-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.database-views { max-width: 100%; }
+.database-views > span:not([class]) { display: inline-flex; align-items: center; padding: 0 10px; color: var(--ink-muted); font-size: 12.5px; white-space: nowrap; }
+.view-extra-actions { position: relative; }
+.view-extra-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: var(--r-md);
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 650;
+  list-style: none;
+  cursor: pointer;
+}
+.view-extra-summary::-webkit-details-marker { display: none; }
+.view-extra-summary:hover { background: var(--surface); color: var(--ink); }
+.view-extra-menu {
+  position: absolute;
+  z-index: 20;
+  right: 0;
+  top: calc(100% + 6px);
+  display: grid;
+  gap: 4px;
+  min-width: 220px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+.view-extra-menu .ui-btn { justify-content: flex-start; width: 100%; border: 0; box-shadow: none; }
+.active-sprints-row { display: grid; gap: 12px; }
+
+/* ---------- Tambah cepat ---------- */
+.today-quick-add-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.quick-add-input-wrap { display: flex; flex: 1 1 260px; align-items: center; gap: 10px; min-width: 0; color: var(--brand); }
+.quick-add-input-wrap input:is(*, .ui-input, :hover, :focus) { min-height: 40px; padding-inline: 0; border: 0; background: transparent; box-shadow: none; }
+.quick-add-actions { display: flex; gap: 6px; }
+
+/* ---------- Filter ---------- */
+.mobile-filter-toggle { display: none; }
+.filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) repeat(auto-fit, minmax(150px, 1fr));
+  align-items: end;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+}
+.filters > label { display: grid; gap: 6px; min-width: 0; }
+.filter-actions-col { display: flex; align-items: flex-end; }
+.btn-filter-reset.ui-btn { width: 100%; }
+
+/* ---------- Tabel tugas dan kegiatan ---------- */
+.task-table-wrap {
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.task-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.task-table thead th {
+  position: sticky;
+  top: 0;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.task-table tbody td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.task-table tbody tr:last-child td { border-bottom: 0; }
+.task-table tbody tr { transition: background var(--dur-fast); }
+.task-table tbody tr:hover { background: var(--surface-2); }
+.task-table tr.row-completed .task-title-text { color: var(--ink-subtle); text-decoration: line-through; }
+.col-task-action, .col-journal-action { width: 1%; text-align: right; white-space: nowrap; }
+.task-title-cell { min-width: 220px; }
+.task-title-btn,
+.ui-btn.task-title-btn {
+  display: grid;
+  justify-items: start;
+  gap: 3px;
+  justify-content: start;
+  width: 100%;
+  min-height: 40px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  white-space: normal;
+  box-shadow: none;
+  cursor: pointer;
+}
+.task-title-btn:hover .task-title-text { color: var(--brand-ink); }
+.task-title-primary { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.task-title-text { font-weight: 650; }
+.task-title-sub { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--ink-muted); font-size: 12px; }
+.task-code-tag,
+.journal-code-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--surface-3);
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.task-project-name.has-project { color: var(--ink-muted); }
+.task-status-field { min-width: 140px; }
+.task-status-custom-select .ui-select-trigger { min-height: 34px; border-radius: 10px; font-size: 13px; font-weight: 650; }
+.task-status-custom-select.status-proses .ui-select-trigger { border-color: var(--brand-soft-border); background: var(--brand-soft); color: var(--brand-ink); }
+.task-status-custom-select.status-selesai .ui-select-trigger { border-color: var(--ok-line); background: var(--ok-bg); color: var(--ok); }
+.task-status-custom-select.status-dibatalkan .ui-select-trigger { color: var(--ink-subtle); }
+
+.priority-badge,
+.task-priority-tag,
+.card-priority-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: var(--r-full);
+  background: var(--neutral-bg);
+  color: var(--ink-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+:is(.priority-badge, .task-priority-tag, .card-priority-pill):is(.priority-tinggi) { background: var(--warn-bg); color: var(--warn); }
+:is(.priority-badge, .task-priority-tag, .card-priority-pill):is(.priority-mendesak) { background: var(--late-bg); color: var(--late); }
+.task-due-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: var(--r-sm);
+  background: var(--surface-3);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.task-due-chip.task-due-late { background: var(--late-bg); color: var(--late); }
+.task-due-chip.task-due-today { background: var(--brand-soft); color: var(--brand-ink); }
+.task-due-chip.task-due-done { background: var(--ok-bg); color: var(--ok); }
+.task-due-empty, .task-assignee-empty, .task-done-label { color: var(--ink-subtle); font-size: 12.5px; }
+.task-assignee-pill { color: var(--ink); font-weight: 550; white-space: nowrap; }
+.table-btn-done.ui-btn,
+.table-btn-reopen.ui-btn { min-height: 34px; padding: 0 12px; font-size: 12.5px; }
+.table-btn-done.ui-btn:hover { border-color: var(--ok-line); background: var(--ok-bg); color: var(--ok); }
+
+/* Kegiatan */
+.journal-th-content { display: inline-flex; align-items: center; gap: 6px; }
+.journal-date-badge { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.journal-today-indicator { padding: 1px 6px; border-radius: var(--r-full); background: var(--brand); color: var(--on-brand); font-size: 10.5px; font-weight: 750; }
+.journal-main-cell { display: grid; gap: 3px; min-width: 240px; }
+.ui-btn.journal-title-interactive { justify-content: flex-start; gap: 8px; min-height: 30px; padding: 0; border: 0; background: transparent; box-shadow: none; text-align: left; white-space: normal; }
+.journal-title-interactive:hover .journal-title-text { color: var(--brand-ink); }
+.journal-notes-preview { color: var(--ink-muted); font-size: 12.5px; }
+.journal-relation-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.journal-action-open { display: inline-flex; align-items: center; gap: 4px; min-height: 34px; padding: 0 10px; border: 0; border-radius: var(--r-sm); background: transparent; color: var(--brand-ink); font: inherit; font-weight: 650; cursor: pointer; }
+.journal-action-open:hover { background: var(--brand-soft); }
+
+/* Cip relasi */
+.relation-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 260px;
+  min-height: 26px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.relation-chip > span { overflow: hidden; text-overflow: ellipsis; }
+.relation-chip.has-link:hover { background: var(--brand-soft); color: var(--brand-ink); text-decoration: none; }
+.relation-chip.chip-task { background: var(--ok-bg); color: var(--ok); }
+.relation-chip.chip-add-task { background: transparent; box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--ink-muted); cursor: pointer; }
+.relation-chip.chip-meeting-join { background: var(--brand); color: var(--on-brand); }
+.task-status-mini { padding: 0 5px; border-radius: 5px; background: rgba(255, 255, 255, 0.6); font-size: 10.5px; font-weight: 700; }
+
+/* ---------- Kartu catatan ---------- */
+.records {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-items: stretch;
+  gap: 14px;
+}
+.record.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  transition: box-shadow var(--dur), transform var(--dur) var(--ease-out);
+}
+.record.card:hover { box-shadow: var(--shadow-md); }
+.record.card > .section-head { flex-wrap: nowrap; align-items: flex-start; }
+.record.card > .section-head h3 { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: 15.5px; }
+.record-title-text { overflow-wrap: anywhere; }
+.record-domain-icon { flex-shrink: 0; }
+.record-avatar {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--brand-bright), var(--brand));
+  color: var(--on-brand);
+  font-size: 13px;
+  font-weight: 750;
+}
+.record-meta { display: flex; flex-wrap: wrap; gap: 6px; color: var(--ink-muted); font-size: 12.5px; }
+.record-meta:empty { display: none; }
+.record-meta > span,
+.record-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.record-meta > span.late { background: var(--late-bg); box-shadow: none; color: var(--late); }
+.record-text { color: var(--ink-muted); font-size: 13px; line-height: 1.55; }
+.record-text strong { color: var(--ink); }
+.record.card > .actions {
+  flex-wrap: nowrap;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.record.card > .actions > .ui-btn:first-child { --btn-bg: var(--brand-soft); --btn-fg: var(--brand-ink); --btn-line: var(--brand-soft-border); box-shadow: none; }
+.record.card > .actions > :is(.ui-btn, a) { min-height: 36px; padding: 0 12px; font-size: 13px; }
+.record-options { position: relative; margin-left: auto; }
+.record-options > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: var(--r-md);
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+.record-options > summary::-webkit-details-marker { display: none; }
+/* Opsi lainnya sebagai tombol ikon agar aksi kartu muat satu baris */
+.record-options > summary > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.record-options > summary > svg:last-child { display: none; }
+.record-options > summary { min-width: 36px; justify-content: center; }
+.record-options > summary:hover { background: var(--surface-3); color: var(--ink); }
+.record-options[open] > .actions {
+  position: absolute;
+  z-index: 20;
+  right: 0;
+  bottom: calc(100% + 6px);
+  display: grid;
+  gap: 4px;
+  min-width: 220px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+.record-options[open] > .actions .ui-btn { justify-content: flex-start; width: 100%; border: 0; box-shadow: none; }
+.inline-label { display: grid; gap: 4px; padding: 4px 6px; color: var(--ink-muted); font-size: 12px; }
+.subtask-list { display: grid; gap: 4px; }
+.subtask-list .check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+
+/* Pengiriman, rapat, dokumen, risiko, mitra di kartu */
+.record-meta > .delivery-dir-tag { box-shadow: none; }
+.record-meta > .delivery-dir-tag.is-in { background: var(--ok-bg); color: var(--ok); }
+.record-meta > .delivery-dir-tag.is-out { background: var(--warn-bg); color: var(--warn); }
+.meeting-mode-tag,
+.stakeholder-badge { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: var(--r-full); background: var(--brand-soft); color: var(--brand-ink); font-size: 12px; font-weight: 650; white-space: nowrap; }
+.meeting-card-details { display: grid; gap: 8px; }
+.meeting-detail-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; color: var(--ink-muted); font-size: 13px; }
+.meeting-detail-row svg { align-self: center; }
+.meeting-detail-row strong { color: var(--ink); font-weight: 600; }
+.meeting-section-box { display: grid; gap: 4px; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface-2); font-size: 13px; }
+.meeting-section-box > strong { color: var(--ink); font-size: 12.5px; }
+.meeting-decisions-box { background: var(--ok-bg); }
+.meeting-decisions-head { display: flex; align-items: center; gap: 6px; color: var(--ok); font-weight: 700; }
+.meeting-decisions-list { display: grid; gap: 6px; margin: 4px 0 0; padding: 0; list-style: none; }
+.decision-title { font-weight: 650; }
+.decision-reason { color: var(--ink-muted); font-size: 12px; }
+.meeting-action-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.meeting-action-row .button { min-height: 34px; font-size: 12.5px; }
+.meeting-action-row .btn-join-meeting { --btn-bg: var(--brand); --btn-fg: var(--on-brand); --btn-line: var(--brand); }
+.journal-join-link { display: inline-flex; align-items: center; gap: 4px; color: var(--brand-ink); font-weight: 650; }
+
+.document-card-details, .doc-dates-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; color: var(--ink-muted); font-size: 12.5px; }
+.doc-expiry { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+.doc-expiry.is-near-expiry { color: var(--warn); }
+.doc-expiry.is-expired { color: var(--late); }
+
+.risk-card-details { display: grid; gap: 6px; }
+.risk-level-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--ink-muted); font-size: 12.5px; }
+.risk-level-badge { padding: 2px 9px; border-radius: var(--r-full); font-size: 11.5px; font-weight: 700; }
+.risk-level-badge.risk-critical { background: var(--late-bg); color: var(--late); }
+.risk-level-badge.risk-warning { background: var(--warn-bg); color: var(--warn); }
+.risk-level-badge.risk-safe { background: var(--ok-bg); color: var(--ok); }
+
+.stakeholder-card-body { display: grid; gap: 8px; }
+.stakeholder-contact-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.contact-text { display: inline-flex; align-items: center; gap: 6px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.contact-icon { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--surface-3); color: var(--ink-muted); }
+.contact-actions { display: flex; gap: 6px; }
+.contact-actions .button { min-height: 36px; padding: 0 12px; font-size: 12.5px; }
+@media (pointer: coarse) { .contact-actions .button { min-height: 44px; } }
+.contact-actions .wa-btn { --btn-bg: var(--ok-bg); --btn-fg: var(--ok); --btn-line: var(--ok-line); box-shadow: none; }
+.stakeholder-comm-status { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; color: var(--ink-muted); font-size: 12px; }
+.comm-date.late-warning { color: var(--late); font-weight: 600; }
+.stakeholder-followup-callout { padding: 10px 12px; border-radius: var(--r-md); background: var(--warn-bg); color: var(--warn); font-size: 13px; }
+.stakeholder-followup-callout strong { color: inherit; }
+
+/* Kartu unit gerai */
+.unit-record .ui-progress { margin-top: 2px; }
+
+/* Rapat dikelompokkan */
+.meetings-container { display: grid; gap: 22px; }
+.meeting-section-group { display: grid; gap: 12px; }
+.meeting-section-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.meeting-section-title-wrap { display: flex; align-items: center; gap: 8px; color: var(--brand); }
+.meeting-section-title-wrap h3 { color: var(--ink-heading); font-size: var(--fs-h2); }
+.past-meetings { opacity: 0.86; }
+
+/* ---------- Papan kegiatan (scrum) ---------- */
+.journal-board-container { min-width: 0; }
+.scrum-board-columns { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(280px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 6px; }
+.scrum-column {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--lantai) 60%, var(--surface-2));
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.scrum-column.drag-over { box-shadow: inset 0 0 0 2px var(--brand); background: var(--brand-soft); }
+.scrum-column-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 4px; }
+.scrum-col-title-group { display: flex; align-items: center; gap: 8px; }
+.scrum-col-indicator { width: 10px; height: 10px; border-radius: 50%; background: var(--brand); }
+.scrum-col-title-text { display: grid; line-height: 1.25; }
+.column-title { font-size: 14px; }
+.column-subtitle { color: var(--ink-muted); font-size: 11.5px; }
+.scrum-col-header-actions { display: flex; align-items: center; gap: 6px; }
+.scrum-count-pill { min-width: 24px; padding: 2px 8px; border-radius: var(--r-full); background: var(--surface); color: var(--ink-muted); font-size: 12px; font-weight: 700; text-align: center; }
+.scrum-col-add-btn.ui-btn { width: 30px; min-height: 30px; padding: 0; }
+.scrum-cards-list { display: grid; gap: 8px; }
+.scrum-empty-column-placeholder { padding: 18px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-md); color: var(--ink-muted); font-size: 12.5px; text-align: center; }
+.scrum-task-card {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: box-shadow var(--dur), transform var(--dur) var(--ease-out);
+}
+.scrum-task-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.ui-card-move { position: absolute; top: 8px; right: 8px; }
+.ui-drag-handle { display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 6px; background: transparent; color: var(--ink-subtle); cursor: grab; }
+.card-top-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-right: 28px; }
+.card-task-title { font-size: 14px; font-weight: 650; }
+.card-description-snippet { color: var(--ink-muted); font-size: 12.5px; }
+.card-bottom-section, .card-assignee-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ---------- Linimasa (arsip selesai dan kegiatan) ---------- */
+.completed-github-timeline, .journal-timeline-container { position: relative; display: grid; gap: 18px; }
+.timeline-group-section { display: grid; gap: 10px; }
+.timeline-group-header { display: flex; align-items: center; gap: 10px; }
+.timeline-group-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--r-full); background: var(--brand-soft); color: var(--brand-ink); font-size: 12.5px; font-weight: 700; }
+.timeline-group-sub { color: var(--ink-muted); font-size: 12.5px; }
+.timeline-group-divider-line { flex: 1 1 auto; height: 1px; background: var(--line); }
+.timeline-group-stream, .journal-timeline-stream { position: relative; display: grid; gap: 10px; padding-left: 26px; }
+.timeline-vertical-spine { position: absolute; top: 6px; bottom: 6px; left: 8px; width: 2px; border-radius: 2px; background: var(--line); }
+.timeline-task-row { position: relative; }
+.timeline-node { position: absolute; top: 16px; left: -24px; width: 14px; height: 14px; border: 3px solid var(--surface); border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 1px var(--line); }
+.timeline-node-journal { background: var(--brand); }
+.timeline-task-bubble { display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-sm); }
+.timeline-bubble-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.timeline-title-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.timeline-task-title-btn { padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 650; text-align: left; cursor: pointer; }
+.timeline-task-title-btn:hover { color: var(--brand-ink); }
+.timeline-bubble-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.meta-chip { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 8px; border-radius: var(--r-sm); background: var(--surface-2); color: var(--ink-muted); font-size: 12px; font-weight: 600; }
+.timeline-notes-snippet { color: var(--ink-muted); font-size: 12.5px; }
+.journal-join-chip { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 8px; border-radius: var(--r-sm); background: var(--brand); color: var(--on-brand); font-size: 12px; font-weight: 650; }
+
+/* ---------- Kartu kalender ---------- */
+.calendar-task-card { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-sm); }
+.calendar-task-card.is-completed { opacity: 0.75; }
+.cal-card-top-row, .cal-card-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.cal-card-top-left, .cal-card-top-right, .cal-card-footer-left, .cal-card-footer-right { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.task-round-check, .subtask-round-check {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: transparent;
+  cursor: pointer;
+}
+.task-round-check.checked, .subtask-round-check.checked { border-color: var(--ok); background: var(--ok); color: var(--on-brand); }
+.card-task-code { color: var(--ink-subtle); font-size: 11px; font-weight: 700; }
+.card-project-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-muted); }
+.card-status-badge { padding: 2px 8px; border-radius: var(--r-full); background: var(--neutral-bg); color: var(--ink-muted); font-size: 11.5px; font-weight: 700; text-transform: capitalize; }
+.card-status-badge.status-proses { background: var(--brand-soft); color: var(--brand-ink); }
+.card-status-badge.status-selesai { background: var(--ok-bg); color: var(--ok); }
+.cal-card-title { padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 14.5px; font-weight: 700; text-align: left; cursor: pointer; }
+.cal-card-title.is-done-text { color: var(--ink-subtle); text-decoration: line-through; }
+.cal-card-desc { margin-top: 2px; color: var(--ink-muted); font-size: 12.5px; }
+.cal-card-subtasks-section { display: grid; gap: 6px; padding: 10px; border-radius: var(--r-md); background: var(--surface-2); }
+.cal-subtasks-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 650; color: var(--ink-muted); }
+.cal-subtasks-label { display: inline-flex; align-items: center; gap: 6px; }
+.subtask-mini-track { width: 80px; height: 5px; overflow: hidden; border-radius: 4px; background: var(--line); }
+.subtask-mini-fill { height: 100%; background: var(--ok); }
+.cal-subtasks-list { display: grid; gap: 4px; }
+.cal-subtask-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.cal-subtask-item.is-done .cal-subtask-title { color: var(--ink-subtle); text-decoration: line-through; }
+.cal-assignee-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; }
+.cal-assignee-avatar { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--brand-soft); color: var(--brand-ink); font-size: 11px; font-weight: 750; }
+.cal-due-pill { padding: 2px 8px; border-radius: var(--r-sm); background: var(--surface-3); color: var(--ink-muted); font-size: 12px; font-weight: 650; }
+.cal-due-pill.is-late { background: var(--late-bg); color: var(--late); }
+.cal-due-pill.is-today { background: var(--brand-soft); color: var(--brand-ink); }
+.cal-btn-action.ui-btn { min-height: 32px; padding: 0 10px; font-size: 12.5px; }
+.cal-btn-done.ui-btn { --btn-bg: var(--ok-bg); --btn-fg: var(--ok); --btn-line: var(--ok-line); box-shadow: none; }
+.cal-more-options { position: relative; }
+.cal-more-summary { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-sm); list-style: none; cursor: pointer; }
+.cal-more-summary::-webkit-details-marker { display: none; }
+.cal-more-summary:hover { background: var(--surface-3); }
+.cal-more-menu { position: absolute; z-index: 20; right: 0; top: calc(100% + 4px); display: grid; gap: 4px; min-width: 200px; padding: 6px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-md); }
+.cal-more-menu .ui-btn { justify-content: flex-start; width: 100%; border: 0; box-shadow: none; }
+.cal-more-divider { height: 1px; margin: 2px 0; background: var(--line); }
+
+/* ---------- Arsip tugas selesai ---------- */
+.completed-archive-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow); }
+.completed-archive-title-wrap { display: flex; align-items: center; gap: 12px; }
+.completed-archive-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--ok-bg); color: var(--ok); }
+.completed-archive-title-wrap p { color: var(--ink-muted); font-size: 13px; }
+.completed-archive-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.completed-stat-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: var(--r-md); background: var(--surface-2); font-weight: 700; }
+.completed-stat-badge .stat-label { color: var(--ink-muted); font-size: 12px; font-weight: 600; }
+
+/* ---------- Dialog sprint/catatan ---------- */
+.sprint-modal-card { display: grid; gap: 14px; }
+.sprint-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.sprint-modal-head p, .dialog-sub { color: var(--ink-muted); font-size: 13px; }
+.sprint-icon-pill { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 13px; background: var(--brand-soft); color: var(--brand); }
+.close-btn.ui-btn { width: 38px; min-height: 38px; padding: 0; }
+
+/* ---------- Area sempit: tabel menjadi kartu ---------- */
+@container halaman (max-width: 900px) {
+  .task-table-wrap { overflow: visible; border: 0; background: transparent; box-shadow: none; }
+  .task-table { display: block; }
+  .task-table thead { display: none; }
+  .task-table tbody { display: grid; gap: 8px; }
+  .task-table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .task-table tbody tr:hover { background: var(--surface); }
+  .task-table tbody td { display: block; min-width: 0; padding: 0; border: 0; }
+  .task-table tbody td:is(.col-task-title, .col-journal-main) { flex: 1 1 100%; }
+  .task-table tbody td.col-task-assignee { flex: 1 1 calc(100% - 130px); }
+  .task-table tbody td:is(.col-task-action, .col-journal-action) { width: auto; margin-left: auto; }
+  .task-title-cell, .journal-main-cell { min-width: 0; }
+  .task-status-field { min-width: 0; }
+}
+@container halaman (min-width: 560px) and (max-width: 900px) {
+  .task-table tbody { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 767px) {
+  .records-head { padding-top: 10px; }
+  .records-head > .ui-btn, .records-head > .actions { width: 100%; }
+  .mobile-filter-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .filters { display: none; grid-template-columns: minmax(0, 1fr); }
+  .filters.filters-expanded { display: grid; }
+  .records { grid-template-columns: minmax(0, 1fr); }
+  .record.card { padding: 16px; }
+  .record-options > summary > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .record-options > summary > svg:last-child { display: none; }
+  .recording-metrics { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .metric-card { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 10px 14px; }
+  .metric-icon-wrap { display: none; }
+  .metric-value { grid-column: 2; grid-row: 1; font-size: 18px; }
+  .metric-sub { grid-column: 1 / -1; }
+}

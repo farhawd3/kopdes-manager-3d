@@ -55,4 +55,4 @@ Migrasi baru ditambahkan berurutan di `supabase/migrations/`, lalu SQL install/r
 
 ## Kerja paralel
 
-Satu orang atau AI = satu cabang dan satu checkout. Bagi kepemilikan berkas; `tema.css`, `personal.css`, `AppShell.tsx`, `Records.tsx`, dan `MonitoringDashboard.tsx` mudah berbenturan. Sinkronkan cabang dengan `main` terbaru sebelum menguji ulang. Jangan force-push ke `main` dan jangan menulis ulang riwayat yang sudah dibagikan.
+Satu orang atau AI = satu cabang dan satu checkout. Bagi kepemilikan berkas; `src/styles/token.css`, `src/styles/kerangka.css`, `AppShell.tsx`, `Records.tsx`, dan `MonitoringDashboard.tsx` mudah berbenturan. Sinkronkan cabang dengan `main` terbaru sebelum menguji ulang. Jangan force-push ke `main` dan jangan menulis ulang riwayat yang sudah dibagikan.

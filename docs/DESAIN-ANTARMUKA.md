@@ -7,7 +7,7 @@ Arahan 10 Oktober 2026: dunia meniru panel logistik referensi, dan **seluruh web
 | Permukaan | Gaya dan sumber |
 |---|---|
 | Dunia Koperasi `/dunia-koperasi` | Diorama lembut, kartu mengambang, menu lokasi/cuaca. `src/features/dunia-3d/monitoring.css`. |
-| Halaman operasional | Satu tema biru #2F5BEA, kanvas lavender sangat muda, kartu putih 16 px, huruf Inter, ikon biru kilap; terang/gelap. Lapisan `src/app/tema.css` dimuat terakhir di atas globals/personal/tokens/ui. |
+| Halaman operasional | Bahasa dunia 3D: dinding biru-lavender, lantai ruang, aksen kayu, biru #2F5BEA, Inter; terang/gelap. Sistem gaya `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`). |
 
 Pilihan palet lama tidak dipakai lagi: semua palet tersimpan tampil dengan tema biru yang sama, dan Pengaturan hanya memilih terang/gelap/sistem. Status tetap memakai warna semantik (hijau aman, kuning peringatan, merah terlambat) plus teks.
 
@@ -16,6 +16,13 @@ Pilihan palet lama tidak dipakai lagi: semua palet tersimpan tampil dengan tema 
 Seluruh palet, komposisi kartu, scene, karakter, waktu, kendaraan dan rencana upgrade berada di [DUNIA-KOPERASI](DUNIA-KOPERASI.md). Dokumen ini tidak menyimpan salinan spesifikasi dunia. Jika ada konflik lama, ikuti kontrak dunia dan arahan pemilik terbaru.
 
 ## Halaman operasional
+
+- **Sistem gaya baru (12 Oktober 2026)**: web dibangun ulang mengikuti bahasa Dunia Koperasi, bukan lagi menimpa gaya lama.
+  - Menu samping = dinding ruang (gradien biru-lavender); item aktif = kartu putih seperti pintu.
+  - Setiap kelompok menu punya lantai sendiri: `data-ruang` pada `<main>` (kerja, kegiatan, buku, gerai, koordinasi, pengaturan) memberi pita lantai berpapan isometrik di atas halaman dan nama ruang tercat samar (5%).
+  - Kayu (`--wood`) hanya untuk kartu istimewa: rapat, layar PIN, lembar laporan, penanda hari ini dan milestone.
+  - Ringkasan angka berupa pil ganda "angka · label"; ponsel memakai dok mengambang.
+  - Token di `token.css` (permukaan, dinding, lantai, kayu, status, radius, bayangan, gerak); halaman hanya memakai token. Tambah token bila butuh warna baru.
 
 - **Pola tata letak (11 Oktober 2026)**: tabel = judul teks rata kiri dengan ikon/avatar di kiri, kolom selebar isi, aksi satu baris (ikon bila lebih dari dua); kartu daftar = tinggi rata per baris, aksi di dasar kartu dipisah garis tipis, informasi tidak diulang antara cip dan badan kartu; tabel Tugas/Kegiatan tampil sebagai kartu bila area halaman < 900 px (container query, bukan lebar layar, karena sidebar), dan Buku koperasi memakai tampilan kartu di layar < 1280 px. Warna hanya untuk status (lencana lembut), bukan garis aksen kartu. Satu set warna: biru tema untuk aksen dan kategori; token `--pastel-emerald/rose/amber-*` hanya untuk status selesai/terlambat/perlu perhatian; abu untuk netral. Judul halaman = ikon halaman + 22 px tebal; kode dan jam memakai Inter angka rata.
 
@@ -29,7 +36,7 @@ Seluruh palet, komposisi kartu, scene, karakter, waktu, kendaraan dan rencana up
 - Dialog muat di layar dan bergulir di dalam; di ponsel menjadi lembar bawah selebar layar. Catatan unit, staf, barang, pengiriman, tugas dan rapat punya tombol "Lihat di dunia".
 - Menu memakai bahasa Indonesia langsung dan kapitalisasi kalimat; judul/deskripsi panjang membungkus. Dunia tersedia di bilah atas dan dock ponsel; Tambah membuka pilihan pencatatan yang sama di semua ukuran.
 - Ikon 3D adalah SVG dari kode, tanpa memuat WebGL.
-- Token aktif adalah sumber style; perubahan tema dilakukan di `tema.css`. Urutan impor ada di src/app/layout.tsx.
+- Token di `src/styles/token.css` adalah sumber warna; urutan impor ada di `src/app/layout.tsx`. `npm run lint:ui` menolak warna hex dan `!important` di luar token, pengaman reduced-motion, dan lembar cetak.
 - Beranda mengutamakan tindakan, proyek dan kegiatan; daftar awal dibatasi tiga catatan, grafik/rutinitas opsional.
 - Riwayat proyek adalah tab `/proyek?tab=riwayat`; alias `/riwayat-proyek` mengalihkan ke tab, tanpa menu riwayat sidebar terpisah.
 - Judul lebih utama dari kode; metadata dan aksi terpisah, label panjang membungkus. Tidak ada capaian tiruan, slogan atau tim palsu.

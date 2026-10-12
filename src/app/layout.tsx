@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import '@fontsource-variable/inter';
-import '@fontsource-variable/plus-jakarta-sans';
 import './globals.css';
-import './personal.css';
-import './tokens.css';
-import './ui.css';
-import './tema.css';
+import '../styles/token.css';
+import '../styles/dasar.css';
+import '../styles/komponen.css';
+import '../styles/kerangka.css';
+import '../styles/halaman.css';
 export const metadata: Metadata = {
   title: 'Dunia Koperasi · Ruang kerja',
   description: 'Ruang kerja pribadi manajer koperasi: rencana, koordinasi, kesiapan, dan laporan.',

@@ -101,7 +101,7 @@ kopdes-manager-3d/
 ├── scripts/                   # Pembuat SQL install/reset/seed, mode demo, audit
 ├── supabase/                  # Migrasi berurutan, SQL install/reset, seed data contoh
 ├── src/
-│   ├── app/                   # App Router: rute, API, tema (tema.css), pratinjau /dev
+│   ├── app/                   # App Router: rute, API, pratinjau /dev
 │   ├── components/            # UI bersama: tombol, modal, ikon dua nada, AppShell
 │   ├── features/
 │   │   ├── dunia-3d/          # Dunia Koperasi 3D (Three.js) dan kartu monitoring

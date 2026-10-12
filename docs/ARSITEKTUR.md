@@ -85,7 +85,7 @@ Tampilan daftar memakai tabel yang bergulir di dalam kontainer; papan dan kalend
 - Rentang render maksimal 366 hari; periode dapat digeser tanpa membatasi durasi proyek. Tugas di luar rentang tidak ditampilkan sebagai bar palsu di tepi.
 - Pointer/keyboard hanya mengubah draf jadwal. Tombol Simpan mengirim satu tugas ke API; error mempertahankan draf. Perubahan tidak memindahkan prasyarat/turunan otomatis.
 - `ProjectNotes.tsx` merender format judul/daftar/checklist/kutipan sebagai elemen React. Tidak ada `innerHTML`; catatan lama tetap terbaca sebagai teks.
-- `src/app/personal.css` menjadi lapisan visual aktif; `src/app/globals.css` menyediakan kontrol dan layout dasar bersama.
+- Gaya web di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); `src/app/globals.css` hanya memuat lapisan Tailwind.
 
 ## Peta rute
 

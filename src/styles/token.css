@@ -1,0 +1,222 @@
+/*
+  Token sistem gaya Kopdes Manager 3D.
+  Induk visual: Dunia Koperasi 3D — dinding biru-lavender, lantai kayu, kartu panel putih,
+  aksen biru #2F5BEA, huruf Inter. Setiap kelompok menu adalah satu ruang kantor diorama
+  dan memakai warna lantai ruang itu (data-ruang pada <main>).
+*/
+:root {
+  color-scheme: light;
+  --scrim: rgba(11, 21, 51, 0.32);
+  /* Isi di atas warna merek/status, kilau merek, sinyal kuning, jalur Gantt, toast */
+  --on-brand: #fff;
+  --brand-bright: #6d92ff;
+  --sinyal: #f0a92e;
+  --jalur-rencana: #dfe7ff;
+  --titik-rencana: #b8c6ff;
+  --titik-selesai: #7ccf9b;
+  --toast-bg: #0f1b3d;
+  --toast-fg: #fff;
+  --toast-aksi: #aebfff;
+
+  /* Huruf */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --fs-title: 26px;
+  --fs-h2: 17px;
+  --fs-h3: 15px;
+  --fs-body: 14px;
+  --fs-meta: 12.5px;
+  --fs-cap: 11.5px;
+  --lh-tight: 1.25;
+  --lh-body: 1.5;
+
+  /* Permukaan: kanvas = dinding kantor, kartu = panel putih dunia */
+  --canvas: #eef1fa;
+  --canvas-deep: #e3e8f6;
+  --surface: #ffffff;
+  --surface-2: #f6f8fd;
+  --surface-3: #eef2fb;
+  --wall: #d9e0f5;
+  --wall-deep: #c3cdec;
+
+  /* Tinta */
+  --ink: #0f1b3d;
+  --ink-heading: #0b1533;
+  --ink-muted: #5d6987;
+  --ink-subtle: #7b86a0;
+  --ink-inverse: #ffffff;
+
+  /* Garis */
+  --line: #e3e8f3;
+  --line-strong: #cfd7e8;
+
+  /* Aksen biru dunia */
+  --brand: #2f5bea;
+  --brand-hover: #2148c7;
+  --brand-press: #1b3cab;
+  --brand-soft: #eaf0ff;
+  --brand-soft-2: #dde6ff;
+  --brand-soft-border: #c9d7fd;
+  --brand-ink: #2148c7;
+  --brand-text: #ffffff;
+  --brand-contrast: #ffffff;
+  --focus-ring: 0 0 0 3px rgba(47, 91, 234, 0.28);
+
+  /* Kayu lantai diorama: aksen hangat kedua */
+  --wood: #e9c48f;
+  --wood-deep: #c08a4e;
+  --wood-edge: #b47c43;
+  --wood-soft: #f7ebda;
+
+  /* Warna lantai ruang (data-ruang) */
+  --lantai-kerja: #e6eafb;
+  --lantai-kegiatan: #e0f2e8;
+  --lantai-buku: #f6eadb;
+  --lantai-gerai: #fbe8dc;
+  --lantai-koordinasi: #e3ecf7;
+  --lantai-pengaturan: #eceef5;
+  --lantai: var(--lantai-kerja);
+  --lantai-garis: rgba(15, 27, 61, 0.045);
+
+  /* Status — hanya untuk makna, tidak sebagai hiasan */
+  --ok: #15803d;
+  --ok-bg: #e3f6ea;
+  --ok-line: #b7e6c7;
+  --late: #c62828;
+  --late-bg: #fdecec;
+  --late-line: #f6c7c7;
+  --warn: #a16207;
+  --warn-bg: #fdf3dc;
+  --warn-line: #f2dca6;
+  --info: var(--brand-ink);
+  --info-bg: var(--brand-soft);
+  --neutral-bg: #eef1f7;
+
+  /* Bentuk dan kedalaman */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-full: 999px;
+  --shadow-sm: 0 1px 2px rgba(20, 32, 74, 0.06);
+  --shadow: 0 1px 2px rgba(20, 32, 74, 0.05), 0 8px 22px rgba(20, 32, 74, 0.06);
+  --shadow-md: 0 2px 4px rgba(20, 32, 74, 0.06), 0 14px 34px rgba(20, 32, 74, 0.1);
+  --shadow-lg: 0 24px 60px rgba(15, 27, 61, 0.2);
+  --shadow-dock: 0 10px 30px rgba(20, 32, 74, 0.14);
+
+  /* Gerak */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+
+  /* Tata letak */
+  --sidebar-w: 260px;
+  --topbar-h: 60px;
+  --page-max: 1320px;
+  --gutter: 28px;
+  --touch: 44px;
+  --dock-h: 72px;
+
+  /* Ikon dua nada */
+  --ikon-isi: #dfe8ff;
+
+  /* Alias untuk gaya inline di komponen (jangan tambah alias baru) */
+  --success: var(--ok);
+  --danger: var(--late);
+  --tone-success-text: var(--ok);
+  --tone-success-accent: #22a55a;
+  --tone-warn-text: var(--warn);
+  --tone-danger-text: var(--late);
+  --tone-info-text: var(--brand-ink);
+  --pastel-emerald-text: var(--ok);
+  --pastel-emerald-bg: var(--ok-bg);
+  --pastel-emerald-border: var(--ok-line);
+  --pastel-rose-text: var(--late);
+  --pastel-rose-bg: var(--late-bg);
+  --pastel-rose-border: var(--late-line);
+  --pastel-amber-text: var(--warn);
+  --pastel-amber-bg: var(--warn-bg);
+  --pastel-amber-border: var(--warn-line);
+  --pastel-blue-text: var(--brand-ink);
+  --pastel-blue-bg: var(--brand-soft);
+  --pastel-blue-border: var(--brand-soft-border);
+  --pastel-purple-text: #5b3fc4;
+  --pastel-purple-bg: #f0ecff;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --scrim: rgba(2, 5, 14, 0.6);
+  --jalur-rencana: #1d2a52;
+  --titik-rencana: #4a5fa8;
+  --titik-selesai: #3f9e68;
+  --toast-bg: #e6ebf8;
+  --toast-fg: #0b1533;
+  --toast-aksi: #2148c7;
+  --canvas: #0b1020;
+  --canvas-deep: #080c19;
+  --surface: #131a2e;
+  --surface-2: #182038;
+  --surface-3: #1d2742;
+  --wall: #18213b;
+  --wall-deep: #121a30;
+  --ink: #e6ebf8;
+  --ink-heading: #ffffff;
+  --ink-muted: #9ba7c4;
+  --ink-subtle: #7e8aa8;
+  --line: #232d49;
+  --line-strong: #2f3a5c;
+  --brand: #6385ff;
+  --brand-hover: #7d99ff;
+  --brand-press: #5274f0;
+  --brand-soft: #1b2652;
+  --brand-soft-2: #22306a;
+  --brand-soft-border: #2e3f80;
+  --brand-ink: #aebfff;
+  --focus-ring: 0 0 0 3px rgba(99, 133, 255, 0.4);
+  --wood: #b98b55;
+  --wood-deep: #8a6236;
+  --wood-edge: #6e4c29;
+  --wood-soft: #2a2316;
+  --lantai-kerja: #161f3b;
+  --lantai-kegiatan: #12261f;
+  --lantai-buku: #261f16;
+  --lantai-gerai: #2a1d18;
+  --lantai-koordinasi: #142236;
+  --lantai-pengaturan: #181d2c;
+  --lantai-garis: rgba(255, 255, 255, 0.035);
+  --ok: #6ee7a0;
+  --ok-bg: rgba(34, 197, 94, 0.14);
+  --ok-line: rgba(34, 197, 94, 0.3);
+  --late: #ff9b91;
+  --late-bg: rgba(240, 68, 56, 0.15);
+  --late-line: rgba(240, 68, 56, 0.32);
+  --warn: #fcd34d;
+  --warn-bg: rgba(245, 158, 11, 0.14);
+  --warn-line: rgba(245, 158, 11, 0.3);
+  --neutral-bg: #1c2540;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 22px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 14px 34px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --shadow-dock: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --ikon-isi: rgba(99, 133, 255, 0.22);
+  --pastel-purple-text: #c4b5fd;
+  --pastel-purple-bg: rgba(124, 92, 240, 0.18);
+}
+
+[data-ruang='kerja'] { --lantai: var(--lantai-kerja); }
+[data-ruang='kegiatan'] { --lantai: var(--lantai-kegiatan); }
+[data-ruang='buku'] { --lantai: var(--lantai-buku); }
+[data-ruang='gerai'] { --lantai: var(--lantai-gerai); }
+[data-ruang='koordinasi'] { --lantai: var(--lantai-koordinasi); }
+[data-ruang='pengaturan'] { --lantai: var(--lantai-pengaturan); }
+
+@media (max-width: 767px) {
+  :root {
+    --fs-title: 22px;
+    --gutter: 16px;
+    --topbar-h: 56px;
+  }
+}

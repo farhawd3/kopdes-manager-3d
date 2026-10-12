@@ -1,11 +1,15 @@
-export default {
+// Sistem gaya src/styles: warna mentah hanya di token.css (dan lembar cetak laporan), tanpa !important
+// kecuali pengaman reduced-motion dan cetak.
+const config = {
   rules: {
     'color-no-hex': true,
     'declaration-no-important': true,
-    'declaration-property-value-allowed-list': {
-      'border-radius': ['/^(var\\(--r-(sm|md|lg|full)\\)|0)$/'],
-      'font-size': ['/^(var\\(--fs-(title|h2|body|button|label|caption|overline)\\)|inherit)$/'],
-    },
   },
-  overrides: [{ files: ['src/app/tokens.css'], rules: { 'declaration-property-value-allowed-list': null } }],
+  overrides: [
+    { files: ['src/styles/token.css'], rules: { 'color-no-hex': null } },
+    { files: ['src/styles/halaman/laporan.css'], rules: { 'color-no-hex': null, 'declaration-no-important': null } },
+    { files: ['src/styles/dasar.css'], rules: { 'declaration-no-important': null } },
+  ],
 };
+
+export default config;

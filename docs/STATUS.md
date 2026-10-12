@@ -8,7 +8,7 @@ Proyek fleksibel; tugas daftar/papan/kalender/Gantt/harian; milestone, subtugas,
 
 Belum tersedia: editor blok bebas, kolaborasi real-time, PWA/offline, unggah berkas, baseline/jalur kritis, penjadwalan otomatis dependensi, POS, akuntansi lengkap, simpan pinjam. Kas hanya uang masuk/keluar tercatat; opname tidak mengubah stok otomatis.
 
-Tampilan: tema biru senada dunia (`src/app/tema.css`), Beranda bento, laci detail Detail/Terkait/Riwayat dengan saran langkah berikut, judul halaman seragam berikon, warna status token `--pastel-*`, mode gelap. Semua halaman menu diperiksa di 375/768/1024/1440 px tanpa luber samping (pemeriksaan ponsel/tablet terakhir 12 Oktober lewat emulasi perangkat: aksi kartu satu baris, pilihan tampilan bergeser, angka ringkasan berupa baris); tabel lebar berubah menjadi kartu di area sempit (Buku koperasi di layar < 1280 px, Tugas/Kegiatan bila area halaman < 900 px).
+Tampilan: sistem gaya baru berbahasa dunia 3D di `src/styles/` (dinding menu samping, lantai per ruang, aksen kayu, pil angka · label, dok ponsel mengambang), Beranda bento, laci detail Detail/Terkait/Riwayat dengan saran langkah berikut, judul halaman seragam berikon, warna status token `--ok/--late/--warn` (alias `--pastel-*`), mode gelap. Semua halaman menu diperiksa di 375/768/1024/1440 px tanpa luber samping (pemeriksaan ponsel/tablet terakhir 12 Oktober lewat emulasi perangkat: aksi kartu satu baris, pilihan tampilan bergeser, angka ringkasan berupa baris); tabel lebar berubah menjadi kartu di area sempit (Buku koperasi di layar < 1280 px, Tugas/Kegiatan bila area halaman < 900 px).
 
 ## Dunia Koperasi 3D
 
@@ -24,11 +24,12 @@ Figur chibi (maks. 12, rupa dari kolom staf) ditempatkan dari rapat, kegiatan, p
 
 Target Supabase baru milik pemilik. Migrasi 8 (pengiriman/mutasi stok) sudah dijalankan pemilik. PIN/simpan setelah reset, indeks paginasi migrasi 6, relasi dokumen migrasi 7, dan smoke test produksi belum dikonfirmasi. Jangan menjalankan migrasi/reset tanpa persetujuan.
 
-## Pemeriksaan terakhir — 11 Oktober 2026
+## Pemeriksaan terakhir — 12 Oktober 2026
 
-- 340 tes / 54 berkas, typecheck, lint, build lulus setelah sisa pixel dibuang (tes khusus pixel ikut dihapus).
-- Audit warna terprogram semua halaman terang/gelap: tidak ada warna teks/ikon di luar token dan tidak ada teks berkontras < 3:1 di mode gelap.
-- Belum: perangkat fisik, UAT data cloud, pemangkasan `personal.css`, temuan lama `npm run lint:ui`.
+- Sistem gaya baru: 340 tes / 54 berkas, typecheck, lint, `lint:ui` (stylelint `src/styles`), build lulus.
+- Tangkapan emulasi perangkat (CDP) 1440×900: Beranda, Hari ini, Tugas, Linimasa, Proyek, Kegiatan, Rapat, Dokumen, Risiko, Gerai, Mitra, Tim, Pengiriman, Kesiapan, Buku kas, Stok opname, Laporan, Panduan, Pengaturan, layar PIN, laci tugas, editor, 404. 375×812: Beranda, Hari ini, Tugas, Gerai, Mitra, Pengiriman, Stok opname, Barang, Laporan, Panduan, Pengaturan. Gelap: Beranda, Proyek, Linimasa, Mitra. Tanpa luber samping; tombol < 36 px di ponsel diperbesar pada layar sentuh.
+- Tablet 768×1024: Beranda, Tugas, Proyek, Buku kas, Gerai, Pengaturan; 1024×768: Beranda, Tugas, Linimasa, Barang. Kartu rapat Beranda tidak lagi memanjang dan angka uang di Catatan koperasi tidak luber.
+- Belum: perangkat fisik, UAT data cloud.
 
 ## Git
 

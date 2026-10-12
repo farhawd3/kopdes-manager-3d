@@ -6,7 +6,7 @@ description: Pedoman UI/UX Kopdes — tema biru web dan dunia, pola tabel/kartu,
 # UI/UX Kopdes
 
 Satu keluarga gaya untuk web dan dunia:
-- **Halaman operasional**: `docs/DESAIN-ANTARMUKA.md`; lapisan akhir `src/app/tema.css` (token, pola bersama) menimpa `personal.css/ui.css/globals.css`; komponen `src/components/ui`.
+- **Halaman operasional**: `docs/DESAIN-ANTARMUKA.md`; sistem gaya `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`), satu berkas per kelompok halaman di `halaman/`; warna mentah hanya di `token.css`; komponen `src/components/ui`.
 - **Dunia Koperasi**: `src/features/dunia-3d/monitoring.css` (kelas `mt-*`); arahan di `docs/DUNIA-KOPERASI.md`.
 
 ## Pola
