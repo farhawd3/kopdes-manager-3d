@@ -363,37 +363,48 @@ dialog.command-dialog[open] { animation: muncul-dialog 240ms var(--ease-out); }
 }
 .command-open-hub-btn svg:last-child { margin-left: auto; }
 .workspace-search { display: grid; gap: 12px; }
+/* Ikon kaca pembesar di dalam kolom, bukan di atasnya */
 .workspace-search-field { position: relative; display: block; }
-.workspace-search-scopes { display: flex; flex-wrap: wrap; gap: 6px; }
-.workspace-search-scopes .ui-btn { min-height: 32px; padding: 0 12px; border-radius: var(--r-full); font-size: 12.5px; box-shadow: none; }
+.workspace-search-field > svg { position: absolute; top: 50%; left: 14px; z-index: 1; color: var(--ink-subtle); transform: translateY(-50%); pointer-events: none; }
+.workspace-search-field input.ui-search-input:is(*, :hover, :focus) { min-height: 48px; padding-left: 44px; font-size: 15px; }
+.workspace-search-scopes { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.workspace-search-scopes .ui-btn { flex-shrink: 0; min-height: 36px; padding: 0 14px; border-radius: var(--r-full); font-size: 13px; box-shadow: none; }
 .workspace-search-scopes .ui-btn[aria-pressed='true'] { border-color: var(--brand); background: var(--brand-soft); color: var(--brand-ink); }
 .workspace-search-hint { color: var(--ink-muted); font-size: var(--fs-meta); }
-.workspace-search-results { display: grid; gap: 14px; }
-.workspace-search-group { display: grid; gap: 4px; }
-.workspace-search-group > h3,
-.workspace-search-group > strong { padding: 0 6px; color: var(--ink-muted); font-size: 11.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
-.workspace-search-group a,
-.workspace-search-group .ui-btn {
+.workspace-search-results { display: grid; gap: 2px; padding-top: 4px; border-top: 1px solid var(--line); }
+.workspace-search-results > p { padding: 10px 6px; color: var(--ink-muted); font-size: 13px; }
+/* Judul kelompok (Catatan, Halaman) dengan jumlah sebagai pil */
+.workspace-search-group {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  width: 100%;
-  min-height: 48px;
-  padding: 6px 8px;
-  border: 0;
-  border-radius: var(--r-md);
-  background: transparent;
-  color: var(--ink);
-  text-align: left;
-  text-decoration: none;
-  box-shadow: none;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 0 6px 4px;
+  color: var(--ink-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
-.workspace-search-group a:hover,
-.workspace-search-group .ui-btn:hover { background: var(--surface-3); text-decoration: none; }
-.workspace-search-icon { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; background: var(--brand-soft); }
+.workspace-search-group > span { padding: 1px 8px; border-radius: var(--r-full); background: var(--surface-3); color: var(--ink-muted); font-size: 11px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.workspace-search-results > a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 8px;
+  border-radius: var(--r-md);
+  color: var(--ink);
+  text-decoration: none;
+}
+.workspace-search-results > a > svg { flex-shrink: 0; margin-left: auto; color: var(--ink-subtle); }
+.workspace-search-results > a:hover,
+.workspace-search-results > a:focus-visible { background: var(--surface-2); text-decoration: none; }
+.workspace-search-results > a:hover > svg { color: var(--brand); }
+.workspace-search-icon { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; background: var(--brand-soft); color: var(--brand); }
 .workspace-search-copy { display: grid; min-width: 0; line-height: 1.3; }
-.workspace-search-copy small { color: var(--ink-muted); }
+.workspace-search-copy strong { overflow: hidden; font-size: 14px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.workspace-search-copy small { color: var(--ink-muted); font-size: 12px; }
 
 /* ---------- Pusat aksi ---------- */
 dialog.manager-action-dialog { width: min(720px, calc(100vw - 32px)); padding: 0; }

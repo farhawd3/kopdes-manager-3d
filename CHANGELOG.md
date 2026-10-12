@@ -11,6 +11,8 @@ Gaya web dibangun ulang dari nol karena beberapa bagian tidak serasi dan kurang 
 - Ringkasan angka berupa pil ganda "angka · label"; dok ponsel mengambang; dialog menjadi lembar bawah di ponsel; laci detail di kanan.
 - Beranda: baris label kecil di atas judul dihapus, tanggal menjadi cip.
 - Beranda tablet: kartu rapat setinggi isinya; angka Catatan koperasi maksimal dua kolom dan satu kolom di kolom sempit agar nilai uang tidak luber.
+- Cincin progres Beranda tidak lagi terpotong dan busurnya mulai dari atas.
+- Dialog Cari di ruang kerja: ikon di dalam kolom, pilihan jenis satu baris yang bisa digeser, judul kelompok dengan jumlah berupa pil, hasil berupa baris 44 px.
 - Halaman 404 di dalam kerangka tampil sebagai kartu biasa tanpa diorama layar masuk.
 - Sentuh: chip filter, pilihan tampilan, judul kartu buku, dan tombol WhatsApp/Telepon setinggi 44 px pada layar sentuh.
 - Perkakas: `npm run lint:ui` kini memeriksa `src/styles` (warna hex hanya di token, tanpa `!important` kecuali reduced-motion dan cetak); dependensi huruf Plus Jakarta Sans yang tidak dipakai dibuang. `PRODUCT.md` mencatat konteks produk untuk pekerjaan desain.
