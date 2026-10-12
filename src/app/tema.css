@@ -2555,3 +2555,198 @@ dialog.ui-modal.record-drawer[open] {
   width: 30px !important;
   height: 30px !important;
 }
+
+/* ======================================================================
+   Ponsel dan tablet (12 Okt 2026): kepala ringkas, kartu padat, aksi sebaris.
+   ====================================================================== */
+
+/* Pilihan tampilan Tugas/Kegiatan: satu baris yang bisa digeser, bukan kisi bertumpuk */
+@media (max-width: 1023px) {
+  :where(.manager-main) .database-views.database-views {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    overscroll-behavior-inline: contain;
+  }
+  :where(.manager-main) .database-views.database-views::-webkit-scrollbar {
+    display: none;
+  }
+  :where(.manager-main) .database-views.database-views > * {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  :where(.manager-main) .database-views-bar {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+  }
+  :where(.manager-main) .database-views-bar > .database-views {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Beranda: filter selebar penuh, dua tombol aksi berdampingan */
+  .beranda-head .home-heading-actions.home-heading-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .beranda-head .home-heading-actions > .beranda-proyek {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+  .beranda-head .home-heading-actions > .home-action-btn {
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Kartu angka Beranda lebih pendek: angka besar, keterangan satu baris */
+  .beranda .ui-stats-grid.ui-stats-grid {
+    gap: 10px;
+  }
+  .beranda .ui-stat-card.ui-stat-card {
+    min-height: 0;
+    padding: 12px 14px;
+    gap: 4px;
+  }
+  .beranda-angka strong {
+    white-space: nowrap;
+  }
+
+  /* Angka ringkasan buku koperasi: baris ringkas label–angka agar nilai panjang tidak terpotong */
+  :where(.manager-main) .recording-metrics.recording-metrics {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 6px !important;
+  }
+  :where(.manager-main) .recording-metrics > .metric-card.metric-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+    padding: 10px 14px !important;
+  }
+  :where(.manager-main) .recording-metrics > .metric-card:nth-child(3):last-child {
+    grid-column: auto;
+  }
+  :where(.manager-main) .recording-metrics .metric-header {
+    margin: 0;
+  }
+  :where(.manager-main) .recording-metrics .metric-value {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 17px !important;
+    white-space: nowrap;
+  }
+  :where(.manager-main) .recording-metrics .metric-sub {
+    grid-column: 1 / -1;
+  }
+
+  /* Kartu catatan: Opsi lainnya jadi tombol ikon agar aksi muat satu baris */
+  :where(.manager-main) .record.card > .actions {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+  :where(.manager-main) .record.card > .actions > .ui-btn,
+  :where(.manager-main) .record.card > .actions > a {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding-inline: 12px;
+    white-space: nowrap;
+  }
+  :where(.manager-main) .record.card > .actions > .record-options > summary {
+    min-width: 40px;
+    padding: 0 10px;
+  }
+  :where(.manager-main) .record.card > .actions > .record-options > summary > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  :where(.manager-main) .record.card > .actions > .record-options > summary > svg:last-child {
+    display: none;
+  }
+
+  /* Kartu buku koperasi (kas, barang, anggota, opname) lebih padat */
+  :where(.manager-main) .op-card.op-card {
+    gap: 10px;
+    padding: 14px;
+  }
+  :where(.manager-main) .op-card .op-stock-meter-box {
+    padding: 10px 12px;
+  }
+  :where(.manager-main) .op-card .op-card-footer.op-card-footer {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 6px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+  }
+  :where(.manager-main) .op-card .op-card-footer > :is(.ui-btn, a) {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+  :where(.manager-main) .op-card .op-card-footer > .table-btn-ikon {
+    width: 36px;
+    padding: 0;
+  }
+  :where(.manager-main) .op-card .op-card-footer > .table-btn-edit {
+    margin-right: auto;
+  }
+
+  /* Linimasa ponsel: daftar rata kiri, tanpa bingkai per baris */
+  :where(.manager-main) .timeline-mobile-list > .ui-btn {
+    justify-content: space-between;
+    min-height: 52px;
+    padding: 8px 4px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    text-align: left;
+  }
+  :where(.manager-main) .timeline-mobile-list > .ui-btn > span {
+    display: grid;
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-items: start;
+    text-align: left;
+  }
+  :where(.manager-main) .timeline-mobile-list > .ui-btn:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* Tugas sebagai kartu: status, prioritas, tenggat di baris kedua; penanggung jawab dan Selesai sebaris */
+@container halaman (max-width: 900px) {
+  :where(.manager-main) .task-table tbody td {
+    width: auto !important;
+    min-width: 0 !important;
+  }
+  :where(.manager-main) .task-table tbody td.col-task-status .ui-select-trigger {
+    width: auto;
+    min-width: 0;
+    padding-inline: 10px;
+  }
+  :where(.manager-main) .task-table tbody td.col-task-assignee {
+    flex: 1 1 calc(100% - 120px);
+    min-width: 0;
+  }
+  :where(.manager-main) .task-table tbody td.col-task-action .ui-btn {
+    min-height: 36px;
+    padding: 0 14px;
+  }
+}

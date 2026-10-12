@@ -1563,7 +1563,8 @@ export function Operations({
                               <LihatDiDunia entity="inventory-items" id={row.id} />
                               <Button
                                 type="button"
-                                className="table-btn-action table-btn-buy"
+                                className="table-btn-action table-btn-buy table-btn-ikon"
+                                title="Catat pengeluaran kas pembelian barang ini"
                                 onClick={() => {
                                   setCaptureEntity('cash-entries');
                                   setEdit({
@@ -1584,15 +1585,16 @@ export function Operations({
                                   });
                                 }}
                               >
-                                <Wallet size={12} />
-                                <span>+ Beli</span>
+                                <Wallet size={14} aria-hidden />
+                                <span className="sr-only">Catat pembelian</span>
                               </Button>
                               <Link
-                                className="table-btn-action"
+                                className="table-btn-action table-btn-ikon"
                                 href={`/stok-opname?barang=${row.id}`}
+                                title="Hitung fisik opname"
+                                aria-label={`Opname ${String(row.data.title)}`}
                               >
-                                <ClipboardCheck size={12} />
-                                <span>Opname</span>
+                                <ClipboardCheck size={14} aria-hidden />
                               </Link>
                             </div>
                           </article>

@@ -1598,8 +1598,15 @@
     width: 34px;
     height: 34px;
   }
-  .mt-map-tools {
-    display: none;
+  /* Ponsel: kontrol peta tetap ada (zoom, putar, awal) dalam kolom ringkas di kanan atas. */
+  .mt-root .mt-map-tools {
+    top: 12px;
+    right: 12px;
+    padding: 2px;
+  }
+  .mt-root .mt-map-tools button {
+    width: 40px;
+    height: 40px;
   }
   .mt-left {
     left: 0;

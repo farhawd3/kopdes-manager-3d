@@ -36,6 +36,10 @@ import { ruangPulau } from './pulau';
 import { panorama } from './suasana';
 import type { Suasana } from './monitor-data';
 
+/** Batas zoom kamera: cukup jauh untuk melihat seluruh lokasi, cukup dekat untuk membaca meja dan rak di ponsel. */
+const ZOOM_MIN = 0.6;
+const ZOOM_MAX = 5;
+
 /** Kamera iso: jarak datar R dan tinggi tetap; sudut azimut bisa diputar dalam batas aman. */
 const JARAK = Math.hypot(25, 25);
 const TINGGI = 29;
@@ -464,7 +468,10 @@ export function buatMonitoring(
     const vw = w - l - r,
       vh = h - t - b;
     const fit = BINGKAI[lokasi];
-    const half = Math.max(fit.h, fit.w / (vw / vh)) / zoom;
+    // Layar potret: denah memanjang tampak kecil bila dipaskan selebar layar, jadi tampilan awal diperbesar
+    // (ponsel ±1,5×, tablet ±1,2×).
+    const potret = vh > vw * 1.2 ? Math.min(1.5, 0.6 + 0.45 * (vh / vw)) : 1;
+    const half = Math.max(fit.h, fit.w / (vw / vh)) / (zoom * potret);
     const ppu = vh / (2 * half);
     camera.left = -(vw / 2 + l) / ppu;
     camera.right = (vw / 2 + r) / ppu;
@@ -478,7 +485,7 @@ export function buatMonitoring(
   const ray = new Raycaster(),
     point = new Vector2();
   let tekan: { x: number; y: number; geser: boolean } | null = null;
-  // Sentuh: satu jari menggeser, dua jari mencubit untuk zoom (tombol zoom disembunyikan di ponsel).
+  // Sentuh: satu jari menggeser, dua jari mencubit untuk zoom; tombol zoom tetap tersedia.
   const jari = new Map<number, { x: number; y: number }>();
   let cubit = 0;
   const jarak2 = () => {
@@ -512,7 +519,7 @@ export function buatMonitoring(
       jari.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (jari.size === 2 && cubit) {
         const d = jarak2();
-        zoom = Math.max(0.7, Math.min(2.4, zoom * (d / cubit)));
+        zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * (d / cubit)));
         cubit = d;
         follow = false;
         resize();
@@ -724,7 +731,9 @@ export function buatMonitoring(
       invalidate();
     },
     zoom(delta: number) {
-      zoom = delta ? Math.max(0.7, Math.min(2.4, zoom + delta)) : 1;
+      // Langkah berlipat agar rentang 0,6–5× terasa rata: tiap klik ±20 %, roda ±10 %.
+      const faktor = delta > 0 ? 1 + delta : 1 / (1 - delta);
+      zoom = delta ? Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * faktor)) : 1;
       resize();
     },
     /** Putar kamera satu langkah (−1 kiri, 1 kanan) dalam batas aman; mengembalikan sudut. */
