@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ZodError } from 'zod';
+import { modeDemo } from '@/lib/demo';
 export async function readJson(request: Request): Promise<unknown> {
   const reader = request.body?.getReader();
   if (!reader) throw new SyntaxError('JSON kosong.');
@@ -50,8 +51,13 @@ export function sameOrigin(request: Request) {
       const origin = normalizedOrigin(`https://${host}`);
       if (origin) allowed.add(origin);
     }
-  } else if (!process.env.HUB_APP_ORIGIN && process.env.NODE_ENV !== 'production') {
-    allowed.add(new URL(request.url).origin);
+  } else if (modeDemo() || (!process.env.HUB_APP_ORIGIN && process.env.NODE_ENV !== 'production')) {
+    const local = new URL(request.url);
+    allowed.add(local.origin);
+    if (modeDemo() && ['localhost', '127.0.0.1'].includes(local.hostname)) {
+      allowed.add(`${local.protocol}//localhost${local.port ? ':' + local.port : ''}`);
+      allowed.add(`${local.protocol}//127.0.0.1${local.port ? ':' + local.port : ''}`);
+    }
   }
   const origin = normalizedOrigin(request.headers.get('origin'));
   if (!origin || !allowed.has(origin)) throw new Error('ORIGIN_FORBIDDEN');

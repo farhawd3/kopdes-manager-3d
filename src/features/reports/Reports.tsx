@@ -4,7 +4,7 @@ import { Textarea } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { DateInput } from '@/components/ui/DateField';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Printer,
   Share2,
@@ -84,33 +84,47 @@ export function Reports({ previewReports }: { previewReports?: Report[] } = {}) 
   const [notice, setNotice] = useState('');
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(!previewReports);
+  const [hasMore, setHasMore] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  const loadReports = async () => {
+  const loadReports = useCallback(async (append = false, offset = 0) => {
+    setLoading(true);
+    setError('');
     try {
-      const data = await api<Report[]>('reports', undefined, 'GET', { bypassCache: true });
-      setReports(data);
-      if (data.length > 0) {
-        setSelected((prev) => {
-          if (prev && data.some((r) => r.id === prev.id)) {
-            return data.find((r) => r.id === prev.id) || data[0];
-          }
-          return data[0];
-        });
-      } else {
-        setSelected(null);
-      }
+      const page = await api<Report[]>(
+        append ? `reports?offset=${offset}` : 'reports',
+        undefined,
+        'GET',
+        { bypassCache: true },
+      );
+      setReports((previous) =>
+        append
+          ? [
+              ...previous,
+              ...page.filter((row) => !previous.some((existing) => existing.id === row.id)),
+            ]
+          : page,
+      );
+      setHasMore(page.length === 100);
+      setSelected((previous) =>
+        append
+          ? previous || page[0] || null
+          : page.find((row) => row.id === previous?.id) || page[0] || null,
+      );
     } catch (e) {
       setError((e as Error).message);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (previewReports) return;
     // Initial synchronization with the reports API completes asynchronously.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadReports();
-  }, [previewReports]);
+  }, [previewReports, loadReports]);
 
   const handleDelete = async (id: string) => {
     setBusy(true);
@@ -232,7 +246,13 @@ export function Reports({ previewReports }: { previewReports?: Report[] } = {}) 
             </label>
             <label className="field-item">
               <span className="field-caption">Sampai Tanggal</span>
-              <DateInput aria-label="Akhir periode laporan" className="field-input" name="end" defaultValue={today()} required />
+              <DateInput
+                aria-label="Akhir periode laporan"
+                className="field-input"
+                name="end"
+                defaultValue={today()}
+                required
+              />
             </label>
             <label className="field-item field-wide wide">
               <span className="field-caption">Catatan manajer</span>
@@ -290,6 +310,21 @@ export function Reports({ previewReports }: { previewReports?: Report[] } = {}) 
             {error}
           </p>
         )}
+        {loading && (
+          <p role="status" className="mt-3">
+            Memuat laporan…
+          </p>
+        )}
+        {!loading && !error && !reports.length && (
+          <p role="status" className="mt-3">
+            Belum ada laporan tersimpan. Susun laporan pertama melalui formulir ini.
+          </p>
+        )}
+        {error && (
+          <Button type="button" disabled={loading || busy} onClick={() => void loadReports()}>
+            Coba muat laporan lagi
+          </Button>
+        )}
       </section>
 
       {/* ── Report Archive Tabs & Filters ────────────────────────── */}
@@ -332,6 +367,12 @@ export function Reports({ previewReports }: { previewReports?: Report[] } = {}) 
                   onClick={() => setSelected(report)}
                   role="button"
                   tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      setSelected(report);
+                    }
+                  }}
                 >
                   <div className="chip-head">
                     <span className={`chip-status-tag ${isDraft ? 'tag-draft' : 'tag-final'}`}>
@@ -349,6 +390,15 @@ export function Reports({ previewReports }: { previewReports?: Report[] } = {}) 
               );
             })}
           </div>
+          {hasMore && (
+            <Button
+              type="button"
+              disabled={loading || busy}
+              onClick={() => void loadReports(true, reports.length)}
+            >
+              {loading ? 'Memuat…' : 'Muat laporan lebih lama'}
+            </Button>
+          )}
         </section>
       )}
 
@@ -473,12 +523,20 @@ export function Reports({ previewReports }: { previewReports?: Report[] } = {}) 
 
           {/* Delete Confirmation Modal / Banner */}
           {deleteConfirmId && (
-            <Modal className="delete-confirm-box no-print" aria-labelledby="delete-report-title" onDismiss={() => { if (!busy) setDeleteConfirmId(null); }}>
+            <Modal
+              className="delete-confirm-box no-print"
+              aria-labelledby="delete-report-title"
+              onDismiss={() => {
+                if (!busy) setDeleteConfirmId(null);
+              }}
+            >
               <div className="confirm-icon-wrap">
                 <AlertTriangle size={24} />
               </div>
               <div className="confirm-content">
-                <strong id="delete-report-title">Hapus {isCurrentDraft ? 'Draf Laporan' : 'Laporan'} Ini?</strong>
+                <strong id="delete-report-title">
+                  Hapus {isCurrentDraft ? 'Draf Laporan' : 'Laporan'} Ini?
+                </strong>
                 <p>
                   Tindakan ini akan menghapus laporan {selected.title} secara permanen dari basis
                   data. Data tugas, buku kas, dan catatan koperasi tidak akan terpengaruh.

@@ -26,7 +26,10 @@ Target Supabase baru milik pemilik. Migrasi 8 (pengiriman/mutasi stok) sudah dij
 
 ## Pemeriksaan terakhir — 13 Oktober 2026
 
-- Perbaikan audit: 350 tes / 56 berkas, typecheck, lint, `lint:ui` (stylelint `src/styles`), build produksi lulus. Tes baru memeriksa ekspor–pulihkan laporan melalui API dan PGlite, kompatibilitas cadangan lama, status yang tertinggal, validasi/sesi/Origin, dan rollback yang menjaga data lama. CI menjalankan `lint:ui`.
+- Audit alur fitur memperbaiki impor CSV, kelengkapan cadangan, arsip laporan lama, waktu riwayat WIB, pengaturan ganda, dan demo (pengulangan tugas serta Origin port lokal). Tidak ada migrasi baru.
+- Tes audit: cakupan penuh 371 kasus / 58 berkas, 369 lulus dan dua timeout pada suite lengkap (`--maxWorkers=2 --testTimeout=20000`). Dua tes yang lambat disederhanakan tanpa mengurangi assertion; kedua berkas diulang dengan satu worker dan 18/18 tes lulus. Semua 371 kasus terverifikasi. Typecheck, lint (tanpa peringatan), `lint:ui`, dan build produksi lulus.
+- Browser demo: halaman menu pada 360/768/1024/1440 px tanpa luber halaman; simpan tugas berhasil. Dunia membuka Kantor/Gerai/Gudang/Cold storage/Pulau dan panel ringkasan; Gudang diperiksa pada empat ukuran. Konsol tanpa galat/peringatan. Ini pemeriksaan alur utama dan tampilan, bukan jaminan seluruh kombinasi data/tindakan.
+- Regresi cadangan memeriksa ekspor–pulihkan laporan melalui API dan PGlite, kompatibilitas cadangan lama, status yang tertinggal, validasi/sesi/Origin, dan rollback yang menjaga data lama. CI menjalankan `lint:ui`.
 - Pemeriksaan tambahan viewport 360/768/1024/1440 px: Beranda, Tugas Harian, Barang dan formulir Barang. Kontrol bersama, navigasi hari, serta tombol dunia pada tabel/kartu terukur 44 px; isi kartu Harian muat di 360 px dan deretan hari bergulir di dalam kontainer. Tanpa luber halaman; konsol browser tanpa galat/peringatan. Tema gelap diperiksa pada halaman tersebut; Beranda juga diperiksa terang. Bukan pemeriksaan perangkat fisik.
 - Tangkapan emulasi perangkat (CDP) 1440×900: Beranda, Hari ini, Tugas, Linimasa, Proyek, Kegiatan, Rapat, Dokumen, Risiko, Gerai, Mitra, Tim, Pengiriman, Kesiapan, Buku kas, Stok opname, Laporan, Panduan, Pengaturan, layar PIN, laci tugas, editor, 404. 375×812: Beranda, Hari ini, Tugas, Gerai, Mitra, Pengiriman, Stok opname, Barang, Laporan, Panduan, Pengaturan. Gelap: Beranda, Proyek, Linimasa, Mitra. Tanpa luber samping; tombol < 36 px di ponsel diperbesar pada layar sentuh.
 - Tablet 768×1024: Beranda, Tugas, Proyek, Buku kas, Gerai, Pengaturan; 1024×768: Beranda, Tugas, Linimasa, Barang. Kartu rapat Beranda tidak lagi memanjang dan angka uang di Catatan koperasi tidak luber.
@@ -34,4 +37,4 @@ Target Supabase baru milik pemilik. Migrasi 8 (pengiriman/mutasi stok) sudah dij
 
 ## Git
 
-Repo `kopdes-manager-3d`, cabang utama `main`, riwayat dimulai bersih 11 Oktober 2026. Paket audit di `perbaikan/cadangan-dan-aturan`; perubahan pengguna dari `tampilan/rutinitas-dan-audit` tetap dipertahankan. Cabang fitur bertopik (lihat [CONTRIBUTING](../CONTRIBUTING.md)); commit tanpa atribusi AI; push dan deploy hanya bila pemilik meminta.
+Repo `kopdes-manager-3d`, cabang utama `main`, riwayat dimulai bersih 11 Oktober 2026. Paket audit aktif di `perbaikan/alur-fitur-dan-detail`; paket `perbaikan/cadangan-dan-aturan` sudah di-push. Perubahan pengguna dari `tampilan/rutinitas-dan-audit` tetap dipertahankan. Cabang fitur bertopik (lihat [CONTRIBUTING](../CONTRIBUTING.md)); commit tanpa atribusi AI; push dan deploy hanya bila pemilik meminta.

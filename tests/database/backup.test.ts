@@ -5,21 +5,31 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { afterAll, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 
 let database: PGlite;
-const mocks = vi.hoisted(() => ({ session: vi.fn(), rpc: vi.fn() }));
+const mocks = vi.hoisted(() => ({ session: vi.fn(), rpc: vi.fn(), range: vi.fn(), cap: 1000, count: null as number | null }));
 vi.mock('@/lib/server/auth', () => ({ requireSession: mocks.session }));
 vi.mock('@/lib/server/db', () => ({
   db: () => ({
     from: (table: string) => ({
       select: () => ({
-        limit: async (limit: number) => ({
-          // PostgREST mengirim kolom date sebagai YYYY-MM-DD, bukan objek Date milik PGlite.
-          data: (
-            await database.query<{ row: unknown }>(
-              `select row_to_json(r) as row from public.${table} r limit $1`,
-              [limit],
-            )
-          ).rows.map((result) => result.row),
-          error: null,
+        order: () => ({
+          range: async (start: number, end: number) => {
+            mocks.range(table, start, end);
+            return {
+              // PostgREST mengirim kolom date sebagai YYYY-MM-DD, bukan objek Date milik PGlite.
+              data: (
+                await database.query<{ row: unknown }>(
+                  `select row_to_json(r) as row from public.${table} r order by id limit $1 offset $2`,
+                  [Math.min(end - start + 1, mocks.cap), start],
+                )
+              ).rows.map((result) => result.row),
+              error: null,
+              count: mocks.count ?? (
+                await database.query<{ count: number }>(
+                  `select count(*)::integer as count from public.${table}`,
+                )
+              ).rows[0].count,
+            };
+          },
         }),
       }),
     }),
@@ -69,6 +79,8 @@ afterAll(async () => {
 });
 beforeEach(async () => {
   vi.resetAllMocks();
+  mocks.cap = 1000;
+  mocks.count = null;
   vi.stubEnv('HUB_APP_ORIGIN', 'http://localhost:3000');
   mocks.session.mockResolvedValue(undefined);
   mocks.rpc.mockImplementation(
@@ -194,4 +206,25 @@ it('origin asing dan sesi kedaluwarsa tidak dapat memulihkan data', async () => 
   mocks.session.mockRejectedValue(new Error('UNAUTHORIZED'));
   expect((await POST(request({}))).status).toBe(401);
   expect(mocks.rpc).not.toHaveBeenCalled();
+});
+
+it('cadangan mengambil seluruh 1.201 catatan walau respons server dibatasi 100 baris', async () => {
+  mocks.cap = 100;
+  await database.exec(
+    "insert into public.hub_records(entity,data) select 'journal',jsonb_build_object('title','Kegiatan ' || n,'date','2026-10-13') from generate_series(1,1200) n;",
+  );
+  const response = await GET();
+  expect(response.status).toBe(200);
+  const exported = await response.json();
+  expect(exported.records).toHaveLength(1201);
+  expect(new Set(exported.records.map((row: { id: string }) => row.id)).size).toBe(1201);
+  expect(mocks.range).toHaveBeenCalledWith('hub_records', 1200, 1699);
+}, 20_000);
+
+it('cadangan di atas batas ditolak tanpa menghasilkan unduhan sebagian', async () => {
+  mocks.count = 5001;
+  const response = await GET();
+  expect(response.status).toBe(503);
+  expect((await response.json()).error).toContain('5.000');
+  expect(mocks.range).toHaveBeenCalledTimes(1);
 });

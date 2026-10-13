@@ -43,3 +43,16 @@ export function formatDate(value?: string | null): string {
     year: 'numeric',
   }).format(parsed);
 }
+
+export function formatDateTime(value?: string | null): string {
+  const parsed = value ? new Date(value) : null;
+  if (!parsed || Number.isNaN(parsed.getTime())) return '—';
+  return (
+    new Intl.DateTimeFormat('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      hourCycle: 'h23',
+    }).format(parsed) + ' WIB'
+  );
+}

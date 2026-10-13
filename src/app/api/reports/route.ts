@@ -7,14 +7,18 @@ import { date } from '@/features/records/schemas';
 import { list } from '@/features/records/service';
 import { reportSnapshot } from '@/features/reports/report-snapshot';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await requireSession();
+    const { offset } = z
+      .object({ offset: z.coerce.number().int().min(0).max(1_000_000).default(0) })
+      .parse(Object.fromEntries(new URL(request.url).searchParams));
     const { data, error } = await db()
       .from('manager_reports')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(100);
+      .order('id', { ascending: false })
+      .range(offset, offset + 99);
     if (error) throw new Error('Laporan gagal dimuat.');
     return NextResponse.json(data, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
@@ -149,18 +153,8 @@ export async function DELETE(request: Request) {
     sameOrigin(request);
     await requireSession();
     const { searchParams } = new URL(request.url);
-    let id = searchParams.get('id');
-    if (!id) {
-      try {
-        const body = await readJson(request);
-        if (body && typeof body === 'object' && 'id' in body) {
-          id = String((body as Record<string, unknown>).id);
-        }
-      } catch {
-        // empty body
-      }
-    }
-    if (!id) throw new Error('ID laporan diperlukan.');
+    const input = searchParams.has('id') ? { id: searchParams.get('id') } : await readJson(request);
+    const { id } = z.object({ id: z.string().uuid() }).strict().parse(input);
     const { error } = await db().from('manager_reports').delete().eq('id', id);
     if (error) throw new Error('Laporan gagal dihapus.');
     return NextResponse.json({ success: true, id });

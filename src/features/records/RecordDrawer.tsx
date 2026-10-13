@@ -14,7 +14,7 @@ import type { Entity, Item } from './schemas';
 import type { Workspace } from '../workspace/useWorkspace';
 import { recordHref } from '../workspace/workspace-navigation';
 import { detailBaris, judulEntitas, saran, terkait } from './terkait';
-import { formatDate } from '@/lib/date';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 const books: Partial<Record<Entity, string>> = {
   members: '/anggota',
@@ -27,10 +27,6 @@ export function ikonEntitas(entity: Entity) {
   const slug = books[entity] ?? `/${Object.keys(pages).find((s) => pages[s].includes(entity)) ?? ''}`;
   return IKON_HALAMAN[slug] ?? 'dokumen';
 }
-const waktu = (iso: string) => {
-  const d = iso ? new Date(iso) : null;
-  return d && !Number.isNaN(d.getTime()) ? `${formatDate(iso.slice(0, 10))} ${iso.slice(11, 16)}` : '—';
-};
 
 type Tab = 'detail' | 'terkait' | 'riwayat';
 
@@ -196,14 +192,14 @@ export function RecordDrawer({
               .map((a) => (
                 <li key={a.id}>
                   <strong>{a.user}</strong> {a.text}
-                  <small>{waktu(a.created_at)}</small>
+                  <small>{formatDateTime(a.created_at)}</small>
                 </li>
               ))}
             <li>
-              Terakhir diubah<small>{waktu(row.updated_at)}</small>
+              Terakhir diubah<small>{formatDateTime(row.updated_at)}</small>
             </li>
             <li>
-              Dibuat<small>{waktu(row.created_at)}</small>
+              Dibuat<small>{formatDateTime(row.created_at)}</small>
             </li>
           </ol>
         )}

@@ -25,6 +25,7 @@ Implementasi, bukti pemeriksaan, dan penerimaan dibedakan. [STATUS](STATUS.md) a
 - [x] Laci detail Detail/Terkait/Riwayat dan saran langkah berikut tanpa menulis data otomatis.
 - [x] PIN/sesi/RLS/Origin, profil, dan cadangan JSON.
 - [x] Regresi lokal cadangan laporan: kas, draf/final, format lama, validasi, dan rollback pemulihan (API + PGlite).
+- [x] Impor CSV tugas (koma/kutip/baris baru, validasi semua baris, pesan impor sebagian), laporan lebih dari 100, waktu riwayat WIB, dan demo tanpa duplikasi tugas berulang memiliki tes regresi lokal.
 - [x] Tema biru senada dunia, ikon dua nada, warna status token, mode gelap.
 - [x] Semua halaman diperiksa di 375/768/1024/1440 px tanpa luber samping; tabel berubah menjadi kartu di area sempit.
 - [x] Pemeriksaan tambahan 360/768/1024/1440 px: Beranda, Tugas Harian, Barang, dan formulir Barang; kontrol bersama dan tombol dunia yang diubah terukur 44 px.

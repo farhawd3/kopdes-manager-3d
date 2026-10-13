@@ -12,9 +12,10 @@
 - Dunia: `/dunia-koperasi` memakai `MonitoringDashboard` (lima lokasi: Pulau, Kantor, Gerai, Gudang, Cold storage). Dok bawah Detail/Ringkasan/Daftar/Agenda (pilihan pemilik). Pratinjau `/dev/dunia-3d?contoh=1`.
 - Web: sistem gaya baru bahasa dunia 3D di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); lantai per ruang lewat `data-ruang` di `AppShell.tsx`; ikon dua nada `components/ui/Ikon3D.tsx`. Laci detail dan Terkait di `features/records/`. Konteks produk desain di `PRODUCT.md`.
 - Mode demo `npm run dev:demo` (port bisa diatur `-- -p 3200`); seed `supabase/seed/SEED_DATA_CONTOH.sql` dan `HAPUS_DATA_CONTOH.sql` dijalankan pemilik.
-- Paket perbaikan di `perbaikan/cadangan-dan-aturan`: cadangan laporan mendukung kas/status dan format lama, API menyelaraskan status, kontrol bersama/aksi buku 44 px, kartu Harian muat di 360 px. Migrasi 9 memperbaiki status lama dan pemulihan, sudah diuji lokal tetapi belum dijalankan di cloud.
+- Paket aktif di `perbaikan/alur-fitur-dan-detail`: impor CSV tervalidasi dengan format unduhan dan pesan impor sebagian; cadangan berpaginasi dengan pemeriksaan kelengkapan; arsip laporan memuat data lama; waktu riwayat WIB; pengaturan tanpa bagian ganda; demo memperbaiki tugas berulang dan penyimpanan pada port lokal. Tidak ada migrasi baru. Paket sebelumnya di `perbaikan/cadangan-dan-aturan` sudah di-push; migrasi 9 belum diverifikasi pada proyek cloud.
 - Graphify opsional menurut AGENTS; aturan turunan menunjuk ke sana. CI menjalankan `lint:ui`; skill memakai rute pratinjau dan ukuran pemeriksaan yang sama.
-- Verifikasi paket: 350 tes / 56 berkas, typecheck, lint, `lint:ui`, build lulus. Beranda/Tugas Harian/Barang/formulir Barang diperiksa pada 360/768/1024/1440 px; bukti dan batasan di STATUS. Perubahan pengguna yang belum di-commit tetap ada.
+- Browser lokal: halaman menu diperiksa pada 360/768/1024/1440 px, lima lokasi dunia dibuka, dan simpan tugas demo berhasil. Bukti serta batasan pemeriksaan paket di STATUS. Perubahan pengguna yang belum di-commit tetap ada.
+- Verifikasi: semua 371 kasus terverifikasi (369 pada suite lengkap dan dua timeout lulus setelah penyederhanaan tes serta pengulangan 18/18 pada dua berkas); typecheck, lint, `lint:ui`, dan build produksi lulus. Paket aktif belum di-push/deploy.
 
 ## Lanjutan
 

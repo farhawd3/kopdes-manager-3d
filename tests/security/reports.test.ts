@@ -1,7 +1,8 @@
 // @vitest-environment node
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 vi.mock('@/lib/server/auth', () => ({ requireSession: async () => {} }));
-import { POST, PATCH } from '@/app/api/reports/route';
+import { POST, PATCH, GET, DELETE } from '@/app/api/reports/route';
+import { randomUUID } from 'node:crypto';
 import { aturUlangDemo, demoDb } from '@/lib/server/demo-db';
 
 beforeEach(() => {
@@ -9,6 +10,25 @@ beforeEach(() => {
   vi.stubEnv('VERCEL', '');
   vi.stubEnv('HUB_APP_ORIGIN', 'http://localhost:3000');
   aturUlangDemo();
+});
+
+it('laporan lebih dari 100 dapat dipaginasi tanpa baris ganda dan offset buruk ditolak', async () => {
+  for (let index = 0; index < 101; index++)
+    await demoDb()
+      .from('manager_reports')
+      .insert({ id: randomUUID(), title: `Laporan ${index}`, snapshot: {} });
+  const first = await (await GET(new Request('http://localhost:3000/api/reports'))).json();
+  const next = await (
+    await GET(new Request('http://localhost:3000/api/reports?offset=100'))
+  ).json();
+  expect(first).toHaveLength(100);
+  expect(next).toHaveLength(1);
+  expect(new Set([...first, ...next].map((row: { id: string }) => row.id)).size).toBe(101);
+  expect((await GET(new Request('http://localhost:3000/api/reports?offset=-1'))).status).toBe(400);
+});
+
+it('ID laporan yang tidak sah tidak dapat dihapus', async () => {
+  expect((await DELETE(request({ id: 'bukan-uuid' }, 'DELETE'))).status).toBe(400);
 });
 afterEach(() => {
   aturUlangDemo();
