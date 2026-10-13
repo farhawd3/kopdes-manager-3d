@@ -204,8 +204,8 @@
 .table-num.num-warning { color: var(--warn); }
 .low-stock-dot { margin-left: 2px; color: var(--warn); }
 .table-actions { display: inline-flex; flex-wrap: nowrap; align-items: center; justify-content: flex-end; gap: 6px; }
-.table-actions :is(.ui-btn, a) { min-height: 34px; padding: 0 12px; font-size: 12.5px; }
-.table-actions .table-btn-ikon, .table-actions .lihat-dunia-ikon { width: 34px; padding: 0; }
+.table-actions :is(.ui-btn, a) { min-height: 44px; padding: 0 12px; font-size: 12.5px; }
+.table-actions .table-btn-ikon, .table-actions .lihat-dunia-ikon { width: 44px; padding: 0; }
 .table-actions a.table-btn-action { display: inline-grid; place-items: center; border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--surface); color: var(--ink); }
 
 /* Kartu buku */
@@ -281,9 +281,9 @@
   padding-top: 12px;
   border-top: 1px solid var(--line);
 }
-.op-card-footer > :is(.ui-btn, a) { min-height: 36px; padding: 0 12px; font-size: 13px; }
+.op-card-footer > :is(.ui-btn, a) { min-height: 44px; padding: 0 12px; font-size: 13px; }
 .op-card-footer > .table-btn-edit { margin-right: auto; }
-.op-card-footer > :is(.table-btn-ikon, .lihat-dunia-ikon) { width: 36px; padding: 0; }
+.op-card-footer > :is(.table-btn-ikon, .lihat-dunia-ikon) { width: 44px; min-height: 44px; padding: 0; }
 .op-card-footer > a.table-btn-action { display: inline-grid; place-items: center; border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--surface); color: var(--ink); }
 
 @media (max-width: 1023px) {

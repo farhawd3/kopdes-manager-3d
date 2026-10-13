@@ -44,6 +44,7 @@ menampilkan informasi yang belum ada di badan kartu.
 npm test
 npm run typecheck
 npm run lint
+npm run lint:ui
 npm run build
 ```
 

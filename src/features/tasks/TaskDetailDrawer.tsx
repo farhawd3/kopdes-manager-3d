@@ -28,7 +28,7 @@ import { schemas, type Item } from '../records/schemas';
 import type { Workspace } from '../workspace/useWorkspace';
 import { api } from '@/lib/client';
 import { subtaskProgress } from '@/lib/progress';
-import { formatDate, today } from '@/lib/date';
+import { formatDate, formatDateTime, today } from '@/lib/date';
 import { toggleTaskStatus, selectTaskStatus, type TaskStatus } from '@/lib/task-status';
 import { RecursiveScheduleModal } from './RecursiveScheduleModal';
 import { meetingJoinUrl } from '../meetings/meeting';
@@ -852,12 +852,7 @@ export function TaskDetailDrawer({
                     <strong>{act.user}</strong> {act.text}
                   </p>
                   <span className="event-time">
-                    {new Intl.DateTimeFormat('id-ID', {
-                      dateStyle: 'medium',
-                      timeStyle: 'short',
-                      timeZone: 'Asia/Jakarta',
-                    }).format(new Date(act.created_at))}{' '}
-                    WIB
+                    {formatDateTime(act.created_at)}
                   </span>
                 </div>
               </div>

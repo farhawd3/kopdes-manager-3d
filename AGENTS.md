@@ -8,7 +8,7 @@ Ruang kerja manajer KDMP dengan **Dunia Koperasi 3D** (Three.js, diorama isometr
 2. Dunia Koperasi: `docs/DUNIA-KOPERASI.md` (satu kontrak gaya, data, dan peta kode). Keadaan dan bukti: `docs/STATUS.md`.
 3. Baca dokumen lain sesuai pekerjaan: `docs/DESAIN-ANTARMUKA.md` (halaman operasional), `docs/KEGIATAN-DAN-TUGAS.md`, `docs/ARSITEKTUR.md` (koneksi data), `docs/MIGRASI-SQL.md` sebelum perubahan SQL.
 4. PRD/KEPUTUSAN menyimpan batas produk, CHECKLIST menyimpan penerimaan. Tidak perlu membaca seluruh Markdown untuk setiap perubahan.
-5. Abaikan `not-use/` dan `graphify-out/` (diabaikan Git) kecuali diminta.
+5. Abaikan `not-use/`. Graphify bersifat opsional: baca `graphify-out/` hanya bila pemilik meminta peta kode atau penelusuran Graphify; selain itu gunakan pencarian sumber langsung.
 
 Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya dunia lain. Jangan menghapus catatan pengguna atau fitur operasional untuk merapikan dokumen.
 
@@ -51,7 +51,7 @@ Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya d
 
 1. Periksa Git dan pertahankan perubahan pengguna.
 2. Implementasikan paket kerja konkret dan dapat diverifikasi.
-3. Untuk perubahan kode jalankan `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`. Untuk dokumentasi saja, periksa diff dan tautan tanpa mengklaim tes baru. Boleh `npm test -- --maxWorkers=2`; cakupan tetap seluruh suite.
+3. Untuk perubahan kode jalankan `npm test`, `npm run typecheck`, `npm run lint`, `npm run lint:ui`, `npm run build`. Untuk dokumentasi saja, periksa diff dan tautan tanpa mengklaim tes baru. Boleh `npm test -- --maxWorkers=2`; cakupan tetap seluruh suite.
 4. Periksa singkat UI yang berubah pada ukuran relevan (`npm run dev:demo` memberi data contoh tanpa Supabase).
 5. Catat paket di CHANGELOG. STATUS dan LANJUTAN-AI hanya berisi keadaan terkini: timpa bagian yang berubah. Perbarui checklist yang benar-benar selesai.
 6. Laporkan hasil dan batasan secara jujur; tes lama bukan bukti fitur baru selesai. Jangan menandai pemeriksaan perangkat yang belum dilakukan.
@@ -70,7 +70,7 @@ Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya d
 - Ubah aturan hanya di AGENTS.md. CLAUDE.md dan GEMINI.md mengimpor berkas ini (@AGENTS.md) dan hanya menambah bagian Graphify; `.cursor/rules/` dan `.agents/rules/` menunjuk ke sini.
 - Hook Graphify lokal (`.claude/settings.json`, `.codex/`, `.gemini/settings.json`) berisi path komputer pemilik dan tidak di-commit.
 - rtk (dipasang global oleh pemilik) meringkas keluaran shell. Bila galat terpotong, jalankan `rtk proxy <perintah>`.
-- Peta kode Graphify (`graphify-out/`, tidak di-commit) dibuat ulang dengan `graphify update .` (hanya kode, tanpa AI). Jangan memproses `docs/` dengan ekstraksi AI tanpa izin pemilik.
+- Bila pemilik meminta Graphify, gunakan `graphify query`, `graphify path`, atau `graphify explain` pada peta yang ada. Peta kode (`graphify-out/`, tidak di-commit) dibuat ulang dengan `graphify update .` (hanya kode, tanpa AI); tidak wajib diperbarui pada pekerjaan lain. Jangan memproses `docs/` dengan ekstraksi AI tanpa izin pemilik.
 
 ## Pencatatan dan rapat
 

@@ -2292,7 +2292,7 @@ export function Records({
       {entity === 'work-items' && !isCompletedArchive && view === 'daftar' && (
         <TaskBatchActions items={rows} refresh={refresh} />
       )}
-      {error && (
+      {error && !showCsvModal && (
         <p className="notice error" role="alert">
           {error}
         </p>
@@ -2679,7 +2679,7 @@ export function Records({
         <Modal
           className="sprint-modal-dialog"
           aria-labelledby="csv-modal-title"
-          onDismiss={() => setShowCsvModal(false)}
+          onDismiss={() => { if (!busy) setShowCsvModal(false); }}
         >
           <div className="sprint-modal-card">
             <header className="sprint-modal-head">
@@ -2694,6 +2694,7 @@ export function Records({
                 variant="ghost"
                 className="close-btn"
                 onClick={() => setShowCsvModal(false)}
+                disabled={busy}
                 aria-label="Tutup modal"
               >
                 <X size={18} />
@@ -2703,32 +2704,46 @@ export function Records({
               Unggah file CSV dengan kolom sesuai format data untuk menambahkan data secara
               langsung.
             </p>
+            <Button type="button" disabled={busy} onClick={() => {
+              const url = URL.createObjectURL(new Blob(['\uFEFF' + catalog[entity].fields.join(',') + '\r\n'], { type: 'text/csv;charset=utf-8' }));
+              const anchor = document.createElement('a');
+              anchor.href = url; anchor.download = `format-${entity}.csv`; anchor.click();
+              URL.revokeObjectURL(url);
+            }}>Unduh format CSV</Button>
+            <p>Isi judul pada kolom title. Tanggal memakai YYYY-MM-DD; kolom kosong memakai nilai bawaan.</p>
             <CsvDropzone
+              disabled={busy}
               onDataParsed={async (parsedRows) => {
                 setBusy(true);
                 setError('');
+                let saved = 0;
                 try {
-                  for (const row of parsedRows) {
-                    if (row.title && row.title.trim()) {
-                      const fallbackData: Record<string, unknown> = {
-                        due_date: today(),
-                        date: today(),
-                        ...row,
-                      };
-                      const parsed = schemas[entity].parse(fallbackData);
-                      await api(entity, { data: parsed });
-                    }
+                  // Semua baris divalidasi dahulu agar kesalahan berkas tidak menyimpan sebagian data.
+                  const records = parsedRows.map((row, index) => {
+                    const result = schemas[entity].safeParse({
+                      ...(entity === 'work-items' ? { due_date: today() }
+                        : catalog[entity].fields.includes('date') ? { date: today() } : {}),
+                      ...Object.fromEntries(Object.entries(row).filter(([, value]) => value.trim() !== '')),
+                    });
+                    if (!result.success) throw new Error(`Baris ${index + 2}: ${result.error.issues.map(issue => `${labels[String(issue.path[0])] || 'Isian'}: ${issue.message}`).join('; ')}`);
+                    return result.data;
+                  });
+                  for (const data of records) {
+                    await api(entity, { data });
+                    saved++;
                   }
-                  await refresh();
                   setShowCsvModal(false);
                 } catch (err) {
-                  setError((err as Error).message || 'Gagal mengimpor beberapa baris data CSV.');
+                  setError(`${saved} dari ${parsedRows.length} baris tersimpan. ${(err as Error).message} Impor ulang hanya baris yang belum tersimpan.`);
                 } finally {
-                  setBusy(false);
+                  try { if (saved) await refresh(); }
+                  catch (err) { setError(`${saved} baris tersimpan, tetapi daftar belum dapat dimuat ulang. ${(err as Error).message}`); }
+                  finally { setBusy(false); }
                 }
               }}
             />
-            {error && <p className="notice error">{error}</p>}
+            {busy && <p role="status">Menyimpan baris CSV…</p>}
+            {error && <p className="notice error" role="alert">{error}</p>}
           </div>
         </Modal>
       )}

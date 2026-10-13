@@ -16,6 +16,19 @@ beforeEach(() => {
   vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', 'kopdes.vercel.app');
 });
 afterEach(() => vi.unstubAllEnvs());
+it('demo lokal menerima port sendiri tanpa menerima origin luar atau mengaktifkan demo Vercel', () => {
+  vi.stubEnv('VERCEL', '');
+  vi.stubEnv('NEXT_PUBLIC_MODE_DEMO', '1');
+  vi.stubEnv('HUB_APP_ORIGIN', 'http://localhost:3000');
+  const local = (origin: string) =>
+    new Request('http://127.0.0.1:3200/api/work-items', { headers: { origin } });
+  expect(() => sameOrigin(local('http://127.0.0.1:3200'))).not.toThrow();
+  expect(() => sameOrigin(local('http://localhost:3200'))).not.toThrow();
+  expect(() => sameOrigin(local('http://localhost:3300'))).toThrow('ORIGIN_FORBIDDEN');
+  expect(() => sameOrigin(local('https://evil.example'))).toThrow('ORIGIN_FORBIDDEN');
+  vi.stubEnv('VERCEL', '1');
+  expect(() => sameOrigin(local('http://127.0.0.1:3200'))).toThrow('ORIGIN_FORBIDDEN');
+});
 describe('Origin deployment Vercel', () => {
   it.each([
     'https://kopdes.vercel.app',

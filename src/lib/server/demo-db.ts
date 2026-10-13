@@ -12,7 +12,7 @@ import { today } from '@/lib/date';
  */
 type Baris = Record<string, unknown> & { id: string };
 type Galat = { code: string; message: string };
-type Hasil = { data: unknown; error: Galat | null };
+type Hasil = { data: unknown; error: Galat | null; count?: number };
 
 type Toko = Record<string, Baris[]>;
 const wadah = globalThis as typeof globalThis & { __kopdesDemo?: Toko };
@@ -27,7 +27,7 @@ export function aturUlangDemo() {
   delete wadah.__kopdesDemo;
 }
 
-const salin = <T,>(v: T): T => structuredClone(v);
+const salin = <T>(v: T): T => structuredClone(v);
 const galat = (code: string, message: string): Hasil => ({ data: null, error: { code, message } });
 
 /** Nilai kolom, termasuk `data->>field` (teks, null bila tidak ada) seperti PostgREST. */
@@ -48,7 +48,9 @@ function operasi(path: string, op: string, arg: unknown): Saring {
     if (op === 'in') {
       const daftar = Array.isArray(arg)
         ? arg.map(String)
-        : String(arg).replace(/^\(|\)$/g, '').split(',');
+        : String(arg)
+            .replace(/^\(|\)$/g, '')
+            .split(',');
       return v !== null && daftar.includes(v);
     }
     if (v === null) return false;
@@ -101,7 +103,8 @@ function bentrok(rows: Baris[], baru: Baris): boolean {
     if (r.id === baru.id) return false;
     const rd = r.data as Record<string, unknown>;
     if (baru.entity === 'organization' && r.entity === 'organization') return true;
-    if (baru.entity === 'workstreams' && r.entity === 'workstreams' && rd.code === d.code) return true;
+    if (baru.entity === 'workstreams' && r.entity === 'workstreams' && rd.code === d.code)
+      return true;
     return false;
   });
 }
@@ -121,8 +124,10 @@ class Kueri implements PromiseLike<Hasil> {
   private aksi: 'select' | 'insert' | 'update' | 'delete' = 'select';
   private muatan?: Record<string, unknown>;
   private satu?: 'single' | 'maybe';
+  private hitung = false;
   constructor(private tabel: string) {}
-  select() {
+  select(_columns?: string, options?: { count?: 'exact' }) {
+    this.hitung = options?.count === 'exact';
     return this;
   }
   insert(v: Record<string, unknown>) {
@@ -196,9 +201,15 @@ class Kueri implements PromiseLike<Hasil> {
     const rows = (toko()[this.tabel] ??= []);
     const cocok = () => rows.filter((r) => this.saring.every((s) => s(r)));
     let hasil: Baris[];
+    let count = 0;
     if (this.aksi === 'insert') {
       const waktu = new Date().toISOString();
-      const baru = { id: randomUUID(), created_at: waktu, updated_at: waktu, ...this.muatan } as Baris;
+      const baru = {
+        id: randomUUID(),
+        created_at: waktu,
+        updated_at: waktu,
+        ...this.muatan,
+      } as Baris;
       if (this.tabel === 'hub_records' && bentrok(rows, baru))
         return galat('23505', 'duplicate key value');
       rows.push(baru);
@@ -219,6 +230,7 @@ class Kueri implements PromiseLike<Hasil> {
       toko()[this.tabel] = rows.filter((r) => !hasil.includes(r));
     } else {
       hasil = cocok();
+      count = hasil.length;
       for (const [p, naik] of [...this.urutan].reverse())
         hasil.sort((a, b) => {
           const x = nilai(a, p) ?? '',
@@ -232,7 +244,7 @@ class Kueri implements PromiseLike<Hasil> {
         return galat('PGRST116', 'JSON object requested, multiple (or no) rows returned');
       return { data: hasil[0] ? salin(hasil[0]) : null, error: null };
     }
-    return { data: salin(hasil), error: null };
+    return { data: salin(hasil), error: null, ...(this.hitung ? { count } : {}) };
   }
 }
 
@@ -240,17 +252,39 @@ function simpanTugas(args: Record<string, unknown>): Hasil {
   const rows = toko().hub_records;
   const waktu = new Date().toISOString();
   let rekam: Baris;
+  let previousStatus: unknown;
   if (args.record_id) {
     const ada = rows.find((r) => r.id === args.record_id && r.entity === 'work-items');
     if (!ada) return galat('P0001', 'Missing record');
+    previousStatus = (ada.data as Record<string, unknown>).status;
     Object.assign(ada, { data: salin(args.payload), updated_at: waktu });
     rekam = ada;
   } else {
-    rekam = { id: randomUUID(), entity: 'work-items', data: salin(args.payload), created_at: waktu, updated_at: waktu };
+    rekam = {
+      id: randomUUID(),
+      entity: 'work-items',
+      data: salin(args.payload),
+      created_at: waktu,
+      updated_at: waktu,
+    };
     rows.push(rekam);
   }
-  if (args.next_payload)
-    rows.push({ id: randomUUID(), entity: 'work-items', data: salin(args.next_payload), created_at: waktu, updated_at: waktu });
+  const payload = args.payload as Record<string, unknown>;
+  const recurrenceKey = `${rekam.id}:${payload.due_date}`;
+  if (
+    payload.status === 'selesai' &&
+    previousStatus !== 'selesai' &&
+    args.next_payload &&
+    !rows.some((row) => row.recurrence_key === recurrenceKey)
+  )
+    rows.push({
+      id: randomUUID(),
+      entity: 'work-items',
+      data: salin(args.next_payload),
+      recurrence_key: recurrenceKey,
+      created_at: waktu,
+      updated_at: waktu,
+    });
   return { data: salin(rekam), error: null };
 }
 
@@ -258,7 +292,8 @@ function mutasiStok(p: Record<string, unknown>): Hasil {
   const rows = toko().hub_records;
   const jumlah = Number(p.quantity);
   const arah = { masuk: 1, 'koreksi tambah': 1, keluar: -1, 'koreksi kurang': -1 }[String(p.kind)];
-  if (!arah || !Number.isInteger(jumlah) || jumlah <= 0) return galat('P0001', 'Invalid amount or quantity');
+  if (!arah || !Number.isInteger(jumlah) || jumlah <= 0)
+    return galat('P0001', 'Invalid amount or quantity');
   const barang = rows.find((r) => r.entity === 'inventory-items' && r.id === p.item_id);
   if (!barang) return galat('P0001', 'Missing related record');
   const d = barang.data as Record<string, unknown>;
@@ -281,9 +316,11 @@ function mutasiStok(p: Record<string, unknown>): Hasil {
 const klien = {
   from: (tabel: string) => new Kueri(tabel),
   rpc: async (nama: string, args: Record<string, unknown> = {}): Promise<Hasil> => {
-    if (nama === 'hub_operations_ready' || nama === 'hub_logistics_ready') return { data: true, error: null };
+    if (nama === 'hub_operations_ready' || nama === 'hub_logistics_ready')
+      return { data: true, error: null };
     if (nama === 'save_work_item') return simpanTugas(args);
-    if (nama === 'hub_post_stock_movement') return mutasiStok(args.p_data as Record<string, unknown>);
+    if (nama === 'hub_post_stock_movement')
+      return mutasiStok(args.p_data as Record<string, unknown>);
     // PIN, sesi, dan pemulihan cadangan tidak berlaku di mode demo.
     return galat('P0001', `Fungsi ${nama} tidak tersedia di mode demo.`);
   },

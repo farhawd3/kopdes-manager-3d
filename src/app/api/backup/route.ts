@@ -12,6 +12,7 @@ const reportSchema = z
     period_start: z.string().date(),
     period_end: z.string().date(),
     created_at: z.string().datetime({ offset: true }),
+    status: z.enum(['draft', 'final']).optional(),
     snapshot: z
       .object({
         organization: z.string(),
@@ -22,21 +23,52 @@ const reportSchema = z
         risks: z.array(z.string()),
         milestones: z.array(z.string()),
         notes: z.string(),
+        status: z.enum(['draft', 'final']).optional(),
+        cash: z
+          .object({
+            in: z.number().finite().nonnegative(),
+            out: z.number().finite().nonnegative(),
+            net: z.number().finite(),
+            count: z.number().int().nonnegative(),
+          })
+          .strict()
+          .optional(),
       })
       .strict(),
   })
   .strict();
+
+async function backupRows(table: 'hub_records' | 'manager_reports') {
+  const rows: Record<string, unknown>[] = [];
+  const ids = new Set<unknown>();
+  let expectedCount: number | null = null;
+  const client = db();
+  while (true) {
+    const { data, error, count } = await client
+      .from(table)
+      .select('*', { count: 'exact' })
+      .order('id')
+      .range(rows.length, rows.length + 499);
+    if (error || !data || typeof count !== 'number') throw new Error('Cadangan gagal dimuat. Coba lagi.');
+    if (count > 5000) throw new Error('Cadangan melebihi batas 5.000 catatan per jenis tabel.');
+    if (expectedCount !== null && expectedCount !== count)
+      throw new Error('Data berubah saat membuat cadangan. Coba lagi setelah penyimpanan selesai.');
+    expectedCount = count;
+    for (const row of data) {
+      if (ids.has(row.id)) throw new Error('Data berubah saat membuat cadangan. Coba lagi.');
+      ids.add(row.id);
+      rows.push(row);
+    }
+    if (rows.length === count) return rows;
+    if (!data.length || rows.length > count) throw new Error('Cadangan belum lengkap. Coba lagi.');
+  }
+}
 export async function GET() {
   try {
     await requireSession();
-    const { data, error } = await db().from('hub_records').select('*').limit(5001);
-    if (error || data.length > 5000)
-      throw new Error('Cadangan gagal atau melebihi batas 5.000 catatan.');
-    const { data: reports, error: reportError } = await db()
-      .from('manager_reports')
-      .select('*')
-      .limit(5001);
-    if (reportError || reports.length > 5000) throw new Error('Cadangan laporan gagal.');
+    // Permintaan tunggal dapat dipotong oleh batas respons PostgREST.
+    const data = await backupRows('hub_records');
+    const reports = await backupRows('manager_reports');
     return NextResponse.json(
       {
         format: 'kopdes-management-web',
@@ -84,6 +116,12 @@ export async function POST(request: Request) {
       .strict()
       .parse(await readJson(request));
     const ids = new Set<string>();
+    for (const report of backup.reports) {
+      // Snapshot adalah sumber status UI; kolom status pada cadangan lama bisa tertinggal.
+      const status = report.snapshot.status ?? report.status ?? 'final';
+      report.status = status;
+      report.snapshot.status = status;
+    }
     for (const record of backup.records) {
       const entity = entityName(record.entity);
       if (!entity || ids.has(record.id)) throw new Error('Jenis data atau ID cadangan tidak sah.');

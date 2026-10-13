@@ -143,7 +143,7 @@ export function WorkspacePage({ slug }: { slug: string }) {
           Pengiriman dan mutasi stok belum aktif. Pasang migrasi 8
           (20261006000008_world_logistics.sql) setelah disetujui; data belum dapat dicatat di sini.
         </p>
-      ) : pages[slug] && (
+      ) : pages[slug] && slug !== 'pengaturan' && (
         <>
           {pages[slug].length > 1 && (
             <div className="tabs" role="tablist" aria-label="Bagian halaman">

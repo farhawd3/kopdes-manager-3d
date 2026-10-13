@@ -81,4 +81,14 @@ describe('klien demo', () => {
     const { error } = await db().from('hub_records').delete().eq('id', proyek.id);
     expect(error).not.toBeNull();
   });
+  it('menyimpan ulang atau membuka kembali tugas selesai tidak menggandakan pengulangan demo', async () => {
+    const { save, list } = await import('@/features/records/service');
+    const payload = { title: 'Uji tugas berulang', due_date: '2026-10-13', recurrence: 'harian' };
+    const row = await save('work-items', payload);
+    await save('work-items', { ...payload, status: 'selesai' }, row.id);
+    await save('work-items', { ...payload, status: 'selesai', notes: 'Catatan baru' }, row.id);
+    await save('work-items', payload, row.id);
+    await save('work-items', { ...payload, status: 'selesai' }, row.id);
+    expect((await list('work-items')).filter(item => item.data.title === payload.title)).toHaveLength(2);
+  });
 });

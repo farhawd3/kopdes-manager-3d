@@ -1,15 +1,18 @@
 'use client';
 import { useState, useRef } from 'react';
 import { UploadCloud, CheckCircle2, AlertCircle } from 'lucide-react';
+import { parseCsv } from '@/lib/csv';
 
 export function CsvDropzone({
   onDataParsed,
   label = 'Tarik & lepas file CSV untuk impor atau klik untuk telusuri',
   supportedFormat = 'Format CSV (.csv)',
+  disabled = false,
 }: {
   onDataParsed: (rows: Record<string, string>[]) => void;
   label?: string;
   supportedFormat?: string;
+  disabled?: boolean;
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState('');
@@ -19,21 +22,7 @@ export function CsvDropzone({
 
   function parseCsvContent(text: string) {
     try {
-      const lines = text.split(/\r?\n/).filter((line) => line.trim().length > 0);
-      if (lines.length < 2) {
-        throw new Error('File CSV kosong atau tidak memiliki baris data.');
-      }
-      const headers = lines[0].split(',').map((h) => h.trim().replace(/^["']|["']$/g, ''));
-      const records: Record<string, string>[] = [];
-
-      for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map((v) => v.trim().replace(/^["']|["']$/g, ''));
-        const row: Record<string, string> = {};
-        headers.forEach((h, idx) => {
-          row[h] = values[idx] || '';
-        });
-        records.push(row);
-      }
+      const records = parseCsv(text);
 
       setParsedCount(records.length);
       setError('');
@@ -45,7 +34,13 @@ export function CsvDropzone({
   }
 
   function handleFile(file: File) {
-    if (!file.name.endsWith('.csv') && file.type !== 'text/csv') {
+    if (disabled) return;
+    setParsedCount(null);
+    if (file.size > 5_000_000) {
+      setError('Berkas CSV maksimal 5 MB.');
+      return;
+    }
+    if (!file.name.toLowerCase().endsWith('.csv') && file.type !== 'text/csv') {
       setError('Harap pilih file dengan format .csv');
       return;
     }
@@ -53,7 +48,7 @@ export function CsvDropzone({
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
-      if (text) parseCsvContent(text);
+      parseCsvContent(text || '');
     };
     reader.onerror = () => setError('Gagal membaca file.');
     reader.readAsText(file);
@@ -61,9 +56,14 @@ export function CsvDropzone({
 
   return (
     <div
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      aria-label="Pilih berkas CSV"
+      aria-disabled={disabled}
       className={`csv-dropzone ${isDragging ? 'dragging' : ''}`}
       onDragOver={(e) => {
         e.preventDefault();
+        if (disabled) return;
         setIsDragging(true);
       }}
       onDragLeave={() => setIsDragging(false)}
@@ -74,17 +74,29 @@ export function CsvDropzone({
           handleFile(e.dataTransfer.files[0]);
         }
       }}
-      onClick={() => fileInputRef.current?.click()}
+      onClick={() => {
+        if (!disabled) fileInputRef.current?.click();
+      }}
+      onKeyDown={(e) => {
+        if (!disabled && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          fileInputRef.current?.click();
+        }
+      }}
     >
       <input
         ref={fileInputRef}
         type="file"
+        aria-label="Berkas CSV"
+        tabIndex={-1}
+        disabled={disabled}
         accept=".csv,text/csv"
         className="sr-only"
         onChange={(e) => {
           if (e.target.files && e.target.files[0]) {
             handleFile(e.target.files[0]);
           }
+          e.target.value = '';
         }}
       />
       <div className="dropzone-icon-wrap">
@@ -98,7 +110,7 @@ export function CsvDropzone({
       {parsedCount !== null && (
         <div className="dropzone-success">
           <CheckCircle2 size={16} />
-          <span>{parsedCount} baris data berhasil dimuat</span>
+          <span>{parsedCount} baris data berhasil dibaca</span>
         </div>
       )}
 
