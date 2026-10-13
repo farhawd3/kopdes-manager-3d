@@ -642,6 +642,18 @@
   .recording-metrics { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .metric-card { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 10px 14px; }
   .metric-icon-wrap { display: none; }
-  .metric-value { grid-column: 2; grid-row: 1; font-size: 18px; }
+  .metric-card { grid-template-columns: minmax(0, 1fr); }
+  .metric-value { grid-column: 1; grid-row: auto; font-size: 22px; white-space: normal; overflow-wrap: anywhere; }
   .metric-sub { grid-column: 1 / -1; }
+  .records-head > .actions > .ui-btn { flex: 1 1 120px; }
+  .records-head > .actions { align-items: stretch; }
+  .record.card > .actions { flex-wrap: wrap; gap: 8px; }
+  .record.card > .actions > :is(.ui-btn, a) { min-height: 44px; }
+  .record-options > summary { min-width: 44px; min-height: 44px; }
+  .meeting-action-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .meeting-action-row .button { min-height: 44px; width: 100%; white-space: normal; }
+  .meeting-action-row .btn-join-meeting { grid-column: 1 / -1; justify-content: center; }
+  .contact-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 8px; }
+  .contact-actions .button { min-height: 44px; justify-content: center; }
+  .contact-actions > :only-child { grid-column: 1 / -1; }
 }

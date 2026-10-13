@@ -30,6 +30,7 @@ Implementasi, bukti pemeriksaan, dan penerimaan dibedakan. [STATUS](STATUS.md) a
 - [x] Semua halaman diperiksa di 375/768/1024/1440 px tanpa luber samping; tabel berubah menjadi kartu di area sempit.
 - [x] Pemeriksaan tambahan 360/768/1024/1440 px: Beranda, Tugas Harian, Barang, dan formulir Barang; kontrol bersama dan tombol dunia yang diubah terukur 44 px.
 - [x] Mode demo lokal dan seed SQL data contoh.
+- [x] Perbaikan mobile: nominal kas utuh di 360/390/430 px, rutinitas/dialog dan aksi kartu dirapikan, latar PIN terang/gelap, serta panel dunia hanya menampilkan satu isi terpilih (browser, lima lokasi).
 - [ ] Penerimaan visual pemilik dan perangkat fisik.
 
 ## Penerimaan cloud terbuka

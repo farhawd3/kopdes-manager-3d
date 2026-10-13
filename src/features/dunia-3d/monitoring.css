@@ -1729,7 +1729,8 @@
 }
 
 /* Satu panel sesuai kebutuhan; ruang kanvas benar-benar menyusut, bukan tertutup kartu. */
-.mt-root [hidden] {
+.mt-root [hidden],
+.mt-root .mt-inspector [hidden] {
   display: none;
 }
 .mt-root .mt-stage {

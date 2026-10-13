@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { EmptyState } from '@/components/ui/EmptyState';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { usePreference } from '@/lib/usePreference';
 import { Modal } from '@/components/ui/Modal';
@@ -11,6 +11,7 @@ import {
   ArrowUpRight,
   CalendarDays,
   ArrowRight,
+  Check,
   Clock,
   Video,
   SlidersHorizontal,
@@ -85,7 +86,7 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
 
   const meetingOnlineUrl = meetingJoinUrl(meeting);
 
-  // Rutinitas harian manajer gerai KDMP Puntukrejo
+  // Rutinitas harian manajer gerai; daftar bawaan bisa diubah lewat Atur
   const ROUTINE_CONFIG_KEY = 'kdmp_manager_routine_config';
   const ROUTINE_KEY = `kdmp_manager_routine_${now}`;
   const DEFAULT_ROUTINES = [
@@ -136,6 +137,25 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
   function handleResetRoutines() {
     saveRoutines(DEFAULT_ROUTINES);
   }
+
+  const [jamSekarang, setJamSekarang] = useState('');
+  useEffect(() => {
+    const format = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Jakarta',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    });
+    const perbarui = () => setJamSekarang(format.format(new Date()));
+    perbarui();
+    const timer = window.setInterval(perbarui, 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
+  // Rutinitas berikutnya = yang belum selesai dan jamnya belum lewat; yang belum selesai tapi jamnya lewat ditandai.
+  const routineBerikutnya = jamSekarang
+    ? routines.find((r) => !completedRoutines.includes(r.id) && r.time >= jamSekarang)?.id
+    : undefined;
+  const semuaRutinSelesai = routines.length > 0 && routineCompletedCount === routines.length;
 
   function toggleRoutine(id: string) {
     const next = completedRoutines.includes(id)
@@ -525,53 +545,71 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
         >
           <summary>
             Rutinitas harian
-            <span className="beranda-jumlah">
+            <span className={`beranda-jumlah${semuaRutinSelesai ? ' is-selesai' : ''}`}>
               {routineCompletedCount}/{routines.length} selesai
             </span>
           </summary>
           <div className="home-routine-card">
-            <div className="routine-head">
-              <div className="routine-title-wrap">
-                <Clock size={16} className="routine-icon" />
-                <div>
-                  <h3>Rutinitas manajer</h3>
-                  <small>Checklist operasional harian gerai</small>
-                </div>
+            <div className="rutin-kepala">
+              <div className="rutin-kemajuan" aria-hidden="true">
+                {routines.map((r) => (
+                  <i key={r.id} className={completedRoutines.includes(r.id) ? 'is-selesai' : ''} />
+                ))}
               </div>
-              <div className="routine-head-actions">
-                <Button
-                  type="button"
-                  className="btn-routine-config"
-                  onClick={() => setShowRoutineModal(true)}
-                  title="Atur checklist rutinitas harian"
-                  aria-label="Atur rutinitas"
-                >
-                  <SlidersHorizontal size={12} />
-                  <span>Atur</span>
-                </Button>
-              </div>
+              <Button
+                type="button"
+                className="btn-routine-config"
+                onClick={() => setShowRoutineModal(true)}
+                title="Atur checklist rutinitas harian"
+                aria-label="Atur rutinitas"
+              >
+                <SlidersHorizontal size={14} />
+                <span>Atur</span>
+              </Button>
             </div>
-            <div className="routine-list">
+            {semuaRutinSelesai && (
+              <p className="rutin-tuntas">
+                <Check size={14} aria-hidden="true" /> Semua rutinitas hari ini sudah dicentang.
+              </p>
+            )}
+            <ol className="rutin-rel">
               {routines.map((item) => {
                 const isChecked = completedRoutines.includes(item.id);
+                const berikutnya = item.id === routineBerikutnya;
+                const terlewat = !isChecked && Boolean(jamSekarang) && item.time < jamSekarang;
+                const keadaan = isChecked ? 'is-selesai' : berikutnya ? 'is-berikutnya' : terlewat ? 'is-terlewat' : '';
                 return (
-                  <label key={item.id} className={`routine-item ${isChecked ? 'is-done' : ''}`}>
-                    <Input type="checkbox" checked={isChecked} onChange={() => toggleRoutine(item.id)} />
-                    <span className="routine-time">{item.time}</span>
-                    <span className="routine-text">{item.title}</span>
-                  </label>
+                  <li key={item.id} className={`rutin-butir ${keadaan}`}>
+                    <label>
+                      <span className="rutin-jam">{item.time}</span>
+                      <span className="rutin-simpul" aria-hidden="true">
+                        <Check size={13} strokeWidth={3} />
+                      </span>
+                      <input
+                        type="checkbox"
+                        className="rutin-centang"
+                        checked={isChecked}
+                        onChange={() => toggleRoutine(item.id)}
+                      />
+                      <span className="rutin-isi">
+                        <span className="rutin-judul">{item.title}</span>
+                        {berikutnya && <small className="rutin-label">Berikutnya</small>}
+                        {terlewat && <span className="sr-only">Jam sudah lewat</span>}
+                      </span>
+                    </label>
+                  </li>
                 );
               })}
-              {routines.length === 0 && (
-                <EmptyState
-                  compact
-                  ikon="jam"
-                  title="Belum ada rutinitas"
-                  description="Tambahkan checklist rutinitas harian gerai."
-                  action={{ label: 'Atur rutinitas', onClick: () => setShowRoutineModal(true) }}
-                />
-              )}
-            </div>
+            </ol>
+            {routines.length === 0 && (
+              <EmptyState
+                compact
+                ikon="jam"
+                title="Belum ada rutinitas"
+                description="Tambahkan checklist rutinitas harian gerai."
+                action={{ label: 'Atur rutinitas', onClick: () => setShowRoutineModal(true) }}
+              />
+            )}
           </div>
         </details>
 
@@ -631,7 +669,7 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
                 <div>
                   <h2 id="routine-config-title">Atur Rutinitas Harian</h2>
                   <p style={{ margin: 0, fontSize: '12px', color: 'var(--ink-muted)' }}>
-                    Checklist operasional manajer gerai KDMP Puntukrejo
+                    Checklist operasional harian gerai
                   </p>
                 </div>
               </div>
@@ -648,6 +686,7 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
             <div className="routine-config-body">
               <form onSubmit={handleAddRoutine} className="routine-add-form">
                 <div className="routine-add-inputs">
+                  <label>Jam
                   <Input
                     type="time"
                     value={newRoutineTime}
@@ -657,6 +696,8 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
                     aria-label="Waktu rutinitas baru"
                     required
                   />
+                  </label>
+                  <label>Rutinitas
                   <Input
                     type="text"
                     placeholder="Tambah rutinitas baru (misal: Cek suhu showcase)..."
@@ -667,6 +708,7 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
                     maxLength={120}
                     required
                   />
+                  </label>
                 </div>
                 <Button type="submit" className="btn-add-routine">
                   <Plus size={15} />
@@ -709,6 +751,7 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
               <Button
                 type="button"
                 className="btn-primary-finish"
+                primary
                 onClick={() => setShowRoutineModal(false)}
               >
                 Selesai

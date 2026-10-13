@@ -134,4 +134,5 @@
   .ui-stat-card { padding: 12px 14px; gap: 6px; }
   .ui-stat-icon-wrap, .stat-radial-wrap, .stat-radial-svg { width: 36px; height: 36px; }
   .ui-stat-value { font-size: 24px; }
+  .ui-stat-sub { white-space: normal; overflow: visible; }
 }
