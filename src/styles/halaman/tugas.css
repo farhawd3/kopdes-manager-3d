@@ -1,6 +1,9 @@
 /* Tampilan tugas: harian, papan, kalender, linimasa (Gantt), ubah massal, tampilan tersimpan. */
 
 /* ---------- Harian ---------- */
+.task-database .records-stats span { background: transparent; box-shadow: none; }
+.task-database .records-stats span strong { min-width: 0; padding: 0; background: transparent; color: var(--ink); }
+.task-database .database-views { background: transparent; border-color: transparent; }
 .daily-tasks-container { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .daily-nav-header {
   display: flex;
@@ -8,15 +11,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
 }
 .daily-nav-left, .daily-nav-right { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
 .daily-nav-arrows { display: flex; align-items: center; gap: 4px; }
-.daily-nav-arrow-btn.ui-btn { width: 44px; min-height: 44px; padding: 0; }
+.daily-nav-arrow-btn.ui-btn { width: 44px; min-height: 44px; padding: 0; border-color: transparent; background: transparent; box-shadow: none; }
 .daily-btn-today.ui-btn { min-height: 44px; }
 .daily-btn-today.is-active-today { --btn-bg: var(--brand-soft); --btn-fg: var(--brand-ink); --btn-line: var(--brand-soft-border); }
 .daily-week-strip { display: flex; gap: 4px; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
@@ -47,7 +47,7 @@
 .strip-count-dot.has-pending { background: var(--warn-bg); color: var(--warn); }
 .strip-count-dot.all-done { background: var(--ok-bg); color: var(--ok); }
 .is-selected .strip-count-dot { background: var(--on-brand); color: var(--brand-ink); }
-.daily-view-mode-tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-md); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.daily-view-mode-tabs { display: inline-flex; gap: 2px; padding: 3px; }
 .btn-mode-tab.ui-btn { min-height: 44px; padding: 0 11px; border: 0; background: transparent; color: var(--ink-muted); font-size: 12.5px; box-shadow: none; }
 .btn-mode-tab.ui-btn.is-active { background: var(--surface); color: var(--brand-ink); box-shadow: var(--shadow-sm); }
 
@@ -322,8 +322,14 @@
 .sprint-form-actions { display: flex; justify-content: flex-end; gap: 8px; }
 
 @media (max-width: 767px) {
-  .daily-nav-header { padding: 10px; }
-  .daily-nav-right { width: 100%; justify-content: space-between; }
+  .daily-nav-header { padding: 8px 0 12px; }
+  .daily-nav-left { width: 100%; }
+  .daily-week-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); width: 100%; gap: 1px; }
+  .ui-btn.week-strip-day-btn { min-width: 0; }
+  .daily-nav-right { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; gap: 6px; }
+  .daily-view-mode-tabs { min-width: 0; padding: 0; }
+  .btn-mode-tab.ui-btn { flex: 1; padding: 0 6px; font-size: 12px; }
+  .btn-add-task-day-primary.ui-btn { padding: 0 8px; font-size: 12px; }
   .active-day-title-block { min-width: 0; width: 100%; }
   .active-day-title-block > div { min-width: 0; }
   .daily-task-item { flex-wrap: wrap; }
