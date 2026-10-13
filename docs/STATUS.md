@@ -4,8 +4,6 @@ Keadaan terkini saja; timpa bagian yang berubah. Log per paket di [CHANGELOG](..
 
 ## Halaman operasional
 
-Tugas: tab dan kontrol sebelumnya dipertahankan; ringkasan serta bilah Harian memakai lebih sedikit kotak/bayangan. Tujuh hari dan tombol mode muat pada 360 px; browser demo diperiksa pada 360/768/1024/1440 px tanpa luapan halaman, dengan pergantian mode pekan dan konsol bersih. Perangkat fisik belum diperiksa. Paket lokal belum di-push.
-
 Proyek fleksibel; tugas daftar/papan/kalender/Gantt/harian; milestone, subtugas, dependensi, pengulangan; catatan terformat; kegiatan; rapat dengan tautan pengguna dan unduhan ICS; dokumen; risiko dan isu; tim dan pelatihan; mitra; laporan snapshot; profil/PIN/cadangan; anggota, buku kas, barang, stok opname, pengiriman, mutasi stok. Riwayat proyek di `/proyek?tab=riwayat`.
 
 Belum tersedia: editor blok bebas, kolaborasi real-time, PWA/offline, unggah berkas, baseline/jalur kritis, penjadwalan otomatis dependensi, POS, akuntansi lengkap, simpan pinjam. Kas hanya uang masuk/keluar tercatat; opname tidak mengubah stok otomatis.

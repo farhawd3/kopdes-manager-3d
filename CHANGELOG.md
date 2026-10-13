@@ -2,13 +2,6 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
-## Tampilan tugas lebih bersih — 13 Oktober 2026
-
-- Susunan tab Harian/Papan/Daftar/Kalender/Linimasa serta Fokus Hari/Semua Pekan tetap dipertahankan. Ringkasan angka dan bilah Harian mengurangi kotak serta bayangan yang bertumpuk.
-- Tujuh hari muat satu baris pada ponsel; tombol mode dan tambah tugas berjajar dengan area sentuh minimal 44 px.
-- Browser demo diperiksa pada 360/768/1024/1440 px, terang dan gelap pada 360 px; tanpa luapan halaman atau galat konsol. Pergantian mode pekan tetap berfungsi.
-- Seluruh 372 tes / 59 berkas, typecheck, lint, lint UI, dan build produksi lulus. Perangkat fisik belum diperiksa; paket belum di-push/deploy.
-
 ## Rapikan mobile dan panel Dunia Koperasi — 13 Oktober 2026
 
 - Selisih kas mendapat baris penuh di Beranda pada ponsel; label dan nominal tidak lagi dipaksa muat dalam kolom sempit. Ringkasan buku memisahkan label, nilai, dan keterangan; judul tugas panjang membungkus.

@@ -19,8 +19,6 @@
 
 ## Lanjutan
 
-Perapian kecil tampilan tugas menyusul paket mobile: susunan tab tetap, kotak/bayangan dikurangi, tujuh hari serta tombol mode dirapikan di ponsel. 372 tes, typecheck, lint, lint UI, dan build produksi lulus; browser demo 360/768/1024/1440 px diperiksa. Belum di-push/deploy.
-
 1. Penilaian pemilik di mode demo; reset + seed cloud oleh pemilik.
 2. Penilaian pemilik atas sistem gaya baru (sudah di `main` sejak 12 Oktober 2026); laporkan bagian yang belum serasi per halaman.
 3. Pemeriksaan perangkat fisik dan UAT cloud.
