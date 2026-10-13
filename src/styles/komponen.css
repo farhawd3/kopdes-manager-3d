@@ -13,7 +13,7 @@ button.button {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 15px;
   border: 1px solid var(--btn-line);
   border-radius: var(--r-md);
@@ -71,17 +71,17 @@ a.button.danger {
 .ui-btn[data-variant='danger-soft']:hover,
 .ui-btn.danger:hover { background: var(--late-bg); border-color: var(--late); }
 
-.ui-btn[data-size='sm'] { min-height: 32px; padding: 0 11px; border-radius: 10px; font-size: 12.5px; }
+.ui-btn[data-size='sm'] { min-height: 44px; padding: 0 11px; border-radius: 10px; font-size: 12.5px; }
 .ui-btn[data-size='lg'] { min-height: 48px; padding: 0 20px; font-size: 15px; }
-.ui-btn[data-icon-only] { width: 40px; padding: 0; }
-.ui-btn[data-size='sm'][data-icon-only] { width: 32px; }
+.ui-btn[data-icon-only] { width: 44px; padding: 0; }
+.ui-btn[data-size='sm'][data-icon-only] { width: 44px; }
 
 /* ---------- Isian ---------- */
 .ui-input,
 :where(.manager-shell, dialog, .pin-page) :where(input[type='text'], input[type='search'], input[type='number'], input[type='email'],
   input[type='tel'], input[type='password'], input[type='url'], input[type='time'], input:not([type]), textarea, select) {
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 9px 13px;
   border: 1px solid var(--line-strong);
   border-radius: var(--r-md);
@@ -117,7 +117,7 @@ textarea.ui-input,
 .ui-btn.ui-select-trigger {
   justify-content: space-between;
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 12px 0 13px;
   box-shadow: inset 0 1px 1px rgba(15, 27, 61, 0.03);
   font-weight: 550;
@@ -176,7 +176,7 @@ textarea.ui-input,
 .ui-btn.ui-date-trigger {
   justify-content: space-between;
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 12px 0 13px;
   font-weight: 550;
   font-variant-numeric: tabular-nums;
@@ -203,8 +203,8 @@ textarea.ui-input,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  min-height: 36px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0 10px;
   border: 0;
   border-radius: var(--r-sm);
@@ -290,7 +290,7 @@ dialog.ui-modal h2 { font-size: 19px; }
   transform: translateX(-50%);
   animation: naik 260ms var(--ease-out);
 }
-.ui-toast .ui-btn { min-height: 32px; color: var(--toast-aksi); }
+.ui-toast .ui-btn { min-height: 44px; color: var(--toast-aksi); }
 @media (max-width: 767px) { .ui-toast { bottom: calc(var(--dock-h) + 20px + env(safe-area-inset-bottom)); } }
 
 /* ---------- Keadaan kosong ---------- */
@@ -434,7 +434,7 @@ dialog.ui-modal h2 { font-size: 19px; }
 .ikon-halaman { display: inline-grid; place-items: center; width: var(--ikon, 24px); height: var(--ikon, 24px); }
 .ikon3d-simbol { filter: drop-shadow(0 2px 2px rgba(36, 72, 199, 0.16)); }
 .lihat-dunia.ui-btn { --btn-bg: var(--brand-soft); --btn-fg: var(--brand-ink); --btn-line: var(--brand-soft-border); box-shadow: none; }
-.lihat-dunia-ikon.ui-btn { width: 36px; min-height: 36px; padding: 0; }
+.lihat-dunia-ikon.ui-btn { width: 44px; min-height: 44px; padding: 0; }
 
 /* ---------- Animasi bersama ---------- */
 @keyframes muncul { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }

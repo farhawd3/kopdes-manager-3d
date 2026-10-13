@@ -15,7 +15,7 @@ Ikuti [AGENTS](../../../AGENTS.md) untuk proses, keamanan dan prioritas. Skill i
 
 ## UI dan dunia
 - Target sentuh 44 px, label dan fokus keyboard, safe area, reduced-motion, kontainer scroll tabel/Gantt. Ponsel satu kolom/panel bawah bila sesuai; dunia memakai layout khusus dalam kontraknya.
-- UI operasional memakai komponen/token bersama. Dunia memakai world.css yang terisolasi dan palet mesh objects/primitives.ts; nilai geometri/warna mesh boleh dimiliki domain dunia. Jangan memaksa palet operasional ke scene atau menyebarkan palet dunia ke form.
+- UI operasional memakai komponen/token bersama. Dunia memakai monitoring.css yang terisolasi; nilai geometri/warna mesh boleh dimiliki domain dunia. Jangan memaksa palet operasional ke scene atau menyebarkan palet dunia ke form.
 - Scene modular, animasi berbasis delta waktu, disposal resource saat unmount; jangan rebuild geometri setiap tick. Simulasi kendaraan/cuaca/karakter tidak menjadi klaim pengiriman atau kehadiran nyata.
 - Gunakan dependensi sesuai kebutuhan konkret; pembatasan paket pada rencana Astra historis bukan aturan pekerjaan dunia. Jangan upgrade stack besar tanpa kebutuhan terkait.
 

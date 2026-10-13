@@ -12,6 +12,7 @@ const reportSchema = z
     period_start: z.string().date(),
     period_end: z.string().date(),
     created_at: z.string().datetime({ offset: true }),
+    status: z.enum(['draft', 'final']).optional(),
     snapshot: z
       .object({
         organization: z.string(),
@@ -22,6 +23,16 @@ const reportSchema = z
         risks: z.array(z.string()),
         milestones: z.array(z.string()),
         notes: z.string(),
+        status: z.enum(['draft', 'final']).optional(),
+        cash: z
+          .object({
+            in: z.number().finite().nonnegative(),
+            out: z.number().finite().nonnegative(),
+            net: z.number().finite(),
+            count: z.number().int().nonnegative(),
+          })
+          .strict()
+          .optional(),
       })
       .strict(),
   })
@@ -84,6 +95,12 @@ export async function POST(request: Request) {
       .strict()
       .parse(await readJson(request));
     const ids = new Set<string>();
+    for (const report of backup.reports) {
+      // Snapshot adalah sumber status UI; kolom status pada cadangan lama bisa tertinggal.
+      const status = report.snapshot.status ?? report.status ?? 'final';
+      report.status = status;
+      report.snapshot.status = status;
+    }
     for (const record of backup.records) {
       const entity = entityName(record.entity);
       if (!entity || ids.has(record.id)) throw new Error('Jenis data atau ID cadangan tidak sah.');

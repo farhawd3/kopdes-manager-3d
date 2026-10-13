@@ -213,7 +213,7 @@
 .routine-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .routine-title-wrap { display: flex; align-items: center; gap: 8px; color: var(--brand-ink); }
 .routine-title-wrap h3 { color: var(--ink-heading); }
-.routine-head-actions .ui-btn { min-height: 32px; font-size: 12.5px; }
+.routine-head-actions .ui-btn { min-height: 44px; font-size: 12.5px; }
 .routine-list { display: grid; gap: 4px; }
 .routine-item { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 8px; border-radius: var(--r-md); cursor: pointer; }
 .routine-item:hover { background: var(--surface-2); }

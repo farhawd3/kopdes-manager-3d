@@ -21,5 +21,5 @@ Kontrak gaya, data, dan peta kode: `docs/DUNIA-KOPERASI.md`. Model dibangun dari
 - Pin (≤5) hanya untuk hal yang perlu perhatian. Dunia selalu terang, aksen biru `#2F5BEA`, huruf Inter.
 
 ## Verifikasi
-- `npm test`, typecheck, lint, build; `/dev/dunia-3d?contoh=1` atau `npm run dev:demo` di 375/768/1024/1440 px; klik ruang, figur, zoom, putar.
+- Pemeriksaan mengikuti `AGENTS.md`; `/dev/dunia-3d?contoh=1` atau `npm run dev:demo` di 360/768/1024/1440 px; klik ruang, figur, zoom, putar.
 - Catat paket di CHANGELOG; perbarui DUNIA-KOPERASI/STATUS hanya bila keadaan atau aturan berubah.

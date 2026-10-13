@@ -8,7 +8,7 @@ description: Cara kerja hemat token untuk proyek Kopdes tanpa mengurangi kualita
 Penghematan hanya pada cara kerja dan laporan; pemeriksaan wajib di AGENTS tetap dijalankan.
 
 ## Membaca
-- Bila `graphify-out/graph.json` ada, orientasi dulu dengan `graphify query "<pertanyaan>"`, `graphify explain "<nama>"`, atau `graphify path "A" "B"`; perbarui dengan `graphify update .` setelah mengubah kode.
+- Ikuti ketentuan Graphify opsional di `AGENTS.md`; orientasi biasa memakai pencarian sumber langsung.
 - Mulai dari `docs/LANJUTAN-AI.md` dan bagian relevan `docs/DUNIA-KOPERASI.md`; jangan membaca semua MD.
 - Pakai `grep -n` untuk menemukan baris, lalu baca potongan kecil (`sed -n a,bp`). Jangan membaca ulang berkas yang baru diedit.
 - Jangan membuka berkas besar (`src/styles/halaman/catatan.css`, `Records.tsx`, `Operations.tsx`, `MonitoringDashboard.tsx`, `monitoring-scene.ts`) utuh; grep lalu baca potongan.
@@ -22,7 +22,7 @@ Penghematan hanya pada cara kerja dan laporan; pemeriksaan wajib di AGENTS tetap
 ## Memeriksa
 - Urutan: `npx tsc --noEmit` → eslint folder terkait → tes terfokus → seluruh tes (`--maxWorkers=2`, keluaran ke berkas, tampilkan ringkasan) → build.
 - Tes gagal karena timeout saat mesin sibuk: ulangi berkas itu saja sebelum menyimpulkan.
-- Visual: satu screenshot per perubahan penting di `/dev/dunia-koperasi?contoh=1`; pakai `find`/ref untuk klik; error konsol diperiksa di tab baru (sisa hot reload bukan bug).
+- Visual: periksa UI yang berubah di 360/768/1024/1440 px menurut `AGENTS.md`. Dunia memakai `/dev/dunia-3d?contoh=1`, web memakai `npm run dev:demo`; error konsol diperiksa di tab baru (sisa hot reload bukan bug).
 
 ## Melapor
 - Ringkas: apa berubah, bukti pemeriksaan, batas yang belum diperiksa, langkah berikut. Tanpa mengulang isi kode atau daftar berkas panjang.

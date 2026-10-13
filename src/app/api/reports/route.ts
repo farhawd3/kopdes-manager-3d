@@ -73,6 +73,7 @@ export async function POST(request: Request) {
           period_start: body.start,
           period_end: body.end,
           snapshot,
+          status: snapshot.status,
         })
         .eq('id', body.id)
         .select('*')
@@ -87,6 +88,7 @@ export async function POST(request: Request) {
           period_start: body.start,
           period_end: body.end,
           snapshot,
+          status: snapshot.status,
         })
         .select('*')
         .single();
@@ -118,15 +120,20 @@ export async function PATCH(request: Request) {
       .single();
     if (fetchErr || !existing) throw new Error('Laporan tidak ditemukan.');
 
+    const status =
+      body.status ??
+      z
+        .enum(['draft', 'final'])
+        .parse((existing.snapshot as Record<string, unknown>).status ?? existing.status ?? 'final');
     const snapshot = {
       ...(existing.snapshot as Record<string, unknown>),
       ...(body.notes !== undefined ? { notes: body.notes } : {}),
-      ...(body.status ? { status: body.status } : {}),
+      status,
     };
 
     const { data, error } = await db()
       .from('manager_reports')
-      .update({ snapshot })
+      .update({ snapshot, status })
       .eq('id', body.id)
       .select('*')
       .single();
