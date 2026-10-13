@@ -3,7 +3,9 @@ import { cn } from '@/lib/utils';
 
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   function Input({ className, ...props }, ref) {
-    return <input {...props} ref={ref} className={cn('ui-input', className)} />;
+    // Kotak centang dan radio tidak memakai gaya kolom teks (lebar penuh, tinggi 42 px).
+    const pilihan = props.type === 'checkbox' || props.type === 'radio';
+    return <input {...props} ref={ref} className={cn(pilihan ? 'ui-check' : 'ui-input', className)} />;
   },
 );
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(

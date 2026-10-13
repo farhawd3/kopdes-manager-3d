@@ -19,6 +19,8 @@ Arahan 10 Oktober 2026 (menggantikan gaya kartu sebelumnya): tampilan dunia **pe
 
 ## Data dan interaksi
 
+Dok bawah hanya menampilkan isi panel yang dipilih (Detail, Ringkasan, Daftar, atau Agenda). Kartu ringkasan tidak tampil bersama isi panel lain; keadaan tab dan tautan catatan tetap dipertahankan.
+
 Domain tambahan (10 Oktober 2026): pelatihan bertanggal hari ini = kegiatan (figur ke Gym, panel Pelatihan hari ini); Ruang kerja menampilkan sprint aktif dan milestone terdekat; Ruang manajer menampilkan Mitra dan interaksi terakhir; panel rak menampilkan riwayat mutasi/opname; tab Mutasi di gudang dan cold storage.
 
 `/dunia-koperasi` membaca workspace lewat pemuat workspace bersama (semua halaman, lingkup semua catatan) termasuk anggota, buku kas, risiko, dan isu. Penempatan figur: rapat berlangsung yang mencantumkan nama → Rapat; jurnal hari ini terhubung ke tugas → Gym; manajer (nama di Pengaturan, selalu tampil) → Ruang manajer; tugas proses → ruang seksinya (layanan anggota/administrasi & keuangan → Kas & anggota; gudang & logistik → Stok & barang; usaha & gerai → Karyawan gerai; lainnya → Ruang kerja); staf dengan kolom Unit pada unit yang Aktif → unit itu di Gerai; tugas belum dikerjakan → Ruang kerja; selain itu → Ngopi & istirahat. Figur berjalan lewat titik bebas perabot, pintu ruang, dan lorong; staf gerai berdiri di belakang meja unitnya.

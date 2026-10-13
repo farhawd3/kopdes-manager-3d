@@ -205,6 +205,11 @@
   .project-grid { grid-template-columns: minmax(0, 1fr); }
   .project-cover { padding: 16px; }
   .project-hero-title { font-size: 21px; }
+  /* Judul proyek tidak terjepit: tombol Ubah menjadi ikon, label tetap terbaca pembaca layar */
+  .ui-btn.btn-edit-project { width: 44px; padding: 0; }
+  .btn-edit-project span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .project-symbol-box { width: 44px; height: 44px; }
   .project-search-box { max-width: none; }
+  .projects-intro-banner > .ui-btn { width: 100%; }
   .form-row-2 { grid-template-columns: minmax(0, 1fr); }
 }

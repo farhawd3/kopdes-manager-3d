@@ -9,9 +9,9 @@ export default function PinPage() {
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
   return (
-    <main className="auth">
+    <main className="auth pin-page">
       <div className="card">
-        <Ikon3D kind="kantor" size={64} />
+        <div className="pin-emblem"><Ikon3D kind="kantor" size={72} /></div>
         <span className="eyebrow">Dunia Koperasi</span>
         <h1>Ruang kerja manajer</h1>
         <p>Masuk untuk membuka dunia 3D dan mengelola pekerjaan koperasi.</p>

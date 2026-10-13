@@ -37,6 +37,7 @@ a.button:hover {
   text-decoration: none;
 }
 .ui-btn:active { transform: translateY(1px); }
+.ui-btn > svg { flex-shrink: 0; }
 .ui-btn:disabled,
 .ui-btn[aria-disabled='true'] { opacity: 0.5; cursor: not-allowed; transform: none; }
 .ui-btn[aria-busy='true'] { cursor: progress; }
@@ -443,3 +444,9 @@ dialog.ui-modal h2 { font-size: 19px; }
 @keyframes kilau { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
 .ui-toast { animation-name: naik-toast; }
 @keyframes naik-toast { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+@media (max-width: 767px) {
+  .ui-btn { max-width: 100%; min-width: 0; white-space: normal; overflow-wrap: anywhere; padding-block: 8px; }
+  .form-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-actions > :only-child { grid-column: 1 / -1; }
+}

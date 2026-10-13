@@ -295,6 +295,13 @@
   .operations-card-grid { grid-template-columns: minmax(0, 1fr); }
   .notebook-row { flex-wrap: wrap; }
   .notebook-actions { width: 100%; justify-content: flex-end; }
+  .op-card-row { align-items: flex-start; }
+  .op-row-val { min-width: 0; overflow-wrap: anywhere; }
+  .op-cash-amount { overflow-wrap: anywhere; }
+  .op-card-footer { flex-wrap: wrap; gap: 8px; }
+  .op-card-footer > .table-btn-edit { flex: 1; }
+  .notebook-toolbar > .actions { width: 100%; align-items: stretch; }
+  .notebook-toolbar > .actions > .ui-btn { flex: 1; }
 }
 
 /* Layar sentuh: chip filter, pilihan tampilan, dan judul kartu tetap mudah diketuk (44 px). */

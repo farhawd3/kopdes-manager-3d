@@ -135,6 +135,34 @@
 .auth label small { color: var(--ink-muted); font-weight: 500; }
 .auth .ui-btn { width: 100%; min-height: 46px; }
 
+.pin-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: max(32px, env(safe-area-inset-top)) 20px max(32px, env(safe-area-inset-bottom));
+  background:
+    radial-gradient(ellipse at 15% 15%, var(--brand-soft-2), transparent 60%),
+    radial-gradient(ellipse at 90% 70%, var(--wood-soft), transparent 55%),
+    linear-gradient(160deg, var(--canvas), var(--wall-deep));
+}
+.pin-page::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 8%;
+  right: -40px;
+  width: clamp(200px, 36vw, 460px);
+  aspect-ratio: 1;
+  border: 14px solid color-mix(in srgb, var(--surface) 55%, transparent);
+  border-radius: 40px;
+  background: linear-gradient(90deg, transparent 48%, var(--line) 48% 52%, transparent 52%), linear-gradient(transparent 48%, var(--line) 48% 52%, transparent 52%);
+  transform: rotate(-15deg);
+}
+.pin-page::after { position: absolute; z-index: -1; height: 28%; background: repeating-linear-gradient(155deg, transparent 0 48px, var(--lantai-garis) 48px 50px), color-mix(in srgb, var(--wood-soft) 60%, transparent); border-top: 1px solid var(--line); }
+.pin-page > .card { position: relative; width: min(440px, 100%); padding: 32px 24px; border: 1px solid var(--line-strong); }
+.pin-emblem { display: grid; place-items: center; width: 100px; height: 100px; margin-bottom: 8px; border-radius: 28px; background: var(--brand-soft); box-shadow: inset 0 0 0 1px var(--brand-soft-border); }
+.pin-page input[name='pin'] { min-height: 52px; font-size: 22px; text-align: center; letter-spacing: 0.25em; }
+
 @media (max-width: 767px) {
   .guide-steps, .guide-books { grid-template-columns: minmax(0, 1fr); }
   .workspace-page > .tabs, .workspace-scope-control { width: 100%; }

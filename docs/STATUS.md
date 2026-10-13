@@ -26,8 +26,11 @@ Target Supabase baru milik pemilik. Migrasi 8 (pengiriman/mutasi stok) sudah dij
 
 ## Pemeriksaan terakhir — 13 Oktober 2026
 
+- Paket mobile memperbaiki nominal kas, rutinitas dan dialognya, tombol kartu/formulir, latar PIN, serta ringkasan dunia yang tetap terlihat karena aturan `hidden` ditimpa grid KPI.
+- Browser demo: Beranda/PIN/buku kas/tugas/proyek/rapat/barang/dokumen/mitra diperiksa pada 360/390/430/768/1024/1440; rutinitas dan dialog tugas diperiksa pada ponsel, PIN terang/gelap. Risiko memakai gulir horizontal di dalam matriks. Nominal kas utuh dan tidak keluar dari kartu; susunan tombol rapat, kontak, dan buku diperiksa. Bukan pemeriksaan perangkat fisik.
+- Dunia: empat panel diperiksa pada enam ukuran di Kantor dan 360/1440 di Gerai/Gudang/Cold storage/Pulau; 56 pergantian panel menunjukkan tepat satu isi yang terlihat, tanpa luber halaman. Konsol browser tanpa galat/peringatan.
 - Audit alur fitur memperbaiki impor CSV, kelengkapan cadangan, arsip laporan lama, waktu riwayat WIB, pengaturan ganda, dan demo (pengulangan tugas serta Origin port lokal). Tidak ada migrasi baru.
-- Tes audit: cakupan penuh 371 kasus / 58 berkas, 369 lulus dan dua timeout pada suite lengkap (`--maxWorkers=2 --testTimeout=20000`). Dua tes yang lambat disederhanakan tanpa mengurangi assertion; kedua berkas diulang dengan satu worker dan 18/18 tes lulus. Semua 371 kasus terverifikasi. Typecheck, lint (tanpa peringatan), `lint:ui`, dan build produksi lulus.
+- Tes paket mobile: seluruh 372 kasus / 59 berkas lulus (`--maxWorkers=2 --testTimeout=20000`), termasuk rutinitas berikutnya menurut WIB dan centang yang tersimpan. Typecheck, lint tanpa peringatan, `lint:ui`, dan build produksi lulus.
 - Browser demo: halaman menu pada 360/768/1024/1440 px tanpa luber halaman; simpan tugas berhasil. Dunia membuka Kantor/Gerai/Gudang/Cold storage/Pulau dan panel ringkasan; Gudang diperiksa pada empat ukuran. Konsol tanpa galat/peringatan. Ini pemeriksaan alur utama dan tampilan, bukan jaminan seluruh kombinasi data/tindakan.
 - Regresi cadangan memeriksa ekspor–pulihkan laporan melalui API dan PGlite, kompatibilitas cadangan lama, status yang tertinggal, validasi/sesi/Origin, dan rollback yang menjaga data lama. CI menjalankan `lint:ui`.
 - Pemeriksaan tambahan viewport 360/768/1024/1440 px: Beranda, Tugas Harian, Barang dan formulir Barang. Kontrol bersama, navigasi hari, serta tombol dunia pada tabel/kartu terukur 44 px; isi kartu Harian muat di 360 px dan deretan hari bergulir di dalam kontainer. Tanpa luber halaman; konsol browser tanpa galat/peringatan. Tema gelap diperiksa pada halaman tersebut; Beranda juga diperiksa terang. Bukan pemeriksaan perangkat fisik.
@@ -37,4 +40,4 @@ Target Supabase baru milik pemilik. Migrasi 8 (pengiriman/mutasi stok) sudah dij
 
 ## Git
 
-Repo `kopdes-manager-3d`, cabang utama `main`, riwayat dimulai bersih 11 Oktober 2026. Paket audit aktif di `perbaikan/alur-fitur-dan-detail`; paket `perbaikan/cadangan-dan-aturan` sudah di-push. Perubahan pengguna dari `tampilan/rutinitas-dan-audit` tetap dipertahankan. Cabang fitur bertopik (lihat [CONTRIBUTING](../CONTRIBUTING.md)); commit tanpa atribusi AI; push dan deploy hanya bila pemilik meminta.
+Repo `kopdes-manager-3d`, cabang utama `main`, riwayat dimulai bersih 11 Oktober 2026. Dua paket audit sudah digabung lewat PR #1 (`c3b01a9`). Paket tampilan aktif di `tampilan/rapikan-mobile`; perubahan lokal yang tidak dimasukkan tetap dipertahankan. Cabang fitur bertopik (lihat [CONTRIBUTING](../CONTRIBUTING.md)); commit tanpa atribusi AI; push dan deploy hanya bila pemilik meminta.
