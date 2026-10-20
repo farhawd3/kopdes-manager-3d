@@ -5,7 +5,7 @@ import { TaskCalendar } from '@/features/tasks/TaskCalendar';
 import { schemas } from '@/features/records/schemas';
 import { today, formatDate } from '@/lib/date';
 afterEach(cleanup);
-it('beranda memakai jumlah selesai nyata dan filter tenggat', () => {
+it('beranda menampilkan tenggat terlambat nyata dan tidak menampilkan tugas selesai', () => {
   const item = (id: string, title: string, status: string, due: string, completed = '') => ({
     id,
     created_at: '',
@@ -22,16 +22,10 @@ it('beranda memakai jumlah selesai nyata dan filter tenggat', () => {
       }}
     />,
   );
-  fireEvent.click(screen.getByText('Grafik pekerjaan'));
-  expect(
-    screen.getByRole('group', { name: new RegExp(`${formatDate(today())}: 1 selesai`) }),
-  ).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Terlambat 1' }));
-  expect(within(screen.getByRole('region', { name: 'Tugas pilihan' })).getByRole('link', { name: /Terlambat nyata/ }).getAttribute('href')).toBe(
-    '/tugas?task=two',
-  );
-  expect(within(screen.getByRole('region', { name: 'Tugas pilihan' })).queryByRole('link', { name: /Selesai nyata/ })).toBeNull();
-  expect(screen.queryByText('60%')).toBeNull();
+  const tindakan = within(screen.getByRole('region', { name: 'Perlu tindakan' }));
+  expect(tindakan.getByRole('link', { name: /Terlambat nyata/ }).getAttribute('href')).toBe('/tugas?task=two');
+  expect(tindakan.queryByRole('link', { name: /Selesai nyata/ })).toBeNull();
+  expect(screen.getByRole('link', { name: '1 terlambat' }).getAttribute('href')).toBe('/tugas?status=terlambat');
 }, 15000);
 it('kalender mingguan melintasi tahun dan tambah tugas memakai tanggal terpilih', () => {
   const create = vi.fn();
@@ -62,7 +56,7 @@ it('mode hari hanya menampilkan tugas pada hari tersebut', () => {
   expect(screen.getByText('Agenda hari-ini')).toBeTruthy();
   expect(screen.queryByText('Agenda lama')).toBeNull();
 });
-it('filter proyek dan grafik status/tanggal menampilkan tugas yang sama tanpa status ganda', () => {
+it('filter proyek menyaring fokus dan status tugas tanpa status ganda', () => {
   const make = (id: string, status: string, workstream_id: string) => ({
     id,
     created_at: '',
@@ -103,15 +97,12 @@ it('filter proyek dan grafik status/tanggal menampilkan tugas yang sama tanpa st
   fireEvent.change(screen.getByLabelText('Proyek'), {
     target: { value: '11111111-1111-4111-8111-111111111111' },
   });
-  fireEvent.click(screen.getByText('Grafik pekerjaan'));
-  expect(within(screen.getByRole('region', { name: 'Tugas pilihan' })).queryByRole('link', { name: /Aktif administrasi/ })).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'Dikerjakan 1' }));
-  expect(within(screen.getByRole('region', { name: 'Tugas pilihan' })).getByRole('link', { name: /Aktif gerai/ })).toBeTruthy();
-  expect(within(screen.getByRole('region', { name: 'Tugas pilihan' })).queryByRole('link', { name: /Selesai gerai/ })).toBeNull();
-  expect(screen.getByRole('button', { name: 'Dibatalkan 0' })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: `${formatDate(today())}: 1 selesai` }));
-  expect(within(screen.getByRole('region', { name: 'Tugas pilihan' })).getByRole('link', { name: /Selesai gerai/ })).toBeTruthy();
-  expect(within(screen.getByRole('region', { name: 'Tugas pilihan' })).queryByRole('link', { name: /Aktif gerai/ })).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'Hapus pilihan' }));
-  expect(within(screen.getByRole('region', { name: 'Tugas pilihan' })).getByRole('link', { name: /Aktif gerai/ })).toBeTruthy();
+  const tindakan = within(screen.getByRole('region', { name: 'Perlu tindakan' }));
+  expect(tindakan.getByRole('link', { name: /Aktif gerai/ })).toBeTruthy();
+  expect(tindakan.queryByRole('link', { name: /Aktif administrasi/ })).toBeNull();
+  expect(tindakan.queryByRole('link', { name: /Selesai gerai/ })).toBeNull();
+  const berjalan = within(screen.getByRole('region', { name: 'Pekerjaan berjalan' }));
+  expect(berjalan.getByRole('link', { name: /Gerai/ })).toBeTruthy();
+  expect(berjalan.queryByRole('link', { name: /Administrasi/ })).toBeNull();
+  expect(screen.queryByText('Dibatalkan')).toBeNull();
 });
