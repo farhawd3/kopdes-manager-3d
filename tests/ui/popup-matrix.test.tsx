@@ -31,18 +31,28 @@ it('tugas cepat menyimpan penanggung jawab dan gerai untuk dunia', async () => {
   const onSaved = vi.fn().mockResolvedValue(undefined);
   const { container } = render(<Editor entity="work-items" quick workspace={popupWorkspace} onClose={() => {}} onSaved={onSaved} />);
   fireEvent.change(screen.getByRole('textbox', { name: 'Nama / judul' }), { target: { value: 'Periksa rak' } });
-  const assignee = screen.getByRole('combobox', { name: 'Penanggung jawab' });
-  fireEvent.change(assignee, { target: { value: 'Contoh QA' } });
+  // Penanggung jawab dipilih dari daftar Tim, bukan diketik bebas.
+  const anggota = String(popupWorkspace.staff![0].data.title);
+  fireEvent.click(screen.getByRole('radio', { name: new RegExp(anggota) }));
   fireEvent.change(container.querySelector('select[name="unit_id"]')!, { target: { value: popupWorkspace.units![0].id } });
   fireEvent.submit(container.querySelector('form')!);
-  await waitFor(() => expect(api).toHaveBeenCalledWith('work-items', expect.objectContaining({ data: expect.objectContaining({ assignee: 'Contoh QA', unit_id: popupWorkspace.units![0].id }) })));
+  await waitFor(() => expect(api).toHaveBeenCalledWith('work-items', expect.objectContaining({ data: expect.objectContaining({ assignee: String(popupWorkspace.staff![0].data.title), unit_id: popupWorkspace.units![0].id }) })));
   expect(onSaved).toHaveBeenCalled();
 });
 
 it('harga barang adalah angka nonnegatif dan gerai langsung tersedia', () => {
   render(<Editor entity="inventory-items" workspace={popupWorkspace} onClose={() => {}} onSaved={async () => {}} />);
-  const price = screen.getByRole('spinbutton', { name: 'Harga satuan (Rp)' });
+  const price = screen.getByRole('textbox', { name: 'Harga satuan (Rp)' });
   expect(price.getAttribute('min')).toBe('0');
   expect(price.closest('details')).toBeNull();
   expect(screen.getByRole('button', { name: /^Gerai:/ }).closest('details')).toBeNull();
+});
+
+it('nominal terformat disimpan ke API sebagai angka tanpa titik', async () => {
+  const { container } = render(<Editor entity="cash-entries" item={popupWorkspace['cash-entries']![0]} workspace={popupWorkspace} onClose={() => {}} onSaved={async () => {}} />);
+  const amount = screen.getByRole('textbox', { name: 'Nominal (Rp)' }) as HTMLInputElement;
+  fireEvent.change(amount, { target: { value: '1250000' } });
+  expect(amount.value).toBe('1.250.000');
+  fireEvent.submit(container.querySelector('form')!);
+  await waitFor(() => expect(api).toHaveBeenCalledWith('cash-entries', expect.objectContaining({ data: expect.objectContaining({ amount: 1250000 }) })));
 });

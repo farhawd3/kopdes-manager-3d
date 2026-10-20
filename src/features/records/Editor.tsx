@@ -1,6 +1,8 @@
 'use client';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { IntegerInput } from '@/components/ui/IntegerInput';
+import { judulOtomatis } from './judul-otomatis';
 import { Field } from '@/components/ui/Field';
 import { Textarea } from '@/components/ui/Input';
 import { DateInput } from '@/components/ui/DateField';
@@ -26,6 +28,7 @@ import { EntryGuide } from '../workspace/EntryGuide';
 import { Ikon3D } from '@/components/ui/Ikon3D';
 import { IKON_HALAMAN } from '@/components/ui/IkonHalaman';
 import { pages } from './catalog';
+import { PilihPenanggung } from './PilihPenanggung';
 
 const STAKEHOLDER_PRESETS = [
   {
@@ -203,7 +206,7 @@ export function Editor({
       start_date: today(),
       title: '',
     };
-  const optionalFields = fields.filter((field) => ['members', 'cash-entries', 'inventory-items'].includes(entity) && ['member_id','item_id','unit_id','reference_number','link','notes','contact','address','price'].includes(field) && !(entity === 'inventory-items' && ['unit_id', 'price'].includes(field)));
+  const optionalFields = fields.filter((field) => ['members', 'cash-entries', 'inventory-items'].includes(entity) && ['member_id','item_id','unit_id','workstream_id','reference_number','link','notes','contact','address','price'].includes(field) && !(entity === 'inventory-items' && ['unit_id', 'price'].includes(field)));
   // Tim: rupa dan kedudukan hanya dipakai karakter Dunia Koperasi, dikelompokkan terpisah.
   const worldFields =
     entity === 'staff'
@@ -265,7 +268,7 @@ export function Editor({
                                   : entity === 'meetings' && field === 'meeting_url'
                                     ? 'Tautan Rapat Online'
                                     : entity === 'meetings' && field === 'participants'
-                                      ? 'Daftar Peserta Rapat'
+                                      ? 'Daftar peserta'
                                       : entity === 'meetings' && field === 'duration'
                                         ? 'Estimasi Durasi (menit)'
                                         : entity === 'meetings' && field === 'time'
@@ -274,7 +277,18 @@ export function Editor({
                                             ? 'Agenda Pembahasan'
                                             : entity === 'meetings' && field === 'minutes'
                                               ? 'Notulen & Ringkasan Keputusan'
-                                              : labels[field] || field;
+                                              : labels[`${entity}.${field}`] || labels[field] || field;
+            if (entity === 'work-items' && field === 'assignee')
+              return (
+                <PilihPenanggung
+                  key={field}
+                  id={`${headingId}-${field}`}
+                  label={label}
+                  nilai={String(value || '')}
+                  staf={workspace.staff || []}
+                  manajer={String(workspace.organization?.[0]?.data.manager || '')}
+                />
+              );
 
             if (field.endsWith('_date') || field === 'date' || field === 'last_contact')
               return (
@@ -505,7 +519,7 @@ export function Editor({
                       else if (entity === 'work-items' && field === 'recurrence') setRecurrence(next);
                     }}
                     options={[
-                      ...(reference ? [{ value: '', label: ['stock-counts', 'stock-movements'].includes(entity) && field === 'item_id' ? 'Pilih barang (wajib)' : entity === 'work-items' && field === 'workstream_id' ? 'Tugas mandiri (tanpa proyek)' : 'Tidak terkait (opsional)' }] : []),
+                      ...(reference ? [{ value: '', label: (['stock-counts', 'stock-movements'].includes(entity) && field === 'item_id') || (entity === 'attendance' && field === 'staff_id') || (entity === 'sales' && field === 'unit_id') || (entity === 'savings' && field === 'member_id') ? `Pilih ${label.toLowerCase()} (wajib)` : entity === 'work-items' && field === 'workstream_id' ? 'Tugas mandiri (tanpa proyek)' : 'Tidak terkait (opsional)' }] : []),
                       ...(reference && selectedValue && !refItems.some((row) => row.id === selectedValue)
                         ? [{ value: String(selectedValue), label: 'Catatan terkait yang belum dimuat (' + String(selectedValue).slice(0, 8) + ')' }] : []),
                       ...(allChoices ? allChoices.map((choice) => ({ value: choice, label: formatChoiceLabel(choice, entity + '.' + field) }))
@@ -1124,11 +1138,16 @@ export function Editor({
               'minimum_quantity',
               'counted_quantity',
               'quantity',
+              'transactions',
             ].includes(field);
-            const numeric = score || quantity || field === 'amount' || field === 'price' || field === 'duration';
+            const money = ['amount', 'price', 'budget', 'value', 'total'].includes(field);
+            // Nilai nol sah: aset hibah, gerai tutup, pembelian yang belum dihitung.
+            const zeroAllowed = ['price', 'budget', 'value', 'total', 'transactions'].includes(field) || (entity === 'sales' && field === 'amount');
+            const numeric = score || quantity || money || field === 'duration';
+            const FieldInput = quantity || money ? IntegerInput : Input;
             return (
               <Field key={field} className="field-item" id={`${headingId}-${field}`} label={label}>
-                <Input
+                <FieldInput
                   id={`${headingId}-${field}`}
                   key={
                     field === 'book_quantity'
@@ -1149,7 +1168,7 @@ export function Editor({
                         : entity === 'meetings' && field === 'title'
                           ? 'Contoh: Rapat Evaluasi Bulanan & Koordinasi Gerai'
                           : entity === 'meetings' && field === 'location'
-                            ? 'Contoh: Ruang Rapat Kantor Koperasi KDMP Puntukrejo'
+                            ? 'Contoh: Ruang rapat kantor koperasi'
                             : entity === 'meetings' && field === 'meeting_url'
                               ? 'https://meet.google.com/abc-defg-hij atau tautan Zoom'
                               : entity === 'meetings' && field === 'participants'
@@ -1179,13 +1198,13 @@ export function Editor({
                               ? 'number'
                               : 'text'
                   }
-                  min={field === 'duration' ? 15 : field === 'quantity' ? 1 : quantity || field === 'price' ? 0 : numeric ? 1 : undefined}
+                  min={field === 'duration' ? 15 : field === 'quantity' ? 1 : quantity || zeroAllowed ? 0 : numeric ? 1 : undefined}
                   max={
                     field === 'duration'
                       ? 480
                       : score
                         ? 5
-                        : field === 'amount'
+                        : money
                           ? 1_000_000_000_000
                           : quantity
                             ? 1_000_000_000
@@ -1364,6 +1383,8 @@ export function Editor({
                 values.location = '';
               }
             }
+            const judul = judulOtomatis(entity, values, workspace);
+            if (judul) values.title = judul;
             const parsed = schemas[entity].parse(values);
             await api(entity, { id: item?.id || undefined, data: parsed });
             try {
@@ -1494,7 +1515,7 @@ export function Editor({
           )}
         <EntryGuide entity={entity} />
         <datalist id={`${headingId}-team`}>{(workspace.staff || []).map(person => <option key={person.id} value={String(person.data.title)} />)}</datalist>
-        {['work-items', 'staff', 'inventory-items', 'deliveries', 'meetings'].includes(entity) && <details className="editor-world-note"><summary><Ikon3D kind="pulau" size={28}/>Terhubung dengan dunia 3D</summary><p>{entity === 'inventory-items' ? 'Gerai dan rak menentukan lokasi barang di dunia 3D. Rak C1–C3 berada di cold storage.' : entity === 'staff' ? 'Seksi dan gerai menghubungkan figur dengan ruang kerjanya. Atur rupa pada bagian Tampilan di Dunia Koperasi.' : entity === 'deliveries' ? 'Status, pintu dok, dan kendaraan tampil di gudang 3D.' : entity === 'meetings' ? 'Nama peserta yang sesuai data Tim menempatkan figur di ruang rapat saat rapat berlangsung.' : 'Pilih penanggung jawab dari Tim agar tugas terhubung dengan figur di dunia 3D. Nama lain tetap dapat diketik.'}</p></details>}
+        {['work-items', 'staff', 'inventory-items', 'deliveries', 'meetings'].includes(entity) && <details className="editor-world-note"><summary><Ikon3D kind="pulau" size={28}/>Terhubung dengan dunia 3D</summary><p>{entity === 'inventory-items' ? 'Gerai dan rak menentukan lokasi barang di dunia 3D. Rak C1–C3 berada di cold storage.' : entity === 'staff' ? 'Seksi dan gerai menghubungkan figur dengan ruang kerjanya. Atur rupa pada bagian Tampilan di Dunia Koperasi.' : entity === 'deliveries' ? 'Status, pintu dok, dan kendaraan tampil di gudang 3D.' : entity === 'meetings' ? 'Nama peserta yang sesuai data Tim menempatkan figur di ruang rapat saat rapat berlangsung.' : 'Penanggung jawab dipilih dari daftar Tim, jadi tugas terhubung dengan figur orang itu di dunia 3D.'}</p></details>}
         <div className="form-grid">
 {primaryFields.map(renderField)}
           {optionalFields.length > 0 && <details className="entry-related-fields field-wide" open={optionalFields.some((field) => Boolean(defaults[field as keyof typeof defaults]))}><summary>Hubungan dan rincian opsional</summary><p className="field-helper">Isi hanya bila terkait. Tidak perlu membuat anggota, barang atau gerai untuk setiap transaksi.</p><div className="form-grid">{optionalFields.map(renderField)}</div></details>}

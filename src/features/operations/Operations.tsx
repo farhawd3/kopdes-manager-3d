@@ -40,7 +40,7 @@ import { cashSummary, csvCell, rupiah, stockDifference } from './ledger';
 import { formatDate, today } from '@/lib/date';
 import { Select } from '@/components/ui/Select';
 
-/** Ikon garis lama → ikon biru kilap yang senada (buku pencatatan, metrik, catatan terbaru). */
+/** Ikon garis lama → ikon dua nada yang senada (buku pencatatan, metrik, catatan terbaru). */
 const IKON_OP = new Map<unknown, Ikon3DKind>([
   [Users, 'kartu'],
   [UserCheck, 'tim'],
@@ -104,7 +104,7 @@ function getIndonesianMonthOptions(dates: string[]): { value: string; label: str
       const isCurrent = key === thisMonthKey;
       return {
         value: key,
-        label: `${monthName} ${y}${isCurrent ? ' (Bulan Ini)' : ''}`,
+        label: `${monthName} ${y}${isCurrent ? ' (bulan ini)' : ''}`,
       };
     }),
   ];
@@ -140,7 +140,6 @@ const modules = [
     Icon: ClipboardCheck,
   },
 ] as const;
-export const recordingPaths = ['pencatatan', ...modules.map((entry) => entry.path)];
 // Ponsel, tablet, dan laptop kecil (konten < ~950 px karena sidebar) memakai kartu agar tabel lebar tidak perlu digeser.
 function subscribeCompactView(callback: () => void) {
   if (typeof window.matchMedia !== 'function') return () => {};
@@ -588,31 +587,7 @@ export function Operations({
   }
   return (
     <>
-      <nav className="recording-tabs" aria-label="Halaman pencatatan">
-        <Link
-          href="/pencatatan"
-          className={`recording-tab-item ${!book ? 'is-active' : ''}`}
-          aria-current={!book ? 'page' : undefined}
-        >
-          <Ikon3D kind="buku" size={18} rapat />
-          <span>Ringkasan</span>
-        </Link>
-        {modules.map(({ path, entity: modEntity, title, Icon }) => {
-          const count = ready ? (data[modEntity] || []).length : 0;
-          return (
-            <Link
-              key={path}
-              href={'/' + path}
-              className={`recording-tab-item ${path === slug ? 'is-active' : ''}`}
-              aria-current={path === slug ? 'page' : undefined}
-            >
-              <IkonOp Icon={Icon} size={18} />
-              <span>{title}</span>
-              {ready && count > 0 && <span className="tab-count-badge">{count}</span>}
-            </Link>
-          );
-        })}
-      </nav>
+      {/* Navigasi antarbuku kini lewat tab hub di bawah judul (Usaha/Koperasi). */}
       {!ready && (
         <section className="activation-notice">
           <FilePenLine size={24} />
