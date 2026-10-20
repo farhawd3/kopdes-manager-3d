@@ -296,26 +296,36 @@ export function TaskCalendar({
           ),
         )
           .sort()
-          .map((date) => (
-            <section
-              key={date}
-              className={`calendar-agenda-day-group ${selected ? 'is-selected-view' : ''}`}
-            >
-              {!selected && (
-                <div className="calendar-agenda-day-head">
-                  <span className="agenda-day-pill">{formatDate(date)}</span>
-                  <span className="agenda-day-count">
-                    {items.filter((item) => getItemDate(item) === date).length} catatan
-                  </span>
+          .map((date) => {
+            const count = items.filter((item) => getItemDate(item) === date).length;
+            const isToday = date === today();
+            return (
+              <section
+                key={date}
+                className={`calendar-agenda-day-group ${selected ? 'is-selected-view' : ''}`}
+              >
+                {!selected && (
+                  <div className="calendar-agenda-day-head">
+                    <div className="agenda-day-title-wrap">
+                      <span className={`agenda-day-pill ${isToday ? 'is-today' : ''}`}>
+                        <CalendarDays size={13} aria-hidden="true" />
+                        <span>{isToday ? `Hari Ini · ${formatDate(date)}` : formatDate(date)}</span>
+                      </span>
+                      <span className="agenda-day-count">
+                        {count} tugas
+                      </span>
+                    </div>
+                    <div className="agenda-day-divider" aria-hidden="true" />
+                  </div>
+                )}
+                <div className="calendar-agenda-compact-list records">
+                  {items
+                    .filter((item) => getItemDate(item) === date)
+                    .map((item) => render(item))}
                 </div>
-              )}
-              <div className="calendar-agenda-compact-list records">
-                {items
-                  .filter((item) => getItemDate(item) === date)
-                  .map((item) => render(item))}
-              </div>
-            </section>
-          ))}
+              </section>
+            );
+          })}
       </div>
     </section>
   );

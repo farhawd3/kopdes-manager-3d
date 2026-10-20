@@ -21,22 +21,114 @@
 /* Tambah cepat: satu kalimat menjadi form tugas terisi; manajer tetap memeriksa sebelum menyimpan */
 .beranda-tambah {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 8px 12px;
-  padding: 12px 14px 12px 20px;
+  gap: 10px;
+  padding: 14px 18px;
   border: 1px solid var(--line);
-  border-radius: var(--r-xl);
+  border-radius: var(--r-card);
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow);
 }
-.beranda-tambah > label { color: var(--ink-heading); font-size: 15px; font-weight: 600; white-space: nowrap; }
-.beranda-tambah > .ui-input { min-height: 48px; padding-inline: 18px; border-color: transparent; border-radius: var(--r-full); background: var(--surface-3); box-shadow: none; font-size: 15px; }
-.beranda-tambah > .ui-input:hover { border-color: var(--line-strong); }
-.beranda-tambah > .ui-input:focus { border-color: var(--brand); background: var(--surface); box-shadow: var(--focus-ring); }
-.beranda-tambah > .ui-btn { min-height: 48px; padding: 0 22px; border-radius: var(--r-full); }
-.beranda-tambah > p { grid-column: 1 / -1; margin: 0 0 2px; color: var(--ink-muted); font-size: 12.5px; line-height: 1.5; }
-.beranda-tambah b { color: var(--ink-heading); font-weight: 600; }
+.beranda-tambah-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.beranda-tambah-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-heading);
+  font-size: 14.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.beranda-tambah-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-full);
+  background: var(--brand-soft);
+  color: var(--brand);
+  border: 1px solid var(--brand-soft-border);
+}
+.beranda-tambah-input-box {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.beranda-tambah-input-box .ui-input {
+  width: 100%;
+  min-height: 42px;
+  height: 42px;
+  padding-inline: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 13.5px;
+  box-shadow: none;
+  transition: all var(--dur);
+}
+.beranda-tambah-input-box .ui-input:hover {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+.beranda-tambah-input-box .ui-input:focus {
+  border-color: var(--brand);
+  background: var(--surface);
+  box-shadow: var(--focus-ring);
+}
+.beranda-tambah-btn.ui-btn {
+  min-height: 40px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--r-full);
+  background: var(--brand);
+  color: var(--brand-text);
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--dur), transform var(--dur);
+}
+.beranda-tambah-btn.ui-btn:hover {
+  background: var(--brand-isi-hover);
+  transform: translateY(-1px);
+}
+.beranda-tambah-hints {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  color: var(--ink-muted);
+  font-size: 12px;
+  line-height: 1.4;
+  padding-left: 2px;
+}
+.tambah-hint-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--ink-muted);
+}
+.tambah-hint-code {
+  padding: 1px 6px;
+  border-radius: var(--r-full);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--brand-soft-border);
+}
+.tambah-hint-sep {
+  color: var(--line-strong);
+  user-select: none;
+}
 
 /* Empat kartu bertakik: rutin | agenda, tindakan | minggu; tinggi rata per baris */
 .beranda-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: stretch; gap: 20px; }
@@ -366,9 +458,12 @@ dialog.ui-modal.laporan-salin-dialog { width: min(560px, calc(100vw - 32px)); }
   .beranda-kepala-aksi { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; }
   .beranda-proyek { min-width: 0; }
   .beranda-salin-ekor { display: none; }
-  .beranda-tambah { grid-template-columns: minmax(0, 1fr) auto; padding: 14px; }
-  .beranda-tambah > label { grid-column: 1 / -1; }
-  .beranda-tambah > .ui-btn { padding: 0 16px; }
+  .beranda-tambah { padding: 12px 14px; gap: 8px; }
+  .beranda-tambah-bar { flex-wrap: wrap; gap: 8px; }
+  .beranda-tambah-label { width: 100%; font-size: 13.5px; }
+  .beranda-tambah-input-box { flex: 1 1 160px; }
+  .beranda-tambah-btn.ui-btn { padding: 0 14px; min-height: 38px; height: 38px; }
+  .tambah-hint-sep { display: none; }
   .beranda-berjalan-baris { grid-auto-columns: 80%; gap: 12px; margin-inline: calc(var(--gutter) * -1); padding: 6px var(--gutter) 10px; scroll-padding-inline: var(--gutter); scrollbar-width: none; }
   .beranda-baris-teks strong { white-space: normal; overflow-wrap: anywhere; }
   .agenda-butir { grid-template-columns: 42px minmax(0, 1fr); gap: 8px; }

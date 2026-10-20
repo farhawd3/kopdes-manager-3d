@@ -2,6 +2,15 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Pembersihan tampilan tambah tugas beranda & pemisah agenda kalender — 20 Oktober 2026
+
+- Alasan: arahan pemilik untuk membuat tampilan `beranda-tambah` (kotak pembuatan tugas cepat di Beranda) dan `calendar-agenda-day-group` (pengelompokan hari di agenda kalender tugas) lebih clean, rapi, dan terstruktur.
+- Perubahan:
+  - Kotak tambah tugas cepat Beranda (`.beranda-tambah`): ditata ulang dengan wadah kartu lekuk radius 22px (`--r-card`), ikon tambah berbingkai bulat lembut (`.beranda-tambah-icon`), input teks fleksibel dengan border pil halus (`.beranda-tambah-input-box .ui-input`), tombol aksi pil lavender (`.beranda-tambah-btn`), serta bantuan sintaks cepat yang diubah dari teks mentah paragraf menjadi deretan chip monospaced yang elegan (`.tambah-hint-item` & `.tambah-hint-code` untuk `@nama`, `#proyek`, `!tinggi`, dan `besok`).
+  - Pemisah hari agenda tugas (`.calendar-agenda-day-group`): kepala grup tanggal (`.calendar-agenda-day-head`) ditata ulang dengan judul tanggal ber-ikon, penanda lencana hari ini yang kontras bersih, pil jumlah tugas tabular, dan garis horizontal pemisah antar-hari (`.agenda-day-divider`) sehingga alur daftar agenda per tanggal memiliki pemisahan ritme visual yang tegas dan tidak bertumpuk seperti dinding kartu.
+- Verifikasi: typecheck `tsc --noEmit` 0 error, stylelint `lint:ui` 0 error, audit visual headless Chrome (`audit:tampilan`) pada resolusi desktop (1024x1000) dan ponsel (375x812) pada tampilan beranda dan tugas-kalender menghasilkan 0 temuan tata letak.
+- Belum: pengujian fisik di perangkat nyata dan penyesuaian tema warna monitoring Dunia 3D.
+
 ## Penyelarasan kartu catatan ke standar bersih kartu rapat (meeting-record) — 20 Oktober 2026
 
 - Alasan: arahan pemilik bahwa tampilan kartu catatan rapat (meeting-record) sudah cukup clean dan rapi, dan meminta menyesuaikan seluruh kartu catatan lainnya (pengiriman, dokumen, risiko, mitra, jurnal, kesiapan) agar mengikuti standar kerapian yang sama.

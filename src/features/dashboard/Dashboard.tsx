@@ -326,22 +326,45 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
       </header>
 
       <form className="beranda-tambah" onSubmit={kirimTambahCepat}>
-        <label htmlFor="beranda-tambah-isi">Tambah tugas</label>
-        <Input
-          id="beranda-tambah-isi"
-          value={tambahTeks}
-          onChange={(e) => setTambahTeks(e.target.value)}
-          placeholder="Cek stok gula @Budi #gerai besok !tinggi"
-          autoComplete="off"
-          aria-describedby="beranda-tambah-petunjuk"
-        />
-        <Button type="submit" primary>
-          <Plus size={16} aria-hidden="true" />
-          <span>Buat</span>
-        </Button>
-        <p id="beranda-tambah-petunjuk">
-          <b>@nama</b> penanggung jawab · <b>#proyek</b> · <b>!tinggi</b> atau <b>!mendesak</b> · <b>besok</b>, <b>lusa</b>, nama hari, atau tgl/bln
-        </p>
+        <div className="beranda-tambah-bar">
+          <label htmlFor="beranda-tambah-isi" className="beranda-tambah-label">
+            <span className="beranda-tambah-icon" aria-hidden="true">
+              <Plus size={15} strokeWidth={2.4} />
+            </span>
+            <span>Tambah tugas</span>
+          </label>
+          <div className="beranda-tambah-input-box">
+            <Input
+              id="beranda-tambah-isi"
+              value={tambahTeks}
+              onChange={(e) => setTambahTeks(e.target.value)}
+              placeholder="Cek stok gula @Budi #gerai besok !tinggi"
+              autoComplete="off"
+              aria-describedby="beranda-tambah-petunjuk"
+            />
+          </div>
+          <Button type="submit" primary className="beranda-tambah-btn">
+            <Plus size={15} strokeWidth={2.4} aria-hidden="true" />
+            <span>Buat</span>
+          </Button>
+        </div>
+        <div className="beranda-tambah-hints" id="beranda-tambah-petunjuk">
+          <span className="tambah-hint-item">
+            <span className="tambah-hint-code">@nama</span> penanggung jawab
+          </span>
+          <span className="tambah-hint-sep" aria-hidden="true">·</span>
+          <span className="tambah-hint-item">
+            <span className="tambah-hint-code">#proyek</span> kode
+          </span>
+          <span className="tambah-hint-sep" aria-hidden="true">·</span>
+          <span className="tambah-hint-item">
+            <span className="tambah-hint-code">!tinggi</span> prioritas
+          </span>
+          <span className="tambah-hint-sep" aria-hidden="true">·</span>
+          <span className="tambah-hint-item">
+            <span className="tambah-hint-code">besok</span> tenggat
+          </span>
+        </div>
       </form>
 
       <div className="beranda-grid">
