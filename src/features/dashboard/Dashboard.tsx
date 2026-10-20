@@ -106,6 +106,16 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
   const [laporanManual, setLaporanManual] = useState('');
   const [tambahTeks, setTambahTeks] = useState('');
   const [hariPilih, setHariPilih] = useState(now);
+  type Perspektif = 'semua' | 'alur' | 'prioritas' | 'usaha';
+  const [perspektif, setPerspektif] = useState<Perspektif>('semua');
+
+  function appendTag(tag: string) {
+    setTambahTeks((prev) => {
+      const trimmed = prev.trim();
+      if (!trimmed) return tag.startsWith('@') || tag.startsWith('#') ? tag : `Tugas baru ${tag}`;
+      return `${trimmed} ${tag}`;
+    });
+  }
 
   useEffect(() => {
     if (!pesan) return;
@@ -284,55 +294,143 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
   }
 
   const persenRutin = routines.length ? Math.round((routineCompletedCount / routines.length) * 100) : 0;
+  const parsedLive = tambahTeks.trim()
+    ? bacaTambahCepat(tambahTeks, {
+        hariIni: now,
+        staf: (data.staff || []).map((s) => String(s.data.title)).filter(Boolean),
+        proyek: projects.map((p) => ({ id: p.id, title: String(p.data.title) })),
+      })
+    : null;
 
   return (
-    <div className="manager-home beranda">
-      <header className="beranda-kepala">
-        <div className="beranda-sapa">
-          <h2>
-            {sapaan}
-            {namaManajer ? `, ${namaManajer}` : ''}
-          </h2>
-          <p className="beranda-ringkas">
-            {tanggalPanjang}
-            {' · '}
-            <Link href="/tugas?status=terlambat" className={overdueCount ? 'is-telat' : undefined}>
-              {overdueCount} terlambat
-            </Link>
-            {' · '}
-            <Link href="/hari-ini">{dueTodayCount} jatuh tempo hari ini</Link>
-          </p>
+    <div className="manager-home beranda" data-perspektif={perspektif}>
+      <header className="beranda-kepala beranda-cockpit">
+        <div className="beranda-cockpit-kiri">
+          <div className="cockpit-status-badge">
+            <span className="cockpit-dot-pulse" aria-hidden="true" />
+            <span className="cockpit-jam">{jamSekarang ? `${jamTitik(jamSekarang)} WIB` : 'KDMP Live'}</span>
+            <span className="cockpit-sep" aria-hidden="true">·</span>
+            <span className="cockpit-lokasi">Ruang Kerja Gerai</span>
+          </div>
+
+          <div className="beranda-sapa">
+            <h2>
+              {sapaan}
+              {namaManajer ? `, ${namaManajer}` : ''}
+            </h2>
+            <p className="beranda-ringkas">
+              {tanggalPanjang}
+              {' · '}
+              <Link href="/tugas?status=terlambat" className={overdueCount ? 'is-telat' : undefined}>
+                {overdueCount} terlambat
+              </Link>
+              {' · '}
+              <Link href="/hari-ini">{dueTodayCount} jatuh tempo hari ini</Link>
+            </p>
+          </div>
         </div>
-        <div className="beranda-kepala-aksi">
-          <Link
-            href="/dunia-koperasi?lokasi=kantor"
-            className="beranda-dunia-link"
-            title="Buka Ruang Kerja di Dunia Koperasi 3D"
-          >
-            <span className="beranda-dunia-dot" aria-hidden="true" />
-            <span className="beranda-dunia-label">Ruang Kerja · Masuk ke 3D</span>
-            <ArrowUpRight size={14} aria-hidden="true" />
-          </Link>
-          <label className="beranda-proyek">
-            <span className="sr-only">Proyek</span>
-            <Select
-              value={projectId}
-              onChange={setProjectId}
-              options={[
-                { value: '', label: 'Semua proyek' },
-                ...projects.map((project) => ({ value: project.id, label: String(project.data.title) })),
-              ]}
-              ariaLabel="Proyek"
-            />
-          </label>
-          <Button type="button" className="beranda-salin" onClick={() => void salinLaporan()}>
-            <ClipboardCopy size={16} aria-hidden="true" />
-            <span>
-              Salin laporan<span className="beranda-salin-ekor"> hari ini</span>
-            </span>
-          </Button>
+
+        <div className="beranda-cockpit-kanan">
+          <div className="beranda-momentum" title={`${persenRutin}% rutinitas harian selesai`}>
+            <div className="momentum-dial">
+              <svg viewBox="0 0 44 44" className="momentum-svg" aria-hidden="true">
+                <circle className="momentum-bg" cx="22" cy="22" r="18" />
+                <circle
+                  className="momentum-fill"
+                  cx="22"
+                  cy="22"
+                  r="18"
+                  strokeDasharray={113.1}
+                  strokeDashoffset={113.1 - (113.1 * Math.min(100, Math.max(0, persenRutin))) / 100}
+                />
+              </svg>
+              <div className="momentum-angka">
+                <b>{persenRutin}%</b>
+              </div>
+            </div>
+            <div className="momentum-info">
+              <span className="momentum-label">Momentum Hari Ini</span>
+              <span className="momentum-status">
+                {semuaRutinSelesai ? 'Semua beres ✨' : `${routineCompletedCount} dari ${routines.length} rutin selesai`}
+              </span>
+            </div>
+          </div>
+
+          <div className="beranda-kepala-aksi">
+            <Link
+              href="/dunia-koperasi?lokasi=kantor"
+              className="beranda-dunia-link"
+              title="Buka Ruang Kerja di Dunia Koperasi 3D"
+            >
+              <span className="beranda-dunia-dot" aria-hidden="true" />
+              <span className="beranda-dunia-label">Ruang Kerja · Masuk ke 3D</span>
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </Link>
+            <label className="beranda-proyek">
+              <span className="sr-only">Proyek</span>
+              <Select
+                value={projectId}
+                onChange={setProjectId}
+                options={[
+                  { value: '', label: 'Semua proyek' },
+                  ...projects.map((project) => ({ value: project.id, label: String(project.data.title) })),
+                ]}
+                ariaLabel="Proyek"
+              />
+            </label>
+            <Button type="button" className="beranda-salin" onClick={() => void salinLaporan()}>
+              <ClipboardCopy size={16} aria-hidden="true" />
+              <span>
+                Salin laporan<span className="beranda-salin-ekor"> hari ini</span>
+              </span>
+            </Button>
+          </div>
         </div>
       </header>
+
+      {/* Tab filter perspektif modern */}
+      <div className="beranda-perspektif-bar" role="tablist" aria-label="Perspektif fokus kerja">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={perspektif === 'semua'}
+          className={`perspektif-pill ${perspektif === 'semua' ? 'is-active' : ''}`}
+          onClick={() => setPerspektif('semua')}
+        >
+          <SlidersHorizontal size={13} aria-hidden="true" />
+          <span>Semua Fokus</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={perspektif === 'alur'}
+          className={`perspektif-pill ${perspektif === 'alur' ? 'is-active' : ''}`}
+          onClick={() => setPerspektif('alur')}
+        >
+          <Clock size={13} aria-hidden="true" />
+          <span>Alur Kerja Hari Ini</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={perspektif === 'prioritas'}
+          className={`perspektif-pill ${perspektif === 'prioritas' ? 'is-active' : ''}`}
+          onClick={() => setPerspektif('prioritas')}
+        >
+          <CircleAlert size={13} aria-hidden="true" />
+          <span>Prioritas & Radar</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={perspektif === 'usaha'}
+          className={`perspektif-pill ${perspektif === 'usaha' ? 'is-active' : ''}`}
+          onClick={() => setPerspektif('usaha')}
+        >
+          <ArrowUpRight size={13} aria-hidden="true" />
+          <span>Vitalitas Usaha</span>
+        </button>
+      </div>
 
       <form className="beranda-tambah" onSubmit={kirimTambahCepat}>
         <div className="beranda-tambah-bar">
@@ -357,6 +455,80 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
             <span>Buat</span>
           </Button>
         </div>
+
+        {/* Tombol sematkan cepat interaktif */}
+        <div className="beranda-tambah-chips">
+          <span className="tambah-chip-label">Sematkan cepat:</span>
+          <button
+            type="button"
+            className="tambah-chip-btn"
+            onClick={() => appendTag('@')}
+            title="Sematkan Penanggung Jawab"
+          >
+            <span className="chip-symbol">@</span>
+            <span>Staf</span>
+          </button>
+          <button
+            type="button"
+            className="tambah-chip-btn"
+            onClick={() => appendTag('#')}
+            title="Sematkan Kode Proyek"
+          >
+            <span className="chip-symbol">#</span>
+            <span>Proyek</span>
+          </button>
+          <button
+            type="button"
+            className="tambah-chip-btn"
+            onClick={() => appendTag('!tinggi')}
+            title="Setel Prioritas Tinggi"
+          >
+            <span className="chip-symbol">!</span>
+            <span>Tinggi</span>
+          </button>
+          <button
+            type="button"
+            className="tambah-chip-btn"
+            onClick={() => appendTag('besok')}
+            title="Setel Tenggat Besok"
+          >
+            <span className="chip-symbol">📅</span>
+            <span>Besok</span>
+          </button>
+        </div>
+
+        {/* Deteksi pintar interaktif saat mengetik */}
+        {parsedLive && (parsedLive.assignee || parsedLive.workstream_id || parsedLive.priority || parsedLive.due_date) && (
+          <div className="beranda-tambah-preview">
+            <span className="preview-label">Deteksi Pintar:</span>
+            {parsedLive.title && (
+              <span className="preview-pill is-title">
+                Judul: <strong>{parsedLive.title}</strong>
+              </span>
+            )}
+            {parsedLive.assignee && (
+              <span className="preview-pill is-pic">
+                👤 {parsedLive.assignee}
+              </span>
+            )}
+            {parsedLive.workstream_id && (
+              <span className="preview-pill is-proyek">
+                📁 {namaProyek(parsedLive.workstream_id)}
+              </span>
+            )}
+            {parsedLive.priority && (
+              <span className="preview-pill is-prioritas">
+                ⚡ {parsedLive.priority}
+              </span>
+            )}
+            {parsedLive.due_date && (
+              <span className="preview-pill is-tenggat">
+                📅 {parsedLive.due_date === now ? 'Hari ini' : parsedLive.due_date}
+              </span>
+            )}
+          </div>
+        )}
+
         <div className="beranda-tambah-hints" id="beranda-tambah-petunjuk">
           <span className="tambah-hint-item">
             <span className="tambah-hint-code">@nama</span> penanggung jawab

@@ -2,6 +2,19 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Desain Cockpit Interaktif & Re-arsitektur UX Beranda — 20 Oktober 2026
+
+- Alasan: arahan pemilik ("buat desain paling menarik, unik, interaktif dan fresh. jangan berpanduan pada desain lama. sesiakan dengan web task manager terbaik. atur ulang penataan sistem nya, atur sistem sebaik mungkin untuk setiap komponen dan fitur. jangan seperti yang sudah ada penempatan dan ux nya").
+- Perubahan:
+  - Re-arsitektur Cockpit Operasional Beranda: menggantikan tata letak kartu statis konvensional dengan sistem Command Cockpit terpadu ala Linear/Things 3/Routine.
+  - Live Status & Operational Radar: indikator denyut waktu real-time WIB dan lokasi operasional gerai aktif di kepala halaman.
+  - Dial Momentum Energi (Circular SVG Ring): meteran progres sirkular visual yang menampilkan persentase penyelesaian rutinitas harian secara dinamis dan hidup.
+  - Filter Perspektif Fokus Interaktif: tab pengalih perspektif kerja (`Semua Fokus`, `Alur Kerja Hari Ini`, `Prioritas & Radar`, `Vitalitas Usaha`) yang memberi sorotan dinamis pada modul terpilih.
+  - Quick-Capture Command Island dengan Chip Sematan Pintar: tombol cepat interaktif (`@Staf`, `#Proyek`, `!Tinggi`, `Besok`) serta bilah preview pintar (*real-time parsed tokens*) yang langsung mendeteksi atribut tugas saat pengguna mengetik.
+  - Tata letak responsif mulus: dioptimalkan untuk desktop, tablet, dan ponsel sempit (375 px) tanpa layout shift.
+- Verifikasi: 473 dari 473 tes Vitest lulus 100% (80 berkas), `npm run typecheck` 0 error, `npm run lint` 0 error, `npm run lint:ui` 0 error, build Next.js lulus, JS awal 247 KB (batas 300 KB), visual audit (`audit:tampilan`) pada 1024x1000 dan 375x812 menghasilkan 0 temuan.
+- Belum: pengujian langsung oleh pemilik di perangkat fisik.
+
 ## Revisi Desain: Modern Clean Look (Emerald Fresh & Slate Crystal) — 20 Oktober 2026
 
 - Alasan: arahan pemilik bahwa eksperimen lantai warna penuh dan tepi tebal terasa kuno dan jadul ("desain menjadi kuno dan jadul, coba anda revisi menggunakan skill desain anda"), meminta perombakan menjadi desain yang benar-benar bersih, modern, segar, dan berkelas.
