@@ -596,14 +596,15 @@ dialog.ui-modal h2 { font-size: 19px; }
   width: 46px;
   height: 46px;
   padding: 0;
-  border: 0;
+  border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--surface);
   color: var(--ink-heading);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: background var(--dur-fast), color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
 }
-.takik-aksi:hover { background: var(--brand-isi); color: var(--on-brand); text-decoration: none; }
+.takik-aksi:hover { border-color: var(--brand); background: var(--brand-isi); color: var(--on-brand); text-decoration: none; }
 .takik-aksi:active { transform: scale(0.94); }
 .bertakik > .modul-kepala { padding-right: 40px; }
 @media (prefers-reduced-motion: reduce) { .takik-aksi { transition: none; } }

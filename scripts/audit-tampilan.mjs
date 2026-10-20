@@ -29,7 +29,7 @@ const keadaan = [
   ...['harian', 'papan', 'kalender', 'gantt'].map((v) => ({ nama: `tugas-${v}`, rute: `tugas?view=${v}`, aksi: [bukaLipatan] })),
   ...['papan', 'kalender', 'gantt'].map((v) => ({ nama: `jurnal-${v}`, rute: `jurnal?view=${v}`, aksi: [bukaLipatan] })),
   ...['Profil koperasi', 'Keamanan PIN', 'Cadangan data'].map((t) => ({ nama: `pengaturan-${t}`, rute: 'pengaturan', aksi: [klikTeks('.settings-tab-btn', t)] })),
-  ...['Keputusan', 'Riwayat interaksi', 'Isu'].map((t) => ({ nama: `tab-${t}`, rute: t === 'Keputusan' ? 'rapat' : t === 'Isu' ? 'risiko' : 'mitra', aksi: [klikTeks('.workspace-page > .tabs .ui-btn', t)] })),
+  ...['Keputusan', 'Riwayat interaksi', 'Isu'].map((t) => ({ nama: `tab-${t}`, rute: t === 'Keputusan' ? 'rapat' : t === 'Isu' ? 'risiko' : 'mitra', aksi: [klikTeks('.workspace-page .tabs .ui-btn', t)] })),
   { nama: 'proyek-detail', rute: 'proyek', aksi: [klik('.project-card a, a.project-card, .project-card'), bukaLipatan] },
   { nama: 'dialog-tambah', rute: 'beranda', aksi: [klik('.quick-action-hub-btn')] },
   { nama: 'dialog-cari', rute: 'beranda', aksi: [`(() => { const b = [...document.querySelectorAll('header button')].find(x => /cari/i.test(x.getAttribute('aria-label') || '')); b?.click(); return !!b; })()`] },
@@ -102,6 +102,10 @@ const nilai = async (expr) => (await kirim('Runtime.evaluate', { expression: exp
 await kirim('Page.enable');
 await kirim('Emulation.setDeviceMetricsOverride', { width: lebar, height: tinggi, deviceScaleFactor: 1, mobile: lebar < 1024 });
 await kirim('Emulation.setTouchEmulationEnabled', { enabled: lebar < 1024, maxTouchPoints: 5 });
+await kirim('Emulation.setEmulatedMedia', {
+  media: 'screen',
+  features: [{ name: 'prefers-color-scheme', value: process.env.TEMA || 'light' }],
+});
 
 const laporan = [];
 for (const k of keadaan) {

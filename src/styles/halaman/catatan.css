@@ -73,37 +73,119 @@
 .metric-income .metric-value { color: var(--ok); }
 .metric-expense .metric-value { color: var(--late); }
 
-/* ---------- Ubin status tugas: ringkasan sekaligus saringan ---------- */
-.ubin-status-tugas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.ubin-status {
-  --u-bg: var(--pastel-aksen);
-  --u-ink: var(--pastel-aksen-ink);
+/* ---------- Ubin status tugas: ringkasan kartu bersih Lavender Lekuk ---------- */
+.ubin-status-tugas {
   display: grid;
-  grid-template-columns: minmax(34px, auto) minmax(0, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.ubin-status {
+  --ikon-bg: var(--brand-soft);
+  --ikon-fg: var(--brand-ink);
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
   align-items: center;
-  gap: 12px 10px;
-  min-height: 96px;
-  padding: 14px 16px;
-  border: 0;
-  border-radius: var(--r-xl);
-  background: var(--u-bg);
-  color: var(--u-ink);
+  gap: 10px;
+  min-height: 64px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--ink);
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
+  box-shadow: none;
+  transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast) var(--ease-out);
 }
-.ubin-status.is-proses { --u-bg: var(--pastel-mentega); --u-ink: var(--pastel-mentega-ink); }
-.ubin-status.is-terlambat { --u-bg: var(--late-bg); --u-ink: var(--late); }
-.ubin-status.is-selesai { --u-bg: var(--pastel-mint); --u-ink: var(--pastel-mint-ink); }
-.ubin-status:hover { transform: translateY(-2px); }
-.ubin-status:active { transform: scale(0.98); }
-.ubin-status[aria-pressed='true'] { box-shadow: 0 0 0 2px var(--u-ink); }
-.ubin-status-ikon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 12px; background: var(--surface); color: var(--u-ink); }
-.ubin-status-label { font-size: 13.5px; font-weight: 600; }
-.ubin-status strong { font-size: 26px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.ubin-status small { font-size: 12px; font-weight: 600; }
-@container halaman (max-width: 620px) { .ubin-status-tugas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+.ubin-status:hover {
+  border-color: var(--brand-soft-border);
+  background: var(--surface-2);
+}
+.ubin-status:active { transform: scale(0.985); }
+.ubin-status[aria-pressed='true'] {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  box-shadow: 0 0 0 2px var(--brand-soft-border);
+}
+
+.ubin-status.is-proses {
+  --ikon-bg: var(--warn-bg);
+  --ikon-fg: var(--warn);
+}
+.ubin-status.is-terlambat {
+  --ikon-bg: var(--late-bg);
+  --ikon-fg: var(--late);
+}
+.ubin-status.is-selesai {
+  --ikon-bg: var(--ok-bg);
+  --ikon-fg: var(--ok);
+}
+
+.ubin-status-ikon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--ikon-bg);
+  color: var(--ikon-fg);
+  flex-shrink: 0;
+}
+.ubin-status-label {
+  grid-column: 2;
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.ubin-status strong {
+  grid-column: 2;
+  color: var(--ink-heading);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.ubin-status small {
+  display: none;
+}
+
+@container halaman (max-width: 620px) {
+  .ubin-status-tugas {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .ubin-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 60px;
+    padding: 8px 4px;
+    gap: 4px;
+    border-radius: 14px;
+  }
+  .ubin-status-ikon {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+  }
+  .ubin-status-ikon svg { width: 14px; height: 14px; }
+  .ubin-status strong {
+    font-size: 15px;
+    line-height: 1;
+  }
+  .ubin-status-label {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+}
 
 /* ---------- Pilihan tampilan ---------- */
 .database-views-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
@@ -523,50 +605,8 @@
 .meeting-section-title-wrap h3 { color: var(--ink-heading); font-size: var(--fs-h2); }
 .past-meetings { opacity: 0.86; }
 
-/* ---------- Papan kegiatan (scrum) ---------- */
+/* ---------- Papan kegiatan (scrum — aturan visual terpusat di tugas.css) ---------- */
 .journal-board-container { min-width: 0; }
-.scrum-board-columns { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(280px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 6px; }
-.scrum-column {
-  display: grid;
-  align-content: start;
-  gap: 10px;
-  min-width: 0;
-  padding: 12px;
-  border-radius: var(--r-lg);
-  background: var(--surface-2);
-  box-shadow: inset 0 0 0 1px var(--line);
-}
-.scrum-column.drag-over { box-shadow: inset 0 0 0 2px var(--brand); background: var(--brand-soft); }
-.scrum-column-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 4px; }
-.scrum-col-title-group { display: flex; align-items: center; gap: 8px; }
-.scrum-col-indicator { width: 10px; height: 10px; border-radius: 50%; background: var(--brand); }
-.scrum-col-title-text { display: grid; line-height: 1.25; }
-.column-title { font-size: 14px; }
-.column-subtitle { color: var(--ink-muted); font-size: 11.5px; }
-.scrum-col-header-actions { display: flex; align-items: center; gap: 6px; }
-.scrum-count-pill { min-width: 24px; padding: 2px 8px; border-radius: var(--r-full); background: var(--surface); color: var(--ink-muted); font-size: 12px; font-weight: 700; text-align: center; }
-.scrum-col-add-btn.ui-btn { width: 30px; min-height: 30px; padding: 0; }
-.scrum-cards-list { display: grid; gap: 8px; }
-.scrum-empty-column-placeholder { padding: 18px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-md); color: var(--ink-muted); font-size: 12.5px; text-align: center; }
-.scrum-task-card {
-  position: relative;
-  display: grid;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  transition: box-shadow var(--dur), transform var(--dur) var(--ease-out);
-}
-.scrum-task-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-.ui-card-move { position: absolute; top: 8px; right: 8px; }
-.ui-drag-handle { display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 6px; background: transparent; color: var(--ink-subtle); cursor: grab; }
-.card-top-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-right: 28px; }
-.card-task-title { font-size: 14px; font-weight: 600; }
-.card-description-snippet { color: var(--ink-muted); font-size: 12.5px; }
-.card-bottom-section, .card-assignee-row { display: flex; flex-wrap: wrap; gap: 6px; }
 
 /* ---------- Linimasa (arsip selesai dan kegiatan) ---------- */
 .completed-github-timeline, .journal-timeline-container { position: relative; display: grid; gap: 18px; }

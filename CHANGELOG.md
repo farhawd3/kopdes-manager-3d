@@ -2,6 +2,18 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Penataan Papan tugas Lavender Lekuk & penyempurnaan dok navigasi — 20 Oktober 2026
+
+- Alasan: arahan pemilik merapikan desain tugas dan memperbaiki tombol navigasi bawah ponsel yang sebelumnya berwarna hitam mati/kurang menarik, serta menata papan Kanban (ScrumBoardView) ke gaya Lavender Lekuk penuh.
+- Perubahan:
+  - Navigasi bawah ponsel (`.ui-bottom-nav`): tombol tambah bulat (`.nav-tambah`) kini menggunakan warna aksen lavender utama (`var(--brand-isi)`) dengan ikon putih dan efek bayangan lembut, menggantikan tombol hitam mati (`--ink-heading`). Dok pil dipusatkan (`max-width: 440px`) dengan border garis halus dan peredam blur yang rapi.
+  - Ubin status tugas (`.ubin-status`): didesain ulang menjadi kartu putih datar dengan lencana ikon pastel terpisah, angka tebal tabular, dan label rapi; pada ponsel otomatis menjadi satu baris 4 ubin kompak (~60px) tanpa blok warna pekat yang memakan layar.
+  - Papan tugas (Kanban): kartu tugas datar membulat (radius 18px), tanpa bayangan jatuh, border halus lavender saat hover, pil kode tugas/proyek/prioritas/tanggal, avatar inisial, dan tombol aksi cepat status (Mulai Kerja, Selesai, Buka Lagi) minimal 44px di layar sentuh. Kolom papan berlatar lembut radius 22px dengan gulir horizontal alami ber-scroll snap di ponsel.
+  - Kotak tambah cepat Beranda (`.beranda-tambah`) dan tombol takik aksi (`.takik-aksi`) dipertegas dengan border 1px dan bayangan halus.
+  - Selektor tab pada `scripts/audit-tampilan.mjs` diperbaiki sehingga audit visual seluruh tab halaman lolos 100%.
+- Verifikasi: 473 tes / 80 berkas, typecheck, lint, `lint:ui`, build produksi lulus; JS awal 247 KB (batas 300 KB). Audit tampilan pada 375x812 dan 1440x900 (mode terang & gelap) menghasilkan 0 temuan.
+- Belum: perangkat fisik, kalender dan Gantt tugas ke gaya Lekuk penuh, penyelarasan warna panel Dunia 3D ke Lavender.
+
 ## Ruang kerja Lavender Lekuk — 20 Oktober 2026
 
 - Alasan: pemilik meminta web menjadi task manager harian yang enak dipakai manajer KDMP. Setelah banyak putaran prototipe (arsip `docs/desain/`), dipilih bentuk Lekuk dan warna Lavender; gaya Senja, Kebun, Teal, Cerah, Taskflow, dan Merah Putih dicoba lalu ditinggalkan.

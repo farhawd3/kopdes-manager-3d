@@ -4,9 +4,9 @@ Keadaan terkini saja. Timpa bagian yang berubah; jangan menambah riwayat sesi di
 
 ## Ruang kerja web
 
-- **Gaya:** Lavender Lekuk ([DESIGN](../DESIGN.md)): aksen #6A55C8, kartu datar bertakik, pil, mode gelap. Sidebar Kerja (Beranda, Hari ini, Tugas, Agenda, Proyek, Linimasa) + Ruang lain + kartu Tim; ponsel memakai dok pil dan tombol tambah. URL lama tetap sebagai tab hub.
-- **Beranda:** rutin harian, agenda hari ini (jenis kegiatan, hitung mundur, Catat hasil), perlu tindakan, pita minggu, proyek berjalan, usaha harian; tambah cepat satu kalimat (`@nama #proyek !prioritas besok`) dan salin laporan harian untuk grup WhatsApp pengurus.
-- **Tugas:** daftar/papan/kalender/Gantt/harian, ubin status yang menyaring, penanggung jawab dari Tim, saringan penanggung jawab, geser kartu di ponsel (selesai + Batalkan, atau ubah). Papan, kalender, dan Gantt baru mengikuti warna, belum ditata ulang.
+- **Gaya:** Lavender Lekuk ([DESIGN](../DESIGN.md)): aksen #6A55C8, kartu datar bertakik, pil, mode gelap. Sidebar Kerja (Beranda, Hari ini, Tugas, Agenda, Proyek, Linimasa) + Ruang lain + kartu Tim; ponsel memakai dok pil terpusat dan tombol tambah bulat lavender. URL lama tetap sebagai tab hub.
+- **Beranda:** rutin harian, agenda hari ini (jenis kegiatan, hitung mundur, Catat hasil), perlu tindakan, pita minggu, proyek berjalan, usaha harian; tambah cepat satu kalimat (`@nama #proyek !prioritas besok`) bergaris tegas dan salin laporan harian untuk grup WhatsApp pengurus.
+- **Tugas:** daftar/papan/kalender/Gantt/harian, ubin status kompak kartu putih dengan lencana pastel, penanggung jawab dari Tim, saringan penanggung jawab, geser kartu di ponsel (selesai + Batalkan, atau ubah). Papan (Kanban) sudah bergaya Lavender Lekuk (kartu datar membulat 18px, tombol aksi cepat 44px, kolom snap); kalender dan Gantt masih menunggu penataan Lekuk.
 - **Agenda (`/rapat`):** jenis rapat/kunjungan/acara/lainnya, Catat hasil ke catatan kegiatan, unduhan ICS, tautan rapat online.
 - **Lainnya:** proyek fleksibel dengan anggaran vs uang keluar, kegiatan, dokumen, risiko/isu, tim, mitra, laporan (preset 7 hari/bulan ini/bulan lalu), lonceng pengingat, palet Ctrl+K, cadangan/pemulihan, PIN.
 - **Pencatatan:** anggota, buku kas (uang masuk/keluar saja), barang, stok opname (tanpa koreksi otomatis), pengiriman, mutasi stok. Migrasi 10 menambah simpanan, penjualan gerai, pembelian, inventaris aset, jadwal & absensi; sebelum terpasang halamannya tampil "belum aktif".
