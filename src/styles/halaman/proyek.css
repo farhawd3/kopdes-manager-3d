@@ -1,8 +1,8 @@
 /* Proyek: daftar proyek, detail proyek, milestone, sprint, catatan proyek. */
 
 /* ---------- Daftar ---------- */
-.project-scope-tabs { display: inline-flex; justify-self: start; max-width: 100%; overflow-x: auto; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-sm); }
-.project-scope-tabs :is(a, .ui-btn) { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 0; border-radius: var(--r-md); background: transparent; color: var(--ink-muted); font-size: 13px; font-weight: 600; text-decoration: none; box-shadow: none; }
+.project-scope-tabs { display: inline-flex; justify-self: start; max-width: 100%; overflow-x: auto; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: var(--r-full); background: var(--surface); box-shadow: var(--shadow-sm); }
+.project-scope-tabs :is(a, .ui-btn) { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 0; border-radius: var(--r-full); background: transparent; color: var(--ink-muted); font-size: 13px; font-weight: 600; text-decoration: none; box-shadow: none; }
 .project-scope-tabs :is(a, .ui-btn):is([aria-current='page'], [aria-selected='true'], .is-active) { background: var(--brand-soft); color: var(--brand-ink); }
 .projects-intro-banner { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 18px 0 4px; }
 .projects-intro-banner p { margin-top: 6px; color: var(--ink-muted); }
@@ -17,8 +17,8 @@
 .project-search-box .search-icon { position: absolute; top: 50%; left: 12px; color: var(--ink-subtle); transform: translateY(-50%); }
 .project-search-box .project-search-input { padding-left: 36px; }
 .btn-clear-search { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); }
-.project-status-tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-md); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); overflow-x: auto; }
-.project-status-tabs .ui-btn { min-height: 34px; padding: 0 12px; border: 0; background: transparent; color: var(--ink-muted); font-size: 13px; box-shadow: none; }
+.project-status-tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-full); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); overflow-x: auto; }
+.project-status-tabs .ui-btn { min-height: 34px; padding: 0 14px; border: 0; border-radius: var(--r-full); background: transparent; color: var(--ink-muted); font-size: 13px; font-weight: 600; box-shadow: none; }
 .project-status-tabs .ui-btn.is-active { background: var(--brand-soft); color: var(--brand-ink); }
 .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
@@ -125,7 +125,13 @@
 .project-context { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .project-section-anchor { scroll-margin-top: calc(var(--topbar-h) + 16px); }
 .project-related-card { display: grid; align-content: start; gap: 10px; }
-.project-related-card h3 { font-size: var(--fs-h2); }
+.project-related-card h3,
+.note-page .section-head h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-h2);
+}
 .project-related-card > p { color: var(--ink-muted); font-size: 13px; }
 .attention { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface-2); font-size: 13px; }
 .project-obstacle-link { display: block; padding: 10px 12px; border-radius: var(--r-md); background: var(--late-bg); color: var(--late); font-weight: 600; }

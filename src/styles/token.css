@@ -121,8 +121,8 @@
   --touch: 44px;
   --dock-h: 64px;
 
-  /* Kartu tanpa garis di mode terang; mode gelap butuh garis agar tepi terbaca */
-  --kartu-garis: transparent;
+  /* Kartu bergaris halus agar bentuk Lekuk terbaca rapi di semua mode */
+  --kartu-garis: var(--line);
 
   /* Ikon dua nada: garis gradasi lavender, isian lavender sangat muda */
   --ikon-isi: #ece8fb;

@@ -1,5 +1,5 @@
 'use client';
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect, useRef } from 'react';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
 
@@ -18,8 +18,26 @@ export function SegmentedControl({
   className?: string;
   children?: ReactNode;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const activeEl = container.querySelector<HTMLElement>('.ui-segmented-item.is-active');
+    if (!activeEl) return;
+    const pad = 8;
+    if (
+      activeEl.offsetLeft < container.scrollLeft + pad ||
+      activeEl.offsetLeft + activeEl.offsetWidth > container.scrollLeft + container.clientWidth - pad
+    ) {
+      if (typeof activeEl.scrollIntoView === 'function') {
+        activeEl.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [value]);
+
   return (
-    <div role="group" aria-label={label} className={cn('ui-segmented', className)}>
+    <div ref={containerRef} role="group" aria-label={label} className={cn('ui-segmented', className)}>
       {options.map((option) => {
         const active = value === option.value;
         return (

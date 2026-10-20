@@ -2,6 +2,19 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Penyelarasan tampilan bersih Lavender Lekuk pada tab, kalender, linimasa & laci — 20 Oktober 2026
+
+- Alasan: arahan pemilik merapikan tampilan yang masih berantakan, kurang rapi, dan terpotong di layar sempit pada seluruh tampilan ruang kerja (kalender, linimasa/Gantt, tab kontrol, detail proyek, laci catatan, dan pencarian).
+- Perubahan:
+  - Tab pilihan tampilan (`SegmentedControl`): teks tab di ponsel 375px tidak lagi terpotong berkat penyesuaian padding mobile, touch scroll, dan auto-scroll yang menjaga tab aktif selalu di tengah layar secara mulus.
+  - Penegasan kartu & kontrol data: `--kartu-garis` diubah menjadi `var(--line)` sehingga kotak cari (`.records-cari`), tombol filter (`.records-filter-toggle`), panel filter, dan pembungkus tabel memiliki definisi kontur yang tajam, bersih, dan elegan alih-alih mengambang transparan di atas kanvas.
+  - Kalender tugas (`TaskCalendar`): tombol mode tampilan (Bulan, Minggu, Hari) dirombak menjadi pil segmented dengan sorotan status aktif (`aria-pressed="true"`), dan pemilih bulan bawaan disembunyikan di layar ponsel sempit agar toolbar tetap ringkas dan tidak bertumpuk.
+  - Linimasa tugas (`TaskTimeline` / Gantt): tombol ganti tampilan linimasa diubah menjadi pil halus, dan otomatis disembunyikan di layar desktop yang sudah menampilkan bagan penuh. Tombol menu "Lainnya" (`.view-extra-summary`) dirapikan menjadi tombol pil serasi.
+  - Halaman proyek & detail: judul kartu terkait dengan ikon SVG diatur flex agar ikon dan teks sejajar rapi (mengeliminasi 5 error audit); tab cakupan dan status proyek diseragamkan ke bentuk pil penuh.
+  - Laci catatan & hari ini: tombol tutup laci dan tab detail dibuat berbentuk pil melengkung konsisten; kartu agenda pada Hari Ini dibersihkan menjadi kartu bergaris halus tanpa gradien kuning mencolok.
+- Verifikasi: 473 tes / 80 berkas vitest lulus 100%, typecheck tsc lulus, ESLint no issues, stylelint `lint:ui` 0 error, build Next.js lulus, JS awal 247 KB (batas 300 KB). Audit visual headless Chrome (`audit:tampilan`) pada 375x812 untuk seluruh 58 tampilan, dialog, tab, dan laci menghasilkan 0 temuan.
+- Belum: penyesuaian tema warna di monitoring Dunia 3D (masih biru #546FFF) dan pengujian di perangkat fisik asli.
+
 ## Penataan Papan tugas Lavender Lekuk & penyempurnaan dok navigasi — 20 Oktober 2026
 
 - Alasan: arahan pemilik merapikan desain tugas dan memperbaiki tombol navigasi bawah ponsel yang sebelumnya berwarna hitam mati/kurang menarik, serta menata papan Kanban (ScrumBoardView) ke gaya Lavender Lekuk penuh.

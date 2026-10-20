@@ -188,8 +188,28 @@
 }
 
 /* ---------- Pilihan tampilan ---------- */
-.database-views-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.database-views-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
 .database-views { max-width: 100%; }
+@media (max-width: 767px) {
+  .database-views-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+  .database-views-bar::-webkit-scrollbar { display: none; }
+  .database-views { flex-shrink: 0; }
+  .view-extra-actions { flex-shrink: 0; }
+}
 .database-views > span:not([class]) { display: inline-flex; align-items: center; padding: 0 10px; color: var(--ink-muted); font-size: 12.5px; white-space: nowrap; }
 .view-extra-actions { position: relative; margin-left: auto; }
 .view-extra-summary {
@@ -197,8 +217,10 @@
   align-items: center;
   gap: 6px;
   min-height: 38px;
-  padding: 0 12px;
-  border-radius: var(--r-md);
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  background: var(--surface);
   color: var(--ink-muted);
   font-size: 13px;
   font-weight: 600;
@@ -206,7 +228,7 @@
   cursor: pointer;
 }
 .view-extra-summary::-webkit-details-marker { display: none; }
-.view-extra-summary:hover { background: var(--surface); color: var(--ink); }
+.view-extra-summary:hover { background: var(--surface-2); color: var(--ink); }
 .view-extra-menu {
   position: absolute;
   z-index: 20;
@@ -214,10 +236,10 @@
   top: calc(100% + 6px);
   display: grid;
   gap: 4px;
-  min-width: 220px;
+  min-width: 200px;
   padding: 6px;
   border: 1px solid var(--line);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   background: var(--surface);
   box-shadow: var(--shadow-md);
 }
