@@ -4,7 +4,7 @@ Keadaan terkini saja. Timpa bagian yang berubah; jangan menambah riwayat sesi di
 
 ## Ruang kerja web
 
-- **Gaya:** Lavender Lekuk ([DESIGN](../DESIGN.md)): aksen #6A55C8, kartu datar bertakik, pil, mode gelap. Sidebar Kerja (Beranda, Hari ini, Tugas, Agenda, Proyek, Linimasa) + Ruang lain + kartu Tim; ponsel memakai dok pil terpusat dan tombol tambah bulat lavender. URL lama tetap sebagai tab hub.
+- **Gaya:** Masa transisi dari Lavender Lekuk ke **Lantai Dunia** (disetujui pemilik 20 Oktober 2026, [RENCANA-REDESAIN](RENCANA-REDESAIN.md)): rel navigasi biru batu `#2F3B63`, latar lantai ruang diorama (`--lantai-*`), modul lempeng dengan tepi tebal taktil, aksen jingga kayu (`#AC5108` / `#C8680F`) menyatu dengan dunia 3D. Paket 0 (lepas kunci dokumen) selesai; Paket 1 (token & kerangka) dan Paket 2-3 (Beranda POC) sedang disiapkan.
 - **Beranda:** rutin harian, agenda hari ini (jenis kegiatan, hitung mundur, Catat hasil), perlu tindakan, pita minggu, proyek berjalan, usaha harian; tambah cepat satu kalimat (`@nama #proyek !prioritas besok`) bergaris tegas dengan chip sintaks monospaced elegan, dan salin laporan harian untuk grup WhatsApp pengurus.
 - **Tugas:** daftar/papan/kalender/Gantt/harian, ubin status kompak kartu putih dengan lencana pastel, penanggung jawab dari Tim, saringan penanggung jawab, geser kartu di ponsel (selesai + Batalkan, atau ubah). Papan Kanban, kalender tugas (toolbar 2-klaster bersih, kisi lekuk 22px, status chip cerdas, agenda lekuk 24px dengan pemisah hari tegas), dan Gantt/linimasa (pil switch, responsif) telah diselaraskan ke gaya Lavender Lekuk penuh.
 - **Agenda (`/rapat`):** jenis rapat/kunjungan/acara/lainnya, Catat hasil ke catatan kegiatan, unduhan ICS, tautan rapat online.

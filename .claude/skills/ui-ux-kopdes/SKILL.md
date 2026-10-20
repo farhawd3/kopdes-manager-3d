@@ -5,15 +5,22 @@ description: Wajib dipakai setiap kali mengubah tampilan web Kopdes — CSS di s
 
 # UI/UX Kopdes
 
-Sumber gaya: `DESIGN.md` (token dan komponen) dan `docs/DESAIN-ANTARMUKA.md` (pola halaman). Konteks produk: `PRODUCT.md`. Untuk keputusan desain baru boleh memakai skill global `impeccable` / `ui-ux-pro-max`; aturan di bawah tetap menang.
+Sumber gaya: `docs/RENCANA-REDESAIN.md` (Arah disetujui: Lantai Dunia), `src/styles/` (token & kerangka), dan `docs/DESAIN-ANTARMUKA.md`. Konteks produk: `PRODUCT.md`. `DESIGN.md` lama berstatus usang/transisi. Untuk keputusan desain baru boleh memakai skill global `impeccable` / `ui-ux-pro-max`; aturan di bawah tetap menang.
 
 ## Peta
-- `src/styles/token.css` (satu-satunya tempat warna mentah, terang/gelap) → `dasar.css` → `komponen.css` → `kerangka.css` (sidebar, bilah atas, dok ponsel, lantai ruang `data-ruang`) → `halaman/*.css` (satu berkas per kelompok halaman).
+- `src/styles/token.css` (satu-satunya tempat warna mentah, terang/gelap) → `dasar.css` → `komponen.css` → `kerangka.css` (rel biru batu, bilah atas, dok ponsel, lantai ruang `data-ruang`) → `halaman/*.css` (satu berkas per kelompok halaman).
 - Komponen bersama: `src/components/ui` (`Button`, `Input`, `Select`, `DateField`, `Modal`, `EmptyState`, `Ikon3D`).
-- Dunia 3D punya gaya sendiri: `src/features/dunia-3d/monitoring.css` (lihat skill dunia-koperasi).
+- Dunia 3D: `src/features/dunia-3d/monitoring.css` (lihat skill dunia-koperasi), diselaraskan dengan aksen jingga kayu web.
 
 ## Bahasa visual
-- Gaya Lavender Lekuk (20 Oktober 2026): latar `--canvas` lavender sangat muda, kartu putih datar sudut `--r-card` 22 px / `--r-xl` 24 px (`--kartu-garis` hanya di mode gelap), aksen tunggal lavender `--brand` #6A55C8 (teks putih hanya di atas `--brand-isi`), huruf Plus Jakarta Sans (judul 24/600), angka `tabular-nums`. Kartu bertakik: `.bertakik` + satu `.takik-aksi` (tombol 46 px di pojok kanan atas); kartu bertakik harus datar dan duduk di atas `--canvas` (atau atur `--takik-latar`), konten jangan masuk area takik. Sidebar dari `components/layout/navigasi.ts`: Kerja (`MENU_KERJA`) + Ruang lain (`RUANG_LAIN`) + kartu Tim; halaman baru wajib dimasukkan ke salah satu hub (tes `navigasi-hub` gagal bila lupa). Ponsel: dok pil Beranda/Tugas/Agenda/Lainnya + tombol tambah bulat. `h1` hanya di kepala kerangka; isi halaman memakai `h2`. Kartu proyek memakai sampul `--sampul-<hub>` + ikon (lihat `KartuPekerjaan`), tanpa foto; avatar `.avatar-warna` berinisial. Bersih: warna jenuh hanya grafik/status/tombol utama/menu aktif/baris rutin berikutnya; kepala kartu Beranda memakai ubin ikon; ringkasan = satu baris teks, bukan chip; ubin ikon datar (`.ubin`, `.ubin-kecil` + warna peta), tanpa gradien dan bayangan. Bilah atas: cari, lonceng, Tambah, menu profil. Peta aksen lavender (`aksen`)=Tugas, persik=Proyek, kunyit/oranye=Buku koperasi, pandan/teal=Gerai, jambu/merah muda=Rapat. Satu tombol tambah di bilah atas.
+- Gaya Lantai Dunia (20 Oktober 2026, `docs/RENCANA-REDESAIN.md`):
+  - Rel navigasi biru batu `#2F3B63` dengan swatch lantai ruang diorama.
+  - Latar halaman memakai warna lantai ruang penuh: Kerja (pandan `#DCE8D6`), Koperasi/Kas (kayu madu `#F1DDBB`), Agenda/Rapat (lila `#E3DDF3`), Usaha/Gerai (persik `#F8DCC8`), Dunia (air `#D6EAEE`).
+  - Permukaan modul putih hangat `#FFFCF6`, tinta `#23263A`.
+  - Aksen tunggal jingga kayu `--brand` (`#AC5108` / `#C8680F`), kontras teks terjaga.
+  - Gerakan khas lempeng: modul tampil seperti lempeng lantai diorama dengan sudut lembut dan tepi tebal (desktop 6px, ponsel 3–4px) warna lantai lebih gelap. Menu aktif terangkat. Tombol, isian, dan cip tetap datar.
+  - Huruf: display/heading berkarakter (lokal `@fontsource`), teks isi netral dan bersih, angka tabular `tabular-nums`.
+  - Sidebar dari `components/layout/navigasi.ts`: Kerja (`MENU_KERJA`) + Ruang lain (`RUANG_LAIN`) + kartu Tim. Ponsel: dok pil + tombol tambah bulat. `h1` hanya di kepala kerangka; isi halaman memakai `h2`.
 - Grafik: `components/charts/GrafikLembut.tsx` (`GrafikBanding`, `Donat`, `Gauge`) dengan token `--grafik-*`; SVG tanpa pustaka, setiap grafik ber-`aria-label` berisi angka; tanpa tren karangan.
 - Halaman baru memakai grid modul seimbang: `.modul` + `lebar-separuh`/`lebar-sepertiga`, tinggi rata per baris, setiap data bisa ditindaklanjuti.
 - Status hanya `--ok/--late/--warn` (+ `-bg`, `-line`); status selalu bertuliskan, bukan warna saja.

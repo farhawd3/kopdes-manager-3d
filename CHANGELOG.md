@@ -2,6 +2,17 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Paket 0 Redesain: Pelepasan kunci dokumen ke arah Lantai Dunia — 20 Oktober 2026
+
+- Alasan: arahan pemilik ("lakukan") menyetujui rencana redesain di `docs/RENCANA-REDESAIN.md` dengan arah baru "Lantai Dunia" (rel navigasi biru batu, latar lantai per ruang diorama, permukaan modul putih hangat, modul lempeng taktil, dan aksen jingga kayu), serta melepaskan aturan gaya lama (Lavender Lekuk) dari seluruh dokumen panduan.
+- Perubahan:
+  - `docs/RENCANA-REDESAIN.md`: status diperbarui menjadi disetujui pemilik, rencana kerja aktif dari Paket 0 hingga Paket 6.
+  - `AGENTS.md` & `PRODUCT.md`: aturan gaya multiplatform dan komitmen merek dialihkan dari Lavender Lekuk ke Lantai Dunia.
+  - `DESIGN.md`: ditandai usang/transisi sebagai acuan gaya lama yang sedang digantikan bertahap.
+  - `docs/DESAIN-ANTARMUKA.md` & skill `ui-ux-kopdes`: spesifikasi visual diperbarui untuk memuat konsep Lantai Dunia, dan skill disinkronkan ke `.agents/skills`.
+- Verifikasi: git status rapi, `sync-skills.mjs` berhasil disinkronkan, verifikasi dokumentasi dan integritas aturan.
+- Belum: implementasi kode Paket 1 (token & kerangka) dan Paket 2–3 (komponen lempeng & Beranda POC).
+
 ## Pembersihan tampilan tambah tugas beranda & pemisah agenda kalender — 20 Oktober 2026
 
 - Alasan: arahan pemilik untuk membuat tampilan `beranda-tambah` (kotak pembuatan tugas cepat di Beranda) dan `calendar-agenda-day-group` (pengelompokan hari di agenda kalender tugas) lebih clean, rapi, dan terstruktur.

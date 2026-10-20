@@ -34,8 +34,8 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 ## Brand Commitments
 
 - Nama produk: Kopdes Manager 3D; di dalam aplikasi: "Dunia Koperasi" untuk diorama.
-- Web memakai gaya "Lavender Lekuk" (keputusan pemilik 20 Oktober 2026; Merah Putih 19 Oktober dinilai tidak cocok; sebelumnya Taskflow biru dan Cerah; Senja, Kebun, dan Teal ditolak): latar lavender sangat muda, kartu putih datar bersudut besar dengan takik di pojok kanan atas berisi satu tombol aksi, pil dan tombol bulat, aksen tunggal ungu lavender `#6A55C8` dengan pastel pendamping (persik, jambu, kunyit, pandan, air), tinta ungu gelap, huruf Plus Jakarta Sans yang ramah di ponsel; mode gelap ungu malam. Warna lembut, bukan warna templat. Warna jenuh hanya pada grafik, status, tombol utama, menu aktif, dan baris rutin berikutnya. Ikon dua nada lavender (`Ikon3D`). Sistem lengkap di `DESIGN.md`.
-- Tampilan seimbang di semua perangkat: grid modul dengan tinggi rata; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
+- Web beralih ke gaya "Lantai Dunia" (keputusan pemilik 20 Oktober 2026; menggantikan Lavender Lekuk, Merah Putih, dan Taskflow biru; detail di `docs/RENCANA-REDESAIN.md`): rel navigasi biru batu `#2F3B63`, latar halaman memakai warna lantai ruang diorama penuh (`--lantai-*`: pandan untuk Kerja, kayu madu untuk Kas & Anggota, lila untuk Agenda, persik untuk Gerai, air untuk Pulau), permukaan modul putih hangat `#FFFCF6`, modul lempeng dengan tepi tebal taktil diorama, aksen tunggal jingga kayu `#AC5108`/`#C8680F`, huruf berkarakter untuk judul dan angka tabular. Warna jenuh hanya pada grafik, status, tombol utama, menu aktif, dan baris rutin berikutnya. Menyatukan identitas web dengan Dunia 3D.
+- Tampilan seimbang di semua perangkat: modul lempeng taktil; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
 - Bahasa UI langsung, ringkas, tanpa slogan motivasi.
 
 ## Evidence on Hand

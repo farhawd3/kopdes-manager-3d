@@ -69,3 +69,6 @@ graphify-out/
 
 # Berkas tidak terpakai yang menunggu dihapus pemilik
 not-use/
+
+# Alat bantu desain & audit internal
+.impeccable/

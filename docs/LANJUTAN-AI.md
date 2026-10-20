@@ -5,12 +5,9 @@ Berkas ini untuk agen berikutnya (Claude, Codex, Antigravity, OpenCode, dll.). I
 ## Keadaan (20 Oktober 2026)
 
 - Cabang: `tampilan/papan-tugas-lekuk`.
-- Gaya web Lavender Lekuk sudah lengkap untuk seluruh ruang kerja:
-  - Kerangka, sidebar, dok ponsel terpusat dengan tombol tambah lavender `#6A55C8`.
-  - Beranda, Hari Ini, dan Catatan (ubin status kompak, border tegas 1px, kotak tambah tugas cepat lekuk 22px dengan chip sintaks monospaced).
-  - Tugas: daftar, papan Kanban, kalender (toolbar rapi, kisi lekuk 22px, nomor tanggal tabular, chip status cerdas, agenda lekuk 24px dengan pemisah hari tegas), linimasa Gantt (pil switch responsif).
-  - Kartu catatan seluruh entitas: pengiriman, dokumen, risiko, mitra, jurnal, kesiapan diselaraskan ke standar rapi meeting-record (ikon domain 3D, baris rincian berikon, dan kotak seksi terstruktur untuk mitigasi/tindak lanjut/rincian barang).
-  - Laci catatan dan detail tugas dengan tombol tutup dan tab pil bulat.
+- **Redesain Lantai Dunia Disetujui Pemilik** (`docs/RENCANA-REDESAIN.md`):
+  - Paket 0 (Pelepasan kunci dokumen) selesai: aturan gaya di `AGENTS.md`, `PRODUCT.md`, skill `ui-ux-kopdes`, dan `docs/DESAIN-ANTARMUKA.md` dialihkan ke arah "Lantai Dunia" (rel biru batu `#2F3B63`, latar lantai ruang diorama, permukaan modul putih hangat, modul lempeng taktil, aksen jingga kayu `#AC5108`/`#C8680F`). `DESIGN.md` lama ditandai usang/transisi.
+  - Paket berikutnya: Paket 1 (Token warna & kerangka rel biru batu / latar ruang), Paket 2 (Komponen modul lempeng), Paket 3 (Beranda POC).
 - Verifikasi: 473/473 tes vitest lulus, typecheck, lint, lint:ui, build (JS awal 247 KB), dan `audit:tampilan` 58/58 layar 0 temuan di 375x812.
 
 ## Peta kode yang sering disentuh
