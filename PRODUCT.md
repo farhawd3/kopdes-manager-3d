@@ -20,7 +20,7 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 
 ## Operating Context
 
-- Rutinitas: buka Beranda/Hari ini di pagi hari, perbarui status tugas, catat transaksi kas dan mutasi stok setelah kejadian, siapkan rapat dan notulen, simpan snapshot laporan berkala.
+- Rutinitas: buka Beranda di pagi hari (centang rutin harian, lihat agenda dan yang perlu tindakan, tambah tugas dalam satu kalimat, salin laporan harian ke grup WhatsApp pengurus), perbarui status tugas, catat transaksi kas dan mutasi stok setelah kejadian, siapkan rapat dan notulen, simpan snapshot laporan berkala.
 - Ruang kantor di dunia 3D memetakan domain web: Ruang kerja (tugas, sprint), Ruang manajer (dokumen, risiko, mitra), Rapat, Gym & kegiatan, Stok & barang, Kas & anggota, Karyawan gerai, Ngopi & istirahat; plus Gerai, Gudang, Cold storage, Pulau.
 - Bahasa Indonesia sederhana, zona waktu Asia/Jakarta. Data disimpan di Supabase (satu tabel JSONB per domain); mode demo lokal untuk percobaan.
 
@@ -28,13 +28,14 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 
 - Proyek fleksibel, tugas (daftar/papan/kalender/Gantt/harian), milestone, sprint, kegiatan, rapat + ICS, dokumen, risiko/isu, mitra, tim/pelatihan, gerai/kesiapan, laporan; anggota, buku kas, barang, stok opname, pengiriman, mutasi stok.
 - Buku kas hanya uang masuk/keluar tercatat — tidak pernah disebut saldo atau laba. Opname tidak mengubah stok otomatis.
-- Belum ada POS, akuntansi lengkap, simpan pinjam, kolaborasi real-time, editor blok, unggah berkas.
+- Belum ada POS, akuntansi lengkap, pinjaman anggota, kolaborasi real-time, editor blok, unggah berkas. Simpanan anggota (pokok, wajib, sukarela) tersedia sejak migrasi 10.
 - Next.js 16, React 19, TypeScript strict, Tailwind 3, Three.js. Repo publik.
 
 ## Brand Commitments
 
 - Nama produk: Kopdes Manager 3D; di dalam aplikasi: "Dunia Koperasi" untuk diorama.
-- Dunia Koperasi 3D adalah induk bahasa visual; halaman web mengikuti bahasa panel dunia (keputusan pemilik 12 Oktober 2026). Aksen biru `#2F5BEA`, huruf Inter, ikon dua nada biru (`Ikon3D`).
+- Web memakai gaya "Lavender Lekuk" (keputusan pemilik 20 Oktober 2026; Merah Putih 19 Oktober dinilai tidak cocok; sebelumnya Taskflow biru dan Cerah; Senja, Kebun, dan Teal ditolak): latar lavender sangat muda, kartu putih datar bersudut besar dengan takik di pojok kanan atas berisi satu tombol aksi, pil dan tombol bulat, aksen tunggal ungu lavender `#6A55C8` dengan pastel pendamping (persik, jambu, kunyit, pandan, air), tinta ungu gelap, huruf Plus Jakarta Sans yang ramah di ponsel; mode gelap ungu malam. Warna lembut, bukan warna templat. Warna jenuh hanya pada grafik, status, tombol utama, menu aktif, dan baris rutin berikutnya. Ikon dua nada lavender (`Ikon3D`). Sistem lengkap di `DESIGN.md`.
+- Tampilan seimbang di semua perangkat: grid modul dengan tinggi rata; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
 - Bahasa UI langsung, ringkas, tanpa slogan motivasi.
 
 ## Evidence on Hand
