@@ -2,6 +2,16 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Penyelarasan kartu catatan ke standar bersih kartu rapat (meeting-record) — 20 Oktober 2026
+
+- Alasan: arahan pemilik bahwa tampilan kartu catatan rapat (meeting-record) sudah cukup clean dan rapi, dan meminta menyesuaikan seluruh kartu catatan lainnya (pengiriman, dokumen, risiko, mitra, jurnal, kesiapan) agar mengikuti standar kerapian yang sama.
+- Perubahan:
+  - Ikon domain 3D (`record-domain-icon`): setiap kartu catatan kini memiliki ikon 3D representatif di samping judul (truk untuk pengiriman, dokumen untuk legalitas, peringatan untuk risiko, jabat tangan untuk mitra, buku untuk jurnal, centang untuk kesiapan, dompet untuk kas, kotak untuk barang), serasi dengan ikon kalender pada kartu rapat.
+  - Pemisahan metadata dan baris rincian: metadata strip (`.record-meta`) kini hanya diisi pil ringkas tingkat tinggi (status, arah kiriman, dok, jam, tanggal). Teks panjang seperti nama sopir, nomor pelat kendaraan, nama mitra, dan gerai tujuan dipindahkan dari metadata menjadi baris detail terstruktur (`.record-detail-row`) dengan ikon Lucide dan label tebal.
+  - Kotak bagian terstruktur (`.record-section-box`): catatan panjang seperti rincian barang kiriman, rencana mitigasi risiko, bukti kesiapan, dan rencana tindak lanjut mitra kini dibungkus rapi dalam kartu mini berlatar lembut radius `var(--r-md)` dengan ikon penanda, menyamakan pengalaman kotak agenda pembahasan dan notulen pada kartu rapat.
+- Verifikasi: typecheck `tsc --noEmit` 0 error, stylelint `lint:ui` 0 error, audit visual headless Chrome (`audit:tampilan`) pada tampilan pengiriman, dokumen, mitra, dan risiko menghasilkan 0 galat tata letak.
+- Belum: pengujian fisik di perangkat nyata dan penyesuaian tema warna monitoring Dunia 3D.
+
 ## Pembaruan kalender tugas & pembersihan tipografi antarmuka — 20 Oktober 2026
 
 - Alasan: arahan pemilik mengenai kalender tugas yang kurang menarik, tulisan/tipografi yang kurang clean, serta mengoptimalkan alur kerja verifikasi agar eksekusi berlangsung cepat tanpa penundaan berlebih.

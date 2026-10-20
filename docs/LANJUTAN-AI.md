@@ -9,7 +9,7 @@ Berkas ini untuk agen berikutnya (Claude, Codex, Antigravity, OpenCode, dll.). I
   - Kerangka, sidebar, dok ponsel terpusat dengan tombol tambah lavender `#6A55C8`.
   - Beranda, Hari Ini, dan Catatan (ubin status kompak, border tegas 1px).
   - Tugas: daftar, papan Kanban, kalender (toolbar rapi, kisi lekuk 22px, nomor tanggal tabular, chip status cerdas, agenda lekuk 24px), linimasa Gantt (pil switch responsif).
-  - Kartu catatan & proyek: tipografi judul flex tanpa meluap, klem deskripsi 2 baris, chip metadata melengkung konsisten, dan perbaikan offside .cal-due-pill.is-late.
+  - Kartu catatan seluruh entitas: pengiriman, dokumen, risiko, mitra, jurnal, kesiapan diselaraskan ke standar rapi meeting-record (ikon domain 3D, baris rincian berikon, dan kotak seksi terstruktur untuk mitigasi/tindak lanjut/rincian barang).
   - Laci catatan dan detail tugas dengan tombol tutup dan tab pil bulat.
 - Verifikasi: 473/473 tes vitest lulus, typecheck, lint, lint:ui, build (JS awal 247 KB), dan `audit:tampilan` 58/58 layar 0 temuan di 375x812.
 

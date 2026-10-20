@@ -2,7 +2,7 @@
 // Kartu catatan per jenis entitas dan kartu tugas, dipakai daftar/papan di halaman catatan.
 import { LihatDiDunia } from '@/components/ui/LihatDiDunia';
 import { ringkasan } from './terkait';
-import { Ikon3D } from '@/components/ui/Ikon3D';
+import { Ikon3D, type Ikon3DKind } from '@/components/ui/Ikon3D';
 import { AppIcon } from '@/components/ui/AppIcon';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -18,7 +18,7 @@ import { readiness, subtaskProgress } from '@/lib/progress';
 import { Meter } from '@/components/charts/Charts';
 import { ReadinessRadar } from '@/components/charts/ReadinessRadar';
 import { Select } from '@/components/ui/Select';
-import { Calendar, ChevronDown, Shield, Landmark, Scale, Users2, Building2, Wheat, Handshake, CircleDot, Clock, MapPin, Users, BookOpen, FileText, Phone, CheckCircle2, Video, AlertCircle, ShieldCheck, CheckSquare, Check, RotateCcw, ExternalLink, Flame, MoreHorizontal, Trash2, NotebookPen } from 'lucide-react';
+import { Calendar, ChevronDown, Shield, Landmark, Scale, Users2, Building2, Wheat, Handshake, CircleDot, Clock, MapPin, Users, BookOpen, FileText, Phone, CheckCircle2, Video, AlertCircle, ShieldCheck, CheckSquare, Check, RotateCcw, ExternalLink, Flame, MoreHorizontal, Trash2, NotebookPen, Truck, Store, Package, User } from 'lucide-react';
 import { downloadMeeting, meetingJoinUrl } from '../meetings/meeting';
 import { INFO_JENIS, catatHasilHref, jenisDari } from '../meetings/jenis';
 import { formatDisplayCode } from '../tasks/task-code';
@@ -311,16 +311,45 @@ export function kartuTugasKalender(row: Item, k: KonteksKartu) {
   );
 }
 
+const ENTITY_DOMAIN_ICON: Partial<Record<string, Ikon3DKind>> = {
+  units: 'toko',
+  meetings: 'kalender',
+  deliveries: 'truk',
+  documents: 'dokumen',
+  risks: 'peringatan',
+  stakeholders: 'jabat',
+  journal: 'buku',
+  checklist: 'cek',
+  inventory: 'kotak',
+  finance: 'dompet',
+  issues: 'peringatan',
+  decisions: 'cek',
+  milestones: 'bendera',
+};
+
 export function kartuCatatan(row: Item, k: KonteksKartu) {
   const { entity, workspace, refresh, busy, setBusy, setError, setDetailTask, setLihat, update } = k;
   if ((entity as string) === 'work-items') {
     return kartuTugasKalender(row, k);
   }
+
+  const domainIcon = ENTITY_DOMAIN_ICON[entity];
+  const isLateStatus = ['alpa', 'kadaluwarsa', 'rusak', 'kritis'].includes(String(row.data.status));
+  const isOkStatus = ['selesai', 'hadir', 'diterima', 'tersedia'].includes(String(row.data.status));
+
   return (
-    <article className={`record card ${entity === 'units' ? 'unit-record' : ''} ${entity === 'meetings' ? 'meeting-record' : ''}`} key={row.id} data-jenis={entity === 'meetings' ? jenisDari(row) : undefined}>
+    <article
+      className={`record card ${entity === 'units' ? 'unit-record' : ''} ${entity === 'meetings' ? 'meeting-record' : ''} ${entity}-record`}
+      key={row.id}
+      data-jenis={entity === 'meetings' ? jenisDari(row) : undefined}
+    >
       <div className="section-head">
         <h3>
-          {(entity === 'units' || entity === 'meetings') && <span className="record-domain-icon"><Ikon3D kind={entity === 'units' ? 'toko' : 'kalender'} size={28} rapat /></span>}
+          {domainIcon && (
+            <span className="record-domain-icon">
+              <Ikon3D kind={domainIcon} size={28} rapat />
+            </span>
+          )}
           {['work-items', 'journal'].includes(entity) && (
             <span className="task-code-tag mr-2">
               {formatDisplayCode(String(row.data.code), entity, row.id)}
@@ -334,7 +363,7 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
           <span className="record-title-text">{String(row.data.title)}</span>
         </h3>
         {Boolean(row.data.status) && (
-          <span className={'badge ' + (['selesai', 'hadir', 'diterima'].includes(String(row.data.status)) ? 'ok' : row.data.status === 'alpa' ? 'late' : '')}>
+          <span className={'badge ' + (isOkStatus ? 'ok' : isLateStatus ? 'late' : '')}>
             {formatChoiceLabel(String(row.data.status), `${entity}.status`)}
           </span>
         )}
@@ -346,12 +375,15 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
           </span>
         )}
       </div>
+
       <div className="record-meta">
-        {ringkasan(entity, row, workspace).map((teks) => (
-          <span key={teks} className="record-chip">
-            {teks}
-          </span>
-        ))}
+        {entity !== 'deliveries' &&
+          ringkasan(entity, row, workspace).map((teks) => (
+            <span key={teks} className="record-chip">
+              {teks}
+            </span>
+          ))}
+
         {entity === 'deliveries' && (
           <>
             <span className={`delivery-dir-tag is-${row.data.direction === 'keluar' ? 'out' : 'in'}`}>
@@ -371,37 +403,9 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
             {Boolean(row.data.arrived_date) && (
               <span>Tiba: {formatDate(String(row.data.arrived_date))}</span>
             )}
-            {Boolean(row.data.vehicle || row.data.license_plate) && (
-              <span>
-                {[row.data.vehicle, row.data.license_plate]
-                  .filter(Boolean)
-                  .map(String)
-                  .join(' · ')}
-              </span>
-            )}
-            {Boolean(row.data.driver_name) && (
-              <span>Sopir: {String(row.data.driver_name)}</span>
-            )}
-            {Boolean(row.data.stakeholder_id) && (
-              <span>
-                Mitra:{' '}
-                {String(
-                  workspace.stakeholders?.find((s) => s.id === row.data.stakeholder_id)?.data
-                    .title || 'tidak ditemukan',
-                )}
-              </span>
-            )}
-            {Boolean(row.data.unit_id) && (
-              <span>
-                Gerai:{' '}
-                {String(
-                  workspace.units?.find((u) => u.id === row.data.unit_id)?.data.title ||
-                    'tidak ditemukan',
-                )}
-              </span>
-            )}
           </>
         )}
+
         {entity === 'meetings' && (
           <>
             {(() => {
@@ -426,54 +430,24 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
             </span>
           </>
         )}
-        {entity === 'journal' && (
+
+        {entity === 'documents' && (
           <>
-            {Boolean(row.data.work_item_id) && (
-              <span>
-                Tugas:{' '}
-                {String(
-                  workspace['work-items']?.find((t) => t.id === row.data.work_item_id)?.data
-                    .title || 'tidak ditemukan',
-                )}
-              </span>
+            {Boolean(row.data.category) && (
+              <span className="record-chip doc-cat-chip">{String(row.data.category)}</span>
             )}
-            {Boolean(row.data.stakeholder_id) && (
-              <span>
-                Mitra:{' '}
-                {String(
-                  workspace.stakeholders?.find((s) => s.id === row.data.stakeholder_id)?.data
-                    .title || 'tidak ditemukan',
-                )}
-              </span>
+            {Boolean(row.data.code) && (
+              <span className="record-chip doc-code-chip">{String(row.data.code)}</span>
             )}
-            {Boolean(row.data.unit_id) && (
-              <span>
-                Gerai:{' '}
-                {String(
-                  workspace.units?.find((u) => u.id === row.data.unit_id)?.data.title ||
-                    'tidak ditemukan',
-                )}
-              </span>
-            )}
-            {(() => {
-              const meeting = workspace.meetings?.find((m) => m.id === row.data.meeting_id);
-              const joinUrl = meetingJoinUrl(meeting);
-              return joinUrl ? (
-                <a
-                  href={joinUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="journal-join-link"
-                  title="Masuk ruang rapat daring (Google Meet / Zoom)"
-                >
-                  <Video size={13} className="inline-icon" />
-                  <span>Gabung rapat ↗</span>
-                </a>
-              ) : null;
-            })()}
           </>
         )}
-        {Boolean(row.data.assignee) && <span>{entity === 'units' ? 'Penanggung jawab: ' : ''}{String(row.data.assignee)}</span>}
+
+        {Boolean(row.data.assignee) && (
+          <span>
+            {entity === 'units' ? 'Penanggung jawab: ' : ''}
+            {String(row.data.assignee)}
+          </span>
+        )}
         {Boolean(row.data.priority) && <span>Prioritas {String(row.data.priority)}</span>}
         {Boolean(row.data.due_date || row.data.date) && (
           <span
@@ -485,6 +459,117 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
           </span>
         )}
       </div>
+
+      {/* Detail baris terstruktur untuk pengiriman */}
+      {entity === 'deliveries' && (
+        <div className="record-card-details delivery-card-details">
+          {Boolean(row.data.stakeholder_id) && (
+            <p className="record-detail-row">
+              <Building2 size={13} />
+              <strong>Mitra Pemasok: </strong>
+              <span>
+                {String(
+                  workspace.stakeholders?.find((s) => s.id === row.data.stakeholder_id)?.data
+                    .title || 'tidak ditemukan',
+                )}
+              </span>
+            </p>
+          )}
+          {Boolean(row.data.unit_id) && (
+            <p className="record-detail-row">
+              <Store size={13} />
+              <strong>Tujuan Gerai: </strong>
+              <span>
+                {String(
+                  workspace.units?.find((u) => u.id === row.data.unit_id)?.data.title ||
+                    'tidak ditemukan',
+                )}
+              </span>
+            </p>
+          )}
+          {Boolean(row.data.vehicle || row.data.license_plate) && (
+            <p className="record-detail-row">
+              <Truck size={13} />
+              <strong>Kendaraan: </strong>
+              <span>
+                {[row.data.vehicle, row.data.license_plate]
+                  .filter(Boolean)
+                  .map(String)
+                  .join(' · ')}
+              </span>
+            </p>
+          )}
+          {Boolean(row.data.driver_name) && (
+            <p className="record-detail-row">
+              <User size={13} />
+              <strong>Sopir: </strong>
+              <span>{String(row.data.driver_name)}</span>
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Detail baris terstruktur untuk jurnal */}
+      {entity === 'journal' && (
+        <div className="record-card-details journal-card-details">
+          {Boolean(row.data.work_item_id) && (
+            <p className="record-detail-row">
+              <CheckSquare size={13} />
+              <strong>Tugas Terkait: </strong>
+              <span>
+                {String(
+                  workspace['work-items']?.find((t) => t.id === row.data.work_item_id)?.data
+                    .title || 'tidak ditemukan',
+                )}
+              </span>
+            </p>
+          )}
+          {Boolean(row.data.stakeholder_id) && (
+            <p className="record-detail-row">
+              <Handshake size={13} />
+              <strong>Mitra Terkait: </strong>
+              <span>
+                {String(
+                  workspace.stakeholders?.find((s) => s.id === row.data.stakeholder_id)?.data
+                    .title || 'tidak ditemukan',
+                )}
+              </span>
+            </p>
+          )}
+          {Boolean(row.data.unit_id) && (
+            <p className="record-detail-row">
+              <Store size={13} />
+              <strong>Unit / Gerai: </strong>
+              <span>
+                {String(
+                  workspace.units?.find((u) => u.id === row.data.unit_id)?.data.title ||
+                    'tidak ditemukan',
+                )}
+              </span>
+            </p>
+          )}
+          {(() => {
+            const meeting = workspace.meetings?.find((m) => m.id === row.data.meeting_id);
+            const joinUrl = meetingJoinUrl(meeting);
+            return joinUrl ? (
+              <p className="record-detail-row">
+                <Video size={13} />
+                <a
+                  href={joinUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="journal-join-link"
+                  title="Masuk ruang rapat daring (Google Meet / Zoom)"
+                >
+                  Gabung rapat ↗
+                </a>
+              </p>
+            ) : null;
+          })()}
+        </div>
+      )}
+
+      {/* Units gerai meter & radar */}
       {entity === 'units' && (
         <Meter
           value={readiness(
@@ -501,15 +586,15 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
             .map((item) => schemas.checklist.parse(item.data))}
         />
       )}
-      {entity === 'checklist' && Boolean(row.data.evidence) && (
-        <p className="record-text">Bukti: {String(row.data.evidence)}</p>
-      )}
+
+      {/* Dokumen details */}
       {entity === 'documents' && (
-        <div className="document-card-details">
-          {/* Jenis, nomor, dan status sudah tampil di cip dan lencana kepala kartu. */}
+        <div className="record-card-details document-card-details">
           <div className="doc-dates-row">
             {Boolean(row.data.issued_date) && (
-              <span className="doc-date">Terbit: {formatDate(String(row.data.issued_date))}</span>
+              <span className="doc-date">
+                <Calendar size={13} /> Terbit: {formatDate(String(row.data.issued_date))}
+              </span>
             )}
             {Boolean(row.data.expires_date) ? (
               <span
@@ -523,18 +608,15 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
               >
                 {String(row.data.expires_date) < today() ? (
                   <>
-                    <AlertCircle size={13} /> Kadaluwarsa (
-                    {formatDate(String(row.data.expires_date))})
+                    <AlertCircle size={13} /> Kadaluwarsa ({formatDate(String(row.data.expires_date))})
                   </>
                 ) : String(row.data.expires_date) <= addDays(today(), 30) ? (
                   <>
-                    <Clock size={13} /> Berakhir dalam 30 hari (
-                    {formatDate(String(row.data.expires_date))})
+                    <Clock size={13} /> Berakhir dlm 30 hari ({formatDate(String(row.data.expires_date))})
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 size={13} /> Berlaku s.d.{' '}
-                    {formatDate(String(row.data.expires_date))}
+                    <CheckCircle2 size={13} /> Berlaku s.d. {formatDate(String(row.data.expires_date))}
                   </>
                 )}
               </span>
@@ -546,6 +628,8 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
           </div>
         </div>
       )}
+
+      {/* Risiko details */}
       {entity === 'risks' &&
         (() => {
           const prob = Number(row.data.probability || 3);
@@ -558,20 +642,25 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
                 ? { label: 'Perlu waspada', cls: 'risk-warning', desc: 'Siapkan mitigasi' }
                 : { label: 'Terkendali', cls: 'risk-safe', desc: 'Dalam SOP standar' };
           return (
-            <div className="risk-card-details">
+            <div className="record-card-details risk-card-details">
               <p className="risk-level-strip">
                 <span className={`risk-level-badge ${level.cls}`}>{level.label}</span>
                 <span className="risk-level-desc">{level.desc}</span>
               </p>
               {Boolean(row.data.mitigation) && (
-                <p className="record-text">
-                  <strong>Mitigasi: </strong>
-                  {String(row.data.mitigation)}
-                </p>
+                <div className="record-section-box">
+                  <div className="record-section-box-head">
+                    <ShieldCheck size={13} />
+                    <span>Rencana Mitigasi</span>
+                  </div>
+                  <p className="record-text">{String(row.data.mitigation)}</p>
+                </div>
               )}
             </div>
           );
         })()}
+
+      {/* Mitra & kontak details */}
       {entity === 'stakeholders' &&
         (() => {
           const rawContact = String(row.data.contact || '').trim();
@@ -587,7 +676,7 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
           );
 
           return (
-            <div className="stakeholder-card-body">
+            <div className="record-card-details stakeholder-card-body">
               {rawContact && (
                 <div className="stakeholder-contact-row">
                   <span className="contact-text">
@@ -619,39 +708,83 @@ export function kartuCatatan(row: Item, k: KonteksKartu) {
                 </div>
               )}
 
-              <div className="stakeholder-comm-status">
+              <p className="record-detail-row stakeholder-comm-status">
+                <Clock size={13} />
                 <span className={`comm-date ${isLate ? 'late-warning' : ''}`}>
                   {lastContactStr
                     ? `Kontak terakhir: ${formatDate(lastContactStr)}`
                     : 'Belum ada catatan interaksi'}
-                  {isLate ? ' · Perlu dihubungi kembali (>14 hari)' : ''}
+                  {isLate ? ' · Perlu dihubungi (>14 hari)' : ''}
                 </span>
                 {interactions.length > 0 && (
-                  <span className="comm-count">{interactions.length} riwayat interaksi</span>
+                  <span className="comm-count">({interactions.length} riwayat)</span>
                 )}
-              </div>
+              </p>
+
+              {Boolean(row.data.follow_up) && (
+                <div className="record-section-box record-callout-warn">
+                  <div className="record-section-box-head">
+                    <Clock size={13} />
+                    <span>Rencana Tindak Lanjut</span>
+                  </div>
+                  <p className="record-text">{String(row.data.follow_up)}</p>
+                </div>
+              )}
             </div>
           );
         })()}
-      {['description', 'notes', 'minutes', 'reason', 'follow_up', 'items']
-        .filter((key) => (entity !== 'stakeholders' || key !== 'follow_up') && (entity !== 'meetings' || key !== 'minutes'))
-        .map((key) =>
-          row.data[key] ? (
-            <p className="record-text" key={key}>
-              <strong>{labels[key]}: </strong>
-              {String(row.data[key])}
-            </p>
-          ) : null,
-        )}
-      {entity === 'stakeholders' && Boolean(row.data.follow_up) && (
-        <div className="stakeholder-followup-callout">
-          <strong>Tindak Lanjut:</strong> {String(row.data.follow_up)}
+
+      {/* Checklist evidence */}
+      {entity === 'checklist' && Boolean(row.data.evidence) && (
+        <div className="record-section-box">
+          <div className="record-section-box-head">
+            <Check size={13} />
+            <span>Bukti Kesiapan</span>
+          </div>
+          <p className="record-text">{String(row.data.evidence)}</p>
         </div>
       )}
+
+      {/* Deliveries items */}
+      {entity === 'deliveries' && Boolean(row.data.items) && (
+        <div className="record-section-box">
+          <div className="record-section-box-head">
+            <Package size={13} />
+            <span>Rincian Barang</span>
+          </div>
+          <p className="record-text">{String(row.data.items)}</p>
+        </div>
+      )}
+
+      {/* General text boxes for description, notes, reason */}
+      {['description', 'notes', 'reason']
+        .filter(
+          (key) =>
+            (entity !== 'stakeholders' || key !== 'follow_up') &&
+            (entity !== 'meetings' || key !== 'minutes') &&
+            (entity !== 'deliveries' || key !== 'items') &&
+            (entity !== 'risks' || key !== 'mitigation') &&
+            (entity !== 'checklist' || key !== 'evidence'),
+        )
+        .map((key) =>
+          row.data[key] ? (
+            <div className="record-section-box" key={key}>
+              <div className="record-section-box-head">
+                <FileText size={13} />
+                <span>{labels[key] || key}</span>
+              </div>
+              <p className="record-text">{String(row.data[key])}</p>
+            </div>
+          ) : null,
+        )}
+
       {Boolean(row.data.link) && (
-        <a href={String(row.data.link)} target="_blank" rel="noreferrer">
-          Buka tautan ↗
-        </a>
+        <p className="record-detail-row">
+          <ExternalLink size={13} />
+          <a href={String(row.data.link)} target="_blank" rel="noreferrer" className="record-link">
+            Buka tautan ↗
+          </a>
+        </p>
       )}
       {entity === 'meetings' &&
         (() => {
