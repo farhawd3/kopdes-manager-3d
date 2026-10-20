@@ -1,4 +1,4 @@
 # Titik masuk aturan AI
 
 Baca [AGENTS](../../AGENTS.md). Berkas ini tidak menambah aturan.
-Fokus aktif: Dunia Koperasi dan koneksi data web. Kontrak gaya/rencana hanya pada [DUNIA-KOPERASI](../../docs/DUNIA-KOPERASI.md); keadaan nyata pada [STATUS](../../docs/STATUS.md).
+Keadaan dan langkah berikut: [STATUS](../../docs/STATUS.md) dan [LANJUTAN-AI](../../docs/LANJUTAN-AI.md).
