@@ -2,6 +2,17 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Pembaruan kalender tugas & pembersihan tipografi antarmuka — 20 Oktober 2026
+
+- Alasan: arahan pemilik mengenai kalender tugas yang kurang menarik, tulisan/tipografi yang kurang clean, serta mengoptimalkan alur kerja verifikasi agar eksekusi berlangsung cepat tanpa penundaan berlebih.
+- Perubahan:
+  - Toolbar kalender tugas (`TaskCalendar`): tata letak dikelompokkan ke dalam dua klaster rapi (judul + subteks di kiri, navigasi tanggal + switcher Bulan/Minggu/Hari + pemilih bulan di kanan). Tulisan mentah "Bulan" dihilangkan dan diganti dengan input pil terintegrasi (`.calendar-month-picker`) sehingga tidak melompat baris. Pada ponsel sempit 375px, baris kontrol otomatis sejajar rapi dalam satu baris horizontal tanpa memakan ruang vertikal.
+  - Kisi kalender (`.calendar-grid`): wadah ber-radius lekuk kartu 22px (`--r-card`), kepala nama hari ("SEN", "SEL", ...) berpusat rapi dengan letter-spacing proporsional, nomor tanggal di dalam bulatan tabular bersih, penanda "Hari Ini" menggunakan lingkaran ungu Lavender Lekuk kontras tinggi (`var(--brand)`), dan tombol tambah tugas muncul mulus saat hover.
+  - Chip kegiatan kalender (`.calendar-event`): sudut melengkung 7px (`--r-sm`), warna latar dan titik status yang cerdas (hijau untuk tugas selesai dengan teks tercoret rapi, merah lembut untuk tenggat terlewat/mendesak, biru lembut untuk sedang dikerjakan, dan lavender untuk tugas umum). Pembatasan maksimal 3 kegiatan per sel dengan indikator pil `+N lainnya` untuk mencegah sel kisi memanjang tidak terkontrol.
+  - Agenda kalender (`.calendar-agenda`): wadah kartu lekuk 24px, ikon kalender terbingkai lembut, pemisahan tipografi judul dan jumlah tugas, pil tanggal agenda (`.agenda-day-pill`) dengan border bersih, serta kartu kosong bermotif putus-putus minimalis.
+- Verifikasi: typecheck `tsc --noEmit` 0 error, stylelint `lint:ui` 0 error, audit visual headless Chrome (`audit:tampilan`) pada resolusi desktop (1024x1400) dan ponsel (375x812) menghasilkan 0 temuan tata letak.
+- Belum: pengujian fisik di perangkat nyata dan penyesuaian tema warna monitoring Dunia 3D.
+
 ## Perbaikan offside cal-due-pill, tata letak kartu kalender & tipografi kartu — 20 Oktober 2026
 
 - Alasan: arahan pemilik mengatasi elemen `.cal-due-pill.is-late` yang offside (meluap ke luar kartu) serta merapikan tipografi, hierarki tulisan, dan bagian yang belum rapi pada kartu tugas kalender dan kartu catatan.

@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { DateNav } from '@/components/ui/DateNav';
 import { useState } from 'react';
 import { CalendarDays, Plus } from 'lucide-react';
@@ -65,9 +64,9 @@ export function TaskCalendar({
       <header className="calendar-toolbar">
         <div className="calendar-title">
           <span className="calendar-symbol">
-            <CalendarDays size={22} />
+            <CalendarDays size={20} />
           </span>
-          <div>
+          <div className="calendar-title-text">
             <h3 aria-live="polite">
               {mode === 'day'
                 ? formatDate(anchor)
@@ -75,52 +74,54 @@ export function TaskCalendar({
                   ? `${formatDate(weekStart)} – ${formatDate(addDays(weekStart, 6))}`
                   : monthLabel}
             </h3>
-            <small>{periodItems.length} tugas · pribadi</small>
+            <span className="calendar-title-meta">{periodItems.length} tugas · pribadi</span>
           </div>
         </div>
-        <DateNav
-          previousLabel={mode === 'month' ? 'Bulan sebelumnya' : mode === 'week' ? 'Minggu sebelumnya' : 'Hari sebelumnya'}
-          nextLabel={mode === 'month' ? 'Bulan berikutnya' : mode === 'week' ? 'Minggu berikutnya' : 'Hari berikutnya'}
-          onPrevious={() => moveMonth(-1)} onNext={() => moveMonth(1)}
-          onToday={() => { setMonth(today().slice(0, 7)); setSelected(today()); setAnchor(today()); }}
-        />
-        <div className="calendar-modes" aria-label="Rentang kalender">
-          {(['month', 'week', 'day'] as const).map((value) => (
-            <Button
-              key={value}
-              type="button"
-              aria-pressed={mode === value}
-              onClick={() => {
-                setMode(value);
-                setSelected(null);
-              }}
-            >
-              {value === 'month' ? 'Bulan' : value === 'week' ? 'Minggu' : 'Hari'}
-            </Button>
-          ))}
-        </div>
 
-        <label className="calendar-month">
-          Bulan
-          <Input
-            aria-label="Bulan kalender"
-            type="month"
-            value={month}
-            onChange={(e) => {
-              if (e.target.value) {
-                setMonth(e.target.value);
-                setAnchor(e.target.value + '-01');
-                setSelected(null);
-              }
-            }}
+        <div className="calendar-controls">
+          <DateNav
+            previousLabel={mode === 'month' ? 'Bulan sebelumnya' : mode === 'week' ? 'Minggu sebelumnya' : 'Hari sebelumnya'}
+            nextLabel={mode === 'month' ? 'Bulan berikutnya' : mode === 'week' ? 'Minggu berikutnya' : 'Hari berikutnya'}
+            onPrevious={() => moveMonth(-1)} onNext={() => moveMonth(1)}
+            onToday={() => { setMonth(today().slice(0, 7)); setSelected(today()); setAnchor(today()); }}
           />
-        </label>
+          <div className="calendar-modes" aria-label="Rentang kalender">
+            {(['month', 'week', 'day'] as const).map((value) => (
+              <Button
+                key={value}
+                type="button"
+                aria-pressed={mode === value}
+                onClick={() => {
+                  setMode(value);
+                  setSelected(null);
+                }}
+              >
+                {value === 'month' ? 'Bulan' : value === 'week' ? 'Minggu' : 'Hari'}
+              </Button>
+            ))}
+          </div>
+
+          <label className="calendar-month-picker" title="Pilih bulan tertentu">
+            <input
+              aria-label="Pilih bulan kalender"
+              type="month"
+              value={month}
+              onChange={(e) => {
+                if (e.target.value) {
+                  setMonth(e.target.value);
+                  setAnchor(e.target.value + '-01');
+                  setSelected(null);
+                }
+              }}
+            />
+          </label>
+        </div>
       </header>
 
       <div className="calendar-grid">
         <div className="calendar-week">
           {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map((day) => (
-            <strong key={day}>{day}</strong>
+            <div key={day} className="calendar-week-col">{day}</div>
           ))}
         </div>
         <div className="calendar-days">
@@ -142,21 +143,13 @@ export function TaskCalendar({
                 }}
               >
                 <div className="calendar-day-header">
-                  <Button
-                    type="button"
+                  <span
                     className="calendar-day-number"
                     aria-label={formatDate(date)}
-                    aria-pressed={isSelected}
                     aria-current={isToday ? 'date' : undefined}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setMonth(date.slice(0, 7));
-                      setSelected(date);
-                      setAnchor(date);
-                    }}
                   >
                     {Number(date.slice(-2))}
-                  </Button>
+                  </span>
                   {onCreate && (
                     <Button
                       className="calendar-add"
@@ -168,7 +161,7 @@ export function TaskCalendar({
                         onCreate(date);
                       }}
                     >
-                      <Plus size={14} strokeWidth={2} />
+                      <Plus size={13} strokeWidth={2.4} />
                     </Button>
                   )}
                 </div>
@@ -201,23 +194,32 @@ export function TaskCalendar({
                   </div>
                 )}
                 <div className="calendar-events-wrap">
-                  {dayTasks.map((item) => (
-                    <Button
-                      type="button"
-                      className="calendar-event"
-                      data-status={String(item.data.status)}
-                      key={item.id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setMonth(date.slice(0, 7));
-                        setSelected(date);
-                        onEdit?.(item);
-                      }}
-                    >
-                      <span className="cal-task-dot" aria-hidden="true" />
-                      <span className="cal-task-title">{String(item.data.title)}</span>
-                    </Button>
-                  ))}
+                  {dayTasks.slice(0, 3).map((item) => {
+                    const status = String(item.data.status || 'rencana');
+                    const isDone = status === 'selesai';
+                    const isLate = getItemDate(item) < today() && !isDone;
+                    return (
+                      <Button
+                        type="button"
+                        className={`calendar-event status-${status} ${isLate ? 'is-late' : ''}`}
+                        data-status={status}
+                        key={item.id}
+                        title={String(item.data.title)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMonth(date.slice(0, 7));
+                          setSelected(date);
+                          onEdit?.(item);
+                        }}
+                      >
+                        <span className="cal-task-dot" aria-hidden="true" />
+                        <span className="cal-task-title">{String(item.data.title)}</span>
+                      </Button>
+                    );
+                  })}
+                  {dayTasks.length > 3 && (
+                    <span className="calendar-more-count">+{dayTasks.length - 3} lainnya</span>
+                  )}
                 </div>
               </section>
             );
@@ -230,20 +232,22 @@ export function TaskCalendar({
             <span className="calendar-agenda-header-icon" aria-hidden="true">
               <CalendarDays size={18} />
             </span>
-            <h3>
-              {selected
-                ? formatDate(selected)
-                : mode === 'month'
-                  ? 'Agenda bulan ini'
-                  : mode === 'week'
-                    ? 'Agenda minggu ini'
-                    : 'Agenda hari ini'}
-            </h3>
-            {selected && (
+            <div className="calendar-agenda-heading">
+              <h3>
+                {selected
+                  ? formatDate(selected)
+                  : mode === 'month'
+                    ? 'Agenda bulan ini'
+                    : mode === 'week'
+                      ? 'Agenda minggu ini'
+                      : 'Agenda hari ini'}
+              </h3>
               <span className="calendar-agenda-task-count">
-                {items.filter((item) => getItemDate(item) === selected).length} catatan
+                {selected
+                  ? `${items.filter((item) => getItemDate(item) === selected).length} tugas tercatat`
+                  : `${periodItems.length} tugas dalam rentang ini`}
               </span>
-            )}
+            </div>
           </div>
           <div className="calendar-agenda-actions">
             {onCreate && (

@@ -19,7 +19,7 @@ const chromeBawaan = {
   darwin: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
 }[process.platform] || 'google-chrome';
 
-const bukaLipatan = `document.querySelectorAll('main details:not(.record-options):not(.view-extra-actions)').forEach(d => d.open = true)`;
+const bukaLipatan = `document.querySelectorAll('main details:not(.record-options):not(.cal-more-options):not(.view-extra-actions)').forEach(d => d.open = true)`;
 const klik = (sel) => `(() => { const e = document.querySelector(${JSON.stringify(sel)}); if (e) e.click(); return !!e; })()`;
 const klikTeks = (sel, teks) => `(() => { const e = [...document.querySelectorAll(${JSON.stringify(sel)})].find(x => x.textContent.includes(${JSON.stringify(teks)})); if (e) e.click(); return !!e; })()`;
 
