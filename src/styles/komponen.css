@@ -3,7 +3,8 @@
 /* ---------- Tombol ---------- */
 .ui-btn,
 a.button,
-button.button {
+button.button,
+label.button {
   --btn-bg: var(--surface);
   --btn-fg: var(--ink);
   --btn-line: var(--line-strong);
@@ -20,7 +21,7 @@ button.button {
   background: var(--btn-bg);
   color: var(--btn-fg);
   font: inherit;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
@@ -31,7 +32,8 @@ button.button {
     color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast);
 }
 .ui-btn:hover,
-a.button:hover {
+a.button:hover,
+label.button:hover {
   border-color: var(--brand-soft-border);
   background: var(--surface-2);
   text-decoration: none;
@@ -45,14 +47,14 @@ a.button:hover {
 .ui-btn[data-variant='primary'],
 .ui-btn.primary,
 a.button.primary {
-  --btn-bg: var(--brand);
+  --btn-bg: var(--brand-isi);
   --btn-fg: var(--on-brand);
   --btn-line: var(--brand);
-  box-shadow: 0 1px 2px rgba(33, 72, 199, 0.25), 0 6px 14px rgba(47, 91, 234, 0.22);
+  box-shadow: none;
 }
 .ui-btn[data-variant='primary']:hover,
 .ui-btn.primary:hover,
-a.button.primary:hover { --btn-bg: var(--brand-hover); --btn-line: var(--brand-hover); background: var(--brand-hover); }
+a.button.primary:hover { --btn-bg: var(--brand-isi-hover); --btn-line: var(--brand-hover); background: var(--brand-isi-hover); }
 
 .ui-btn[data-variant='ghost'] {
   --btn-bg: transparent;
@@ -90,7 +92,7 @@ a.button.danger {
   color: var(--ink);
   font: inherit;
   font-size: var(--fs-body);
-  box-shadow: inset 0 1px 1px rgba(15, 27, 61, 0.03);
+  box-shadow: inset 0 1px 1px rgba(60, 30, 36, 0.03);
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
 textarea.ui-input,
@@ -106,6 +108,7 @@ textarea.ui-input,
   box-shadow: var(--focus-ring);
 }
 :where(input[type='checkbox'], input[type='radio']) { width: 18px; height: 18px; accent-color: var(--brand); }
+.ui-check { flex-shrink: 0; margin: 0; cursor: pointer; }
 
 .ui-field { display: grid; gap: 6px; min-width: 0; }
 .ui-field-label { color: var(--ink); font-size: var(--fs-meta); font-weight: 600; }
@@ -120,7 +123,7 @@ textarea.ui-input,
   width: 100%;
   min-height: 44px;
   padding: 0 12px 0 13px;
-  box-shadow: inset 0 1px 1px rgba(15, 27, 61, 0.03);
+  box-shadow: inset 0 1px 1px rgba(60, 30, 36, 0.03);
   font-weight: 550;
 }
 .custom-select-wrap.is-open .ui-select-trigger { border-color: var(--brand); box-shadow: var(--focus-ring); }
@@ -159,19 +162,21 @@ textarea.ui-input,
   background: transparent;
   color: var(--ink);
   font: inherit;
-  font-size: 13.5px;
+  font-size: 14px;
   text-align: left;
   cursor: pointer;
 }
 .custom-select-option.is-highlighted { background: var(--surface-3); }
-.custom-select-option.is-selected { color: var(--brand-ink); font-weight: 650; }
+.custom-select-option.is-selected { color: var(--brand-ink); font-weight: 600; }
 .custom-select-option-content { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
 .custom-select-option-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .custom-select-option-icon { display: inline-flex; color: var(--ink-muted); }
 .custom-select-check { color: var(--brand); }
 
 /* ---------- Tanggal ---------- */
-.ui-date { position: relative; min-width: 0; }
+.ui-date { position: relative; display: grid; gap: 6px; min-width: 0; }
+/* Label tanggal sama dengan label kolom lain (field-caption) */
+.ui-date > label { color: var(--ink); font-size: var(--fs-meta); font-weight: 600; }
 .ui-date-control { position: relative; }
 .ui-date-native { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); opacity: 0; pointer-events: none; }
 .ui-btn.ui-date-trigger {
@@ -181,7 +186,7 @@ textarea.ui-input,
   padding: 0 12px 0 13px;
   font-weight: 550;
   font-variant-numeric: tabular-nums;
-  box-shadow: inset 0 1px 1px rgba(15, 27, 61, 0.03);
+  box-shadow: inset 0 1px 1px rgba(60, 30, 36, 0.03);
 }
 .ui-btn.ui-date-trigger svg { color: var(--ink-subtle); }
 .date-trigger-value:empty::before { content: 'Pilih tanggal'; color: var(--ink-subtle); }
@@ -235,7 +240,7 @@ textarea.ui-input,
 .date-picker-days button:hover { background: var(--surface-3); }
 .date-picker-days button[data-outside='true'] { color: var(--ink-subtle); }
 .date-picker-days button[aria-current='date'] { box-shadow: inset 0 0 0 1.5px var(--brand); color: var(--brand-ink); font-weight: 700; }
-.date-picker-days button[aria-pressed='true'] { background: var(--brand); color: var(--on-brand); font-weight: 700; }
+.date-picker-days button[aria-pressed='true'] { background: var(--brand-isi); color: var(--on-brand); font-weight: 700; }
 .date-picker-days button:disabled { opacity: 0.35; cursor: not-allowed; }
 .date-picker-footer { display: flex; align-items: center; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
 .date-picker-footer button:last-child { margin-left: auto; }
@@ -257,7 +262,7 @@ dialog.ui-modal {
   overscroll-behavior: contain;
 }
 dialog.ui-modal[open] { animation: muncul-dialog 260ms var(--ease-out); }
-dialog.ui-modal::backdrop { background: rgba(11, 21, 51, 0.38); backdrop-filter: blur(3px); }
+dialog.ui-modal::backdrop { background: var(--scrim); backdrop-filter: blur(3px); }
 dialog.ui-modal > .section-head { margin-bottom: 16px; }
 dialog.ui-modal h2 { font-size: 19px; }
 @media (max-width: 767px) {
@@ -285,7 +290,7 @@ dialog.ui-modal h2 { font-size: 19px; }
   border-radius: var(--r-md);
   background: var(--toast-bg);
   color: var(--toast-fg);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 550;
   box-shadow: var(--shadow-lg);
   transform: translateX(-50%);
@@ -316,10 +321,10 @@ dialog.ui-modal h2 { font-size: 19px; }
   display: inline-flex;
   gap: 2px;
   max-width: 100%;
-  padding: 3px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
+  padding: 4px;
+  border: 1px solid var(--kartu-garis);
+  border-radius: var(--r-full);
+  background: var(--surface);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -329,10 +334,10 @@ dialog.ui-modal h2 { font-size: 19px; }
   flex: 0 0 auto;
   align-items: center;
   gap: 6px;
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 38px;
+  padding: 0 14px;
   border: 0;
-  border-radius: 9px;
+  border-radius: var(--r-full);
   background: transparent;
   color: var(--ink-muted);
   font: inherit;
@@ -343,29 +348,55 @@ dialog.ui-modal h2 { font-size: 19px; }
   transition: background var(--dur-fast), color var(--dur-fast);
 }
 .ui-segmented-item:hover { color: var(--ink); }
+/* Lekuk: pilihan aktif berupa pil berisi aksen, sama dengan menu aktif sidebar */
 .ui-segmented-item.is-active,
 .ui-segmented-item.active {
-  background: var(--surface);
-  color: var(--brand-ink);
-  box-shadow: var(--shadow-sm), 0 0 0 1px var(--line);
+  background: var(--brand-isi);
+  color: var(--on-brand);
 }
-.ui-segmented-active-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); }
+.ui-segmented-active-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
 /* ---------- Progres ---------- */
 .ui-progress {
   position: relative;
-  height: 8px;
+  height: 6px;
   overflow: hidden;
   border-radius: var(--r-full);
-  background: var(--surface-3);
+  background: var(--brand-soft);
 }
 .ui-progress > span {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--brand), var(--brand-bright));
+  background: var(--brand);
   transform-origin: left;
   transition: transform 700ms var(--ease-out);
+}
+/* Progres bertulis ala Taskflow: label kiri, persen kanan, bilah di bawah */
+.ui-progress-baris {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 8px;
+  font-size: var(--fs-meta);
+}
+.ui-progress-baris > .ui-progress { grid-column: 1 / -1; }
+.ui-progress-label { color: var(--ink-heading); font-weight: 600; }
+.ui-progress-angka { color: var(--brand-ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) {
+  .ui-progress > span { transition: none; }
+}
+
+/* Avatar inisial dari profil; tanpa foto karangan */
+.avatar-inisial {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--r-full);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  font-weight: 600;
 }
 
 .ui-legend { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
@@ -375,7 +406,7 @@ dialog.ui-modal h2 { font-size: 19px; }
 
 /* ---------- Kerangka muat ---------- */
 .skeleton-screen-container { display: grid; gap: 18px; }
-:is(.skeleton-pill, .skeleton-text-line, .skeleton-circle-dot, .skeleton-circle-icon, .skeleton-circle-sm, .skeleton-circle-xs, .skeleton-progress-bar) {
+:is(.skeleton-pill, .skeleton-text-line, .skeleton-circle-sm, .skeleton-circle-xs, .skeleton-progress-bar) {
   display: block;
   border-radius: var(--r-full);
   background: linear-gradient(90deg, var(--surface-3) 0%, var(--surface-2) 50%, var(--surface-3) 100%);
@@ -388,26 +419,22 @@ dialog.ui-modal h2 { font-size: 19px; }
 .skeleton-eyebrow { width: 110px; height: 10px; }
 .skeleton-btn-pill { width: 130px; height: 40px; border-radius: var(--r-md); }
 .skeleton-progress-bar { height: 8px; }
-.skeleton-circle-icon { width: 40px; height: 40px; border-radius: 12px; }
 .skeleton-circle-sm { width: 28px; height: 28px; }
-.skeleton-circle-xs, .skeleton-circle-dot { width: 12px; height: 12px; }
+.skeleton-circle-xs { width: 12px; height: 12px; }
 .skeleton-header-row,
 .skeleton-filters-row,
-.skeleton-card-top,
 .skeleton-panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .skeleton-title-group { display: grid; gap: 10px; }
-:is(.skeleton-banner-card, .skeleton-panel-card, .skeleton-table-card, .skeleton-task-card) {
+:is(.skeleton-banner-card, .skeleton-panel-card, .skeleton-table-card) {
   display: grid;
   gap: 12px;
   padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
+  border: 1px solid var(--kartu-garis);
+  border-radius: var(--r-xl);
   background: var(--surface);
 }
-.skeleton-main-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; }
-.skeleton-work-col, .skeleton-side-col, .skeleton-task-cards-list, .skeleton-project-rows { display: grid; gap: 12px; }
-.skeleton-project-row, .skeleton-card-meta { display: flex; align-items: center; gap: 10px; }
-@media (max-width: 1023px) { .skeleton-main-grid { grid-template-columns: minmax(0, 1fr); } }
+.skeleton-project-rows { display: grid; gap: 12px; }
+.skeleton-project-row { display: flex; align-items: center; gap: 10px; }
 
 /* ---------- Unggah CSV ---------- */
 .csv-dropzone {
@@ -433,11 +460,19 @@ dialog.ui-modal h2 { font-size: 19px; }
 /* ---------- Ikon ---------- */
 .app-icon { display: inline-block; flex-shrink: 0; }
 .ikon-halaman { display: inline-grid; place-items: center; width: var(--ikon, 24px); height: var(--ikon, 24px); }
-.ikon3d-simbol { filter: drop-shadow(0 2px 2px rgba(36, 72, 199, 0.16)); }
+.ikon3d-simbol { filter: drop-shadow(0 2px 2px var(--ikon-bayang)); }
 .lihat-dunia.ui-btn { --btn-bg: var(--brand-soft); --btn-fg: var(--brand-ink); --btn-line: var(--brand-soft-border); box-shadow: none; }
 .lihat-dunia-ikon.ui-btn { width: 44px; min-height: 44px; padding: 0; }
 
 /* ---------- Animasi bersama ---------- */
+/* Kartu utama muncul bertahap saat halaman dibuka. Isi awal "backwards" saja agar hover/tekan tetap bisa menggeser. */
+@keyframes naik-lembut { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  :is(.beranda-grid, .ubin-status-tugas) > * { animation: naik-lembut 420ms var(--ease-out) backwards; }
+  :is(.beranda-grid, .ubin-status-tugas) > :nth-child(2) { animation-delay: 50ms; }
+  :is(.beranda-grid, .ubin-status-tugas) > :nth-child(3) { animation-delay: 100ms; }
+  :is(.beranda-grid, .ubin-status-tugas) > :nth-child(4) { animation-delay: 150ms; }
+}
 @keyframes muncul { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 @keyframes muncul-dialog { from { opacity: 0; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: none; } }
 @keyframes naik { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
@@ -450,3 +485,125 @@ dialog.ui-modal h2 { font-size: 19px; }
   .form-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .form-actions > :only-child { grid-column: 1 / -1; }
 }
+
+/* ---------- Ubin ikon Lekuk: datar, latar pastel dari warna peta aksen, ikon berwarna penuh ---------- */
+.ubin {
+  --ubin: var(--grafik-aksen);
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--ubin) 17%, var(--surface));
+  color: color-mix(in srgb, var(--ubin) 82%, var(--ink-heading));
+}
+.ubin-kecil { width: 34px; height: 34px; border-radius: 11px; }
+.ubin-aksen { --ubin: var(--grafik-aksen); }
+.ubin-ungu { --ubin: var(--grafik-ungu); }
+.ubin-oranye { --ubin: var(--grafik-oranye); }
+.ubin-teal { --ubin: var(--grafik-teal); }
+.ubin-pink { --ubin: var(--grafik-pink); }
+
+/* Avatar berwarna tetap per orang */
+.avatar-warna { display: inline-grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; font-size: 12px; font-weight: 700; }
+/* Jenis agenda: pastel per jenis lewat data-jenis, selalu disertai label (rapat, kunjungan, acara, lainnya) */
+[data-jenis] { --j-bg: var(--pastel-pink); --j-ink: var(--pastel-pink-ink); }
+[data-jenis='kunjungan'] { --j-bg: var(--pastel-purple-bg); --j-ink: var(--pastel-purple-text); }
+[data-jenis='acara'] { --j-bg: var(--pastel-mint); --j-ink: var(--pastel-mint-ink); }
+[data-jenis='lainnya'] { --j-bg: var(--pastel-mentega); --j-ink: var(--pastel-mentega-ink); }
+.cip-jenis { display: inline-flex; align-items: center; gap: 5px; min-height: 22px; padding: 0 9px; border-radius: var(--r-full); background: var(--surface); color: var(--j-ink, var(--ink-muted)); font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+
+/* Geser kartu (ponsel): kartu ikut jari; hijau = selesai (kanan), aksen = ubah (kiri). Gulir vertikal tetap milik peramban. */
+[data-swipe-task] { touch-action: pan-y; transition: translate var(--dur) var(--ease-out), background var(--dur-fast); }
+[data-swipe-task][data-menggeser] { transition: background var(--dur-fast); }
+[data-swipe-task][data-geser='kanan'] { background: var(--ok-bg); }
+[data-swipe-task][data-geser='kiri'] { background: var(--brand-soft); }
+@media (prefers-reduced-motion: reduce) { [data-swipe-task] { transition: none; } }
+
+/* Avatar kecil di baris tabel dan kartu papan */
+.avatar-warna.avatar-mini { width: 24px; height: 24px; font-size: 10px; }
+.avatar-warna.is-aksen { background: var(--pastel-aksen); color: var(--pastel-aksen-ink); }
+.avatar-warna.is-ungu { background: var(--pastel-purple-bg); color: var(--pastel-purple-text); }
+.avatar-warna.is-oranye { background: var(--pastel-mentega); color: var(--pastel-mentega-ink); }
+.avatar-warna.is-teal { background: var(--pastel-mint); color: var(--pastel-mint-ink); }
+.avatar-warna.is-pink { background: var(--pastel-pink); color: var(--pastel-pink-ink); }
+
+/* ---------- Modul: kartu putih tanpa garis, kepala judul + tautan kanan, isi, kaki aksi ---------- */
+.modul {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 20px 22px;
+  border: 1px solid var(--kartu-garis);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+}
+.modul-kepala { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+.modul-kepala h2 { margin: 0; font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.01em; }
+.modul-ikon { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 10px; }
+.modul-ikon.pastel-aksen { background: var(--pastel-aksen); color: var(--pastel-aksen-ink); }
+.modul-ikon.pastel-pink { background: var(--pastel-pink); color: var(--pastel-pink-ink); }
+.modul-ikon.pastel-mentega { background: var(--pastel-mentega); color: var(--pastel-mentega-ink); }
+.modul-ikon.pastel-mint { background: var(--pastel-mint); color: var(--pastel-mint-ink); }
+.modul-tautan { position: relative; margin-left: auto; color: var(--ink-muted); font-size: 13px; font-weight: 600; text-decoration: none; }
+/* Area ketuk 44 px untuk tautan teks kecil di kepala kartu */
+.modul-tautan::after { content: ''; position: absolute; inset: -12px 0; }
+.modul-tautan:hover { color: var(--brand-ink); text-decoration: none; }
+.modul-kaki { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 14px; }
+@media (max-width: 767px) { .modul { padding: 16px; } }
+
+/* ---------- Takik Lekuk: sudut kanan atas kartu dicekung dan berisi satu tombol aksi ----------
+   Cekungan dicat dengan warna latar di belakang kartu (--takik-latar), jadi kartu bertakik datar:
+   tanpa garis dan bayangan yang akan memperlihatkan bentuk persegi aslinya. */
+.bertakik {
+  --takik: 54px;
+  --takik-r: 18px;
+  --takik-latar: var(--canvas);
+  position: relative;
+  border-color: transparent;
+  box-shadow: none;
+}
+/* -1px: cat ikut menutup garis tepi 1 px kartu; latar kartu tampil di bawah garis transparan itu */
+.bertakik::before,
+.bertakik::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  pointer-events: none;
+}
+.bertakik::before {
+  width: var(--takik);
+  height: var(--takik);
+  border-bottom-left-radius: 20px;
+  background: var(--takik-latar);
+}
+.bertakik::after {
+  width: calc(var(--takik) + var(--takik-r));
+  height: calc(var(--takik) + var(--takik-r));
+  background:
+    radial-gradient(circle at 0 100%, transparent calc(var(--takik-r) - 0.5px), var(--takik-latar) var(--takik-r)) left top / var(--takik-r) var(--takik-r) no-repeat,
+    radial-gradient(circle at 0 100%, transparent calc(var(--takik-r) - 0.5px), var(--takik-latar) var(--takik-r)) right bottom / var(--takik-r) var(--takik-r) no-repeat;
+}
+.takik-aksi {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--ink-heading);
+  cursor: pointer;
+  transition: background var(--dur-fast), color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+}
+.takik-aksi:hover { background: var(--brand-isi); color: var(--on-brand); text-decoration: none; }
+.takik-aksi:active { transform: scale(0.94); }
+.bertakik > .modul-kepala { padding-right: 40px; }
+@media (prefers-reduced-motion: reduce) { .takik-aksi { transition: none; } }
