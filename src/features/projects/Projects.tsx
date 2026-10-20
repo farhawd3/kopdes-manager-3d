@@ -43,6 +43,8 @@ import { recordHref } from '../workspace/workspace-navigation';
 import { formatChoiceLabel } from '../records/catalog';
 import { isProjectHistory } from './project-lifecycle';
 import { Ikon3D } from '@/components/ui/Ikon3D';
+import { IkonHalaman } from '@/components/ui/IkonHalaman';
+import { ProjectBudget } from './ProjectBudget';
 
 export function Projects({ data, refresh, history = false, draftScope }: { data: Workspace; refresh: () => Promise<void>; history?: boolean; draftScope?: string }) {
   const query = useSearchParams(),
@@ -115,7 +117,7 @@ export function Projects({ data, refresh, history = false, draftScope }: { data:
                       {formatChoiceLabel(String(selected.data.status || 'rencana'))}
                     </span>
                   </div>
-                  <h1 className="project-hero-title">{String(selected.data.title)}</h1>
+                  <h2 className="project-hero-title">{String(selected.data.title)}</h2>
                 </div>
               </div>
               <Button
@@ -198,6 +200,7 @@ export function Projects({ data, refresh, history = false, draftScope }: { data:
             <div className="sr-only" aria-hidden="true">
               <Meter value={scopeProgress(tasksFor(selected.id))} />
             </div>
+            <ProjectBudget project={selected} />
           </section>
 
           {!isProjectHistory(selected) && tasksFor(selected.id).length > 0 && tasksFor(selected.id).every((task) => ['selesai', 'dibatalkan'].includes(task.status)) && <p className="notice">Seluruh tugas sudah selesai atau dibatalkan. Proyek masih berstatus {formatChoiceLabel(String(selected.data.status || 'rencana'))}. Buka properti proyek dan pilih Selesai setelah meninjau hasil.</p>}
@@ -572,10 +575,15 @@ export function Projects({ data, refresh, history = false, draftScope }: { data:
 
                 return (
                   <Link
-                    className={`project-card project-card-compact ${pastelTone}`}
+                    className={`project-card project-card-compact sampul-pekerjaan ${pastelTone}`}
                     href={`/${history ? 'proyek?tab=riwayat&' : 'proyek?'}id=${row.id}`}
                     key={row.id}
+                    style={{ ['--warna-proyek' as string]: String(row.data.color || 'var(--brand)') }}
                   >
+                    {/* Sampul ala Taskflow: warna hub + ikon, garis atas memakai warna proyek pengguna */}
+                    <span className="kartu-pekerjaan-sampul" aria-hidden="true">
+                      <IkonHalaman href="/proyek" size={32} />
+                    </span>
                     <div className="project-card-header">
                       <div className="project-badge-cluster">
                         <span className="project-code-tag">{String(row.data.code || 'PRJ')}</span>
