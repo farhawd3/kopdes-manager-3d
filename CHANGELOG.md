@@ -2,6 +2,17 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Perbaikan offside cal-due-pill, tata letak kartu kalender & tipografi kartu — 20 Oktober 2026
+
+- Alasan: arahan pemilik mengatasi elemen `.cal-due-pill.is-late` yang offside (meluap ke luar kartu) serta merapikan tipografi, hierarki tulisan, dan bagian yang belum rapi pada kartu tugas kalender dan kartu catatan.
+- Perubahan:
+  - Pil tenggat tugas (`.cal-due-pill` & `.is-late`): dirombak dari blok kaku menjadi pil bulat inline-flex penuh (`border-radius: var(--r-full)`), perataan ikon kalender SVG agar tidak melompat baris, `white-space: nowrap`, dan garis tepi lembut `border: 1px solid var(--late-line)` sehingga tidak pernah lagi meluap ke luar kartu (offside).
+  - Footer kartu tugas kalender (`.cal-card-footer`): ditata ulang dengan pemisahan baris metadata (penanggung jawab dengan batasan truncate teks + pil tanggal) dan baris tombol aksi, tombol aksi pil bulat 30px (`.cal-btn-action.ui-btn`) dengan area sentuh 44px di layar sentuh.
+  - Kartu tugas kalender (`.calendar-task-card`): kartu ber-radius lekuk 22px (`var(--r-card)`), pil kode tugas ber-monospaced, pil proyek dengan pembatasan teks agar tidak meluap, klem 2 baris pada deskripsi kartu, dan tipografi judul 15px tebal 600.
+  - Tipografi kartu umum: `.record.card > .section-head` kini mengizinkan flex wrap agar lencana status tidak menabrak judul yang panjang; chip relasi dan metadata catatan diubah ke bentuk pil melengkung konsisten; judul dan deskripsi kartu proyek dibatasi 2 baris klem agar seragam.
+- Verifikasi: 473 tes / 80 berkas vitest lulus 100%, typecheck tsc lulus, ESLint no issues, stylelint `lint:ui` 0 error, build Next.js lulus, JS awal 247 KB (batas 300 KB). Audit visual headless Chrome (`audit:tampilan`) pada 375x812 untuk tampilan tugas kalender, papan, harian, dan proyek menghasilkan 0 temuan.
+- Belum: pengujian di perangkat fisik asli dan penyesuaian tema warna monitoring Dunia 3D.
+
 ## Penyelarasan tampilan bersih Lavender Lekuk pada tab, kalender, linimasa & laci — 20 Oktober 2026
 
 - Alasan: arahan pemilik merapikan tampilan yang masih berantakan, kurang rapi, dan terpotong di layar sempit pada seluruh tampilan ruang kerja (kalender, linimasa/Gantt, tab kontrol, detail proyek, laci catatan, dan pencarian).

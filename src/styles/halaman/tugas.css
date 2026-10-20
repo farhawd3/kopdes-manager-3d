@@ -83,8 +83,32 @@
 .daily-task-item { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 4px; border-radius: var(--r-md); cursor: pointer; }
 .daily-task-item:hover { background: var(--surface-2); }
 .daily-task-row-wrap.is-completed .task-title-text { color: var(--ink-subtle); text-decoration: line-through; }
-.task-due-tag { padding: 2px 8px; border-radius: var(--r-sm); background: var(--late-bg); color: var(--late); font-size: 11.5px; font-weight: 700; }
-.task-project-pill { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-muted); font-size: 12px; }
+.task-due-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  background: var(--late-bg);
+  border: 1px solid var(--late-line);
+  color: var(--late);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.task-project-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+}
 .subtasks-count-pill { padding: 1px 7px; border-radius: var(--r-full); background: var(--surface-3); color: var(--ink-muted); font-size: 11.5px; font-weight: 600; }
 .task-row-actions { display: flex; gap: 4px; margin-left: auto; }
 .action-icon-btn.ui-btn { width: 44px; min-height: 44px; padding: 0; border-color: transparent; background: transparent; color: var(--ink-muted); box-shadow: none; }
@@ -317,15 +341,24 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  min-height: 22px;
   padding: 2px 8px;
   border-radius: var(--r-full);
   background: var(--surface-3);
+  border: 1px solid transparent;
   color: var(--ink-muted);
   font-size: 11px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-.card-date-pill.is-late { background: var(--late-bg); color: var(--late); font-weight: 700; }
+.card-date-pill.is-late {
+  background: var(--late-bg);
+  color: var(--late);
+  border-color: var(--late-line);
+  font-weight: 700;
+}
 
 .card-title-wrap { display: grid; gap: 4px; }
 .card-task-title {
@@ -334,12 +367,18 @@
   color: var(--ink-heading);
   line-height: 1.35;
   margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .card-description-snippet {
   color: var(--ink-muted);
   font-size: 12.5px;
   line-height: 1.45;
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-bottom-section, .card-assignee-row {

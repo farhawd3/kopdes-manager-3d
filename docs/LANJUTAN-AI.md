@@ -8,8 +8,8 @@ Berkas ini untuk agen berikutnya (Claude, Codex, Antigravity, OpenCode, dll.). I
 - Gaya web Lavender Lekuk sudah lengkap untuk seluruh ruang kerja:
   - Kerangka, sidebar, dok ponsel terpusat dengan tombol tambah lavender `#6A55C8`.
   - Beranda, Hari Ini, dan Catatan (ubin status kompak, border tegas 1px).
-  - Tugas: daftar, papan Kanban, kalender (pil mode, mobile bersih), linimasa Gantt (pil switch responsif).
-  - Proyek: tab status dan cakupan pil, perbaikan icon heading svg.
+  - Tugas: daftar, papan Kanban, kalender (kartu lekuk 22px, pil tanggal rapi, footer terpisah), linimasa Gantt (pil switch responsif).
+  - Kartu catatan & proyek: tipografi judul flex tanpa meluap, klem deskripsi 2 baris, chip metadata melengkung konsisten, dan perbaikan offside .cal-due-pill.is-late.
   - Laci catatan dan detail tugas dengan tombol tutup dan tab pil bulat.
 - Verifikasi: 473/473 tes vitest lulus, typecheck, lint, lint:ui, build (JS awal 247 KB), dan `audit:tampilan` 58/58 layar 0 temuan di 375x812.
 

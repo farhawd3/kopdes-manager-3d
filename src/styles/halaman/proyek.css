@@ -55,8 +55,22 @@
 .project-card:hover .project-card-arrow { color: var(--proj); }
 .project-card-body { display: grid; gap: 4px; }
 .project-card .kartu-pekerjaan-sampul { height: 104px; box-shadow: inset 0 4px 0 var(--warna-proyek, var(--brand)); }
-.project-compact-title { font-size: 16px; font-weight: 600; }
-.project-compact-desc { color: var(--ink-muted); font-size: 13px; }
+.project-compact-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink-heading);
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+.project-compact-desc {
+  color: var(--ink-muted);
+  font-size: 13px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .project-compact-progress-wrap { display: flex; align-items: center; gap: 10px; }
 .project-compact-bar-track { flex: 1 1 auto; height: 6px; overflow: hidden; border-radius: var(--r-full); background: var(--brand-soft); }
 .project-compact-bar-fill { height: 100%; border-radius: inherit; background: var(--proj); }
