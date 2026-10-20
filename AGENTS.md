@@ -47,14 +47,31 @@ Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya d
 - Web memakai gaya "Lavender Lekuk" (keputusan pemilik 20 Oktober 2026; merah putih 19 Oktober dinilai tidak cocok, sebelumnya Taskflow biru; sistem lengkap di `DESIGN.md`): latar lavender sangat muda `#F5F3FA`, kartu putih datar sudut 22–24 px, kartu bertakik (`.bertakik` + `.takik-aksi`: pojok kanan atas dicekung berisi satu tombol aksi), pil dan tombol bulat, aksen tunggal ungu lavender `#6A55C8`, tinta ungu gelap `#221D2E`, huruf Plus Jakarta Sans (judul 24/600). Sidebar: kelompok Kerja (Beranda, Hari ini, Tugas, Agenda, Proyek, Linimasa), Ruang lain (Catatan, Usaha, Koperasi, Dunia), dan kartu Tim; sumber tunggal `src/components/layout/navigasi.ts` (`HUBS`, `MENU_KERJA`, `RUANG_LAIN`). Ponsel: dok pil (Beranda, Tugas, Agenda, Lainnya) + tombol tambah bulat. Halaman lama tampil sebagai tab hub di bawah judul dan URL lama tetap berlaku. Judul halaman (`h1`) hanya di kepala kerangka; isi halaman memakai `h2`. Kartu proyek memakai sampul pastel hub (`--sampul-*`) + ikon, tanpa foto; avatar berupa inisial. Bersih dan tenang: warna jenuh hanya untuk grafik, status, tombol utama, menu aktif, dan baris rutin berikutnya; ringkasan berupa teks, bukan deretan chip; kartu dan ubin ikon datar tanpa bayangan. Grafik lembut SVG tanpa pustaka (`components/charts/GrafikLembut.tsx`, token `--grafik-*`): garis tipis melengkung, isi gradien memudar, pembanding periode lalu putus-putus. Beranda dan halaman baru memakai komponen `.modul`. Sistem gaya web di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); warna mentah hanya di `token.css`, tanpa `!important` (`npm run lint:ui`). Dunia di `src/features/dunia-3d/monitoring.css`; warnanya masih biru `#546FFF` sampai paket warna dunia, hurufnya sama. Warna status hanya token `--ok/--late/--warn` (alias `--pastel-*`). Mode gelap ungu malam tersedia untuk web; dunia selalu terang.
 - Hindari angka operasional palsu, tombol dekoratif, dan slogan. Buku kas hanya uang masuk/keluar tercatat, bukan saldo atau laba.
 
-## Proses
+## Proses (sama untuk semua agen)
 
-1. Periksa Git dan pertahankan perubahan pengguna.
-2. Implementasikan paket kerja konkret dan dapat diverifikasi.
-3. Untuk perubahan kode jalankan `npm test`, `npm run typecheck`, `npm run lint`, `npm run lint:ui`, `npm run build`, lalu `npm run ukur:bundel` (JS awal halaman ≤ 300 KB). Perubahan tampilan juga `npm run audit:tampilan -- <lebar> <tinggi>` dengan `npm run dev:demo -- -p 3200` berjalan. Untuk dokumentasi saja, periksa diff dan tautan tanpa mengklaim tes baru. Boleh `npm test -- --maxWorkers=2`; cakupan tetap seluruh suite.
-4. Periksa singkat UI yang berubah pada ukuran relevan (`npm run dev:demo` memberi data contoh tanpa Supabase).
-5. Catat paket di CHANGELOG. STATUS dan LANJUTAN-AI hanya berisi keadaan terkini: timpa bagian yang berubah. Perbarui checklist yang benar-benar selesai.
-6. Laporkan hasil dan batasan secara jujur; tes lama bukan bukti fitur baru selesai. Jangan menandai pemeriksaan perangkat yang belum dilakukan.
+**Mulai sesi**
+1. `git status -sb` dan `git branch`. Ada cabang kerja yang belum masuk `main`? Lanjutkan di sana. Pertahankan perubahan pengguna yang belum di-commit.
+2. Baca `docs/LANJUTAN-AI.md`, lalu hanya dokumen yang relevan dengan tugas.
+
+**Bekerja**
+3. Satu paket kerja konkret yang bisa diverifikasi. Perubahan terkecil yang lengkap.
+4. Perubahan kode: `npm test` (boleh `-- --maxWorkers=2`, tetap seluruh suite), `npm run typecheck`, `npm run lint`, `npm run lint:ui`, `npm run build`, `npm run ukur:bundel` (JS awal ≤ 300 KB). Perubahan tampilan: juga `npm run audit:tampilan -- <lebar> <tinggi> [nama]` dengan `npm run dev:demo -- -p 3200` berjalan, pada 375/768/1024/1440 px, lalu lihat tangkapannya. Dokumentasi saja: periksa diff dan tautan, tanpa mengklaim tes baru. Setelah build, kembalikan `next-env.d.ts` bila berubah.
+
+**Mencatat (wajib sebelum commit)**
+5. `CHANGELOG.md`: satu entri per paket di paling atas, format:
+   ```
+   ## <ringkasan> — <tanggal>
+   - Alasan: kenapa paket ini dibuat (arahan pemilik/masalah).
+   - Perubahan: yang dirasakan pengguna, bukan daftar berkas.
+   - Verifikasi: angka tes/build/audit yang benar-benar dijalankan.
+   - Belum: yang tidak diperiksa atau sisa pekerjaan.
+   ```
+   Coba-coba yang dibatalkan dalam paket yang sama tidak diberi entri sendiri.
+6. `docs/STATUS.md` dan `docs/LANJUTAN-AI.md`: hanya keadaan terkini; timpa bagian yang berubah, jangan menumpuk catatan sesi. `docs/CHECKLIST.md`: centang yang benar-benar selesai.
+
+**Menutup**
+7. Commit di cabang kerja (format di bagian Git). Jangan meninggalkan perubahan belum di-commit.
+8. Laporkan hasil dan batasan secara jujur; tes lama bukan bukti fitur baru selesai, dan pemeriksaan perangkat yang belum dilakukan tidak ditandai.
 
 ## Git
 

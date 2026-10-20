@@ -1,16 +1,18 @@
 # Mulai dari sini
 
-Fokus: **Dunia Koperasi 3D dan keterhubungannya dengan halaman operasional**. Anda tidak perlu membaca semua Markdown.
+Fokus: **ruang kerja web untuk manajer KDMP (gaya Lavender Lekuk) dan Dunia Koperasi 3D yang membaca data yang sama**. Anda tidak perlu membaca semua Markdown.
 
-## Tiga acuan utama
+## Acuan utama
 
 | Berkas | Isi |
 |---|---|
-| [DUNIA-KOPERASI](DUNIA-KOPERASI.md) | Satu acuan style, referensi, map/karakter, rencana dan koneksi data |
-| [STATUS](STATUS.md) | Yang sudah ada, kekurangan dan bukti pemeriksaan |
-| [AGENTS](../AGENTS.md) | Aturan kerja AI dan keamanan |
+| [AGENTS](../AGENTS.md) | Aturan kerja, alur sesi, pencatatan, Git, keamanan (untuk semua agen) |
+| [LANJUTAN-AI](LANJUTAN-AI.md) | Keadaan sekarang, peta kode, langkah berikut |
+| [STATUS](STATUS.md) | Fitur yang ada, yang belum, dan pemeriksaan terakhir |
+| [DESIGN](../DESIGN.md) | Token dan komponen gaya web |
+| [DUNIA-KOPERASI](DUNIA-KOPERASI.md) | Kontrak Dunia 3D |
 
-[LANJUTAN-AI](LANJUTAN-AI.md) adalah serah terima singkat. [CHECKLIST](CHECKLIST.md) mencatat penerimaan; bukan spesifikasi style tambahan.
+[CHECKLIST](CHECKLIST.md) mencatat penerimaan; bukan spesifikasi tambahan.
 
 ## Dokumen penting sesuai kebutuhan
 

@@ -38,13 +38,6 @@ Nama cabang menjelaskan pekerjaan: huruf kecil, kata dipisah tanda hubung, tanpa
 
 - Tanpa baris atribusi AI. Jangan commit `.env*`, kunci, token, atau data pribadi; repo ini publik.
 
-```text
-Kartu mitra tanpa nomor ganda
-
-Nomor kontak sudah tampil di baris kontak; cip kartu hanya
-menampilkan informasi yang belum ada di badan kartu.
-```
-
 ## Sebelum pull request
 
 ```sh
@@ -55,7 +48,7 @@ npm run lint:ui
 npm run build
 ```
 
-Periksa UI yang berubah di 360, 768, 1024, dan 1440 px. Catat paket di [CHANGELOG.md](CHANGELOG.md); perbarui [docs/STATUS.md](docs/STATUS.md) bila keadaan berubah. CI di GitHub menjalankan pemeriksaan yang sama.
+Periksa UI yang berubah di 360, 768, 1024, dan 1440 px. Catat paket di [CHANGELOG.md](CHANGELOG.md) dan perbarui [docs/STATUS.md](docs/STATUS.md) serta [docs/LANJUTAN-AI.md](docs/LANJUTAN-AI.md) sesuai alur di [AGENTS.md](AGENTS.md#proses-sama-untuk-semua-agen). CI di GitHub menjalankan pemeriksaan yang sama.
 
 ## Database
 

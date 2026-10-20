@@ -30,4 +30,4 @@ Penghematan hanya pada cara kerja dan laporan. Pemeriksaan wajib di `AGENTS.md` 
 
 ## Melapor
 - Bahasa Indonesia sederhana: apa berubah, bukti pemeriksaan (angka), yang belum diperiksa, langkah berikut. Tanpa mengulang kode atau daftar berkas panjang.
-- Commit per paket tanpa atribusi AI; push hanya bila pemilik meminta.
+- Catat paket (CHANGELOG, STATUS, LANJUTAN-AI) sesuai AGENTS bagian Proses, lalu commit `jenis: ringkasan` tanpa atribusi AI; push hanya bila pemilik meminta.

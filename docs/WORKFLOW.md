@@ -6,7 +6,7 @@
 4. Gunakan Daftar untuk mengubah status cepat, Papan untuk alur kerja, Kalender untuk agenda, atau Gantt untuk jadwal lintas hari.
 5. Pada Gantt, pilih rentang dan skala. Geser batang atau tarik ujung kanan lalu tinjau dan simpan. Keyboard atau form tanggal memberi cara alternatif.
 6. Tulis catatan proyek memakai judul, daftar, checklist, dan kutipan. Tinjau hasil format lalu simpan.
-7. Catat rapat, keputusan, risiko/isu dan bukti. Buat tugas tindak lanjut dari catatan rapat/isu.
+7. Catat agenda (rapat, kunjungan, acara), keputusan, risiko/isu dan bukti. Buat tugas tindak lanjut dari catatan rapat/isu.
 8. Gunakan Hari Ini saat mulai bekerja. Perbarui status sesuai pelaksanaan nyata, bukan hanya untuk mengisi grafik.
 9. Simpan snapshot laporan berkala dan unduh cadangan JSON. Pemulihan mengganti data; uji pada lingkungan terpisah dahulu.
 
@@ -16,6 +16,6 @@ Proyek: rencana, aktif, ditunda, selesai, diarsipkan. Status proyek ditentukan m
 
 Tugas: rencana, proses, selesai, dibatalkan. Tanggal selesai dicatat saat penyelesaian. Tugas berulang menghasilkan penerus sekali, secara atomik. Prasyarat melingkar ditolak. Gantt memperingatkan benturan tanggal tetapi tidak menjadwalkan ulang seluruh tugas turunan.
 
-## Siklus pengembangan
+## Untuk pengembang dan AI
 
-Baca STATUS → KEPUTUSAN → PRD → kode terkait. Terapkan perubahan dalam satu paket, uji domain/keamanan dan UI penting, jalankan lint/typecheck/build, perbarui dokumentasi, kemudian commit/push. Instruksi kredensial dan migrasi cloud tetap mengikuti SUPABASE.md dan dilakukan pemilik.
+Alur kerja pengembangan (mulai sesi, pemeriksaan, pencatatan, commit) ada di [AGENTS](../AGENTS.md#proses-sama-untuk-semua-agen).
