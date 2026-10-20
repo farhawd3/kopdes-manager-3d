@@ -147,7 +147,7 @@ it('an empty saved routine configuration stays empty and stale completions do no
   localStorage.setItem(`kdmp_manager_routine_${today()}`, '["removed-routine"]');
   render(<Dashboard data={{}} />);
   expect(screen.queryByText('Buka gerai & cek kas modal awal')).toBeNull();
-  expect(screen.getByText('0/0 selesai')).toBeTruthy();
+  expect(screen.getByText('0/0')).toBeTruthy();
 });
 
 it('invalid routine storage does not crash the dashboard', () => {
@@ -155,7 +155,7 @@ it('invalid routine storage does not crash the dashboard', () => {
   localStorage.setItem(`kdmp_manager_routine_${today()}`, '{}');
   render(<Dashboard data={{}} />);
   expect(screen.getByText('Buka gerai & cek kas modal awal')).toBeTruthy();
-  expect(screen.getByText('0/6 selesai')).toBeTruthy();
+  expect(screen.getByText('0/6')).toBeTruthy();
 });
 
 it('the period editor is a native modal and cannot close while saving', async () => {
@@ -206,14 +206,14 @@ it('at 1024px the menu toggles the desktop sidebar and closed mobile navigation 
       <p>Isi ruang kerja</p>
     </AppShell>,
   );
-  fireEvent.click(screen.getByRole('button', { name: 'Buka menu navigasi' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Ciutkan sidebar navigasi' }));
   expect(document.querySelector('.manager-shell')?.classList.contains('sidebar-collapsed')).toBe(
     true,
   );
   const sheet = document.querySelector('.mobile-app-sheet')!;
   expect(sheet.hasAttribute('inert')).toBe(true);
   expect(sheet.getAttribute('aria-hidden')).toBe('true');
-  const links = document.querySelectorAll('.sidebar-nav-item');
+  const links = document.querySelectorAll('.shell-sidebar a');
   expect([...links].every((link) => Boolean(link.getAttribute('aria-label')))).toBe(true);
 });
 

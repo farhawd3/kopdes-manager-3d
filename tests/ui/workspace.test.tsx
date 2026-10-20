@@ -79,7 +79,8 @@ describe('Alur kerja dasar UI', () => {
   it('dashboard kosong mengajak membuat proyek tanpa mengarang capaian', () => {
     render(<Dashboard data={{}} />);
     expect(screen.getByText('Belum ada proyek')).toBeTruthy();
-    expect(screen.getByRole('link', { name: /Progres tugas 0%/ })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /0 terlambat/ })).toBeTruthy();
+    expect(screen.getByRole('link', { name: /0 jatuh tempo hari ini/ })).toBeTruthy();
   });
   it('aksi selesai mengirim status dan tanggal penyelesaian yang valid', async () => {
     mocks.api.mockResolvedValue({});
@@ -130,6 +131,27 @@ describe('Alur kerja dasar UI', () => {
     expect(refresh).not.toHaveBeenCalled();
   });
 });
+it('tambah tugas memahami @nama, !prioritas, dan kata waktu tanpa membuka form', async () => {
+  mocks.api.mockResolvedValue({});
+  render(
+    <Records
+      entity="work-items"
+      workspace={{ staff: [{ id: 's1', created_at: '', updated_at: '', data: { title: 'Budi Darma' } }] }}
+      refresh={vi.fn().mockResolvedValue(undefined)}
+    />,
+  );
+  const input = screen.getByLabelText('Tulis tugas baru');
+  fireEvent.change(input, { target: { value: 'Cek timbangan @budi !tinggi' } });
+  fireEvent.submit(input.closest('form')!);
+  await waitFor(() =>
+    expect(mocks.api).toHaveBeenCalledWith(
+      'work-items',
+      expect.objectContaining({
+        data: expect.objectContaining({ title: 'Cek timbangan', assignee: 'Budi Darma', priority: 'tinggi' }),
+      }),
+    ),
+  );
+});
 it('tambah tugas langsung menyimpan judul dan mempertahankan lingkup proyek', async () => {
   mocks.api.mockResolvedValue({});
   const scope = '7fd6a2ac-dc55-48bc-abd8-f0e4c76b00a5';
@@ -157,4 +179,27 @@ it('tambah tugas langsung menyimpan judul dan mempertahankan lingkup proyek', as
     ),
   );
   await waitFor(() => expect((input as HTMLInputElement).value).toBe(''));
+});
+
+it('geser kartu tugas ke kanan di ponsel menandai selesai dan bisa dibatalkan', async () => {
+  vi.stubGlobal('innerWidth', 360);
+  mocks.api.mockResolvedValue({});
+  const tugas = { id: 't1', created_at: '', updated_at: '', data: schemas['work-items'].parse({ title: 'Susun rak', status: 'proses', due_date: '2026-10-20' }) };
+  render(<Records entity="work-items" workspace={{ 'work-items': [tugas] }} refresh={vi.fn().mockResolvedValue(undefined)} />);
+  const sel = screen.getByText('Susun rak');
+  const tekan = (type: string, x: number) => {
+    const event = new MouseEvent(type, { bubbles: true, clientX: x, clientY: 100 });
+    Object.defineProperties(event, { pointerId: { value: 1 }, pointerType: { value: 'touch' }, isPrimary: { value: true } });
+    fireEvent(sel, event);
+  };
+  tekan('pointerdown', 100);
+  tekan('pointerup', 220);
+  await waitFor(() =>
+    expect(mocks.api).toHaveBeenCalledWith('work-items', expect.objectContaining({ id: 't1', data: expect.objectContaining({ status: 'selesai' }) })),
+  );
+  fireEvent.click(await screen.findByRole('button', { name: 'Batalkan' }));
+  await waitFor(() =>
+    expect(mocks.api).toHaveBeenLastCalledWith('work-items', expect.objectContaining({ id: 't1', data: expect.objectContaining({ status: 'proses' }) })),
+  );
+  vi.unstubAllGlobals();
 });

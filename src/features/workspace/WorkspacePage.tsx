@@ -4,20 +4,61 @@ import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useWorkspace } from './useWorkspace';
 import { pages, catalog } from '../records/catalog';
-import { Records } from '../records/Records';
-import { Dashboard } from '../dashboard/Dashboard';
-import { Editor } from '../records/Editor';
-import { Operations, recordingPaths } from '../operations/Operations';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FollowUps } from '../follow-ups/FollowUps';
-import { TodayView } from '../dashboard/TodayView';
 import type { Entity, Item } from '../records/schemas';
-import { schemas } from '../records/schemas';
+import { administrationEntities, schemas } from '../records/schemas';
 import { today } from '@/lib/date';
 import { SkeletonLoading } from '@/components/ui/SkeletonLoading';
-import { pageEntities } from './workspace-scope';
+import { pageEntities, recordingPaths } from './workspace-scope';
 import { ManagerGuide } from './ManagerGuide';
-const MonitoringDashboard = dynamic(() => import('../dunia-3d/MonitoringDashboard').then(module => module.MonitoringDashboard));
+import { TabHub } from '@/components/layout/TabHub';
+// Tiap halaman hanya memuat komponennya sendiri agar unduhan JS awal kecil.
+// Nama tab bila satu halaman memuat beberapa jenis catatan; selain ini memakai judul katalog.
+const tabLabels: Partial<Record<Entity, string>> = {
+  deliveries: 'Pengiriman',
+  'stock-movements': 'Mutasi stok',
+  organization: 'Profil koperasi',
+  workstreams: 'Bidang kerja',
+  decisions: 'Keputusan',
+  meetings: 'Agenda',
+  issues: 'Isu lapangan',
+  risks: 'Risiko',
+  interactions: 'Riwayat interaksi',
+  trainings: 'Pelatihan',
+  staff: 'Tim',
+  stakeholders: 'Mitra & kontak',
+};
+const Records = dynamic(() => import('../records/Records').then((module) => module.Records), {
+  loading: () => <SkeletonLoading slug="tugas" />,
+});
+const Dashboard = dynamic(
+  () => import('../dashboard/Dashboard').then((module) => module.Dashboard),
+  {
+    loading: () => <SkeletonLoading slug="beranda" />,
+  },
+);
+const Operations = dynamic(
+  () => import('../operations/Operations').then((module) => module.Operations),
+  {
+    loading: () => <SkeletonLoading slug="pencatatan" />,
+  },
+);
+const TodayView = dynamic(
+  () => import('../dashboard/TodayView').then((module) => module.TodayView),
+  {
+    loading: () => <SkeletonLoading slug="hari-ini" />,
+  },
+);
+const FollowUps = dynamic(() =>
+  import('../follow-ups/FollowUps').then((module) => module.FollowUps),
+);
+const RingkasanAdministrasi = dynamic(() =>
+  import('../administrasi/RingkasanAdministrasi').then((module) => module.RingkasanAdministrasi),
+);
+const Editor = dynamic(() => import('../records/Editor').then((module) => module.Editor));
+const MonitoringDashboard = dynamic(() =>
+  import('../dunia-3d/MonitoringDashboard').then((module) => module.MonitoringDashboard),
+);
 const Roadmap = dynamic(() => import('../roadmap/Roadmap').then((module) => module.Roadmap), {
   loading: () => <SkeletonLoading slug="roadmap" />,
 });
@@ -34,11 +75,15 @@ export function WorkspacePage({ slug }: { slug: string }) {
   const query = useSearchParams();
   const router = useRouter();
   const requestedSection = query.get('bagian');
-  const taskScope = ['proyek', 'riwayat-proyek'].includes(slug) ? 'all' : ['selesai', 'dibatalkan'].includes(query.get('status') || '')
-    ? 'history'
-    : 'current';
+  const taskScope = ['proyek', 'riwayat-proyek'].includes(slug)
+    ? 'all'
+    : ['selesai', 'dibatalkan'].includes(query.get('status') || '')
+      ? 'history'
+      : 'current';
   const requestedRecord =
-    query.get('record') || query.get('task') || (['proyek', 'riwayat-proyek'].includes(slug) ? query.get('id') : null);
+    query.get('record') ||
+    query.get('task') ||
+    (['proyek', 'riwayat-proyek'].includes(slug) ? query.get('id') : null);
   const selectedEntity = (
     query.get('task')
       ? 'work-items'
@@ -53,9 +98,26 @@ export function WorkspacePage({ slug }: { slug: string }) {
     /^[a-f\d-]{36}$/i.test(requestedRecord)
       ? { entity: selectedEntity, id: requestedRecord }
       : undefined;
-  const { data, loading, error, refresh, operations, logistics, more, loadMore, fetching } = useWorkspace(
+  const {
+      data,
+      loading,
+      error,
+      refresh,
+      operations,
+      logistics,
+      administration,
+      more,
+      loadMore,
+      fetching,
+    } = useWorkspace(
       slug,
-      { scope: taskScope, ...(['proyek', 'riwayat-proyek'].includes(slug) && /^[a-f\d-]{36}$/i.test(query.get('id') || '') ? { project: query.get('id')! } : {}) },
+      {
+        scope: taskScope,
+        ...(['proyek', 'riwayat-proyek'].includes(slug) &&
+        /^[a-f\d-]{36}$/i.test(query.get('id') || '')
+          ? { project: query.get('id')! }
+          : {}),
+      },
       detail,
     ),
     [tabChoice, setTabChoice] = useState<{ section: string | null; index: number } | null>(null),
@@ -67,29 +129,60 @@ export function WorkspacePage({ slug }: { slug: string }) {
         id: '',
         created_at: '',
         updated_at: '',
-        data: schemas['work-items'].parse({ title: 'Tugas baru', ...detail, due_date: today() }),
+        data: schemas['work-items'].parse({ title: 'Tugas baru', due_date: today(), ...detail }),
       });
     };
     window.addEventListener('hub-task', callback);
     return () => window.removeEventListener('hub-task', callback);
   }, []);
+  // Halaman yang butuh migrasi tambahan: tampilkan alasan, bukan daftar kosong.
+  const belumAktif =
+    slug === 'pengiriman' && !logistics
+      ? 'Pengiriman dan mutasi stok belum aktif. Pasang migrasi 8 (20261006000008_world_logistics.sql) setelah disetujui; data belum dapat dicatat di sini.'
+      : pages[slug]?.some((entity) => administrationEntities.includes(entity)) && !administration
+        ? 'Halaman ini belum aktif. Pasang migrasi 10 (20261015000010_administrasi_usaha.sql) setelah disetujui; data belum dapat dicatat di sini.'
+        : '';
   const sectionIndex = pages[slug]?.findIndex((entity) => entity === requestedSection) ?? -1;
   const tab = tabChoice?.section === requestedSection ? tabChoice.index : Math.max(0, sectionIndex);
-  if (slug === 'dunia-koperasi') return <MonitoringDashboard data={data} loading={loading} error={error} refresh={refresh} more={more} loadMore={loadMore} fetching={fetching} operations={operations} logistics={logistics} />;
-  if (loading) return <SkeletonLoading slug={slug} />;
+  if (slug === 'dunia-koperasi')
+    return (
+      <MonitoringDashboard
+        data={data}
+        loading={loading}
+        error={error}
+        refresh={refresh}
+        more={more}
+        loadMore={loadMore}
+        fetching={fetching}
+        operations={operations}
+        logistics={logistics}
+      />
+    );
+  // Tab hub tampil juga saat memuat/galat: tidak bergeser, dan halaman saudara tetap bisa dibuka.
+  if (loading)
+    return (
+      <>
+        <TabHub path={`/${slug}`} />
+        <SkeletonLoading slug={slug} />
+      </>
+    );
   if (error)
     return (
+      <>
+      <TabHub path={`/${slug}`} />
       <section className="card empty">
-        <h1>Ruang kerja belum dapat dimuat</h1>
+        <h2>Ruang kerja belum dapat dimuat</h2>
         <p role="alert">{error}</p>
         <Button onClick={() => void refresh()}>Coba lagi</Button>
         <p>
           Data kosong tidak ditampilkan sebagai capaian. Periksa koneksi dan konfigurasi server.
         </p>
       </section>
+      </>
     );
   return (
     <div className={`workspace-page page-${slug}`}>
+      <TabHub path={`/${slug}`} />
       {slug === 'tugas' && (
         <div className="workspace-scope-control" role="group" aria-label="Rentang tugas">
           <Button
@@ -124,7 +217,14 @@ export function WorkspacePage({ slug }: { slug: string }) {
       )}
       {slug === 'tindak-lanjut' && <FollowUps data={data} />}
       {slug === 'beranda' && <Dashboard data={data} />}
-      {['proyek', 'riwayat-proyek'].includes(slug) && <Projects key={query.get('tab') || slug} data={data} refresh={refresh} history={slug === 'riwayat-proyek' || query.get('tab') === 'riwayat'} />}
+      {['proyek', 'riwayat-proyek'].includes(slug) && (
+        <Projects
+          key={query.get('tab') || slug}
+          data={data}
+          refresh={refresh}
+          history={slug === 'riwayat-proyek' || query.get('tab') === 'riwayat'}
+        />
+      )}
       {recordingPaths.includes(slug) && (
         <Operations
           key={slug + query.toString()}
@@ -136,70 +236,59 @@ export function WorkspacePage({ slug }: { slug: string }) {
       )}
       {slug === 'roadmap' && <Roadmap data={data} refresh={refresh} />}
       {slug === 'laporan' && <Reports />}
-      {slug === 'pengaturan' && <Settings refresh={refresh} organization={data.organization?.[0]} />}
+      {slug === 'pengaturan' && (
+        <Settings refresh={refresh} organization={data.organization?.[0]} />
+      )}
       {slug === 'hari-ini' && <TodayView workspace={data} refresh={refresh} />}
-      {slug === 'pengiriman' && !logistics ? (
+      {belumAktif ? (
         <p className="workspace-partial-note" role="status">
-          Pengiriman dan mutasi stok belum aktif. Pasang migrasi 8
-          (20261006000008_world_logistics.sql) setelah disetujui; data belum dapat dicatat di sini.
+          {belumAktif}
         </p>
-      ) : pages[slug] && slug !== 'pengaturan' && (
-        <>
-          {pages[slug].length > 1 && (
-            <div className="tabs" role="tablist" aria-label="Bagian halaman">
-              {pages[slug].map((entity, index) => (
-                <Button
-                  role="tab"
-                  aria-selected={tab === index}
-                  key={entity}
-                  onClick={() => setTabChoice({ section: requestedSection, index })}
-                >
-                  {entity === 'deliveries'
-                    ? 'Pengiriman'
-                    : entity === 'stock-movements'
-                      ? 'Mutasi stok'
-                      : entity === 'organization'
-                    ? 'Profil koperasi'
-                    : entity === 'workstreams'
-                      ? 'Bidang kerja'
-                      : entity === 'decisions'
-                        ? 'Keputusan'
-                        : entity === 'meetings'
-                          ? 'Rapat'
-                          : entity === 'issues'
-                            ? 'Isu lapangan'
-                            : entity === 'risks'
-                              ? 'Risiko'
-                              : entity === 'interactions'
-                                ? 'Riwayat interaksi'
-                                : entity === 'trainings'
-                                  ? 'Pelatihan'
-                                  : entity === 'staff'
-                                    ? 'Tim'
-                                    : 'Mitra & kontak'}
-                </Button>
-              ))}
-            </div>
-          )}
-          <Records
-            key={pages[slug][tab] + (query.get('record') || '') + (query.get('task') || '')}
-            entity={pages[slug][tab]}
-            workspace={data}
-            refresh={refresh}
-          />
-          {more[pages[slug][tab]] !== undefined && (
-            <Button
-              className="workspace-load-more"
-              type="button"
-              disabled={fetching !== null}
-              onClick={() => void loadMore(pages[slug][tab])}
-            >
-              {fetching === pages[slug][tab]
-                ? 'Memuat…'
-                : `Muat 50 ${pages[slug][tab] === 'work-items' ? 'tugas' : 'catatan'} lagi`}
-            </Button>
-          )}
-        </>
+      ) : (
+        pages[slug] &&
+        slug !== 'pengaturan' && (
+          <>
+            <Records
+              key={pages[slug][tab] + (query.get('record') || '') + (query.get('task') || '')}
+              tabs={
+                pages[slug].length > 1 && (
+                  <div className="tabs" role="tablist" aria-label="Bagian halaman">
+                    {pages[slug].map((entity, index) => (
+                      <Button
+                        role="tab"
+                        aria-selected={tab === index}
+                        key={entity}
+                        onClick={() => setTabChoice({ section: requestedSection, index })}
+                      >
+                        {tabLabels[entity] ?? catalog[entity].title}
+                      </Button>
+                    ))}
+                  </div>
+                )
+              }
+              ringkasan={
+                administrationEntities.includes(pages[slug][tab]) && (
+                  <RingkasanAdministrasi entity={pages[slug][tab]} data={data} />
+                )
+              }
+              entity={pages[slug][tab]}
+              workspace={data}
+              refresh={refresh}
+            />
+            {more[pages[slug][tab]] !== undefined && (
+              <Button
+                className="workspace-load-more"
+                type="button"
+                disabled={fetching !== null}
+                onClick={() => void loadMore(pages[slug][tab])}
+              >
+                {fetching === pages[slug][tab]
+                  ? 'Memuat…'
+                  : `Muat 50 ${pages[slug][tab] === 'work-items' ? 'tugas' : 'catatan'} lagi`}
+              </Button>
+            )}
+          </>
+        )
       )}
       {slug === 'beranda' && more['work-items'] !== undefined && (
         <Button
