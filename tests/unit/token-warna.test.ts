@@ -17,15 +17,16 @@ const kontras = (a: string, b: string) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-it('aksen dan tinta mengikuti palet Lavender', () => {
+it('aksen dan tinta mengikuti palet Modern Clean Emerald', () => {
   const terang = blok(':root');
-  expect(nilai(terang, '--brand')).toBe('#6a55c8');
-  expect(nilai(terang, '--brand-hover')).toBe('#5443a8');
-  expect(nilai(terang, '--brand-soft')).toBe('#ece8fb');
-  expect(nilai(terang, '--canvas')).toBe('#f5f3fa');
-  expect(nilai(terang, '--ink-heading')).toBe('#221d2e');
-  expect(nilai(terang, '--ink-muted')).toBe('#625b70');
-  expect(terang).toMatch(/--r-card:\s*22px/);
+  expect(nilai(terang, '--brand')).toBe('#059669');
+  expect(nilai(terang, '--brand-hover')).toBe('#047857');
+  expect(nilai(terang, '--brand-soft')).toBe('#ecfdf5');
+  expect(nilai(terang, '--canvas')).toBe('#f8fafc');
+  expect(nilai(terang, '--ink-heading')).toBe('#0f172a');
+  expect(nilai(terang, '--ink-muted')).toBe('#475569');
+  expect(nilai(terang, '--rel-bg')).toBe('#ffffff');
+  expect(terang).toMatch(/--r-card:\s*20px/);
 });
 
 it('teks utama terbaca di kedua tema', () => {

@@ -28,7 +28,7 @@ import { IkonHalaman } from '@/components/ui/IkonHalaman';
 import { ManagerActionModal } from './ManagerActionModal';
 import { Modal } from '@/components/ui/Modal';
 import { Notifikasi } from '@/features/notifikasi/Notifikasi';
-import { HUBS, KAKI_SIDEBAR, MENU_KERJA, RUANG_LAIN, hubUntuk, labelHalaman } from './navigasi';
+import { HUBS, KAKI_SIDEBAR, MENU_KERJA, RUANG_LAIN, hubUntuk, labelHalaman, ruangUntuk } from './navigasi';
 
 function getCoopShortName(title?: string): string {
   if (!title?.trim()) return 'Koperasi';
@@ -149,12 +149,13 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
     }
   };
   if (path === '/dunia-koperasi') return <>{children}</>;
+  const ruang = ruangUntuk(path);
   return (
-    <div className={`manager-shell ${desktopSidebarHidden === 'true' ? 'sidebar-collapsed' : ''}`}>
+    <div className={`manager-shell ${desktopSidebarHidden === 'true' ? 'sidebar-collapsed' : ''}`} data-ruang={ruang}>
       <a className="skip" href="#main">
         Lewati navigasi
       </a>
-      {/* Sidebar Lekuk: kerja harian dibuka langsung, hub lain di "Ruang lain" dengan tab di halamannya. */}
+      {/* Rel navigasi biru batu: kerja harian dibuka langsung, hub lain di Ruang lain dengan swatch lantai. */}
       <aside className="shell-sidebar" aria-label="Navigasi samping">
         <Link href="/beranda" className="shell-merek" title={coop} aria-label={`${coop}, buka Beranda`}>
           <Ikon3D kind="kantor" size={32} />
@@ -170,8 +171,10 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
                 aria-label={labelHalaman(href)}
                 title={labelHalaman(href)}
                 aria-current={path === href ? 'page' : undefined}
+                data-ruang={ruangUntuk(href)}
               >
-                <IkonHalaman href={href} size={22} />
+                <span className="shell-swatch" aria-hidden="true" />
+                <IkonHalaman href={href} size={20} />
                 <span className="shell-hub-label">{labelHalaman(href)}</span>
               </Link>
             ))}
@@ -185,8 +188,10 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
                 aria-label={hub.label}
                 title={hub.label}
                 aria-current={hubAktif?.id === hub.id && !MENU_KERJA.includes(path) ? 'page' : undefined}
+                data-ruang={ruangUntuk(hub.tabs[0])}
               >
-                <IkonHalaman href={hub.ikon} size={22} />
+                <span className="shell-swatch" aria-hidden="true" />
+                <IkonHalaman href={hub.ikon} size={20} />
                 <span className="shell-hub-label">{hub.label}</span>
               </Link>
             ))}
@@ -208,8 +213,10 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
               aria-label={labelHalaman(href)}
               title={labelHalaman(href)}
               aria-current={path === href ? 'page' : undefined}
+              data-ruang={ruangUntuk(href)}
             >
-              <IkonHalaman href={href} size={20} />
+              <span className="shell-swatch" aria-hidden="true" />
+              <IkonHalaman href={href} size={18} />
               <span className="shell-hub-label">{labelHalaman(href)}</span>
             </Link>
           ))}
@@ -293,7 +300,7 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
           </details>
         </div>
       </header>
-      <main className="shell-utama manager-main" id="main" tabIndex={-1}>
+      <main className="shell-utama manager-main" id="main" tabIndex={-1} data-ruang={ruang}>
         {error && (
           <p role="alert" className="notice error">
             {error}

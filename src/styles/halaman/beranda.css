@@ -14,18 +14,51 @@
 .beranda-ringkas a.is-telat { color: var(--late); font-weight: 700; }
 .beranda-kepala-aksi { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .beranda-proyek { min-width: 200px; }
-.beranda-proyek .ui-btn.ui-select-trigger { border-color: transparent; border-radius: var(--r-full); box-shadow: none; }
-.ui-btn.beranda-salin { padding: 0 18px; border-color: transparent; border-radius: var(--r-full); box-shadow: none; }
-.ui-btn.beranda-salin:hover { border-color: transparent; background: var(--brand-soft); color: var(--brand-ink); }
+.beranda-proyek .ui-btn.ui-select-trigger { border-color: var(--line); border-radius: var(--r-full); box-shadow: none; background: var(--surface); }
+.ui-btn.beranda-salin { padding: 0 18px; border-color: var(--line); border-radius: var(--r-full); box-shadow: none; background: var(--surface); }
+.ui-btn.beranda-salin:hover { border-color: var(--brand-soft-border); background: var(--brand-soft); color: var(--brand-ink); }
+.beranda-dunia-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  color: var(--ink-heading);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  transition: all var(--dur-fast);
+}
+.beranda-dunia-link:hover {
+  background: var(--brand-soft);
+  border-color: var(--brand-soft-border);
+  color: var(--brand-ink);
+  text-decoration: none;
+}
+.beranda-dunia-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--brand);
+}
 
 /* Tambah cepat: satu kalimat menjadi form tugas terisi; manajer tetap memeriksa sebelum menyimpan */
 .beranda-tambah {
   display: grid;
   gap: 10px;
-  padding: 14px 18px;
+  padding: 16px 20px;
   border: 1px solid var(--line);
-  border-radius: var(--r-card);
+  border-radius: var(--lempeng-radius, 18px);
   background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.beranda-tambah:hover {
+  border-color: var(--line-strong);
   box-shadow: var(--shadow);
 }
 .beranda-tambah-bar {

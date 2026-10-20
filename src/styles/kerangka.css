@@ -23,10 +23,11 @@
   --kolom-samping: var(--sidebar-w);
   min-height: 100dvh;
   padding-left: var(--kolom-samping);
+  background: var(--canvas);
 }
 .manager-shell.sidebar-collapsed { --kolom-samping: var(--rail-w); }
 
-/* ---------- Sidebar: kelompok Kerja dan Ruang lain sebagai kartu putih, item aktif lavender ---------- */
+/* ---------- Sidebar: modern minimal, clean, dan presisi ---------- */
 .shell-sidebar {
   position: fixed;
   z-index: 40;
@@ -35,9 +36,10 @@
   flex-direction: column;
   gap: 14px;
   width: var(--kolom-samping);
-  padding: 20px 14px 16px;
+  padding: 18px 14px 16px;
   overflow-y: auto;
-  background: var(--canvas);
+  background: var(--rel-bg);
+  border-right: 1px solid var(--rel-line);
 }
 .shell-merek {
   display: flex;
@@ -49,45 +51,119 @@
   text-decoration: none;
 }
 .shell-merek:hover { text-decoration: none; }
-.shell-merek strong { overflow: hidden; font-size: 16px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-.shell-hub { display: grid; gap: 12px; }
+.shell-merek strong {
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-heading);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.shell-hub { display: grid; gap: 10px; }
 .shell-kelompok {
   display: grid;
   gap: 2px;
-  padding: 8px;
-  border: 1px solid var(--kartu-garis);
-  border-radius: var(--r-xl);
-  background: var(--surface);
+  padding: 6px;
+  border: 1px solid var(--rel-line);
+  border-radius: var(--r-lg);
+  background: var(--rel-surface);
 }
-.shell-kelompok-judul { padding: 4px 10px 6px; color: var(--ink-subtle); font-size: 12px; font-weight: 600; }
+.shell-kelompok-judul {
+  padding: 4px 8px 6px;
+  color: var(--rel-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
 .shell-kaki { display: grid; gap: 2px; margin-top: auto; }
 .shell-hub a,
 .shell-kaki a {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: var(--touch);
+  gap: 10px;
+  min-height: 38px;
   padding: 0 10px;
-  border-radius: 14px;
-  color: var(--ink-muted);
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 13.5px;
   font-weight: 600;
   text-decoration: none;
-  transition: background var(--dur-fast), color var(--dur-fast);
+  transition: all var(--dur-fast);
 }
-.shell-kaki a { font-size: 13px; }
+.shell-kaki a { font-size: 13px; color: var(--rel-muted); }
 .shell-hub a:hover,
-.shell-kaki a:hover { background: var(--surface-3); color: var(--ink-heading); text-decoration: none; }
-.shell-hub a[aria-current='page'] { background: var(--brand-isi); color: var(--on-brand); }
-.shell-kaki a[aria-current='page'] { background: var(--surface); color: var(--brand-ink); }
+.shell-kaki a:hover {
+  background: var(--surface-3);
+  color: var(--ink-heading);
+  text-decoration: none;
+}
+.shell-hub a[aria-current='page'],
+.shell-kaki a[aria-current='page'] {
+  background: var(--brand-isi);
+  color: var(--on-brand);
+  box-shadow: 0 2px 6px -1px rgba(4, 120, 87, 0.35);
+}
 .shell-hub-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.shell-tim { display: grid; gap: 4px; padding: 14px 16px; border-radius: var(--r-xl); background: var(--surface); }
-.shell-tim strong { color: var(--ink-heading); font-size: 14px; }
-.shell-tim p { padding-right: 34px; color: var(--ink-muted); font-size: 12.5px; line-height: 1.4; }
+
+/* Swatch penanda lantai ruang diorama */
+.shell-swatch {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-full);
+  flex-shrink: 0;
+  background: var(--lantai-kerja);
+}
+.shell-hub a[data-ruang='koperasi'] .shell-swatch {
+  background: var(--lantai-koperasi);
+}
+.shell-hub a[data-ruang='catatan'] .shell-swatch {
+  background: var(--lantai-catatan);
+}
+.shell-hub a[data-ruang='usaha'] .shell-swatch {
+  background: var(--lantai-usaha);
+}
+.shell-hub a[data-ruang='dunia'] .shell-swatch {
+  background: var(--lantai-dunia);
+}
+.shell-kaki a[data-ruang='pengaturan'] .shell-swatch {
+  background: var(--lantai-pengaturan);
+}
+.shell-hub a[aria-current='page'] .shell-swatch,
+.shell-kaki a[aria-current='page'] .shell-swatch {
+  background: var(--ink-inverse);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+}
+
+.shell-tim {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: var(--r-lg);
+  background: var(--rel-surface);
+  border: 1px solid var(--rel-line);
+}
+.shell-tim strong { color: var(--ink-heading); font-size: 13.5px; font-weight: 700; }
+.shell-tim p { padding-right: 34px; color: var(--ink-muted); font-size: 12px; line-height: 1.4; }
+.shell-tim .takik-aksi {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.shell-tim .takik-aksi:hover {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border-color: var(--brand-soft-border);
+}
 
 /* Sidebar diciutkan (Ctrl+B) dan tablet: hanya ikon */
 .sidebar-collapsed .shell-sidebar { padding-inline: 10px; }
 .sidebar-collapsed .shell-merek strong,
-.sidebar-collapsed .shell-hub-label {
+.sidebar-collapsed .shell-hub-label,
+.sidebar-collapsed .shell-swatch {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -102,7 +178,7 @@
 .sidebar-collapsed .shell-hub a,
 .sidebar-collapsed .shell-kaki a { justify-content: center; padding: 0; }
 
-/* ---------- Kepala halaman ---------- */
+/* ---------- Kepala halaman (Topbar frosted glass) ---------- */
 .shell-kepala {
   position: sticky;
   z-index: 30;
@@ -113,8 +189,9 @@
   gap: 16px;
   min-height: var(--topbar-h);
   padding: 12px var(--gutter);
-  background: color-mix(in srgb, var(--canvas) 92%, transparent);
-  backdrop-filter: saturate(1.2) blur(10px);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
 }
 .shell-judul { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .shell-judul > div { display: grid; min-width: 0; }

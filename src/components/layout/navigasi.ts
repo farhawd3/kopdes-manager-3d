@@ -33,6 +33,21 @@ export function hubUntuk(path: string): Hub | undefined {
   return HUBS.find((hub) => hub.tabs.includes(bersih));
 }
 
+export type RuangId = 'kerja' | 'koperasi' | 'catatan' | 'usaha' | 'dunia' | 'pengaturan';
+
+export function ruangUntuk(path: string): RuangId {
+  const bersih = path.split(/[?#]/)[0];
+  if (bersih === '/pengaturan' || bersih === '/panduan') return 'pengaturan';
+  const hub = hubUntuk(bersih);
+  if (!hub) return 'kerja';
+  if (hub.id === 'beranda' || hub.id === 'pekerjaan') return 'kerja';
+  if (hub.id === 'catatan') return 'catatan';
+  if (hub.id === 'koperasi') return 'koperasi';
+  if (hub.id === 'usaha') return 'usaha';
+  if (hub.id === 'dunia') return 'dunia';
+  return 'kerja';
+}
+
 export function labelHalaman(href: string): string {
   return navigation.find(([url]) => url === href)?.[1] ?? href;
 }

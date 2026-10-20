@@ -304,6 +304,15 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
           </p>
         </div>
         <div className="beranda-kepala-aksi">
+          <Link
+            href="/dunia-koperasi?lokasi=kantor"
+            className="beranda-dunia-link"
+            title="Buka Ruang Kerja di Dunia Koperasi 3D"
+          >
+            <span className="beranda-dunia-dot" aria-hidden="true" />
+            <span className="beranda-dunia-label">Ruang Kerja · Masuk ke 3D</span>
+            <ArrowUpRight size={14} aria-hidden="true" />
+          </Link>
           <label className="beranda-proyek">
             <span className="sr-only">Proyek</span>
             <Select

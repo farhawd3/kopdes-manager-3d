@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import '@fontsource-variable/plus-jakarta-sans';
+import '@fontsource-variable/bricolage-grotesque';
 import './globals.css';
 import '../styles/token.css';
 import '../styles/dasar.css';

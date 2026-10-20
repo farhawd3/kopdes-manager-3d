@@ -5,10 +5,12 @@ Berkas ini untuk agen berikutnya (Claude, Codex, Antigravity, OpenCode, dll.). I
 ## Keadaan (20 Oktober 2026)
 
 - Cabang: `tampilan/papan-tugas-lekuk`.
-- **Redesain Lantai Dunia Disetujui Pemilik** (`docs/RENCANA-REDESAIN.md`):
-  - Paket 0 (Pelepasan kunci dokumen) selesai: aturan gaya di `AGENTS.md`, `PRODUCT.md`, skill `ui-ux-kopdes`, dan `docs/DESAIN-ANTARMUKA.md` dialihkan ke arah "Lantai Dunia" (rel biru batu `#2F3B63`, latar lantai ruang diorama, permukaan modul putih hangat, modul lempeng taktil, aksen jingga kayu `#AC5108`/`#C8680F`). `DESIGN.md` lama ditandai usang/transisi.
-  - Paket berikutnya: Paket 1 (Token warna & kerangka rel biru batu / latar ruang), Paket 2 (Komponen modul lempeng), Paket 3 (Beranda POC).
-- Verifikasi: 473/473 tes vitest lulus, typecheck, lint, lint:ui, build (JS awal 247 KB), dan `audit:tampilan` 58/58 layar 0 temuan di 375x812.
+- **Gaya Web: Modern Clean Look (Emerald Fresh & Slate Crystal)**:
+  - Canvas terang bersih `#f8fafc` (slate-50), permukaan modul kartu putih murni `#ffffff` dengan border halus 1px `#e2e8f0`.
+  - Aksen hijau zamrud presisi `#059669` / `#047857` (lolos kontras WCAG AA 5.48:1).
+  - Sidebar modern minimalis, bilah atas frosted glass dengan blur 12px, serta tautan spasial langsung ke Dunia Koperasi 3D.
+  - Bebas dari efek cat lantai penuh dan tepi tebal bawah yang berkesan kuno/jadul.
+- Verifikasi: 473/473 tes vitest lulus 100% (80 berkas), typecheck 0 error, lint 0 error, lint:ui 0 error, build JS awal 247 KB, audit visual 0 temuan.
 
 ## Peta kode yang sering disentuh
 

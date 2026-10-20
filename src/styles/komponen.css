@@ -540,15 +540,21 @@ dialog.ui-modal h2 { font-size: 19px; }
 .avatar-warna.is-teal { background: var(--pastel-mint); color: var(--pastel-mint-ink); }
 .avatar-warna.is-pink { background: var(--pastel-pink); color: var(--pastel-pink-ink); }
 
-/* ---------- Modul: kartu putih tanpa garis, kepala judul + tautan kanan, isi, kaki aksi ---------- */
+/* ---------- Modul: kartu modern bersih, sudut rapi 18px, shadow halus ---------- */
 .modul {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 20px 22px;
-  border: 1px solid var(--kartu-garis);
-  border-radius: var(--r-xl);
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--lempeng-radius, 18px);
   background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.modul:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow);
 }
 .modul-kepala { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
 .modul-kepala h2 { margin: 0; font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.01em; }

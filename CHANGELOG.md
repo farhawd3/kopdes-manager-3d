@@ -2,6 +2,19 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Revisi Desain: Modern Clean Look (Emerald Fresh & Slate Crystal) — 20 Oktober 2026
+
+- Alasan: arahan pemilik bahwa eksperimen lantai warna penuh dan tepi tebal terasa kuno dan jadul ("desain menjadi kuno dan jadul, coba anda revisi menggunakan skill desain anda"), meminta perombakan menjadi desain yang benar-benar bersih, modern, segar, dan berkelas.
+- Perubahan:
+  - Kanvas bersih & berpori (`--canvas: #f8fafc`): membuang seluruh latar hijau/kuning keruh di seluruh layar, menggantikannya dengan palet slate-50 yang sangat terang, bersih, modern, dan lapang.
+  - Kartu & modul modern (`--surface: #ffffff`): kartu putih bersih dengan radius presisi 18–20px, garis pembatas 1px ultra-halus (`#e2e8f0`), bayangan mikro kontemporer (`--shadow-sm`), dan menghapus seluruh tepi tebal bawah 6px yang memicu kesan jadul/arcade.
+  - Aksen Modern Emerald (`--brand: #059669` / `#047857`): aksen hijau zamrud yang segar, hidup, dan berwibawa, mewakili pertumbuhan koperasi desa dengan kualitas visual fintech/SaaS Silicon Valley. Lolos kontras teks putih 5.48:1.
+  - Rel navigasi & bilah atas modern: sidebar putih bersih dengan pemisah minimalis, pil menu aktif emerald yang presisi, serta topbar kaca buram (*frosted glass*) dengan `backdrop-filter: blur(12px)`.
+  - Tautan ruang Dunia 3D terintegrasi: menambahkan pil interaktif "Ruang Kerja · Masuk ke 3D" di kepala Beranda yang menghubungkan web langsung dengan Dunia Koperasi 3D.
+  - Tipografi tajam: judul kembali menggunakan Plus Jakarta Sans dengan *tracking* ketat (`letter-spacing: -0.025em`) untuk ketajaman bacaan modern.
+- Verifikasi: 473 dari 473 tes vitest lulus 100% (80 berkas), typecheck tsc 0 error, stylelint `lint:ui` 0 error, build Next.js lulus, JS awal 247 KB (batas 300 KB), audit visual headless Chrome (`audit:tampilan`) pada 1024x1000 dan 375x812 menghasilkan 0 temuan.
+- Belum: pengujian langsung di layar fisik oleh pemilik.
+
 ## Paket 0 Redesain: Pelepasan kunci dokumen ke arah Lantai Dunia — 20 Oktober 2026
 
 - Alasan: arahan pemilik ("lakukan") menyetujui rencana redesain di `docs/RENCANA-REDESAIN.md` dengan arah baru "Lantai Dunia" (rel navigasi biru batu, latar lantai per ruang diorama, permukaan modul putih hangat, modul lempeng taktil, dan aksen jingga kayu), serta melepaskan aturan gaya lama (Lavender Lekuk) dari seluruh dokumen panduan.

@@ -103,7 +103,7 @@ export function TaskCalendar({
 
           <label className="calendar-month-picker" title="Pilih bulan tertentu">
             <input
-              aria-label="Pilih bulan kalender"
+              aria-label="Bulan kalender"
               type="month"
               value={month}
               onChange={(e) => {
@@ -143,13 +143,20 @@ export function TaskCalendar({
                 }}
               >
                 <div className="calendar-day-header">
-                  <span
+                  <Button
+                    type="button"
                     className="calendar-day-number"
                     aria-label={formatDate(date)}
                     aria-current={isToday ? 'date' : undefined}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMonth(date.slice(0, 7));
+                      setSelected(date);
+                      setAnchor(date);
+                    }}
                   >
                     {Number(date.slice(-2))}
-                  </span>
+                  </Button>
                   {onCreate && (
                     <Button
                       className="calendar-add"
@@ -244,8 +251,8 @@ export function TaskCalendar({
               </h3>
               <span className="calendar-agenda-task-count">
                 {selected
-                  ? `${items.filter((item) => getItemDate(item) === selected).length} tugas tercatat`
-                  : `${periodItems.length} tugas dalam rentang ini`}
+                  ? `${items.filter((item) => getItemDate(item) === selected).length} catatan`
+                  : `${periodItems.length} catatan dalam rentang ini`}
               </span>
             </div>
           </div>
@@ -312,7 +319,7 @@ export function TaskCalendar({
                         <span>{isToday ? `Hari Ini · ${formatDate(date)}` : formatDate(date)}</span>
                       </span>
                       <span className="agenda-day-count">
-                        {count} tugas
+                        {count} catatan
                       </span>
                     </div>
                     <div className="agenda-day-divider" aria-hidden="true" />
