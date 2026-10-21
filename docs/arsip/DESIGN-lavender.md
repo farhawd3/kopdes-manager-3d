@@ -1,6 +1,6 @@
 > [!WARNING]
 > **Status: Usang / Digantikan arah "Workbench" (21 Oktober 2026).**
-> Redesain total disetujui pemilik dan sudah diterapkan pada token, kerangka, komponen bersama, Beranda, dan halaman tugas. Arah baru, alasan, dan status paket ada di `docs/RENCANA-REDESAIN.md`. Spesifikasi di bawah ini adalah acuan Lavender Lekuk lama; jangan dipakai untuk pekerjaan baru.
+> Redesain total disetujui pemilik dan sudah diterapkan pada token, kerangka, komponen bersama, Beranda, dan halaman tugas. Arah yang berlaku: [REDESAIN-TOTAL](../REDESAIN-TOTAL.md). Spesifikasi di bawah ini adalah acuan Lavender Lekuk lama; jangan dipakai untuk pekerjaan baru.
 
 ---
 name: Kopdes Manager 3D

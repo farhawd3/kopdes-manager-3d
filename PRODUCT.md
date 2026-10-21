@@ -34,7 +34,8 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 ## Brand Commitments
 
 - Nama produk: Kopdes Manager 3D; di dalam aplikasi: "Dunia Koperasi" untuk diorama.
-- Web memakai gaya **Workbench** (keputusan pemilik 21 Oktober 2026; redesain total menggantikan Lantai Dunia, Lavender Lekuk, Merah Putih, dan Taskflow biru; detail di `docs/RENCANA-REDESAIN.md`): rel navigasi gelap `#0E1015`, kanvas abu sejuk `#F7F8FA`, panel putih `#FFFFFF` bergaris rambut 1px, satu aksen indigo `#4F46E5`, sudut 8–12 px, bayangan sangat tipis, dan susunan padat data lebih dulu. Beranda memakai empat ubin metrik (terlambat, jatuh tempo, tugas terbuka, agenda), bukan hero gradien; rutin dan agenda menjadi baris pemisah. Huruf judul Bricolage Grotesque, teks isi Plus Jakarta Sans, angka tabular. Warna jenuh hanya pada aksi utama, status, dan grafik.
+- Web sedang dirombak total menjadi task manager yang bersih, rapi, dan profesional (arahan pemilik 21 Oktober 2026); arah di `docs/REDESAIN-TOTAL.md`. Gaya lama tidak mengikat. Warna aksen dipilih pemilik lewat pemilih palet di demo.
+- Grafik dipakai bila menjawab pertanyaan kerja (berapa, membaik atau tidak, apa yang perlu dikerjakan), selalu dengan ringkasan teks; tidak pernah menampilkan angka contoh atau nol palsu.
 - Tampilan seimbang di semua perangkat: kontrol datar dan padat; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
 - Bahasa UI langsung, ringkas, tanpa slogan motivasi.
 

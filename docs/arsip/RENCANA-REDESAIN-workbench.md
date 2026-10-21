@@ -1,3 +1,6 @@
+> [!WARNING]
+> **Arsip.** Digantikan oleh [REDESAIN-TOTAL](../REDESAIN-TOTAL.md) (21 Oktober 2026). Tidak mengikat pekerjaan baru.
+
 # Arah Desain Web — Workbench
 
 Tanggal: 21 Oktober 2026

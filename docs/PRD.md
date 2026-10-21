@@ -38,7 +38,7 @@ Beranda dan Hari Ini merangkum pekerjaan aktual. Kesiapan/gerai, pemangku/intera
 ## Desain dan akses
 
 - Halaman operasional memakai sidebar berkelompok, rel tablet dan navigasi bawah ponsel. Dunia Koperasi memakai layar penuh/dock sendiri dengan panel detail kanan atau bawah. Area sentuh minimal 44 px.
-- Halaman operasional: latar lembut, teks arang, aksen hijau lembut/lavender dan kartu berlapis. Style dunia hanya mengikuti DUNIA-KOPERASI; jangan menerapkan palet operasional ke scene.
+- Halaman operasional: task manager terang, bersih, dan padat data dengan satu aksen yang dipilih pemilik; arah di [REDESAIN-TOTAL](REDESAIN-TOTAL.md). Style dunia hanya mengikuti DUNIA-KOPERASI; jangan menerapkan palet operasional ke scene.
 - Tema terang/gelap dan kepadatan. Tabel/Gantt menggulir dalam kontainer.
 - Dialog fokus, label input, error yang jelas, reduced-motion, data kosong tanpa angka buatan.
 

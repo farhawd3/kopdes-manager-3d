@@ -1,6 +1,6 @@
 # Mulai dari sini
 
-Fokus: **ruang kerja web untuk manajer KDMP (gaya Lavender Lekuk) dan Dunia Koperasi 3D yang membaca data yang sama**. Anda tidak perlu membaca semua Markdown.
+Fokus: **ruang kerja web untuk manajer KDMP (tampilan sedang dirombak total, lihat [REDESAIN-TOTAL](REDESAIN-TOTAL.md)) dan Dunia Koperasi 3D yang membaca data yang sama**. Anda tidak perlu membaca semua Markdown.
 
 ## Acuan utama
 
@@ -9,7 +9,7 @@ Fokus: **ruang kerja web untuk manajer KDMP (gaya Lavender Lekuk) dan Dunia Kope
 | [AGENTS](../AGENTS.md) | Aturan kerja, alur sesi, pencatatan, Git, keamanan (untuk semua agen) |
 | [LANJUTAN-AI](LANJUTAN-AI.md) | Keadaan sekarang, peta kode, langkah berikut |
 | [STATUS](STATUS.md) | Fitur yang ada, yang belum, dan pemeriksaan terakhir |
-| [DESIGN](../DESIGN.md) | Token dan komponen gaya web |
+| [REDESAIN-TOTAL](REDESAIN-TOTAL.md) | Arah gaya web, paket kerja redesain, dan prompt agen ([PROMPT-DEEPSEEK](PROMPT-DEEPSEEK.md)) |
 | [DUNIA-KOPERASI](DUNIA-KOPERASI.md) | Kontrak Dunia 3D |
 
 [CHECKLIST](CHECKLIST.md) mencatat penerimaan; bukan spesifikasi tambahan.

@@ -2,6 +2,16 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Lepas kunci gaya lama dan siapkan brief redesain total — 21 Oktober 2026
+
+- Alasan: arahan pemilik untuk merombak total web menjadi task manager yang bersih, rapi, dan profesional dengan grafik yang mudah dipahami, tanpa terikat desain lama; pekerjaan akan dijalankan dengan DeepSeek. Dokumen dan skill saling bertentangan (Workbench, Indigo Studio, Lantai Dunia, Lavender Lekuk) dan mengunci hex, huruf, serta struktur lama.
+- Perubahan:
+  - Brief baru `docs/REDESAIN-TOTAL.md` ("Meja Kerja Terang"): temuan pemeriksaan web, token netral + lima palet aksen yang bisa dipilih di demo, sidebar terang berkelompok dengan semua halaman satu klik, palet perintah Ctrl K, kit grafik SVG dengan ringkasan teks dan tabel cadangan, rancangan ulang Beranda (≤ 2 layar), Tugas, Proyek, Laporan, Usaha & Koperasi, serta urutan sembilan paket.
+  - Prompt siap tempel `docs/PROMPT-DEEPSEEK.md` (satu paket per sesi, verifikasi wajib, aturan commit).
+  - AGENTS, PRODUCT, DESAIN-ANTARMUKA, KEPUTUSAN, PRD, README, STATUS, CHECKLIST, LANJUTAN-AI, dan skill `ui-ux-kopdes`/`dunia-koperasi` tidak lagi mengunci gaya lama; `DESIGN.md` dan rencana Workbench dipindah ke `docs/arsip/`.
+  - Perubahan gaya "Indigo Studio" yang belum di-commit disimpan sebagai checkpoint; cabang diganti nama `tampilan/redesain-total`.
+- Verifikasi: dokumen saja; diff dan tautan diperiksa, `node scripts/sync-skills.mjs` sukses, tes token dan navigasi (11 tes, 2 berkas) lulus pada checkpoint. Seluruh suite, build, dan audit tampilan tidak dijalankan.
+- Belum: seluruh implementasi (paket 1–9) dan pemilihan palet oleh pemilik.
 ## Redesain Workbench: ruang kerja task manager profesional — 21 Oktober 2026
 
 - Alasan: arahan pemilik ("lakukan redesain secara total agar tampilan seperti website task manager profesional. jangan hanya mempertahankan desain lama."). Paket sebelumnya hanya mengganti palet dan menghias kartu; pemilik meminta tampilan dirombak, bukan diwarnai ulang.

@@ -44,14 +44,10 @@ Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya d
 - Periksa 360, 768, 1024, 1440 px. Halaman operasional memakai navigasi bawah/rel/sidebar; Dunia Koperasi memakai bilah dan panel sendiri.
 - Area sentuh minimal 44 px, fokus keyboard, label form, status memakai teks selain warna.
 - Tabel/Gantt bergulir dalam kontainer atau berubah menjadi kartu di area sempit; hormati reduced-motion dan safe area.
-- Web memakai gaya **Workbench** (keputusan pemilik 21 Oktober 2026; redesain total menggantikan Lantai Dunia, Lavender Lekuk, Merah Putih, dan Taskflow biru; arahan di `docs/RENCANA-REDESAIN.md`). Konsep: ruang kerja padat seperti alat manajemen tugas profesional, bukan repaint desain lama:
-  - Rel navigasi gelap `#0E1015`, kanvas abu sejuk `#F7F8FA`, panel putih `#FFFFFF`, garis rambut 1px `#E4E7EC`, tinta `#101828`/`#344054`.
-  - Aksen indigo tunggal `#4F46E5` untuk tombol utama, menu aktif, dan pilihan. Status memakai warna semantik hijau/merah/kuning dan selalu disertai teks.
-  - Bentuk tegas: sudut 8–12 px, bayangan sangat tipis, tanpa tepi tebal, gradien hias, atau kartu pastel dekoratif. Daftar memakai baris pemisah, bukan tumpukan kartu mengambang.
-  - Tipografi: Bricolage Grotesque untuk judul dan merek (lokal via `@fontsource`), Plus Jakarta Sans untuk teks isi, angka selalu `tabular-nums`.
-  - Sidebar: kelompok Kerja (Beranda, Hari ini, Tugas, Agenda, Proyek, Linimasa), Ruang lain (Catatan, Usaha, Koperasi, Dunia), dan kartu Tim; sumber tunggal `src/components/layout/navigasi.ts` (`HUBS`, `MENU_KERJA`, `RUANG_LAIN`). Ponsel: dok pil + tombol tambah bulat. Judul halaman (`h1`) hanya di kepala kerangka; isi halaman memakai `h2`.
-  - Sistem gaya web di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); warna mentah hanya di `token.css`, tanpa `!important` (`npm run lint:ui`). Dunia 3D memakai `monitoring.css` sendiri; jangan menyalin gaya Workbench ke dalamnya tanpa paket terpisah.
-  - `DESIGN.md` lama ditandai usang; arah baru dan status paket ada di `docs/RENCANA-REDESAIN.md`.
+- Tampilan web sedang **dirombak total** (arahan pemilik 21 Oktober 2026): satu-satunya acuan gaya adalah `docs/REDESAIN-TOTAL.md`. Gaya lama (Workbench, Indigo Studio, Lantai Dunia, Lavender Lekuk, Merah Putih, Taskflow) tidak mengikat; dokumennya diarsipkan di `docs/arsip/`.
+  - Warna aksen belum ditetapkan: web menyediakan pemilih palet (lima pilihan) agar pemilik memilih di demo; bawaan ditetapkan setelah itu dan dicatat di `DESIGN.md` baru.
+  - Tetap berlaku: sistem gaya di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); warna mentah hanya di `token.css`, tanpa `!important` (`npm run lint:ui`); kontrol form lewat `src/components/ui` (`npm run check:ui`); navigasi bersumber `src/components/layout/navigasi.ts`; `h1` hanya di kepala kerangka, isi halaman memakai `h2`.
+  - Dunia 3D memakai `monitoring.css` sendiri dan tidak termasuk redesain web.
 - Hindari angka operasional palsu, tombol dekoratif, dan slogan. Buku kas hanya uang masuk/keluar tercatat, bukan saldo atau laba.
 
 ## Proses (sama untuk semua agen)

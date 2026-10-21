@@ -4,7 +4,7 @@ Keadaan terkini saja. Timpa bagian yang berubah; jangan menambah riwayat sesi di
 
 ## Ruang kerja web
 
-- **Gaya:** Workbench — rel navigasi gelap `#0E1015`, kanvas abu sejuk `#F7F8FA`, panel putih `#FFFFFF` bergaris rambut 1px, sudut 8–12 px, bayangan sangat tipis, dan aksen indigo tunggal `#4F46E5`. Beranda memakai empat ubin metrik (Terlambat, Jatuh tempo hari ini, Tugas terbuka, Agenda hari ini), bukan hero gradien; rutin dan agenda menjadi baris pemisah. Sidebar memuat merek, kelompok Kerja, Ruang lain, kartu Tim, dan kaki Pengaturan/Panduan.
+- **Gaya:** sedang dirombak total menurut [REDESAIN-TOTAL](REDESAIN-TOTAL.md). Kode saat ini masih memuat checkpoint "Indigo Studio" (rel ungu gelap bergradien) yang akan diganti; warna aksen dipilih pemilik lewat pemilih palet setelah paket fondasi.
 - **Beranda:** sapaan ringkas, ubin metrik, tambah cepat satu kalimat (`@nama #proyek !prioritas besok`), rutin harian, agenda hari ini dengan Catat hasil, perlu tindakan, minggu ini, proyek berjalan, dan salin laporan harian. Warna hanya untuk status dan aksi, bukan latar dekoratif.
 - **Tugas:** daftar/papan/kalender/Gantt/harian dengan ubin status datar, papan Kanban berkartu rapat, pengalih tampilan, penanggung jawab dari Tim, serta laci dan formulir bergaris tipis.
 - **Agenda (`/rapat`):** jenis rapat/kunjungan/acara/lainnya, Catat hasil ke catatan kegiatan, unduhan ICS, tautan rapat online.
@@ -14,7 +14,7 @@ Keadaan terkini saja. Timpa bagian yang berubah; jangan menambah riwayat sesi di
 
 ## Dunia Koperasi 3D
 
-Kontrak di [DUNIA-KOPERASI](DUNIA-KOPERASI.md). Lima lokasi (Pulau, Kantor, Gerai, Gudang, Cold storage), panel logistik dengan grafik ringkas per lokasi, figur chibi dari data Tim, tautan dua arah dengan web. Warna panel masih biru #546FFF (belum ikut Lavender).
+Kontrak di [DUNIA-KOPERASI](DUNIA-KOPERASI.md). Lima lokasi (Pulau, Kantor, Gerai, Gudang, Cold storage), panel logistik dengan grafik ringkas per lokasi, figur chibi dari data Tim, tautan dua arah dengan web. Warna panel masih biru #546FFF dan tidak termasuk redesain web.
 
 ## Data, demo, dan cloud
 
@@ -29,4 +29,4 @@ Kontrak di [DUNIA-KOPERASI](DUNIA-KOPERASI.md). Lima lokasi (Pulau, Kantor, Gera
 
 ## Git
 
-Cabang kerja aktif: `tampilan/papan-tugas-lekuk`. Aturan cabang dan commit di [AGENTS](../AGENTS.md#git).
+Cabang kerja aktif: `tampilan/redesain-total`. Aturan cabang dan commit di [AGENTS](../AGENTS.md#git).
