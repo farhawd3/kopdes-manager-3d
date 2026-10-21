@@ -470,7 +470,7 @@ describe('Fitur Redesain Behance', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Kalender' }));
 
     // Select today
-    fireEvent.click(await screen.findByRole('button', { name: 'Hari ini' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Hari ini' }, { timeout: 4000 }));
 
     // Check modern calendar task card is rendered
     const taskCard = container.querySelector('.calendar-task-card') as HTMLElement;

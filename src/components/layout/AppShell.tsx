@@ -21,7 +21,6 @@ import {
   ChevronDown,
   PanelLeftOpen,
 } from 'lucide-react';
-import { Ikon3D } from '@/components/ui/Ikon3D';
 import { usePreference } from '@/lib/usePreference';
 import { WorkspaceSearch } from '@/features/workspace/WorkspaceSearch';
 import { IkonHalaman } from '@/components/ui/IkonHalaman';
@@ -155,12 +154,32 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
       <a className="skip" href="#main">
         Lewati navigasi
       </a>
-      {/* Rel navigasi biru batu: kerja harian dibuka langsung, hub lain di Ruang lain dengan swatch lantai. */}
+      {/* Rel navigasi hangat dan rapi: gaya Volingo dengan logo, profil ringkas, streak operasional, dan menu terstruktur. */}
       <aside className="shell-sidebar" aria-label="Navigasi samping">
         <Link href="/beranda" className="shell-merek" title={coop} aria-label={`${coop}, buka Beranda`}>
-          <Ikon3D kind="kantor" size={32} />
-          <strong>{coop}</strong>
+          <span className="shell-merek-logo">kopdes<span className="brand-dot">.</span></span>
+          <span className="shell-merek-sub">{coop}</span>
         </Link>
+        <div className="shell-profil-ringkas">
+          <div className="shell-profil-avatar">{name[0] || 'M'}</div>
+          <div className="shell-profil-info">
+            <strong>{name}</strong>
+            <small>Manajer Koperasi</small>
+          </div>
+          <button
+            type="button"
+            className="shell-profil-cog"
+            title="Pengaturan profil"
+            aria-label="Pengaturan profil"
+            onClick={() => router.push('/pengaturan')}
+          >
+            <Settings size={15} aria-hidden="true" />
+          </button>
+        </div>
+        <div className="shell-streak-pill" title="Status operasional gerai aktif">
+          <span className="streak-icon" aria-hidden="true">🔥</span>
+          <span>Operasional Aktif · Shift Pagi</span>
+        </div>
         <nav className="shell-hub" aria-label="Menu utama">
           <div className="shell-kelompok">
             <p className="shell-kelompok-judul">Kerja</p>
@@ -257,8 +276,8 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
             aria-label="Cari halaman atau catatan"
             onClick={() => dialog.current?.showModal()}
           >
-            <Search size={17} aria-hidden="true" />
-            <span>Cari…</span>
+            <Search size={16} aria-hidden="true" />
+            <span>Cari modul, tugas, catatan...</span>
             <kbd>Ctrl K</kbd>
           </button>
           <Notifikasi />

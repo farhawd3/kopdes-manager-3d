@@ -2,6 +2,19 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Desain & UX Hangat Editorial terinspirasi Volingo — 21 Oktober 2026
+
+- Alasan: arahan pemilik ("coba rancang desain seperti ini https://youtu.be/UWajvtAAV-8 perhatikan kerapian nya perbaiki secara menyeluruh dan baik. rancang ulang sistem ui ux nya dengan baik dan rapi. serta seluruh keterkaitan harus pas. perbaiki kalimat agar natural. periksa secara mendalam dan menyeluruh."). Referensi adalah UI aplikasi task manager Volingo dengan palet warm cream, kartu putih border halus, aksen terracotta/peach, kartu hero fokus harian, pil CTA charcoal tegas, dan kalimat humanis alami.
+- Perubahan:
+  - Token warna & tema hangat editorial: latar kanvas krem hangat (`--canvas: #faf8f5`), permukaan kartu putih murni (`#ffffff`) dengan garis pembatas 1px hangat (`#efece6`), aksen terracotta hangat (`--brand: #ea580c` / `#c2410c`, lolos kontras WCAG AA 5.25:1), pil peach lembut (`#fff7ed`), dan tombol aksi charcoal hitam berwibawa (`#1c1917`). Mode gelap diselaraskan ke nuansa arang hangat (`#121110`, `#1c1917`).
+  - Sidebar & identitas aplikasi: wordmark minimalis `kopdes.` dengan titik aksen terracotta, kartu profil manajer beravatar inisial dan ikon pengaturan, pil streak operasional (`🔥 Operasional Aktif · Shift Pagi`), menu navigasi dengan pil aktif peach berteks terracotta dan titik indikator, serta penataan kelompok Kerja dan Ruang Lain yang lapang.
+  - Kartu Hero Fokus "Saat Hari Ini" di Beranda: modul spotlight fokus dinamis berlatar hangat, ubin glif status (`⚠️` / `📦` / `✨`), penanda urgensi/rutin dalam kalimat alami bahasa Indonesia ("Selesaikan: ...", "Prioritas: ...", "Langkah rutin: ..."), dan tombol CTA charcoal tegas berikon panah `▷ Buka Tugas Hari Ini`.
+  - Kartu Prinsip Kerja Koperasi: modul pesan penutup di bagian bawah beranda dengan kalimat motivasi kerja operasional koperasi ("Konsistensi dan ketelitian adalah kuncinya. Operasional gerai yang tertib menjamin kepercayaan seluruh anggota.").
+  - Penyempurnaan bahasa & keterkaitan antarmuka: kalimat sapaan kontekstual waktu (pagi/siang/sore/malam), subteks informatif tanpa istilah kaku atau slogan asing, tautan spasial langsung ke Dunia Koperasi 3D, dan pembersihan layout dari kejanggalan visual.
+- Verifikasi: 473 dari 473 tes Vitest lulus 100% (80 berkas), `npm run typecheck` 0 error, `npm run lint:ui` 0 error, `npm run lint` 0 error, `npm run build` lulus, JS awal 248 KB (batas 300 KB), audit visual headless Chrome (`scripts/audit-tampilan.mjs`) pada 1440x900 dan 375x812: 0 temuan.
+- Belum: pengujian langsung di layar fisik oleh pemilik.
+
+
 ## Pengembalian tata letak Beranda ke standar Kopdes — 21 Oktober 2026
 
 - Alasan: arahan pemilik ("malah aneh, kembalikan ke sebelum redesain saja") untuk membatalkan eksperimen tata letak cockpit/momentum ring dan mengembalikan ke tata letak standar Kopdes yang bersih (Modern Clean Emerald & Slate).

@@ -20,6 +20,7 @@ import {
   Plus,
   RotateCcw,
   SlidersHorizontal,
+  Sparkles,
   Trash2,
   Video,
   X,
@@ -333,6 +334,68 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
           </Button>
         </div>
       </header>
+
+      {/* ── Fokus Hari Ini (Volingo style "Saat Hari Ini") ── */}
+      <section className="modul beranda-fokus-hari" aria-label="Fokus hari ini">
+        <div className="fokus-hari-kepala">
+          <span className="fokus-hari-badge">
+            <Sparkles size={14} aria-hidden="true" />
+            <span>Saat Hari Ini</span>
+          </span>
+          <p className="fokus-hari-sub">
+            Tersambung dengan alur operasional gerai. Selesaikan fokus utama hari ini:
+          </p>
+        </div>
+
+        <div className="fokus-hari-kartu">
+          <div className="fokus-hari-glif" aria-hidden="true">
+            {overdueCount > 0 ? '⚠️' : dueTodayCount > 0 ? '📦' : '✨'}
+          </div>
+          <div className="fokus-hari-konten">
+            {fokusTerlambat[0] ? (
+              <>
+                <span className="fokus-hari-tag is-telat">Perlu Perhatian Segera</span>
+                <strong className="fokus-hari-judul">Selesaikan: {fokusTerlambat[0].title}</strong>
+                <small className="fokus-hari-meta">
+                  Lewat {daysBetween(fokusTerlambat[0].due_date, now)} hari · {namaProyek(fokusTerlambat[0].workstream_id) || 'Operasional'}
+                </small>
+              </>
+            ) : fokusHariIni[0] ? (
+              <>
+                <span className="fokus-hari-tag is-hari-ini">Jatuh Tempo Hari Ini</span>
+                <strong className="fokus-hari-judul">Prioritas: {fokusHariIni[0].title}</strong>
+                <small className="fokus-hari-meta">
+                  Target hari ini · {namaProyek(fokusHariIni[0].workstream_id) || 'Operasional'}
+                </small>
+              </>
+            ) : routines.length > 0 && !semuaRutinSelesai ? (
+              <>
+                <span className="fokus-hari-tag is-rutin">Rutinitas Gerai</span>
+                <strong className="fokus-hari-judul">
+                  Langkah rutin: {routines.find((r) => !completedRoutines.includes(r.id))?.title || 'Lanjutkan rutinitas harian'}
+                </strong>
+                <small className="fokus-hari-meta">
+                  Jam {jamTitik(routines.find((r) => !completedRoutines.includes(r.id))?.time || '08:00')} WIB · {routineCompletedCount}/{routines.length} rutin selesai
+                </small>
+              </>
+            ) : (
+              <>
+                <span className="fokus-hari-tag is-beres">Kondisi Prima</span>
+                <strong className="fokus-hari-judul">Semua tugas prioritas hari ini beres</strong>
+                <small className="fokus-hari-meta">
+                  Gerai beroperasi tertib. Pantau stok barang dan rekapitulasi buku kas.
+                </small>
+              </>
+            )}
+          </div>
+          <div className="fokus-hari-aksi">
+            <Link href="/hari-ini" className="fokus-cta-btn">
+              <span>▷</span>
+              <span>Buka Tugas Hari Ini</span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <form className="beranda-tambah" onSubmit={kirimTambahCepat}>
         <div className="beranda-tambah-bar">
@@ -724,6 +787,15 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
         <KasBanding keadaan={kas} />
         <ModulUsahaHarian />
       </div>
+
+      {/* ── Prinsip Kerja (Volingo style "Konsistensi adalah kuncinya") ── */}
+      <section className="modul beranda-kutipan" aria-label="Prinsip kerja">
+        <small className="kutipan-label">PRINSIP KERJA KOPERASI</small>
+        <h3 className="kutipan-judul">Konsistensi dan ketelitian adalah kuncinya.</h3>
+        <p className="kutipan-teks">
+          Pencatatan kas yang rapi, stok barang yang selalu terkontrol, dan komunikasi terbuka dengan anggota adalah fondasi kemajuan koperasi desa kita.
+        </p>
+      </section>
 
       {pesan && <Toast message={pesan} />}
 

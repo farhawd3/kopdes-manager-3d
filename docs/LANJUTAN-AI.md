@@ -2,15 +2,15 @@
 
 Berkas ini untuk agen berikutnya (Claude, Codex, Antigravity, OpenCode, dll.). Isinya hanya keadaan sekarang dan langkah berikut; timpa, jangan menambah catatan sesi.
 
-## Keadaan (20 Oktober 2026)
+## Keadaan (21 Oktober 2026)
 
 - Cabang: `tampilan/papan-tugas-lekuk`.
-- **Gaya Web: Modern Clean Look (Emerald Fresh & Slate Crystal)**:
-  - Canvas terang bersih `#f8fafc` (slate-50), permukaan modul kartu putih murni `#ffffff` dengan border halus 1px `#e2e8f0`.
-  - Aksen hijau zamrud presisi `#059669` / `#047857` (lolos kontras WCAG AA 5.48:1).
-  - Sidebar modern minimalis, bilah atas frosted glass dengan blur 12px, serta tautan spasial langsung ke Dunia Koperasi 3D.
-  - Bebas dari efek cat lantai penuh dan tepi tebal bawah yang berkesan kuno/jadul.
-- Verifikasi: 473/473 tes vitest lulus 100% (80 berkas), typecheck 0 error, lint 0 error, lint:ui 0 error, build JS awal 247 KB, audit visual 0 temuan.
+- **Gaya Web: Warm Editorial Modern (Terinspirasi Volingo)**:
+  - Canvas krem hangat `#faf8f5`, permukaan kartu putih murni `#ffffff` dengan garis pembatas 1px hangat `#efece6`, sudut membulat 20px elegan.
+  - Aksen terracotta hangat `#ea580c` / `#c2410c` (WCAG AA 5.25:1), pil peach lembut `#fff7ed`, dan tombol aksi charcoal tegas `#1c1917`.
+  - Sidebar wordmark `kopdes.` dengan titik aksen terracotta, kartu profil manajer, pil streak operasional (`🔥 Operasional Aktif · Shift Pagi`), dan menu navigasi terstruktur.
+  - Beranda dengan kartu hero spotlight "Saat Hari Ini", kartu motivasi prinsip kerja koperasi, dan bahasa Indonesia natural kontekstual.
+- Verifikasi: 473/473 tes vitest lulus 100% (80 berkas), typecheck 0 error, lint 0 error, lint:ui 0 error, build Next.js lulus (JS awal 248 KB), audit visual headless Chrome 0 temuan.
 
 ## Peta kode yang sering disentuh
 

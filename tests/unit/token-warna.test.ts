@@ -17,14 +17,14 @@ const kontras = (a: string, b: string) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-it('aksen dan tinta mengikuti palet Modern Clean Emerald', () => {
+it('aksen dan tinta mengikuti palet Volingo Warm Clean', () => {
   const terang = blok(':root');
-  expect(nilai(terang, '--brand')).toBe('#059669');
-  expect(nilai(terang, '--brand-hover')).toBe('#047857');
-  expect(nilai(terang, '--brand-soft')).toBe('#ecfdf5');
-  expect(nilai(terang, '--canvas')).toBe('#f8fafc');
-  expect(nilai(terang, '--ink-heading')).toBe('#0f172a');
-  expect(nilai(terang, '--ink-muted')).toBe('#475569');
+  expect(nilai(terang, '--brand')).toBe('#ea580c');
+  expect(nilai(terang, '--brand-hover')).toBe('#c2410c');
+  expect(nilai(terang, '--brand-soft')).toBe('#fff7ed');
+  expect(nilai(terang, '--canvas')).toBe('#faf8f5');
+  expect(nilai(terang, '--ink-heading')).toBe('#1c1917');
+  expect(nilai(terang, '--ink-muted')).toBe('#57534e');
   expect(nilai(terang, '--rel-bg')).toBe('#ffffff');
   expect(terang).toMatch(/--r-card:\s*20px/);
 });

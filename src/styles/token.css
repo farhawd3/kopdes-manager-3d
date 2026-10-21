@@ -1,22 +1,22 @@
 /*
-  Token sistem gaya Kopdes — Modern Clean (Emerald Fresh & Slate Crystal).
-  Latar canvas terang bersih #f8fafc, modul kartu putih murni #ffffff dengan border halus 1px,
-  rel navigasi modern elegan, aksen emerald presisi #059669.
+  Token sistem gaya Kopdes — Volingo Warm Clean & Editorial Soft.
+  Latar canvas warm cream #faf8f5, modul kartu putih murni #ffffff dengan border halus 1px #efece6,
+  aksen terracotta hangat #ea580c / #c2410c, dan tombol aksi tegas #1c1917.
   Semua kombinasi teks lolos standar kontras WCAG AA 4.5:1.
 */
 :root {
   color-scheme: light;
-  --scrim: rgba(15, 23, 42, 0.4);
+  --scrim: rgba(28, 25, 23, 0.4);
   /* Isi di atas warna merek/status, kilau merek, sinyal kuning, jalur Gantt, toast */
   --on-brand: #fff;
-  --brand-bright: #34d399;
+  --brand-bright: #fb923c;
   --sinyal: #f59e0b;
-  --jalur-rencana: #ecfdf5;
-  --titik-rencana: #a7f3d0;
-  --titik-selesai: #059669;
-  --toast-bg: #0f172a;
+  --jalur-rencana: #fff7ed;
+  --titik-rencana: #fed7aa;
+  --titik-selesai: #ea580c;
+  --toast-bg: #1c1917;
   --toast-fg: #fff;
-  --toast-aksi: #34d399;
+  --toast-aksi: #fb923c;
 
   /* Huruf: Plus Jakarta Sans modern, proporsional, dan bersih */
   --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -30,66 +30,66 @@
   --lh-tight: 1.25;
   --lh-body: 1.5;
 
-  /* Rel navigasi: modern light minimal */
+  /* Rel navigasi: modern light warm */
   --rel-bg: #ffffff;
-  --rel-surface: #f8fafc;
-  --rel-fg: #1e293b;
-  --rel-muted: #64748b;
-  --rel-line: #e2e8f0;
-  --rel-active-bg: #047857;
-  --rel-active-fg: #ffffff;
+  --rel-surface: #faf8f5;
+  --rel-fg: #1c1917;
+  --rel-muted: #78716c;
+  --rel-line: #efece6;
+  --rel-active-bg: #fff7ed;
+  --rel-active-fg: #c2410c;
 
   /* Indikator aksen per ruang diorama */
-  --lantai-kerja: #10b981;
-  --lantai-kerja-tepi: #e2e8f0;
+  --lantai-kerja: #ea580c;
+  --lantai-kerja-tepi: #efece6;
   --lantai-koperasi: #f59e0b;
-  --lantai-koperasi-tepi: #e2e8f0;
+  --lantai-koperasi-tepi: #efece6;
   --lantai-catatan: #8b5cf6;
-  --lantai-catatan-tepi: #e2e8f0;
+  --lantai-catatan-tepi: #efece6;
   --lantai-usaha: #06b6d4;
-  --lantai-usaha-tepi: #e2e8f0;
+  --lantai-usaha-tepi: #efece6;
   --lantai-dunia: #3b82f6;
-  --lantai-dunia-tepi: #e2e8f0;
+  --lantai-dunia-tepi: #efece6;
   --lantai-pengaturan: #64748b;
-  --lantai-pengaturan-tepi: #e2e8f0;
+  --lantai-pengaturan-tepi: #efece6;
   --lantai: var(--lantai-kerja);
   --lantai-tepi: var(--lantai-kerja-tepi);
   --lantai-garis: var(--line);
 
-  /* Permukaan: canvas slate-50 bersih, kartu putih murni */
-  --canvas: #f8fafc;
-  --canvas-deep: #f1f5f9;
+  /* Permukaan: canvas warm cream bersih, kartu putih murni */
+  --canvas: #faf8f5;
+  --canvas-deep: #f3f0e8;
   --surface: #ffffff;
-  --surface-2: #f8fafc;
-  --surface-3: #f1f5f9;
+  --surface-2: #fcfbf9;
+  --surface-3: #f5f2eb;
   --wall: var(--canvas);
   --wall-deep: var(--canvas-deep);
 
-  /* Tinta: Slate 900 untuk judul, Slate 700 untuk teks isi */
-  --ink: #334155;
-  --ink-heading: #0f172a;
-  --ink-muted: #475569;
-  --ink-subtle: #475569;
+  /* Tinta: Warm stone 900 untuk judul, stone 700 untuk teks isi */
+  --ink: #44403c;
+  --ink-heading: #1c1917;
+  --ink-muted: #57534e;
+  --ink-subtle: #57534e;
   --ink-inverse: #ffffff;
 
-  /* Garis: ultra-crisp 1px */
-  --line: #e2e8f0;
-  --line-strong: #cbd5e1;
+  /* Garis: ultra-crisp 1px warm border */
+  --line: #efece6;
+  --line-strong: #dcd6cb;
 
-  /* Aksen: Emerald presisi & elegan */
-  --brand: #059669;
-  --brand-hover: #047857;
-  --brand-press: #065f46;
-  --brand-soft: #ecfdf5;
-  --brand-soft-2: #d1fae5;
-  --brand-soft-border: #a7f3d0;
-  --brand-ink: #065f46;
-  /* Isian yang memuat teks putih (kontras 5.48:1) */
-  --brand-isi: #047857;
-  --brand-isi-hover: #065f46;
+  /* Aksen: Warm Terracotta & Peach */
+  --brand: #ea580c;
+  --brand-hover: #c2410c;
+  --brand-press: #9a3412;
+  --brand-soft: #fff7ed;
+  --brand-soft-2: #ffedd5;
+  --brand-soft-border: #fed7aa;
+  --brand-ink: #c2410c;
+  /* Isian yang memuat teks putih (kontras tinggi 17:1) */
+  --brand-isi: #1c1917;
+  --brand-isi-hover: #292524;
   --brand-text: #ffffff;
   --brand-contrast: #ffffff;
-  --focus-ring: 0 0 0 3px rgba(5, 150, 105, 0.2);
+  --focus-ring: 0 0 0 3px rgba(234, 88, 12, 0.2);
 
   /* Kayu hangat */
   --wood: #fef3c7;
@@ -216,57 +216,57 @@
   --toast-aksi: #059669;
 
   /* Rel navigasi gelap */
-  --rel-bg: #0b0f19;
-  --rel-surface: #111827;
-  --rel-fg: #f1f5f9;
-  --rel-muted: #94a3b8;
-  --rel-line: #1e293b;
-  --rel-active-bg: #047857;
-  --rel-active-fg: #ffffff;
+  --rel-bg: #141210;
+  --rel-surface: #1c1917;
+  --rel-fg: #f5f5f4;
+  --rel-muted: #a8a29e;
+  --rel-line: #292524;
+  --rel-active-bg: #2e160e;
+  --rel-active-fg: #fb923c;
 
   /* Indikator lantai malam */
-  --lantai-kerja: #10b981;
-  --lantai-kerja-tepi: #1e293b;
+  --lantai-kerja: #fb923c;
+  --lantai-kerja-tepi: #292524;
   --lantai-koperasi: #f59e0b;
-  --lantai-koperasi-tepi: #1e293b;
+  --lantai-koperasi-tepi: #292524;
   --lantai-catatan: #8b5cf6;
-  --lantai-catatan-tepi: #1e293b;
+  --lantai-catatan-tepi: #292524;
   --lantai-usaha: #06b6d4;
-  --lantai-usaha-tepi: #1e293b;
+  --lantai-usaha-tepi: #292524;
   --lantai-dunia: #3b82f6;
-  --lantai-dunia-tepi: #1e293b;
+  --lantai-dunia-tepi: #292524;
   --lantai-pengaturan: #64748b;
-  --lantai-pengaturan-tepi: #1e293b;
+  --lantai-pengaturan-tepi: #292524;
   --lantai: var(--lantai-kerja);
   --lantai-tepi: var(--lantai-kerja-tepi);
   --lantai-garis: var(--line);
 
-  --canvas: #090d16;
-  --canvas-deep: #060910;
-  --surface: #0f172a;
-  --surface-2: #1e293b;
-  --surface-3: #334155;
+  --canvas: #121110;
+  --canvas-deep: #0c0a09;
+  --surface: #1c1917;
+  --surface-2: #292524;
+  --surface-3: #44403c;
   --wall: var(--canvas);
   --wall-deep: var(--canvas-deep);
 
-  --ink: #f1f5f9;
+  --ink: #f5f5f4;
   --ink-heading: #ffffff;
-  --ink-muted: #94a3b8;
-  --ink-subtle: #94a3b8;
+  --ink-muted: #a8a29e;
+  --ink-subtle: #a8a29e;
 
-  --line: #1e293b;
-  --line-strong: #334155;
+  --line: #292524;
+  --line-strong: #44403c;
 
-  --brand: #10b981;
-  --brand-hover: #34d399;
-  --brand-press: #059669;
-  --brand-soft: #064e3b;
-  --brand-soft-2: #065f46;
-  --brand-soft-border: #047857;
-  --brand-ink: #a7f3d0;
-  --brand-isi: #047857;
-  --brand-isi-hover: #065f46;
-  --focus-ring: 0 0 0 3px rgba(16, 185, 129, 0.35);
+  --brand: #fb923c;
+  --brand-hover: #f97316;
+  --brand-press: #ea580c;
+  --brand-soft: #2e160e;
+  --brand-soft-2: #431f13;
+  --brand-soft-border: #7c2d12;
+  --brand-ink: #ffedd5;
+  --brand-isi: #c2410c;
+  --brand-isi-hover: #9a3412;
+  --focus-ring: 0 0 0 3px rgba(251, 146, 60, 0.35);
 
   --wood: #78350f;
   --wood-deep: #d97706;
