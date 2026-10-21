@@ -47,8 +47,8 @@
 .strip-count-dot.has-pending { background: var(--warn-bg); color: var(--warn); }
 .strip-count-dot.all-done { background: var(--ok-bg); color: var(--ok); }
 .is-selected .strip-count-dot { background: var(--on-brand); color: var(--brand-ink); }
-.daily-view-mode-tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-full); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
-.btn-mode-tab.ui-btn { min-height: 44px; padding: 0 14px; border: 0; border-radius: var(--r-full); background: transparent; color: var(--ink-muted); font-size: 12.5px; font-weight: 600; box-shadow: none; }
+.daily-view-mode-tabs { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-md); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.btn-mode-tab.ui-btn { min-height: 44px; padding: 0 14px; border: 0; border-radius: var(--r-sm); background: transparent; color: var(--ink-muted); font-size: 12.5px; font-weight: 600; box-shadow: none; }
 .btn-mode-tab.ui-btn.is-active { background: var(--surface); color: var(--brand-ink); box-shadow: var(--shadow-sm); }
 
 .daily-active-day-card,
@@ -139,28 +139,28 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: var(--r-lg);
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
   background: var(--surface);
   border: 1px solid var(--line);
 }
-.scrum-board-hint { color: var(--ink-muted); font-size: 12.5px; }
+.scrum-board-hint { color: var(--ink-muted); font-size: 12px; }
 .scrum-toggle-archive-btn.ui-btn {
-  min-height: 36px;
-  padding: 0 14px;
-  border-radius: var(--r-full);
-  background: var(--surface-2);
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 6px;
+  background: var(--surface);
   border: 1px solid var(--line);
   color: var(--ink);
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   box-shadow: none;
 }
 .scrum-toggle-archive-btn.ui-btn:hover {
-  background: var(--brand-soft);
-  color: var(--brand-ink);
-  border-color: var(--brand-soft-border);
+  background: var(--surface-2);
+  color: var(--ink-heading);
+  border-color: var(--line-strong);
 }
 
 /* Kolom papan */
@@ -181,10 +181,10 @@
 .scrum-column {
   display: grid;
   align-content: start;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
-  padding: 14px;
-  border-radius: var(--r-xl);
+  padding: 10px;
+  border-radius: 10px;
   background: var(--surface-2);
   border: 1px solid var(--line);
   transition: border-color var(--dur), background var(--dur);
@@ -203,38 +203,38 @@
 .scrum-col-title-group { display: flex; align-items: center; gap: 8px; }
 .scrum-col-indicator { width: 8px; height: 8px; border-radius: var(--r-full); flex-shrink: 0; }
 .scrum-col-title-text { display: grid; line-height: 1.25; }
-.column-title { font-size: 15px; font-weight: 600; color: var(--ink-heading); }
-.column-subtitle { color: var(--ink-muted); font-size: 11.5px; }
-.scrum-col-header-actions { display: flex; align-items: center; gap: 6px; }
+.column-title { font-size: 12.5px; font-weight: 600; color: var(--ink-heading); }
+.column-subtitle { color: var(--ink-muted); font-size: 11px; }
+.scrum-col-header-actions { display: flex; align-items: center; gap: 4px; }
 .scrum-count-pill {
-  min-width: 24px;
-  height: 24px;
-  padding: 0 8px;
-  border-radius: var(--r-full);
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 4px;
   background: var(--surface);
   color: var(--ink-muted);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   border: 1px solid var(--line);
   display: inline-grid;
   place-items: center;
   font-variant-numeric: tabular-nums;
 }
 .scrum-col-add-btn.ui-btn {
-  width: 32px;
-  min-height: 32px;
-  height: 32px;
+  width: 28px;
+  min-height: 28px;
+  height: 28px;
   padding: 0;
-  border-radius: var(--r-full);
+  border-radius: 6px;
   background: var(--surface);
   border: 1px solid var(--line);
   color: var(--ink-muted);
   box-shadow: none;
 }
 .scrum-col-add-btn.ui-btn:hover {
-  background: var(--brand-soft);
-  color: var(--brand-ink);
-  border-color: var(--brand-soft-border);
+  background: var(--surface-2);
+  color: var(--ink-heading);
+  border-color: var(--line-strong);
 }
 .scrum-cards-list { display: grid; gap: 10px; }
 .scrum-empty-column-placeholder {
@@ -251,19 +251,18 @@
 .scrum-task-card {
   position: relative;
   display: grid;
-  gap: 12px;
-  padding: 16px;
+  gap: 8px;
+  padding: 12px;
   border: 1px solid var(--line);
-  border-radius: var(--r-card, 18px);
+  border-radius: 8px;
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   cursor: pointer;
-  transition: border-color var(--dur), background var(--dur), transform var(--dur) var(--ease-out), box-shadow var(--dur);
+  transition: border-color var(--dur), box-shadow var(--dur);
 }
 .scrum-task-card:hover {
-  border-color: var(--brand-soft-border);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-sm);
 }
 .scrum-task-card:focus-visible {
   outline: none;
@@ -304,27 +303,27 @@
   align-items: center;
   justify-content: center;
   min-width: 26px;
-  height: 22px;
-  padding: 0 6px;
-  border-radius: 6px;
-  background: var(--ink-heading);
-  color: var(--surface);
-  font-size: 11px;
-  font-weight: 700;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--surface-3);
+  color: var(--ink-muted);
+  font-size: 10.5px;
+  font-weight: 600;
   font-family: var(--font-mono);
   letter-spacing: 0.02em;
 }
 .card-project-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 8px;
-  border-radius: var(--r-full);
-  background: var(--surface-2);
+  gap: 5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: transparent;
   border: 1px solid var(--line);
   color: var(--ink-muted);
-  font-size: 11.5px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   max-width: 140px;
 }
 .card-project-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -334,10 +333,10 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 7px;
-  border-radius: var(--r-full);
-  font-size: 11px;
-  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
   text-transform: capitalize;
 }
 .card-priority-pill.priority-tinggi {
@@ -355,14 +354,14 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  min-height: 22px;
-  padding: 2px 8px;
-  border-radius: var(--r-full);
-  background: var(--surface-2);
+  min-height: 20px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: transparent;
   border: 1px solid var(--line);
   color: var(--ink-muted);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10.5px;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   flex-shrink: 0;
@@ -376,10 +375,10 @@
 
 .card-title-wrap { display: grid; gap: 4px; }
 .card-task-title {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 13.5px;
+  font-weight: 600;
   color: var(--ink-heading);
-  line-height: 1.35;
+  line-height: 1.4;
   margin: 0;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -1040,8 +1039,8 @@
 .timeline-help { display: flex; align-items: flex-start; gap: 6px; }
 .timeline-help > svg { margin-top: 2px; }
 .timeline-mobile-header-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
-.timeline-view-switch { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-full); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
-.view-switch-btn.ui-btn { min-height: 32px; padding: 0 12px; border: 0; border-radius: var(--r-full); background: transparent; color: var(--ink-muted); font-size: 12px; font-weight: 600; box-shadow: none; }
+.timeline-view-switch { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-md); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.view-switch-btn.ui-btn { min-height: 32px; padding: 0 12px; border: 0; border-radius: var(--r-sm); background: transparent; color: var(--ink-muted); font-size: 12px; font-weight: 600; box-shadow: none; }
 .view-switch-btn.ui-btn.is-active { background: var(--surface); color: var(--brand-ink); box-shadow: var(--shadow-sm); }
 @media (min-width: 768px) {
   .timeline-view-switch { display: none; }

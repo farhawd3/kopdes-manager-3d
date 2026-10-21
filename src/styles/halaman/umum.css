@@ -26,14 +26,14 @@
   min-height: 38px;
   padding: 0 16px;
   border: 0;
-  border-radius: var(--r-full);
+  border-radius: var(--r-sm);
   background: transparent;
   color: var(--ink-muted);
   font-size: 13px;
   box-shadow: none;
 }
 .workspace-scope-control .ui-btn[aria-pressed='true'] { background: var(--brand-isi); color: var(--on-brand); }
-.workspace-scope-control { display: inline-flex; gap: 4px; justify-self: start; padding: 4px; border: 1px solid var(--kartu-garis); border-radius: var(--r-full); background: var(--surface); }
+.workspace-scope-control { display: inline-flex; gap: 4px; justify-self: start; padding: 4px; border: 1px solid var(--kartu-garis); border-radius: var(--r-md); background: var(--surface); }
 .workspace-page > .workspace-scope-control { margin-top: 12px; }
 .workspace-partial-note { color: var(--ink-muted); font-size: 12.5px; }
 .workspace-load-more.ui-btn { justify-self: center; }
@@ -105,16 +105,13 @@
 .readiness-breakdown { display: grid; gap: 6px; margin-top: 8px; }
 .radar { max-width: 220px; margin: 0 auto; }
 
-/* Layar masuk PIN: kanvas krem dengan semburat pastel, kartu putih */
+/* Layar masuk PIN: kanvas netral, kartu putih bergaris tipis */
 .auth {
   display: grid;
   place-items: center;
   min-height: 100dvh;
   padding: 24px 16px;
-  background:
-    radial-gradient(ellipse at 15% 10%, var(--pastel-pink), transparent 45%),
-    radial-gradient(ellipse at 85% 90%, var(--pastel-mentega), transparent 45%),
-    var(--canvas);
+  background: var(--canvas);
 }
 .auth > .card,
 .auth > section.card {
@@ -123,9 +120,10 @@
   gap: 10px;
   width: min(420px, 100%);
   padding: 32px 28px;
-  border-radius: var(--r-xl);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
   text-align: center;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow);
 }
 .auth h1 { font-size: 24px; }
 .auth p { color: var(--ink-muted); }
@@ -142,7 +140,7 @@
   background: transparent;
 }
 .pin-page > .card { position: relative; width: min(440px, 100%); padding: 32px 24px; border: 1px solid var(--line-strong); }
-.pin-emblem { display: grid; place-items: center; width: 100px; height: 100px; margin-bottom: 8px; border-radius: 28px; background: var(--brand-soft); box-shadow: inset 0 0 0 1px var(--brand-soft-border); }
+.pin-emblem { display: grid; place-items: center; width: 72px; height: 72px; margin-bottom: 8px; border-radius: var(--r-card); background: var(--brand-soft); box-shadow: inset 0 0 0 1px var(--brand-soft-border); }
 .pin-page input[name='pin'] { min-height: 52px; font-size: 22px; text-align: center; letter-spacing: 0.25em; }
 
 @media (max-width: 767px) {

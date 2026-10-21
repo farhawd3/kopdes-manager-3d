@@ -154,32 +154,19 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
       <a className="skip" href="#main">
         Lewati navigasi
       </a>
-      {/* Rel navigasi hangat dan rapi: gaya Volingo dengan logo, profil ringkas, streak operasional, dan menu terstruktur. */}
+      {/* Rel navigasi gelap seperti alat kerja: merek, ruang kerja, menu terstruktur, dan kartu tim. */}
       <aside className="shell-sidebar" aria-label="Navigasi samping">
         <Link href="/beranda" className="shell-merek" title={coop} aria-label={`${coop}, buka Beranda`}>
-          <span className="shell-merek-logo">kopdes<span className="brand-dot">.</span></span>
-          <span className="shell-merek-sub">{coop}</span>
+          <span className="shell-merek-tanda" aria-hidden="true">
+            K
+          </span>
+          <span className="shell-merek-teks">
+            <span className="shell-merek-logo">
+              kopdes<span className="brand-dot">.</span>
+            </span>
+            <span className="shell-merek-sub">{coop}</span>
+          </span>
         </Link>
-        <div className="shell-profil-ringkas">
-          <div className="shell-profil-avatar">{name[0] || 'M'}</div>
-          <div className="shell-profil-info">
-            <strong>{name}</strong>
-            <small>Manajer Koperasi</small>
-          </div>
-          <button
-            type="button"
-            className="shell-profil-cog"
-            title="Pengaturan profil"
-            aria-label="Pengaturan profil"
-            onClick={() => router.push('/pengaturan')}
-          >
-            <Settings size={15} aria-hidden="true" />
-          </button>
-        </div>
-        <div className="shell-streak-pill" title="Status operasional gerai aktif">
-          <span className="streak-icon" aria-hidden="true">🔥</span>
-          <span>Operasional Aktif · Shift Pagi</span>
-        </div>
         <nav className="shell-hub" aria-label="Menu utama">
           <div className="shell-kelompok">
             <p className="shell-kelompok-judul">Kerja</p>
@@ -217,7 +204,7 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
           </div>
         </nav>
         {/* Tim adalah sumber daftar penanggung jawab tugas; satu klik ke halaman Tim. */}
-        <section className="shell-tim bertakik" aria-labelledby="shell-tim-judul">
+        <section className="shell-tim" aria-labelledby="shell-tim-judul">
           <strong id="shell-tim-judul">Tim</strong>
           <p>Daftar staf untuk penanggung jawab tugas.</p>
           <Link href="/tim" className="takik-aksi" aria-label="Kelola tim" title="Kelola tim">

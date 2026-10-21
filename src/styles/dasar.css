@@ -12,7 +12,7 @@ body {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
-  font-weight: 500;
+  font-weight: 400;
   font-feature-settings: 'cv11', 'ss01', 'ss03';
   -webkit-font-smoothing: antialiased;
 }
@@ -74,11 +74,11 @@ img, svg { flex-shrink: 0; }
 .ui-card {
   position: relative;
   min-width: 0;
-  padding: 20px;
+  padding: 18px;
   border: 1px solid var(--kartu-garis);
   border-radius: var(--r-card);
   background: var(--surface);
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 .ui-card-header,
 .section-head {
@@ -144,12 +144,12 @@ img, svg { flex-shrink: 0; }
   align-items: center;
   gap: 5px;
   max-width: 100%;
-  min-height: 22px;
-  padding: 0 9px;
-  border-radius: var(--r-full);
+  min-height: 20px;
+  padding: 0 7px;
+  border-radius: 4px;
   background: var(--brand-soft);
   color: var(--brand-ink);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;

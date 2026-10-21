@@ -44,16 +44,14 @@ Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya d
 - Periksa 360, 768, 1024, 1440 px. Halaman operasional memakai navigasi bawah/rel/sidebar; Dunia Koperasi memakai bilah dan panel sendiri.
 - Area sentuh minimal 44 px, fokus keyboard, label form, status memakai teks selain warna.
 - Tabel/Gantt bergulir dalam kontainer atau berubah menjadi kartu di area sempit; hormati reduced-motion dan safe area.
-- Web beralih ke gaya "Lantai Dunia" (keputusan pemilik 20 Oktober 2026; arahan lengkap di `docs/RENCANA-REDESAIN.md`; menggantikan Lavender Lekuk, Merah Putih, dan Taskflow biru). Konsep: setiap halaman web adalah ruang diorama kantor koperasi dengan warna lantai penanda lokasi:
-  - Rel navigasi biru batu `#2F3B63` dengan swatch warna lantai ruang.
-  - Latar halaman memakai warna lantai ruang diorama penuh (`--lantai-*`): Kerja (pandan `#DCE8D6`), Koperasi/Kas (kayu madu `#F1DDBB`), Agenda/Rapat (lila `#E3DDF3`), Usaha/Gerai (persik `#F8DCC8`), Dunia (air `#D6EAEE`).
-  - Permukaan modul putih hangat `#FFFCF6`, tinta `#23263A`.
-  - Aksen jingga kayu (`#AC5108` / `#C8680F`) untuk tombol utama, menu aktif, dan pilihan; menyatukan web dan dunia 3D.
-  - Gerakan khas lempeng: modul tampil seperti lempeng lantai diorama dengan sudut lembut dan tepi tebal (desktop 6px, ponsel 3–4px) warna lantai lebih gelap. Menu aktif terangkat. Tombol, isian, dan cip tetap datar.
-  - Tipografi: huruf berkarakter untuk judul (lokal via `@fontsource`), huruf kerja bersih untuk teks isi, angka selalu `tabular-nums`.
+- Web memakai gaya **Workbench** (keputusan pemilik 21 Oktober 2026; redesain total menggantikan Lantai Dunia, Lavender Lekuk, Merah Putih, dan Taskflow biru; arahan di `docs/RENCANA-REDESAIN.md`). Konsep: ruang kerja padat seperti alat manajemen tugas profesional, bukan repaint desain lama:
+  - Rel navigasi gelap `#0E1015`, kanvas abu sejuk `#F7F8FA`, panel putih `#FFFFFF`, garis rambut 1px `#E4E7EC`, tinta `#101828`/`#344054`.
+  - Aksen indigo tunggal `#4F46E5` untuk tombol utama, menu aktif, dan pilihan. Status memakai warna semantik hijau/merah/kuning dan selalu disertai teks.
+  - Bentuk tegas: sudut 8–12 px, bayangan sangat tipis, tanpa tepi tebal, gradien hias, atau kartu pastel dekoratif. Daftar memakai baris pemisah, bukan tumpukan kartu mengambang.
+  - Tipografi: Bricolage Grotesque untuk judul dan merek (lokal via `@fontsource`), Plus Jakarta Sans untuk teks isi, angka selalu `tabular-nums`.
   - Sidebar: kelompok Kerja (Beranda, Hari ini, Tugas, Agenda, Proyek, Linimasa), Ruang lain (Catatan, Usaha, Koperasi, Dunia), dan kartu Tim; sumber tunggal `src/components/layout/navigasi.ts` (`HUBS`, `MENU_KERJA`, `RUANG_LAIN`). Ponsel: dok pil + tombol tambah bulat. Judul halaman (`h1`) hanya di kepala kerangka; isi halaman memakai `h2`.
-  - Sistem gaya web di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); warna mentah hanya di `token.css`, tanpa `!important` (`npm run lint:ui`). Dunia di `src/features/dunia-3d/monitoring.css` diselaraskan ke aksen jingga kayu yang sama. Mode gelap dirancang ulang dari arah ini.
-  - Transisi bertahap: Paket 0 (lepas kunci), Paket 1 (token & kerangka), Paket 2 (komponen lempeng), Paket 3 (Beranda POC), disusul hub lainnya. `DESIGN.md` lama ditandai usang sampai implementasi baru selesai.
+  - Sistem gaya web di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); warna mentah hanya di `token.css`, tanpa `!important` (`npm run lint:ui`). Dunia 3D memakai `monitoring.css` sendiri; jangan menyalin gaya Workbench ke dalamnya tanpa paket terpisah.
+  - `DESIGN.md` lama ditandai usang; arah baru dan status paket ada di `docs/RENCANA-REDESAIN.md`.
 - Hindari angka operasional palsu, tombol dekoratif, dan slogan. Buku kas hanya uang masuk/keluar tercatat, bukan saldo atau laba.
 
 ## Proses (sama untuk semua agen)

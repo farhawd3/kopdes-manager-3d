@@ -34,8 +34,8 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 ## Brand Commitments
 
 - Nama produk: Kopdes Manager 3D; di dalam aplikasi: "Dunia Koperasi" untuk diorama.
-- Web beralih ke gaya "Lantai Dunia" (keputusan pemilik 20 Oktober 2026; menggantikan Lavender Lekuk, Merah Putih, dan Taskflow biru; detail di `docs/RENCANA-REDESAIN.md`): rel navigasi biru batu `#2F3B63`, latar halaman memakai warna lantai ruang diorama penuh (`--lantai-*`: pandan untuk Kerja, kayu madu untuk Kas & Anggota, lila untuk Agenda, persik untuk Gerai, air untuk Pulau), permukaan modul putih hangat `#FFFCF6`, modul lempeng dengan tepi tebal taktil diorama, aksen tunggal jingga kayu `#AC5108`/`#C8680F`, huruf berkarakter untuk judul dan angka tabular. Warna jenuh hanya pada grafik, status, tombol utama, menu aktif, dan baris rutin berikutnya. Menyatukan identitas web dengan Dunia 3D.
-- Tampilan seimbang di semua perangkat: modul lempeng taktil; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
+- Web memakai gaya **Workbench** (keputusan pemilik 21 Oktober 2026; redesain total menggantikan Lantai Dunia, Lavender Lekuk, Merah Putih, dan Taskflow biru; detail di `docs/RENCANA-REDESAIN.md`): rel navigasi gelap `#0E1015`, kanvas abu sejuk `#F7F8FA`, panel putih `#FFFFFF` bergaris rambut 1px, satu aksen indigo `#4F46E5`, sudut 8–12 px, bayangan sangat tipis, dan susunan padat data lebih dulu. Beranda memakai empat ubin metrik (terlambat, jatuh tempo, tugas terbuka, agenda), bukan hero gradien; rutin dan agenda menjadi baris pemisah. Huruf judul Bricolage Grotesque, teks isi Plus Jakarta Sans, angka tabular. Warna jenuh hanya pada aksi utama, status, dan grafik.
+- Tampilan seimbang di semua perangkat: kontrol datar dan padat; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
 - Bahasa UI langsung, ringkas, tanpa slogan motivasi.
 
 ## Evidence on Hand

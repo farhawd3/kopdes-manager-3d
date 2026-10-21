@@ -17,16 +17,16 @@ const kontras = (a: string, b: string) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-it('aksen dan tinta mengikuti palet Volingo Warm Clean', () => {
+it('aksen dan tinta mengikuti palet Workbench', () => {
   const terang = blok(':root');
-  expect(nilai(terang, '--brand')).toBe('#ea580c');
-  expect(nilai(terang, '--brand-hover')).toBe('#c2410c');
-  expect(nilai(terang, '--brand-soft')).toBe('#fff7ed');
-  expect(nilai(terang, '--canvas')).toBe('#faf8f5');
-  expect(nilai(terang, '--ink-heading')).toBe('#1c1917');
-  expect(nilai(terang, '--ink-muted')).toBe('#57534e');
-  expect(nilai(terang, '--rel-bg')).toBe('#ffffff');
-  expect(terang).toMatch(/--r-card:\s*20px/);
+  expect(nilai(terang, '--brand')).toBe('#4f46e5');
+  expect(nilai(terang, '--brand-hover')).toBe('#4338ca');
+  expect(nilai(terang, '--brand-soft')).toBe('#eef0ff');
+  expect(nilai(terang, '--canvas')).toBe('#f7f8fa');
+  expect(nilai(terang, '--ink-heading')).toBe('#101828');
+  expect(nilai(terang, '--ink-muted')).toBe('#5b6472');
+  expect(nilai(terang, '--rel-bg')).toBe('#0e1015');
+  expect(terang).toMatch(/--r-card:\s*12px/);
 });
 
 it('teks utama terbaca di kedua tema', () => {

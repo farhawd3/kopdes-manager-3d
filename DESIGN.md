@@ -1,6 +1,6 @@
 > [!WARNING]
-> **Status: Usang / Dalam Masa Transisi ke arah baru "Lantai Dunia" (20 Oktober 2026).**
-> Rencana redesain baru telah disetujui pemilik di `docs/RENCANA-REDESAIN.md`. Spesifikasi di bawah ini adalah acuan gaya Lavender Lekuk lama dan sedang digantikan secara bertahap (Paket 0 hingga Paket 6). Dokumen `DESIGN.md` baru akan ditulis ulang setelah implementasi nyata selesai dibangun.
+> **Status: Usang / Digantikan arah "Workbench" (21 Oktober 2026).**
+> Redesain total disetujui pemilik dan sudah diterapkan pada token, kerangka, komponen bersama, Beranda, dan halaman tugas. Arah baru, alasan, dan status paket ada di `docs/RENCANA-REDESAIN.md`. Spesifikasi di bawah ini adalah acuan Lavender Lekuk lama; jangan dipakai untuk pekerjaan baru.
 
 ---
 name: Kopdes Manager 3D

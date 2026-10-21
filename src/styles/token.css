@@ -1,132 +1,134 @@
 /*
-  Token sistem gaya Kopdes — Volingo Warm Clean & Editorial Soft.
-  Latar canvas warm cream #faf8f5, modul kartu putih murni #ffffff dengan border halus 1px #efece6,
-  aksen terracotta hangat #ea580c / #c2410c, dan tombol aksi tegas #1c1917.
+  Token sistem gaya Kopdes — Workbench.
+  Ruang kerja netral dan presisi seperti alat manajemen tugas profesional:
+  rel gelap, kanvas abu sejuk, permukaan putih, garis rambut 1px, sudut 8–12 px,
+  dan satu aksen indigo. Warna status tetap semantik dan selalu disertai teks.
   Semua kombinasi teks lolos standar kontras WCAG AA 4.5:1.
 */
 :root {
   color-scheme: light;
-  --scrim: rgba(28, 25, 23, 0.4);
+  --scrim: rgba(16, 24, 40, 0.45);
   /* Isi di atas warna merek/status, kilau merek, sinyal kuning, jalur Gantt, toast */
   --on-brand: #fff;
-  --brand-bright: #fb923c;
+  --brand-bright: #818cf8;
   --sinyal: #f59e0b;
-  --jalur-rencana: #fff7ed;
-  --titik-rencana: #fed7aa;
-  --titik-selesai: #ea580c;
-  --toast-bg: #1c1917;
+  --jalur-rencana: #eef0ff;
+  --titik-rencana: #c7cbff;
+  --titik-selesai: #4f46e5;
+  --toast-bg: #101828;
   --toast-fg: #fff;
-  --toast-aksi: #fb923c;
+  --toast-aksi: #a5b4fc;
 
-  /* Huruf: Plus Jakarta Sans modern, proporsional, dan bersih */
+  /* Huruf: huruf kerja netral untuk isi, huruf berkarakter hanya untuk judul dan merek */
   --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', var(--font-sans);
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-  --fs-title: 24px;
-  --fs-h2: 16px;
-  --fs-h3: 16px;
-  --fs-body: 14px;
+  --fs-title: 22px;
+  --fs-h2: 15px;
+  --fs-h3: 14px;
+  --fs-body: 13.5px;
   --fs-meta: 12px;
-  --fs-cap: 12px;
+  --fs-cap: 11px;
   --lh-tight: 1.25;
   --lh-body: 1.5;
 
-  /* Rel navigasi: modern light warm */
-  --rel-bg: #ffffff;
-  --rel-surface: #faf8f5;
-  --rel-fg: #1c1917;
-  --rel-muted: #78716c;
-  --rel-line: #efece6;
-  --rel-active-bg: #fff7ed;
-  --rel-active-fg: #c2410c;
+  /* Rel navigasi gelap seperti alat kerja desktop */
+  --rel-bg: #0e1015;
+  --rel-surface: #14171e;
+  --rel-fg: #e6e8ef;
+  --rel-muted: #8a92a6;
+  --rel-line: #232732;
+  --rel-active-bg: #1c2130;
+  --rel-active-fg: #ffffff;
 
-  /* Indikator aksen per ruang diorama */
-  --lantai-kerja: #ea580c;
-  --lantai-kerja-tepi: #efece6;
-  --lantai-koperasi: #f59e0b;
-  --lantai-koperasi-tepi: #efece6;
+  /* Penanda ruang (dipakai sebagai titik halus, bukan latar halaman) */
+  --lantai-kerja: #6366f1;
+  --lantai-kerja-tepi: #e4e7ec;
+  --lantai-koperasi: #d97706;
+  --lantai-koperasi-tepi: #e4e7ec;
   --lantai-catatan: #8b5cf6;
-  --lantai-catatan-tepi: #efece6;
-  --lantai-usaha: #06b6d4;
-  --lantai-usaha-tepi: #efece6;
-  --lantai-dunia: #3b82f6;
-  --lantai-dunia-tepi: #efece6;
-  --lantai-pengaturan: #64748b;
-  --lantai-pengaturan-tepi: #efece6;
+  --lantai-catatan-tepi: #e4e7ec;
+  --lantai-usaha: #0891b2;
+  --lantai-usaha-tepi: #e4e7ec;
+  --lantai-dunia: #0284c7;
+  --lantai-dunia-tepi: #e4e7ec;
+  --lantai-pengaturan: #667085;
+  --lantai-pengaturan-tepi: #e4e7ec;
   --lantai: var(--lantai-kerja);
   --lantai-tepi: var(--lantai-kerja-tepi);
   --lantai-garis: var(--line);
 
-  /* Permukaan: canvas warm cream bersih, kartu putih murni */
-  --canvas: #faf8f5;
-  --canvas-deep: #f3f0e8;
+  /* Permukaan: kanvas abu sejuk, panel putih, garis rambut */
+  --canvas: #f7f8fa;
+  --canvas-deep: #eef1f5;
   --surface: #ffffff;
-  --surface-2: #fcfbf9;
-  --surface-3: #f5f2eb;
+  --surface-2: #f9fafb;
+  --surface-3: #f2f4f7;
   --wall: var(--canvas);
   --wall-deep: var(--canvas-deep);
 
-  /* Tinta: Warm stone 900 untuk judul, stone 700 untuk teks isi */
-  --ink: #44403c;
-  --ink-heading: #1c1917;
-  --ink-muted: #57534e;
-  --ink-subtle: #57534e;
+  /* Tinta */
+  --ink: #344054;
+  --ink-heading: #101828;
+  --ink-muted: #5b6472;
+  --ink-subtle: #667085;
   --ink-inverse: #ffffff;
 
-  /* Garis: ultra-crisp 1px warm border */
-  --line: #efece6;
-  --line-strong: #dcd6cb;
+  /* Garis */
+  --line: #e4e7ec;
+  --line-strong: #d0d5dd;
 
-  /* Aksen: Warm Terracotta & Peach */
-  --brand: #ea580c;
-  --brand-hover: #c2410c;
-  --brand-press: #9a3412;
-  --brand-soft: #fff7ed;
-  --brand-soft-2: #ffedd5;
-  --brand-soft-border: #fed7aa;
-  --brand-ink: #c2410c;
-  /* Isian yang memuat teks putih (kontras tinggi 17:1) */
-  --brand-isi: #1c1917;
-  --brand-isi-hover: #292524;
+  /* Aksen indigo tunggal */
+  --brand: #4f46e5;
+  --brand-hover: #4338ca;
+  --brand-press: #3730a3;
+  --brand-soft: #eef0ff;
+  --brand-soft-2: #e0e3ff;
+  --brand-soft-border: #c7cbff;
+  --brand-ink: #3730a3;
+  /* Isian yang memuat teks putih (kontras tinggi 6.3:1) */
+  --brand-isi: #4f46e5;
+  --brand-isi-hover: #4338ca;
   --brand-text: #ffffff;
   --brand-contrast: #ffffff;
-  --focus-ring: 0 0 0 3px rgba(234, 88, 12, 0.2);
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.22);
 
-  /* Kayu hangat */
+  /* Kayu hangat (dipakai grafik dan aksen sekunder) */
   --wood: #fef3c7;
   --wood-deep: #d97706;
   --wood-edge: #b45309;
   --wood-soft: #fffbeb;
 
-  /* Status semantik modern */
-  --ok: #15803d;
-  --ok-bg: #f0fdf4;
-  --ok-line: #bbf7d0;
-  --late: #b91c1c;
-  --late-bg: #fef2f2;
-  --late-line: #fecaca;
-  --warn: #b45309;
-  --warn-bg: #fffbeb;
-  --warn-line: #fde68a;
+  /* Status semantik */
+  --ok: #067647;
+  --ok-bg: #ecfdf3;
+  --ok-line: #abefc6;
+  --late: #b42318;
+  --late-bg: #fef3f2;
+  --late-line: #fecdca;
+  --warn: #b54708;
+  --warn-bg: #fffaeb;
+  --warn-line: #fedf89;
   --info: var(--brand-ink);
   --info-bg: var(--brand-soft);
-  --neutral-bg: #f1f5f9;
+  --neutral-bg: #f2f4f7;
 
-  /* Bentuk dan bayangan: modern, ringan, tanpa efek tebal jadul */
+  /* Bentuk dan bayangan: tegas, tipis, tanpa efek mengambang */
   --lempeng-tepi: 0;
-  --lempeng-radius: 18px;
-  --lempeng-bayang: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
-  --r-xs: 6px;
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
-  --r-card: 20px;
-  --r-xl: 22px;
+  --lempeng-radius: 12px;
+  --lempeng-bayang: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 10px;
+  --r-card: 12px;
+  --r-xl: 12px;
   --r-full: 999px;
-  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 10px 15px -3px rgba(15, 23, 42, 0.05);
-  --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-  --shadow-dock: 0 12px 28px -6px rgba(15, 23, 42, 0.2);
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 8px 24px -12px rgba(16, 24, 40, 0.12);
+  --shadow-md: 0 8px 24px -8px rgba(16, 24, 40, 0.16);
+  --shadow-lg: 0 24px 48px -12px rgba(16, 24, 40, 0.22);
+  --shadow-dock: 0 16px 40px -12px rgba(16, 24, 40, 0.28);
 
   /* Gerak */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -135,36 +137,36 @@
   --dur: 180ms;
 
   /* Tata letak */
-  --sidebar-w: 248px;
-  --topbar-h: 70px;
-  --page-max: 1240px;
-  --gutter: 28px;
+  --sidebar-w: 264px;
+  --topbar-h: 60px;
+  --page-max: 1480px;
+  --gutter: 24px;
   --touch: 44px;
   --dock-h: 64px;
 
   /* Garis modul */
   --kartu-garis: var(--line);
 
-  /* Ikon dua nada modern */
-  --ikon-isi: #ecfdf5;
-  --ikon-garis-a: #10b981;
-  --ikon-garis-b: #047857;
-  --ikon-bayang: rgba(4, 120, 87, 0.12);
+  /* Ikon dua nada netral */
+  --ikon-isi: #f2f4f7;
+  --ikon-garis-a: #475467;
+  --ikon-garis-b: #101828;
+  --ikon-bayang: rgba(16, 24, 40, 0.08);
 
   /* Grafik */
-  --grafik-aksen: #059669;
-  --grafik-oranye: #f59e0b;
-  --grafik-teal: #0d9488;
-  --grafik-pink: #ec4899;
-  --grafik-ungu: #8b5cf6;
-  --grafik-redup: #94a3b8;
-  --grafik-dasar: #f1f5f9;
+  --grafik-aksen: #4f46e5;
+  --grafik-oranye: #d97706;
+  --grafik-teal: #0e9384;
+  --grafik-pink: #c11574;
+  --grafik-ungu: #7a5af8;
+  --grafik-redup: #98a2b3;
+  --grafik-dasar: #f2f4f7;
 
   /* Alias untuk gaya inline di komponen */
   --success: var(--ok);
   --danger: var(--late);
   --tone-success-text: var(--ok);
-  --tone-success-accent: #10b981;
+  --tone-success-accent: #12b76a;
   --tone-warn-text: var(--warn);
   --tone-danger-text: var(--late);
   --tone-info-text: var(--brand-ink);
@@ -180,160 +182,160 @@
   --pastel-blue-text: var(--brand-ink);
   --pastel-blue-bg: var(--brand-soft);
   --pastel-blue-border: var(--brand-soft-border);
-  --pastel-purple-text: #6b21a8;
-  --pastel-purple-bg: #f3e8ff;
-  --pastel-aksen: #ecfdf5;
-  --pastel-aksen-ink: #065f46;
-  --pastel-pink: #fdf2f8;
-  --pastel-pink-ink: #9d174d;
-  --pastel-mentega: #fffbeb;
-  --pastel-mentega-ink: #92400e;
-  --pastel-mint: #f0fdf4;
-  --pastel-mint-ink: #166534;
+  --pastel-purple-text: #5925dc;
+  --pastel-purple-bg: #f4f3ff;
+  --pastel-aksen: var(--brand-soft);
+  --pastel-aksen-ink: var(--brand-ink);
+  --pastel-pink: #fdf2fa;
+  --pastel-pink-ink: #c11574;
+  --pastel-mentega: #fffaeb;
+  --pastel-mentega-ink: #b54708;
+  --pastel-mint: #ecfdf3;
+  --pastel-mint-ink: #067647;
   /* Sampul per hub */
-  --rail-w: 76px;
-  --sampul-pekerjaan: #ecfdf5;
-  --sampul-pekerjaan-ink: #065f46;
-  --sampul-catatan: #f5f3ff;
-  --sampul-catatan-ink: #5b21b6;
-  --sampul-usaha: #ecfeff;
-  --sampul-usaha-ink: #155e75;
-  --sampul-koperasi: #fffbeb;
-  --sampul-koperasi-ink: #92400e;
-  --sampul-dunia: #eff6ff;
-  --sampul-dunia-ink: #1e40af;
+  --rail-w: 72px;
+  --sampul-pekerjaan: #eef0ff;
+  --sampul-pekerjaan-ink: #3730a3;
+  --sampul-catatan: #f4f3ff;
+  --sampul-catatan-ink: #5925dc;
+  --sampul-usaha: #ecfdff;
+  --sampul-usaha-ink: #0e7090;
+  --sampul-koperasi: #fffaeb;
+  --sampul-koperasi-ink: #b54708;
+  --sampul-dunia: #eff8ff;
+  --sampul-dunia-ink: #175cd3;
 }
 
 :root.dark {
   color-scheme: dark;
-  --scrim: rgba(0, 0, 0, 0.65);
-  --brand-bright: #34d399;
-  --jalur-rencana: #064e3b;
-  --titik-rencana: #047857;
-  --titik-selesai: #10b981;
+  --scrim: rgba(0, 0, 0, 0.72);
+  --brand-bright: #a5b4fc;
+  --jalur-rencana: #1d2140;
+  --titik-rencana: #3730a3;
+  --titik-selesai: #818cf8;
   --toast-bg: #f8fafc;
-  --toast-fg: #0f172a;
-  --toast-aksi: #059669;
+  --toast-fg: #101828;
+  --toast-aksi: #4f46e5;
 
-  /* Rel navigasi gelap */
-  --rel-bg: #141210;
-  --rel-surface: #1c1917;
-  --rel-fg: #f5f5f4;
-  --rel-muted: #a8a29e;
-  --rel-line: #292524;
-  --rel-active-bg: #2e160e;
-  --rel-active-fg: #fb923c;
+  /* Rel navigasi malam */
+  --rel-bg: #08090c;
+  --rel-surface: #10131a;
+  --rel-fg: #e6e8ef;
+  --rel-muted: #7f889c;
+  --rel-line: #1d212b;
+  --rel-active-bg: #1a1f2c;
+  --rel-active-fg: #ffffff;
 
-  /* Indikator lantai malam */
-  --lantai-kerja: #fb923c;
-  --lantai-kerja-tepi: #292524;
+  /* Penanda ruang malam */
+  --lantai-kerja: #818cf8;
+  --lantai-kerja-tepi: #232733;
   --lantai-koperasi: #f59e0b;
-  --lantai-koperasi-tepi: #292524;
-  --lantai-catatan: #8b5cf6;
-  --lantai-catatan-tepi: #292524;
-  --lantai-usaha: #06b6d4;
-  --lantai-usaha-tepi: #292524;
-  --lantai-dunia: #3b82f6;
-  --lantai-dunia-tepi: #292524;
-  --lantai-pengaturan: #64748b;
-  --lantai-pengaturan-tepi: #292524;
+  --lantai-koperasi-tepi: #232733;
+  --lantai-catatan: #a78bfa;
+  --lantai-catatan-tepi: #232733;
+  --lantai-usaha: #22d3ee;
+  --lantai-usaha-tepi: #232733;
+  --lantai-dunia: #38bdf8;
+  --lantai-dunia-tepi: #232733;
+  --lantai-pengaturan: #98a2b3;
+  --lantai-pengaturan-tepi: #232733;
   --lantai: var(--lantai-kerja);
   --lantai-tepi: var(--lantai-kerja-tepi);
   --lantai-garis: var(--line);
 
-  --canvas: #121110;
-  --canvas-deep: #0c0a09;
-  --surface: #1c1917;
-  --surface-2: #292524;
-  --surface-3: #44403c;
+  --canvas: #0a0c10;
+  --canvas-deep: #07080b;
+  --surface: #11141a;
+  --surface-2: #171b23;
+  --surface-3: #1e232d;
   --wall: var(--canvas);
   --wall-deep: var(--canvas-deep);
 
-  --ink: #f5f5f4;
-  --ink-heading: #ffffff;
-  --ink-muted: #a8a29e;
-  --ink-subtle: #a8a29e;
+  --ink: #c9d0dc;
+  --ink-heading: #f4f6fa;
+  --ink-muted: #98a2b3;
+  --ink-subtle: #8b94a7;
 
-  --line: #292524;
-  --line-strong: #44403c;
+  --line: #232733;
+  --line-strong: #313747;
 
-  --brand: #fb923c;
-  --brand-hover: #f97316;
-  --brand-press: #ea580c;
-  --brand-soft: #2e160e;
-  --brand-soft-2: #431f13;
-  --brand-soft-border: #7c2d12;
-  --brand-ink: #ffedd5;
-  --brand-isi: #c2410c;
-  --brand-isi-hover: #9a3412;
-  --focus-ring: 0 0 0 3px rgba(251, 146, 60, 0.35);
+  --brand: #818cf8;
+  --brand-hover: #a5b4fc;
+  --brand-press: #6366f1;
+  --brand-soft: #1b1f36;
+  --brand-soft-2: #252a4a;
+  --brand-soft-border: #363c63;
+  --brand-ink: #c7d2fe;
+  --brand-isi: #5b5bd6;
+  --brand-isi-hover: #6666d8;
+  --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.32);
 
   --wood: #78350f;
   --wood-deep: #d97706;
   --wood-edge: #b45309;
   --wood-soft: #451a03;
 
-  --ok: #4ade80;
-  --ok-bg: #052e16;
-  --ok-line: #14532d;
-  --late: #f87171;
-  --late-bg: #450a0a;
-  --late-line: #7f1d1d;
-  --warn: #fbbf24;
-  --warn-bg: #451a03;
-  --warn-line: #78350f;
-  --neutral-bg: #1e293b;
+  --ok: #6ce9a6;
+  --ok-bg: #052e1c;
+  --ok-line: #085d3a;
+  --late: #fda29b;
+  --late-bg: #3b0d0c;
+  --late-line: #7a271a;
+  --warn: #fec84b;
+  --warn-bg: #3b2006;
+  --warn-line: #7a2e0e;
+  --neutral-bg: #1e232d;
 
   --lempeng-tepi: 0;
-  --lempeng-bayang: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3), 0 14px 24px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 30px rgba(0, 0, 0, 0.45);
-  --shadow-dock: 0 12px 30px rgba(0, 0, 0, 0.55);
+  --lempeng-bayang: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+  --shadow-dock: 0 16px 40px -12px rgba(0, 0, 0, 0.7);
 
   --kartu-garis: var(--line);
-  --ikon-isi: rgba(16, 185, 129, 0.15);
-  --ikon-garis-a: #34d399;
-  --ikon-garis-b: #10b981;
-  --ikon-bayang: rgba(0, 0, 0, 0.3);
+  --ikon-isi: rgba(129, 140, 248, 0.14);
+  --ikon-garis-a: #a5b4fc;
+  --ikon-garis-b: #e0e7ff;
+  --ikon-bayang: rgba(0, 0, 0, 0.4);
 
-  --grafik-aksen: #10b981;
-  --grafik-oranye: #fbbf24;
-  --grafik-teal: #2dd4bf;
-  --grafik-pink: #f472b6;
-  --grafik-ungu: #a78bfa;
-  --grafik-redup: #64748b;
-  --grafik-dasar: #1e293b;
-  --tone-success-accent: #34d399;
-  --pastel-purple-text: #e9d5ff;
-  --pastel-purple-bg: #3b0764;
-  --pastel-aksen: #064e3b;
-  --pastel-aksen-ink: #a7f3d0;
-  --pastel-pink: #500724;
-  --pastel-pink-ink: #fbcfe8;
-  --pastel-mentega: #451a03;
-  --pastel-mentega-ink: #fde68a;
-  --pastel-mint: #052e16;
-  --pastel-mint-ink: #bbf7d0;
-  --sampul-pekerjaan: #064e3b;
-  --sampul-pekerjaan-ink: #a7f3d0;
-  --sampul-catatan: #3b0764;
-  --sampul-catatan-ink: #e9d5ff;
+  --grafik-aksen: #818cf8;
+  --grafik-oranye: #fdb022;
+  --grafik-teal: #2ed3b7;
+  --grafik-pink: #f670c7;
+  --grafik-ungu: #a48afb;
+  --grafik-redup: #667085;
+  --grafik-dasar: #1e232d;
+  --tone-success-accent: #32d583;
+  --pastel-purple-text: #d9d6fe;
+  --pastel-purple-bg: #2f1c6a;
+  --pastel-aksen: #1b1f36;
+  --pastel-aksen-ink: #c7d2fe;
+  --pastel-pink: #4e0d30;
+  --pastel-pink-ink: #fcceee;
+  --pastel-mentega: #3b2006;
+  --pastel-mentega-ink: #fec84b;
+  --pastel-mint: #052e1c;
+  --pastel-mint-ink: #a6f4c5;
+  --sampul-pekerjaan: #1b1f36;
+  --sampul-pekerjaan-ink: #c7d2fe;
+  --sampul-catatan: #2f1c6a;
+  --sampul-catatan-ink: #d9d6fe;
   --sampul-usaha: #083344;
   --sampul-usaha-ink: #a5f3fc;
-  --sampul-koperasi: #451a03;
-  --sampul-koperasi-ink: #fde68a;
+  --sampul-koperasi: #3b2006;
+  --sampul-koperasi-ink: #fec84b;
   --sampul-dunia: #172554;
   --sampul-dunia-ink: #bfdbfe;
 }
 
 @media (max-width: 767px) {
   :root {
-    --fs-title: 20px;
+    --fs-title: 19px;
     --gutter: 16px;
-    --topbar-h: 60px;
+    --topbar-h: 56px;
     --lempeng-tepi: 0;
-    --lempeng-bayang: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --lempeng-bayang: 0 1px 2px rgba(16, 24, 40, 0.04);
   }
 }

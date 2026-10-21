@@ -13,28 +13,28 @@ label.button {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  min-height: 44px;
-  padding: 0 15px;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 13px;
   border: 1px solid var(--btn-line);
-  border-radius: var(--r-md);
+  border-radius: 8px;
   background: var(--btn-bg);
   color: var(--btn-fg);
   font: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   line-height: 1.2;
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast);
 }
 .ui-btn:hover,
 a.button:hover,
 label.button:hover {
-  border-color: var(--brand-soft-border);
+  border-color: var(--line-strong);
   background: var(--surface-2);
   text-decoration: none;
 }
@@ -74,26 +74,39 @@ a.button.danger {
 .ui-btn[data-variant='danger-soft']:hover,
 .ui-btn.danger:hover { background: var(--late-bg); border-color: var(--late); }
 
-.ui-btn[data-size='sm'] { min-height: 44px; padding: 0 11px; border-radius: 10px; font-size: 12.5px; }
-.ui-btn[data-size='lg'] { min-height: 48px; padding: 0 20px; font-size: 15px; }
-.ui-btn[data-icon-only] { width: 44px; padding: 0; }
-.ui-btn[data-size='sm'][data-icon-only] { width: 44px; }
+.ui-btn[data-size='sm'] { min-height: 32px; padding: 0 10px; border-radius: 6px; font-size: 12px; }
+.ui-btn[data-size='lg'] { min-height: 44px; padding: 0 18px; font-size: 14px; }
+.ui-btn[data-icon-only] { width: 40px; padding: 0; }
+.ui-btn[data-size='sm'][data-icon-only] { width: 34px; }
+@media (pointer: coarse) {
+  .ui-btn,
+  a.button,
+  button.button,
+  label.button { min-height: 44px; }
+  .ui-btn[data-size='sm'] { min-height: 44px; }
+  .ui-btn[data-icon-only] { width: 44px; }
+}
 
 /* ---------- Isian ---------- */
 .ui-input,
 :where(.manager-shell, dialog, .pin-page) :where(input[type='text'], input[type='search'], input[type='number'], input[type='email'],
   input[type='tel'], input[type='password'], input[type='url'], input[type='time'], input:not([type]), textarea, select) {
   width: 100%;
-  min-height: 44px;
-  padding: 9px 13px;
+  min-height: 40px;
+  padding: 8px 12px;
   border: 1px solid var(--line-strong);
-  border-radius: var(--r-md);
+  border-radius: 8px;
   background: var(--surface);
   color: var(--ink);
   font: inherit;
   font-size: var(--fs-body);
-  box-shadow: inset 0 1px 1px rgba(60, 30, 36, 0.03);
+  box-shadow: none;
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+@media (pointer: coarse) {
+  .ui-input,
+  :where(.manager-shell, dialog, .pin-page) :where(input[type='text'], input[type='search'], input[type='number'], input[type='email'],
+    input[type='tel'], input[type='password'], input[type='url'], input[type='time'], input:not([type]), textarea, select) { min-height: 44px; }
 }
 textarea.ui-input,
 :where(.manager-shell, dialog) textarea { min-height: 96px; line-height: 1.55; resize: vertical; }
@@ -319,13 +332,13 @@ dialog.ui-modal h2 { font-size: 19px; }
 /* ---------- Segmen dan tab ---------- */
 .ui-segmented {
   display: inline-flex;
-  gap: 3px;
+  gap: 2px;
   max-width: 100%;
-  padding: 4px;
+  padding: 3px;
   border: 1px solid var(--line);
-  border-radius: var(--r-full);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  border-radius: 8px;
+  background: var(--surface-2);
+  box-shadow: none;
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
@@ -336,26 +349,27 @@ dialog.ui-modal h2 { font-size: 19px; }
   flex: 0 0 auto;
   align-items: center;
   gap: 6px;
-  min-height: 38px;
-  padding: 0 14px;
+  min-height: 32px;
+  padding: 0 12px;
   border: 0;
-  border-radius: var(--r-full);
+  border-radius: 6px;
   background: transparent;
   color: var(--ink-muted);
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
   box-shadow: none;
   transition: background var(--dur-fast), color var(--dur-fast);
 }
 .ui-segmented-item:hover { color: var(--ink); background: var(--surface-2); }
-/* Lekuk: pilihan aktif berupa pil berisi aksen, sama dengan menu aktif sidebar */
+/* Pilihan aktif: lempeng putih dengan garis, bukan pil aksen */
 .ui-segmented-item.is-active,
 .ui-segmented-item.active {
-  background: var(--brand-isi);
-  color: var(--on-brand);
+  background: var(--surface);
+  color: var(--ink-heading);
+  box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-sm);
 }
 .ui-segmented-active-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 @media (max-width: 767px) {
@@ -370,10 +384,10 @@ dialog.ui-modal h2 { font-size: 19px; }
 /* ---------- Progres ---------- */
 .ui-progress {
   position: relative;
-  height: 6px;
+  height: 5px;
   overflow: hidden;
   border-radius: var(--r-full);
-  background: var(--brand-soft);
+  background: var(--surface-3);
 }
 .ui-progress > span {
   position: absolute;
@@ -497,19 +511,21 @@ dialog.ui-modal h2 { font-size: 19px; }
   .form-actions > :only-child { grid-column: 1 / -1; }
 }
 
-/* ---------- Ubin ikon Lekuk: datar, latar pastel dari warna peta aksen, ikon berwarna penuh ---------- */
+/* ---------- Ubin ikon: netral, kecil, hanya penanda visual ---------- */
 .ubin {
   --ubin: var(--grafik-aksen);
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
-  border-radius: 15px;
-  background: color-mix(in srgb, var(--ubin) 17%, var(--surface));
-  color: color-mix(in srgb, var(--ubin) 82%, var(--ink-heading));
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--ink-muted);
 }
-.ubin-kecil { width: 34px; height: 34px; border-radius: 11px; }
+.ubin-kecil { width: 30px; height: 30px; border-radius: 6px; }
+.ubin-aksen { background: var(--brand-soft); color: var(--brand-ink); border-color: var(--brand-soft-border); }
 .ubin-aksen { --ubin: var(--grafik-aksen); }
 .ubin-ungu { --ubin: var(--grafik-ungu); }
 .ubin-oranye { --ubin: var(--grafik-oranye); }
@@ -545,19 +561,19 @@ dialog.ui-modal h2 { font-size: 19px; }
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 22px 24px;
+  padding: 18px 20px;
   border: 1px solid var(--line);
-  border-radius: var(--lempeng-radius, 20px);
+  border-radius: 12px;
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
 .modul:hover {
   border-color: var(--line-strong);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-sm);
 }
-.modul-kepala { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
-.modul-kepala h2 { margin: 0; font-size: var(--fs-h3); font-weight: 700; letter-spacing: -0.015em; }
+.modul-kepala { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 14px; }
+.modul-kepala h2 { margin: 0; font-size: 13.5px; font-weight: 600; letter-spacing: -0.01em; }
 .modul-ikon { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; }
 .modul-ikon.pastel-aksen { background: var(--brand-soft); color: var(--brand-ink); }
 .modul-ikon.pastel-pink { background: var(--brand-soft); color: var(--brand-ink); }
@@ -574,9 +590,9 @@ dialog.ui-modal h2 { font-size: 19px; }
 .bertakik {
   position: relative;
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: 12px;
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 .bertakik::before,
 .bertakik::after {
@@ -585,28 +601,27 @@ dialog.ui-modal h2 { font-size: 19px; }
 .takik-aksi {
   position: absolute;
   z-index: 1;
-  top: 18px;
-  right: 20px;
+  top: 14px;
+  right: 16px;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   padding: 0;
   border: 1px solid var(--line);
-  border-radius: var(--r-full);
-  background: var(--surface-2);
+  border-radius: 6px;
+  background: var(--surface);
   color: var(--ink-muted);
   box-shadow: none;
   cursor: pointer;
-  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
 }
 .takik-aksi:hover {
-  border-color: var(--brand-soft-border);
-  background: var(--brand-soft);
-  color: var(--brand-ink);
-  transform: scale(1.05);
+  border-color: var(--line-strong);
+  background: var(--surface-3);
+  color: var(--ink-heading);
   text-decoration: none;
 }
-.takik-aksi:active { transform: scale(0.95); }
+.takik-aksi:active { background: var(--surface-3); }
 .bertakik > .modul-kepala { padding-right: 48px; }
 @media (prefers-reduced-motion: reduce) { .takik-aksi { transition: none; } }

@@ -20,7 +20,6 @@ import {
   Plus,
   RotateCcw,
   SlidersHorizontal,
-  Sparkles,
   Trash2,
   Video,
   X,
@@ -335,66 +334,28 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
         </div>
       </header>
 
-      {/* ── Fokus Hari Ini (Volingo style "Saat Hari Ini") ── */}
-      <section className="modul beranda-fokus-hari" aria-label="Fokus hari ini">
-        <div className="fokus-hari-kepala">
-          <span className="fokus-hari-badge">
-            <Sparkles size={14} aria-hidden="true" />
-            <span>Saat Hari Ini</span>
-          </span>
-          <p className="fokus-hari-sub">
-            Tersambung dengan alur operasional gerai. Selesaikan fokus utama hari ini:
-          </p>
-        </div>
-
-        <div className="fokus-hari-kartu">
-          <div className="fokus-hari-glif" aria-hidden="true">
-            {overdueCount > 0 ? '⚠️' : dueTodayCount > 0 ? '📦' : '✨'}
-          </div>
-          <div className="fokus-hari-konten">
-            {fokusTerlambat[0] ? (
-              <>
-                <span className="fokus-hari-tag is-telat">Perlu Perhatian Segera</span>
-                <strong className="fokus-hari-judul">Selesaikan: {fokusTerlambat[0].title}</strong>
-                <small className="fokus-hari-meta">
-                  Lewat {daysBetween(fokusTerlambat[0].due_date, now)} hari · {namaProyek(fokusTerlambat[0].workstream_id) || 'Operasional'}
-                </small>
-              </>
-            ) : fokusHariIni[0] ? (
-              <>
-                <span className="fokus-hari-tag is-hari-ini">Jatuh Tempo Hari Ini</span>
-                <strong className="fokus-hari-judul">Prioritas: {fokusHariIni[0].title}</strong>
-                <small className="fokus-hari-meta">
-                  Target hari ini · {namaProyek(fokusHariIni[0].workstream_id) || 'Operasional'}
-                </small>
-              </>
-            ) : routines.length > 0 && !semuaRutinSelesai ? (
-              <>
-                <span className="fokus-hari-tag is-rutin">Rutinitas Gerai</span>
-                <strong className="fokus-hari-judul">
-                  Langkah rutin: {routines.find((r) => !completedRoutines.includes(r.id))?.title || 'Lanjutkan rutinitas harian'}
-                </strong>
-                <small className="fokus-hari-meta">
-                  Jam {jamTitik(routines.find((r) => !completedRoutines.includes(r.id))?.time || '08:00')} WIB · {routineCompletedCount}/{routines.length} rutin selesai
-                </small>
-              </>
-            ) : (
-              <>
-                <span className="fokus-hari-tag is-beres">Kondisi Prima</span>
-                <strong className="fokus-hari-judul">Semua tugas prioritas hari ini beres</strong>
-                <small className="fokus-hari-meta">
-                  Gerai beroperasi tertib. Pantau stok barang dan rekapitulasi buku kas.
-                </small>
-              </>
-            )}
-          </div>
-          <div className="fokus-hari-aksi">
-            <Link href="/hari-ini" className="fokus-cta-btn">
-              <span>▷</span>
-              <span>Buka Tugas Hari Ini</span>
-            </Link>
-          </div>
-        </div>
+      {/* Ringkasan kerja: angka nyata, setiap sel membuka daftar yang sesuai. */}
+      <section className="beranda-ringkasan" aria-label="Ringkasan pekerjaan">
+        <Link href="/tugas?status=terlambat" className={`ringkas-sel${overdueCount ? ' is-telat' : ''}`}>
+          <span className="ringkas-label">Terlambat</span>
+          <strong className="ringkas-angka">{overdueCount}</strong>
+          <span className="ringkas-catatan">{overdueCount ? 'Perlu ditindak' : 'Tidak ada'}</span>
+        </Link>
+        <Link href="/hari-ini" className="ringkas-sel">
+          <span className="ringkas-label">Jatuh tempo hari ini</span>
+          <strong className="ringkas-angka">{dueTodayCount}</strong>
+          <span className="ringkas-catatan">Tugas</span>
+        </Link>
+        <Link href="/tugas" className="ringkas-sel">
+          <span className="ringkas-label">Tugas terbuka</span>
+          <strong className="ringkas-angka">{open.length}</strong>
+          <span className="ringkas-catatan">Dari {tasks.length} total</span>
+        </Link>
+        <Link href="/rapat" className="ringkas-sel">
+          <span className="ringkas-label">Agenda hari ini</span>
+          <strong className="ringkas-angka">{rapatHariIni.length}</strong>
+          <span className="ringkas-catatan">{rapatBerikutnya ? `Berikutnya ${jamTitik(String(rapatBerikutnya.data.time || ''))}` : 'Tidak ada jadwal'}</span>
+        </Link>
       </section>
 
       <form className="beranda-tambah" onSubmit={kirimTambahCepat}>

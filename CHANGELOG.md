@@ -2,6 +2,19 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Redesain Workbench: ruang kerja task manager profesional — 21 Oktober 2026
+
+- Alasan: arahan pemilik ("lakukan redesain secara total agar tampilan seperti website task manager profesional. jangan hanya mempertahankan desain lama."). Paket sebelumnya hanya mengganti palet dan menghias kartu; pemilik meminta tampilan dirombak, bukan diwarnai ulang.
+- Perubahan:
+  - Arah baru Workbench: rel navigasi gelap `#0E1015`, kanvas abu sejuk `#F7F8FA`, panel putih bergaris rambut 1px, sudut 8–12 px, bayangan sangat tipis, dan satu aksen indigo `#4F46E5`. Token warna, radius, bayangan, dan skala tipografi ditulis ulang; mode gelap ikut diselaraskan.
+  - Sidebar dirapikan: tanda merek `kopdes.` dengan kotak inisial, kelompok menu Kerja dan Ruang Lain, kartu Tim, dan kaki Pengaturan/Panduan. Kartu profil, pil streak "Operasional Aktif", dan deretan kotak warna dekoratif dihapus. Di lebar tablet sidebar menyusut menjadi rel ikon tanpa label terpotong.
+  - Beranda: hero gradien "Saat Hari Ini" diganti strip empat ukuran (Terlambat, Jatuh tempo hari ini, Tugas terbuka, Agenda hari ini) sehingga angka terbaca lebih dulu. Daftar rutin, agenda, dan ringkasan memakai baris pemisah, bukan tumpukan kartu mengambang.
+  - Tugas dan Pencatatan: kartu tugas, ubin status, papan, dan daftar dibuat lebih rapat dengan baris pemisah; kontrol bersegmen (lingkup pencarian, tab laci, pilihan tampilan, sakelar linimasa) memakai sudut tegas alih-alih pil penuh.
+  - Perbaikan kecil: ikon pencarian tidak lagi menutupi teks, judul pencarian terpotong elips dengan `Ctrl K` tetap utuh di 1024 px, dan target sentuh 44 px dipertahankan lewat aturan `pointer: coarse`.
+  - Dokumen arah gaya diperbarui: `AGENTS.md`, `PRODUCT.md`, `DESIGN.md`, `docs/RENCANA-REDESAIN.md`, `docs/STATUS.md`, dan `docs/LANJUTAN-AI.md` kini menjelaskan Workbench, bukan palet hangat sebelumnya.
+- Verifikasi: 473 dari 473 tes Vitest lulus (80 berkas), `npm run typecheck` 0 error, `npm run lint` 0 error, `npm run lint:ui` 0 error, `npm run build` lulus, `npm run ukur:bundel` 248 KB JS awal (batas 300 KB). Audit visual headless Chrome pada 1440x900, 1024x768, 768x1024, dan 375x812 (seluruh halaman, tampilan, laci, editor, dialog) serta mode gelap Beranda dan Tugas: 0 temuan.
+- Belum: pengujian langsung di perangkat fisik pemilik; perubahan belum di-push dan belum di-deploy.
+
 ## Arsitektur Kartu & Desain Modul Terinspirasi Volingo — 21 Oktober 2026
 
 - Alasan: arahan pemilik ("refrensi card atau semacamnya. anda sebelumnya cuma mengganti warna. bukan desain. buat desain menjadi seperti website task manager yang layak. lakukan deep research dan mendalam") beserta 3 tangkapan layar referensi UI Volingo. Perubahan sebelumnya hanya token warna; pemilik meminta restrukturisasi desain dan arsitektur kartu secara mendalam dan menyeluruh pada komponen kartu di seluruh aplikasi (Beranda, Papan Scrum, Kalender Tugas, Catatan, dan Proyek).
