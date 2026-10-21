@@ -1,139 +1,17 @@
-/* Beranda Modern Cockpit: status live + momentum dial, sapaan, tambah cepat pintar,
-   perspektif alur kerja vs prioritas vs vitalitas usaha. */
+/* Beranda Lavender Lekuk: sapaan + salin laporan, tambah cepat, rutin harian (kartu pastel) dan
+   agenda hari ini, perlu tindakan dan pita minggu, lalu pekerjaan berjalan dan usaha harian. */
 
 .beranda { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
 
-/* Cockpit Hero Island */
-.beranda-cockpit {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 16px 24px;
-  padding: 20px 24px;
-  border: 1px solid var(--line);
-  border-radius: var(--lempeng-radius, 18px);
-  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
-  box-shadow: var(--shadow-sm);
-}
-.beranda-cockpit-kiri {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  min-width: 0;
-  flex: 1 1 320px;
-}
-.cockpit-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  width: fit-content;
-  padding: 3px 10px;
-  border-radius: var(--r-full);
-  background: var(--brand-soft);
-  border: 1px solid var(--brand-soft-border);
-  color: var(--brand-ink);
-  font-size: 11.5px;
-  font-weight: 700;
-}
-.cockpit-dot-pulse {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--brand);
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 45%, transparent);
-  animation: cockpitPulse 2s infinite ease-out;
-}
-@keyframes cockpitPulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 45%, transparent); }
-  70% { box-shadow: 0 0 0 6px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
-}
-.cockpit-jam { font-variant-numeric: tabular-nums; }
-.cockpit-sep { opacity: 0.5; }
-.cockpit-lokasi { font-weight: 600; }
-
-.beranda-cockpit-kanan {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 14px 20px;
-  flex: 1 1 360px;
-}
-
-/* Momentum Circular Energy Dial */
-.beranda-momentum {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 14px;
-  border-radius: 14px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--dur-fast), border-color var(--dur-fast);
-}
-.beranda-momentum:hover {
-  border-color: var(--brand-soft-border);
-  transform: translateY(-1px);
-}
-.momentum-dial {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-.momentum-svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-.momentum-bg {
-  fill: none;
-  stroke: var(--surface-3);
-  stroke-width: 4;
-}
-.momentum-fill {
-  fill: none;
-  stroke: var(--brand);
-  stroke-width: 4;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.6s var(--ease-out);
-}
-.momentum-angka {
-  position: absolute;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink-heading);
-  font-variant-numeric: tabular-nums;
-}
-.momentum-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.momentum-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--ink-heading);
-}
-.momentum-status {
-  font-size: 11px;
-  color: var(--ink-muted);
-}
-
-/* Sapaan, tanggal, satu baris ringkasan teks */
+/* Kepala: sapaan, tanggal, satu baris ringkasan teks; hanya "terlambat" berwarna */
+.beranda-kepala { display: flex; flex-flow: row wrap; align-items: flex-end; justify-content: space-between; gap: 14px 20px; }
 .beranda-sapa { min-width: 0; }
 .beranda-sapa h2 { margin: 0 0 4px; color: var(--ink-heading); font-size: 24px; font-weight: 600; letter-spacing: -0.015em; }
 .beranda-ringkas { margin: 0; color: var(--ink-muted); font-size: 14px; }
+/* Tiap frasa tetap utuh saat baris membungkus di ponsel */
 .beranda-ringkas a { color: inherit; font-weight: 600; text-decoration: none; white-space: nowrap; }
 .beranda-ringkas a:hover { color: var(--brand-ink); text-decoration: none; }
 .beranda-ringkas a.is-telat { color: var(--late); font-weight: 700; }
-
 .beranda-kepala-aksi { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .beranda-proyek { min-width: 200px; }
 .beranda-proyek .ui-btn.ui-select-trigger { border-color: var(--line); border-radius: var(--r-full); box-shadow: none; background: var(--surface); }
@@ -166,52 +44,6 @@
   height: 8px;
   border-radius: var(--r-full);
   background: var(--brand);
-}
-
-/* Tab filter perspektif modern */
-.beranda-perspektif-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  padding: 4px;
-  border-radius: var(--r-full);
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  width: fit-content;
-}
-.perspektif-pill {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 36px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: var(--r-full);
-  background: transparent;
-  color: var(--ink-muted);
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--dur-fast);
-}
-.perspektif-pill::after {
-  content: '';
-  position: absolute;
-  inset: -4px 0;
-}
-.perspektif-pill:hover {
-  color: var(--ink-heading);
-  background: var(--surface);
-}
-.perspektif-pill.is-active {
-  background: var(--surface);
-  color: var(--brand-ink);
-  font-weight: 700;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--brand-soft-border);
 }
 
 /* Tambah cepat: satu kalimat menjadi form tugas terisi; manajer tetap memeriksa sebelum menyimpan */
@@ -299,85 +131,6 @@
   background: var(--brand-isi-hover);
   transform: translateY(-1px);
 }
-.beranda-tambah-chips {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 8px;
-  padding-top: 4px;
-  border-top: 1px dashed var(--line);
-}
-.tambah-chip-label {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--ink-muted);
-}
-.tambah-chip-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  min-height: 28px;
-  padding: 0 10px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-full);
-  background: var(--surface);
-  color: var(--ink-muted);
-  font-family: inherit;
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--dur-fast);
-}
-.tambah-chip-btn::after {
-  content: '';
-  position: absolute;
-  inset: -6px -2px;
-}
-.tambah-chip-btn:hover {
-  background: var(--brand-soft);
-  border-color: var(--brand-soft-border);
-  color: var(--brand-ink);
-  transform: translateY(-1px);
-}
-.chip-symbol {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  color: var(--brand);
-}
-.beranda-tambah-preview {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 10px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  background: var(--surface-2);
-  border: 1px solid var(--brand-soft-border);
-  font-size: 12px;
-  animation: fadeInPreview 0.2s ease-out;
-}
-@keyframes fadeInPreview {
-  from { opacity: 0; transform: translateY(-3px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.preview-label {
-  font-weight: 700;
-  color: var(--brand-ink);
-  font-size: 11.5px;
-}
-.preview-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: var(--r-full);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  color: var(--ink-heading);
-  font-size: 11.5px;
-}
-
 .beranda-tambah-hints {
   display: flex;
   flex-wrap: wrap;
@@ -729,32 +482,9 @@ dialog.ui-modal.laporan-salin-dialog { width: min(560px, calc(100vw - 32px)); }
 @container halaman (max-width: 860px) {
   .beranda-grid, .beranda-usaha { grid-template-columns: minmax(0, 1fr); }
 }
-
-/* Perspektif spotlight */
-.beranda[data-perspektif='alur'] .beranda-rutin,
-.beranda[data-perspektif='alur'] .beranda-agenda {
-  box-shadow: 0 0 0 2px var(--brand-soft-border), var(--shadow-md);
-}
-.beranda[data-perspektif='prioritas'] .beranda-tindakan,
-.beranda[data-perspektif='prioritas'] .beranda-minggu {
-  box-shadow: 0 0 0 2px var(--brand-soft-border), var(--shadow-md);
-}
-.beranda[data-perspektif='usaha'] .beranda-usaha {
-  border-radius: var(--lempeng-radius, 18px);
-  box-shadow: 0 0 0 2px var(--brand-soft-border), var(--shadow-md);
-  padding: 8px;
-  background: var(--surface-2);
-}
-
 /* Ponsel: kepala bertumpuk, tambah cepat dua baris, pita minggu memakai lebar kartu penuh */
 @media (max-width: 767px) {
   .beranda { gap: 14px; }
-  .beranda-cockpit { padding: 14px 16px; gap: 14px; }
-  .beranda-cockpit-kiri { width: 100%; flex: 1 1 100%; }
-  .beranda-cockpit-kanan { width: 100%; flex: 1 1 100%; justify-content: flex-start; }
-  .beranda-momentum { width: 100%; justify-content: flex-start; }
-  .beranda-perspektif-bar { width: 100%; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
-  .perspektif-pill { flex-shrink: 0; }
   .beranda-grid, .beranda-usaha { gap: 14px; }
   .beranda-sapa h2 { font-size: 20px; }
   /* Pilihan proyek dan tombol salin berbagi satu baris; "hari ini" disembunyikan agar muat */

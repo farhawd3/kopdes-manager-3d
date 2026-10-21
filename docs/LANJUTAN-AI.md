@@ -5,12 +5,12 @@ Berkas ini untuk agen berikutnya (Claude, Codex, Antigravity, OpenCode, dll.). I
 ## Keadaan (20 Oktober 2026)
 
 - Cabang: `tampilan/papan-tugas-lekuk`.
-- **Gaya Web & UX: Modern Clean Look & Cockpit Interaktif (Emerald Fresh & Slate Crystal)**:
+- **Gaya Web: Modern Clean Look (Emerald Fresh & Slate Crystal)**:
   - Canvas terang bersih `#f8fafc` (slate-50), permukaan modul kartu putih murni `#ffffff` dengan border halus 1px `#e2e8f0`.
   - Aksen hijau zamrud presisi `#059669` / `#047857` (lolos kontras WCAG AA 5.48:1).
   - Sidebar modern minimalis, bilah atas frosted glass dengan blur 12px, serta tautan spasial langsung ke Dunia Koperasi 3D.
-  - Re-arsitektur UX Beranda: Hero Cockpit terpadu dengan live status radar, dial momentum energi SVG sirkular, filter perspektif dinamis (`Semua Fokus`, `Alur Kerja`, `Prioritas & Radar`, `Vitalitas Usaha`), dan quick-capture command island dengan chip sematan pintar + live preview deteksi sintaks.
-- Verifikasi: 473/473 tes vitest lulus 100% (80 berkas), typecheck 0 error, lint 0 error, lint:ui 0 error, build Next.js lulus, JS awal 247 KB (batas 300 KB), audit visual 0 temuan di 1024 dan 375 px.
+  - Bebas dari efek cat lantai penuh dan tepi tebal bawah yang berkesan kuno/jadul.
+- Verifikasi: 473/473 tes vitest lulus 100% (80 berkas), typecheck 0 error, lint 0 error, lint:ui 0 error, build JS awal 247 KB, audit visual 0 temuan.
 
 ## Peta kode yang sering disentuh
 
