@@ -223,6 +223,29 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
       ? selisihMenit(jamSekarang, String(rapatBerikutnya.data.time))
       : null;
 
+  // Sorotan tunggal di kepala Beranda: hal terdekat yang benar-benar perlu dikerjakan hari ini.
+  type SorotanHari = { jenis: string; waktu: string; judul: string; ikon: 'rutin' | 'agenda' | 'telat' };
+  const sorotanKandidat: SorotanHari[] = [];
+  const rutinBerikut = routines.find((r) => r.id === routineBerikutnya);
+  if (rutinBerikut) {
+    sorotanKandidat.push({ jenis: 'Rutin berikutnya', waktu: rutinBerikut.time, judul: rutinBerikut.title, ikon: 'rutin' });
+  }
+  if (rapatBerikutnya) {
+    sorotanKandidat.push({
+      jenis: keadaanRapat(rapatBerikutnya) === 'kini' ? 'Agenda berlangsung' : 'Agenda berikutnya',
+      waktu: String(rapatBerikutnya.data.time || ''),
+      judul: String(rapatBerikutnya.data.title),
+      ikon: 'agenda',
+    });
+  }
+  sorotanKandidat.sort((a, b) => a.waktu.localeCompare(b.waktu));
+  const sorotanHari: SorotanHari | null =
+    sorotanKandidat[0] ??
+    (fokusTerlambat[0]
+      ? { jenis: 'Lewat tenggat', waktu: '', judul: fokusTerlambat[0].title, ikon: 'telat' }
+      : null);
+  const IkonSorotan = sorotanHari?.ikon === 'agenda' ? CalendarDays : sorotanHari?.ikon === 'telat' ? CircleAlert : Clock;
+
   // Proyek: progres dan milestone terdekat yang belum tercapai.
   const milestoneBerikut = (projectId_: string) =>
     (data.milestones || [])
@@ -334,29 +357,66 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
         </div>
       </header>
 
-      {/* Ringkasan kerja: angka nyata, setiap sel membuka daftar yang sesuai. */}
+      {/* Ringkasan kerja: angka nyata, setiap kartu membuka daftar yang sesuai. */}
       <section className="beranda-ringkasan" aria-label="Ringkasan pekerjaan">
-        <Link href="/tugas?status=terlambat" className={`ringkas-sel${overdueCount ? ' is-telat' : ''}`}>
+        <Link href="/tugas?status=terlambat" className={`ringkas-sel is-telat${overdueCount ? ' ada-isi' : ''}`}>
+          <span className="ringkas-ikon" aria-hidden="true">
+            <CircleAlert size={18} />
+          </span>
           <span className="ringkas-label">Terlambat</span>
           <strong className="ringkas-angka">{overdueCount}</strong>
           <span className="ringkas-catatan">{overdueCount ? 'Perlu ditindak' : 'Tidak ada'}</span>
         </Link>
-        <Link href="/hari-ini" className="ringkas-sel">
+        <Link href="/hari-ini" className="ringkas-sel is-hari-ini">
+          <span className="ringkas-ikon" aria-hidden="true">
+            <CalendarDays size={18} />
+          </span>
           <span className="ringkas-label">Jatuh tempo hari ini</span>
           <strong className="ringkas-angka">{dueTodayCount}</strong>
           <span className="ringkas-catatan">Tugas</span>
         </Link>
-        <Link href="/tugas" className="ringkas-sel">
+        <Link href="/tugas" className="ringkas-sel is-terbuka">
+          <span className="ringkas-ikon" aria-hidden="true">
+            <ListChecks size={18} />
+          </span>
           <span className="ringkas-label">Tugas terbuka</span>
           <strong className="ringkas-angka">{open.length}</strong>
           <span className="ringkas-catatan">Dari {tasks.length} total</span>
         </Link>
-        <Link href="/rapat" className="ringkas-sel">
+        <Link href="/rapat" className="ringkas-sel is-agenda">
+          <span className="ringkas-ikon" aria-hidden="true">
+            <Clock size={18} />
+          </span>
           <span className="ringkas-label">Agenda hari ini</span>
           <strong className="ringkas-angka">{rapatHariIni.length}</strong>
-          <span className="ringkas-catatan">{rapatBerikutnya ? `Berikutnya ${jamTitik(String(rapatBerikutnya.data.time || ''))}` : 'Tidak ada jadwal'}</span>
+          <span className="ringkas-catatan">{rapatBerikutnya ? `Berikutnya ${jamTitik(String(rapatBerikutnya.data.time || ''))}` : rapatHariIni.length ? 'Tidak ada agenda tersisa' : 'Tidak ada jadwal'}</span>
         </Link>
       </section>
+
+      {/* Sorotan: satu hal terdekat hari ini, bukan slogan. */}
+      {sorotanHari && (
+        <section className="beranda-fokus" aria-labelledby="judul-sorotan">
+          <div className="beranda-fokus-utama">
+            <span className="beranda-fokus-ikon" aria-hidden="true">
+              <IkonSorotan size={20} />
+            </span>
+            <div className="beranda-fokus-teks">
+              <span className="beranda-fokus-label">
+                {sorotanHari.jenis}
+                {sorotanHari.waktu ? ` · ${jamTitik(sorotanHari.waktu)}` : ''}
+              </span>
+              <h2 id="judul-sorotan">{sorotanHari.judul}</h2>
+            </div>
+          </div>
+          <div className="beranda-fokus-aksi">
+            <span className="beranda-fokus-chip">{dueTodayCount} jatuh tempo hari ini</span>
+            <Link href="/hari-ini" className="beranda-fokus-tombol">
+              Buka hari ini
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+      )}
 
       <form className="beranda-tambah" onSubmit={kirimTambahCepat}>
         <div className="beranda-tambah-bar">
@@ -382,19 +442,19 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
           </Button>
         </div>
         <div className="beranda-tambah-hints" id="beranda-tambah-petunjuk">
-          <span className="tambah-hint-item">
+          <span className="tambah-hint-item is-nama">
             <span className="tambah-hint-code">@nama</span> penanggung jawab
           </span>
           <span className="tambah-hint-sep" aria-hidden="true">·</span>
-          <span className="tambah-hint-item">
+          <span className="tambah-hint-item is-proyek">
             <span className="tambah-hint-code">#proyek</span> kode
           </span>
           <span className="tambah-hint-sep" aria-hidden="true">·</span>
-          <span className="tambah-hint-item">
+          <span className="tambah-hint-item is-prioritas">
             <span className="tambah-hint-code">!tinggi</span> prioritas
           </span>
           <span className="tambah-hint-sep" aria-hidden="true">·</span>
-          <span className="tambah-hint-item">
+          <span className="tambah-hint-item is-tenggat">
             <span className="tambah-hint-code">besok</span> tenggat
           </span>
         </div>
@@ -748,15 +808,6 @@ export function Dashboard({ data, preferenceScope = '' }: { data: Workspace; pre
         <KasBanding keadaan={kas} />
         <ModulUsahaHarian />
       </div>
-
-      {/* ── Prinsip Kerja (Volingo style "Konsistensi adalah kuncinya") ── */}
-      <section className="modul beranda-kutipan" aria-label="Prinsip kerja">
-        <small className="kutipan-label">PRINSIP KERJA KOPERASI</small>
-        <h3 className="kutipan-judul">Konsistensi dan ketelitian adalah kuncinya.</h3>
-        <p className="kutipan-teks">
-          Pencatatan kas yang rapi, stok barang yang selalu terkontrol, dan komunikasi terbuka dengan anggota adalah fondasi kemajuan koperasi desa kita.
-        </p>
-      </section>
 
       {pesan && <Toast message={pesan} />}
 

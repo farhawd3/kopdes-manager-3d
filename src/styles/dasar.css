@@ -20,16 +20,16 @@ body {
 h1, h2, h3, h4 {
   margin: 0;
   color: var(--ink-heading);
-  font-family: var(--font-sans);
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 650;
   line-height: var(--lh-tight);
   letter-spacing: -0.025em;
   text-wrap: balance;
 }
 h1 { font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.02em; }
 h2 { font-size: var(--fs-h2); }
-h3 { font-size: var(--fs-h3); }
-h4 { font-size: var(--fs-body); }
+h3 { font-size: var(--fs-h3); font-family: var(--font-sans); font-weight: 650; }
+h4 { font-size: var(--fs-body); font-family: var(--font-sans); }
 p { margin: 0; text-wrap: pretty; }
 small { font-size: var(--fs-meta); }
 strong, b { font-weight: 600; }
@@ -74,11 +74,14 @@ img, svg { flex-shrink: 0; }
 .ui-card {
   position: relative;
   min-width: 0;
-  padding: 18px;
+  padding: 22px;
   border: 1px solid var(--kartu-garis);
   border-radius: var(--r-card);
   background: var(--surface);
-  box-shadow: none;
+  box-shadow: var(--shadow-sm);
+}
+@media (max-width: 767px) {
+  .card, .ui-card { padding: 18px; }
 }
 .ui-card-header,
 .section-head {

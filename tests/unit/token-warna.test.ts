@@ -17,16 +17,16 @@ const kontras = (a: string, b: string) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-it('aksen dan tinta mengikuti palet Workbench', () => {
+it('aksen dan tinta mengikuti palet Indigo Studio', () => {
   const terang = blok(':root');
   expect(nilai(terang, '--brand')).toBe('#4f46e5');
   expect(nilai(terang, '--brand-hover')).toBe('#4338ca');
   expect(nilai(terang, '--brand-soft')).toBe('#eef0ff');
-  expect(nilai(terang, '--canvas')).toBe('#f7f8fa');
-  expect(nilai(terang, '--ink-heading')).toBe('#101828');
-  expect(nilai(terang, '--ink-muted')).toBe('#5b6472');
-  expect(nilai(terang, '--rel-bg')).toBe('#0e1015');
-  expect(terang).toMatch(/--r-card:\s*12px/);
+  expect(nilai(terang, '--canvas')).toBe('#f4f6fb');
+  expect(nilai(terang, '--ink-heading')).toBe('#111527');
+  expect(nilai(terang, '--ink-muted')).toBe('#5a6275');
+  expect(nilai(terang, '--rel-bg')).toBe('#15142b');
+  expect(terang).toMatch(/--r-card:\s*16px/);
 });
 
 it('teks utama terbaca di kedua tema', () => {

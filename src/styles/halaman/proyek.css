@@ -7,8 +7,11 @@
 .projects-intro-banner { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 18px 0 4px; }
 .projects-intro-banner p { margin-top: 6px; color: var(--ink-muted); }
 .projects-kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.project-kpi-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow); }
-.kpi-icon-wrap { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 13px; background: var(--brand-soft); color: var(--brand); }
+.project-kpi-card { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--surface); box-shadow: var(--shadow-sm); }
+.kpi-icon-wrap { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border: 1px solid var(--tint-indigo-line); border-radius: 13px; background: var(--tint-indigo-bg); color: var(--tint-indigo-ink); }
+.project-kpi-card:nth-child(2) .kpi-icon-wrap { border-color: var(--tint-amber-line); background: var(--tint-amber-bg); color: var(--tint-amber-ink); }
+.project-kpi-card:nth-child(3) .kpi-icon-wrap { border-color: var(--tint-teal-line); background: var(--tint-teal-bg); color: var(--tint-teal-ink); }
+.project-kpi-card:nth-child(4) .kpi-icon-wrap { border-color: var(--tint-violet-line); background: var(--tint-violet-bg); color: var(--tint-violet-ink); }
 .kpi-info { display: grid; line-height: 1.2; }
 .kpi-info strong { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .kpi-info span, .kpi-info small { color: var(--ink-muted); font-size: 12.5px; }
@@ -19,8 +22,13 @@
 .btn-clear-search { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); }
 .project-status-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: var(--r-full); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm); overflow-x: auto; }
 .project-status-tabs .ui-btn { min-height: 34px; padding: 0 16px; border: 0; border-radius: var(--r-full); background: transparent; color: var(--ink-muted); font-size: 13px; font-weight: 600; box-shadow: none; transition: all var(--dur-fast); }
-.project-status-tabs .ui-btn:hover { background: var(--surface-2); color: var(--ink); }
-.project-status-tabs .ui-btn.is-active { background: var(--ink-heading); color: var(--surface); box-shadow: var(--shadow-sm); }
+.project-status-tabs .ui-btn:hover { background: var(--brand-soft); color: var(--brand-ink); }
+.project-status-tabs .ui-btn.is-active {
+  background-color: var(--brand-isi);
+  background-image: var(--grad-brand);
+  color: var(--on-brand);
+  box-shadow: var(--shadow-brand);
+}
 .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
 /* Kartu proyek Taskflow (Volingo Style Module Card) */
@@ -34,7 +42,7 @@
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: var(--r-card, 20px);
-  background: var(--surface);
+  background: linear-gradient(165deg, color-mix(in srgb, var(--proj-bg) 58%, var(--surface)) 0%, var(--surface) 38%);
   color: inherit;
   text-decoration: none;
   box-shadow: var(--shadow-sm);
@@ -97,12 +105,13 @@
 .project-card .kartu-pekerjaan-sampul {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--brand-soft);
-  border: 1px solid var(--brand-soft-border);
-  color: var(--brand);
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: var(--proj-bg);
+  border: 1px solid color-mix(in srgb, var(--proj) 22%, transparent);
+  color: var(--proj);
+  box-shadow: var(--shadow-sm);
 }
 .project-compact-title {
   font-size: 16px;

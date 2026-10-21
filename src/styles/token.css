@@ -1,97 +1,129 @@
 /*
-  Token sistem gaya Kopdes — Workbench.
-  Ruang kerja netral dan presisi seperti alat manajemen tugas profesional:
-  rel gelap, kanvas abu sejuk, permukaan putih, garis rambut 1px, sudut 8–12 px,
-  dan satu aksen indigo. Warna status tetap semantik dan selalu disertai teks.
+  Token sistem gaya Kopdes — Indigo Studio.
+  Ruang kerja berlapis seperti alat manajemen tugas profesional: rel indigo tua
+  dengan cahaya ungu, kanvas abu sejuk, panel putih berbayang lembut, dan aksen
+  indigo–violet. Warna status tetap semantik dan selalu disertai teks.
   Semua kombinasi teks lolos standar kontras WCAG AA 4.5:1.
 */
 :root {
   color-scheme: light;
-  --scrim: rgba(16, 24, 40, 0.45);
+  --scrim: rgba(17, 21, 39, 0.48);
   /* Isi di atas warna merek/status, kilau merek, sinyal kuning, jalur Gantt, toast */
   --on-brand: #fff;
-  --brand-bright: #818cf8;
+  --brand-bright: #a5b4fc;
   --sinyal: #f59e0b;
-  --jalur-rencana: #eef0ff;
-  --titik-rencana: #c7cbff;
+  --jalur-rencana: #edefff;
+  --titik-rencana: #b9bdfb;
   --titik-selesai: #4f46e5;
-  --toast-bg: #101828;
+  --toast-bg: #14172b;
   --toast-fg: #fff;
-  --toast-aksi: #a5b4fc;
+  --toast-aksi: #c7d2fe;
 
-  /* Huruf: huruf kerja netral untuk isi, huruf berkarakter hanya untuk judul dan merek */
+  /* Huruf: huruf kerja netral untuk isi, huruf berkarakter untuk judul dan merek */
   --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', var(--font-sans);
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-  --fs-title: 22px;
-  --fs-h2: 15px;
-  --fs-h3: 14px;
-  --fs-body: 13.5px;
-  --fs-meta: 12px;
-  --fs-cap: 11px;
-  --lh-tight: 1.25;
-  --lh-body: 1.5;
+  --fs-title: 24px;
+  --fs-h2: 17px;
+  --fs-h3: 15px;
+  --fs-body: 14px;
+  --fs-meta: 12.5px;
+  --fs-cap: 11.5px;
+  --lh-tight: 1.22;
+  --lh-body: 1.55;
 
-  /* Rel navigasi gelap seperti alat kerja desktop */
-  --rel-bg: #0e1015;
-  --rel-surface: #14171e;
-  --rel-fg: #e6e8ef;
-  --rel-muted: #8a92a6;
-  --rel-line: #232732;
-  --rel-active-bg: #1c2130;
+  /* Rel navigasi indigo tua dengan cahaya ungu di puncak */
+  --rel-bg: #15142b;
+  --rel-surface: #1d1b38;
+  --rel-fg: #e9ebfa;
+  --rel-muted: #a6aac4;
+  --rel-line: #2a2748;
+  --rel-active-bg: linear-gradient(135deg, #4f46e5 0%, #6d28d9 100%);
   --rel-active-fg: #ffffff;
+  --rel-glow: rgba(124, 58, 237, 0.4);
 
   /* Penanda ruang (dipakai sebagai titik halus, bukan latar halaman) */
   --lantai-kerja: #6366f1;
-  --lantai-kerja-tepi: #e4e7ec;
+  --lantai-kerja-tepi: #e4e8f2;
   --lantai-koperasi: #d97706;
-  --lantai-koperasi-tepi: #e4e7ec;
+  --lantai-koperasi-tepi: #e4e8f2;
   --lantai-catatan: #8b5cf6;
-  --lantai-catatan-tepi: #e4e7ec;
-  --lantai-usaha: #0891b2;
-  --lantai-usaha-tepi: #e4e7ec;
+  --lantai-catatan-tepi: #e4e8f2;
+  --lantai-usaha: #0f766e;
+  --lantai-usaha-tepi: #e4e8f2;
   --lantai-dunia: #0284c7;
-  --lantai-dunia-tepi: #e4e7ec;
+  --lantai-dunia-tepi: #e4e8f2;
   --lantai-pengaturan: #667085;
-  --lantai-pengaturan-tepi: #e4e7ec;
+  --lantai-pengaturan-tepi: #e4e8f2;
   --lantai: var(--lantai-kerja);
   --lantai-tepi: var(--lantai-kerja-tepi);
   --lantai-garis: var(--line);
 
-  /* Permukaan: kanvas abu sejuk, panel putih, garis rambut */
-  --canvas: #f7f8fa;
-  --canvas-deep: #eef1f5;
+  /* Permukaan: kanvas abu sejuk berkilau ungu, panel putih, garis rambut */
+  --canvas: #f4f6fb;
+  --canvas-deep: #e9edf7;
   --surface: #ffffff;
-  --surface-2: #f9fafb;
-  --surface-3: #f2f4f7;
+  --surface-2: #f7f8fd;
+  --surface-3: #eef1fa;
   --wall: var(--canvas);
   --wall-deep: var(--canvas-deep);
 
   /* Tinta */
-  --ink: #344054;
-  --ink-heading: #101828;
-  --ink-muted: #5b6472;
-  --ink-subtle: #667085;
+  --ink: #333a4d;
+  --ink-heading: #111527;
+  --ink-muted: #5a6275;
+  --ink-subtle: #626a7d;
   --ink-inverse: #ffffff;
 
   /* Garis */
-  --line: #e4e7ec;
-  --line-strong: #d0d5dd;
+  --line: #e4e8f2;
+  --line-strong: #cfd6e6;
 
-  /* Aksen indigo tunggal */
+  /* Aksen indigo–violet */
   --brand: #4f46e5;
   --brand-hover: #4338ca;
   --brand-press: #3730a3;
   --brand-soft: #eef0ff;
   --brand-soft-2: #e0e3ff;
-  --brand-soft-border: #c7cbff;
-  --brand-ink: #3730a3;
-  /* Isian yang memuat teks putih (kontras tinggi 6.3:1) */
+  --brand-soft-border: #c9cdfd;
+  --brand-ink: #4338ca;
+  --violet: #6d28d9;
+  --violet-soft: #f4edff;
+  --violet-line: #ddd0fe;
+  /* Isian yang memuat teks putih (kontras tinggi) */
   --brand-isi: #4f46e5;
   --brand-isi-hover: #4338ca;
   --brand-text: #ffffff;
   --brand-contrast: #ffffff;
-  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.22);
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.2);
+
+  /* Warna fungsional untuk ubin ikon dan penanda modul */
+  --tint-indigo-bg: #e8eaff;
+  --tint-indigo-ink: #4338ca;
+  --tint-indigo-line: #d5d8fe;
+  --tint-violet-bg: #f2e8ff;
+  --tint-violet-ink: #6d28d9;
+  --tint-violet-line: #e2d5fe;
+  --tint-amber-bg: #fff3d6;
+  --tint-amber-ink: #b45309;
+  --tint-amber-line: #fde3b8;
+  --tint-teal-bg: #ddf8f0;
+  --tint-teal-ink: #0f766e;
+  --tint-teal-line: #b9eee4;
+  --tint-rose-bg: #ffe6ec;
+  --tint-rose-ink: #be123c;
+  --tint-rose-line: #fbd0da;
+  --tint-sky-bg: #e2f0ff;
+  --tint-sky-ink: #0369a1;
+  --tint-sky-line: #c7e4fb;
+
+  /* Gradien merek dan sorotan */
+  --grad-brand: linear-gradient(135deg, #4f46e5 0%, #6d28d9 100%);
+  --grad-brand-soft: linear-gradient(135deg, #eef0ff 0%, #f6efff 100%);
+  --grad-sidebar: radial-gradient(520px 320px at 18% 0%, var(--rel-glow), transparent 68%),
+    radial-gradient(380px 300px at 100% 22%, rgba(79, 70, 229, 0.3), transparent 72%),
+    linear-gradient(180deg, #191734 0%, #141227 58%, #100f20 100%);
+  --grad-fokus: linear-gradient(120deg, #312e81 0%, #4f46e5 48%, #6d28d9 100%);
 
   /* Kayu hangat (dipakai grafik dan aksen sekunder) */
   --wood: #fef3c7;
@@ -100,47 +132,48 @@
   --wood-soft: #fffbeb;
 
   /* Status semantik */
-  --ok: #067647;
-  --ok-bg: #ecfdf3;
-  --ok-line: #abefc6;
-  --late: #b42318;
-  --late-bg: #fef3f2;
-  --late-line: #fecdca;
-  --warn: #b54708;
+  --ok: #047857;
+  --ok-bg: #ecfdf5;
+  --ok-line: #a7f3d0;
+  --late: #be123c;
+  --late-bg: #fff1f3;
+  --late-line: #fbd0da;
+  --warn: #b45309;
   --warn-bg: #fffaeb;
-  --warn-line: #fedf89;
+  --warn-line: #fde68a;
   --info: var(--brand-ink);
   --info-bg: var(--brand-soft);
-  --neutral-bg: #f2f4f7;
+  --neutral-bg: #eef1fa;
 
-  /* Bentuk dan bayangan: tegas, tipis, tanpa efek mengambang */
+  /* Bentuk dan bayangan: kartu berlapis lembut, bukan datar */
   --lempeng-tepi: 0;
-  --lempeng-radius: 12px;
-  --lempeng-bayang: 0 1px 2px rgba(16, 24, 40, 0.04);
-  --r-xs: 4px;
-  --r-sm: 6px;
-  --r-md: 8px;
-  --r-lg: 10px;
-  --r-card: 12px;
-  --r-xl: 12px;
+  --lempeng-radius: 16px;
+  --lempeng-bayang: 0 1px 2px rgba(17, 21, 39, 0.04), 0 10px 28px -22px rgba(17, 21, 39, 0.28);
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-card: 16px;
+  --r-xl: 20px;
   --r-full: 999px;
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.04);
-  --shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 8px 24px -12px rgba(16, 24, 40, 0.12);
-  --shadow-md: 0 8px 24px -8px rgba(16, 24, 40, 0.16);
-  --shadow-lg: 0 24px 48px -12px rgba(16, 24, 40, 0.22);
-  --shadow-dock: 0 16px 40px -12px rgba(16, 24, 40, 0.28);
+  --shadow-sm: 0 1px 2px rgba(17, 21, 39, 0.04), 0 6px 18px -14px rgba(17, 21, 39, 0.22);
+  --shadow: 0 2px 4px rgba(17, 21, 39, 0.04), 0 16px 36px -22px rgba(17, 21, 39, 0.26);
+  --shadow-md: 0 10px 28px -12px rgba(17, 21, 39, 0.24);
+  --shadow-lg: 0 28px 64px -20px rgba(17, 21, 39, 0.32);
+  --shadow-brand: 0 10px 24px -12px rgba(79, 70, 229, 0.7);
+  --shadow-dock: 0 16px 40px -12px rgba(17, 21, 39, 0.28);
 
   /* Gerak */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-pegas: cubic-bezier(0.34, 1.4, 0.64, 1);
-  --dur-fast: 120ms;
-  --dur: 180ms;
+  --dur-fast: 130ms;
+  --dur: 200ms;
 
   /* Tata letak */
-  --sidebar-w: 264px;
-  --topbar-h: 60px;
-  --page-max: 1480px;
-  --gutter: 24px;
+  --sidebar-w: 272px;
+  --topbar-h: 68px;
+  --page-max: 1500px;
+  --gutter: 28px;
   --touch: 44px;
   --dock-h: 64px;
 
@@ -148,25 +181,25 @@
   --kartu-garis: var(--line);
 
   /* Ikon dua nada netral */
-  --ikon-isi: #f2f4f7;
+  --ikon-isi: #eef1fa;
   --ikon-garis-a: #475467;
-  --ikon-garis-b: #101828;
-  --ikon-bayang: rgba(16, 24, 40, 0.08);
+  --ikon-garis-b: #111527;
+  --ikon-bayang: rgba(17, 21, 39, 0.08);
 
   /* Grafik */
   --grafik-aksen: #4f46e5;
   --grafik-oranye: #d97706;
-  --grafik-teal: #0e9384;
-  --grafik-pink: #c11574;
-  --grafik-ungu: #7a5af8;
+  --grafik-teal: #0f766e;
+  --grafik-pink: #db2777;
+  --grafik-ungu: #7c3aed;
   --grafik-redup: #98a2b3;
-  --grafik-dasar: #f2f4f7;
+  --grafik-dasar: #eef1fa;
 
   /* Alias untuk gaya inline di komponen */
   --success: var(--ok);
   --danger: var(--late);
   --tone-success-text: var(--ok);
-  --tone-success-accent: #12b76a;
+  --tone-success-accent: #10b981;
   --tone-warn-text: var(--warn);
   --tone-danger-text: var(--late);
   --tone-info-text: var(--brand-ink);
@@ -182,28 +215,28 @@
   --pastel-blue-text: var(--brand-ink);
   --pastel-blue-bg: var(--brand-soft);
   --pastel-blue-border: var(--brand-soft-border);
-  --pastel-purple-text: #5925dc;
-  --pastel-purple-bg: #f4f3ff;
-  --pastel-aksen: var(--brand-soft);
-  --pastel-aksen-ink: var(--brand-ink);
-  --pastel-pink: #fdf2fa;
-  --pastel-pink-ink: #c11574;
-  --pastel-mentega: #fffaeb;
-  --pastel-mentega-ink: #b54708;
-  --pastel-mint: #ecfdf3;
-  --pastel-mint-ink: #067647;
+  --pastel-purple-text: var(--tint-violet-ink);
+  --pastel-purple-bg: var(--tint-violet-bg);
+  --pastel-aksen: var(--tint-indigo-bg);
+  --pastel-aksen-ink: var(--tint-indigo-ink);
+  --pastel-pink: var(--tint-rose-bg);
+  --pastel-pink-ink: var(--tint-rose-ink);
+  --pastel-mentega: var(--tint-amber-bg);
+  --pastel-mentega-ink: var(--tint-amber-ink);
+  --pastel-mint: var(--tint-teal-bg);
+  --pastel-mint-ink: var(--tint-teal-ink);
   /* Sampul per hub */
-  --rail-w: 72px;
+  --rail-w: 76px;
   --sampul-pekerjaan: #eef0ff;
-  --sampul-pekerjaan-ink: #3730a3;
-  --sampul-catatan: #f4f3ff;
-  --sampul-catatan-ink: #5925dc;
-  --sampul-usaha: #ecfdff;
-  --sampul-usaha-ink: #0e7090;
-  --sampul-koperasi: #fffaeb;
-  --sampul-koperasi-ink: #b54708;
-  --sampul-dunia: #eff8ff;
-  --sampul-dunia-ink: #175cd3;
+  --sampul-pekerjaan-ink: #4338ca;
+  --sampul-catatan: #f4edff;
+  --sampul-catatan-ink: #6d28d9;
+  --sampul-usaha: #e9fbf7;
+  --sampul-usaha-ink: #0f766e;
+  --sampul-koperasi: #fff7e8;
+  --sampul-koperasi-ink: #b45309;
+  --sampul-dunia: #eaf4ff;
+  --sampul-dunia-ink: #0369a1;
 }
 
 :root.dark {
@@ -212,87 +245,118 @@
   --brand-bright: #a5b4fc;
   --jalur-rencana: #1d2140;
   --titik-rencana: #3730a3;
-  --titik-selesai: #818cf8;
-  --toast-bg: #f8fafc;
-  --toast-fg: #101828;
+  --titik-selesai: #a5b4fc;
+  --toast-bg: #f4f6ff;
+  --toast-fg: #111527;
   --toast-aksi: #4f46e5;
 
   /* Rel navigasi malam */
-  --rel-bg: #08090c;
-  --rel-surface: #10131a;
-  --rel-fg: #e6e8ef;
-  --rel-muted: #7f889c;
-  --rel-line: #1d212b;
-  --rel-active-bg: #1a1f2c;
+  --rel-bg: #0c0e1c;
+  --rel-surface: #14162a;
+  --rel-fg: #e9ebfa;
+  --rel-muted: #9aa0bd;
+  --rel-line: #22263c;
+  --rel-active-bg: linear-gradient(135deg, #5b53d6 0%, #7c5cf0 100%);
   --rel-active-fg: #ffffff;
+  --rel-glow: rgba(124, 58, 237, 0.42);
 
   /* Penanda ruang malam */
   --lantai-kerja: #818cf8;
-  --lantai-kerja-tepi: #232733;
+  --lantai-kerja-tepi: #252b40;
   --lantai-koperasi: #f59e0b;
-  --lantai-koperasi-tepi: #232733;
+  --lantai-koperasi-tepi: #252b40;
   --lantai-catatan: #a78bfa;
-  --lantai-catatan-tepi: #232733;
-  --lantai-usaha: #22d3ee;
-  --lantai-usaha-tepi: #232733;
+  --lantai-catatan-tepi: #252b40;
+  --lantai-usaha: #2dd4bf;
+  --lantai-usaha-tepi: #252b40;
   --lantai-dunia: #38bdf8;
-  --lantai-dunia-tepi: #232733;
+  --lantai-dunia-tepi: #252b40;
   --lantai-pengaturan: #98a2b3;
-  --lantai-pengaturan-tepi: #232733;
+  --lantai-pengaturan-tepi: #252b40;
   --lantai: var(--lantai-kerja);
   --lantai-tepi: var(--lantai-kerja-tepi);
   --lantai-garis: var(--line);
 
-  --canvas: #0a0c10;
-  --canvas-deep: #07080b;
-  --surface: #11141a;
-  --surface-2: #171b23;
-  --surface-3: #1e232d;
+  --canvas: #0b0d17;
+  --canvas-deep: #070812;
+  --surface: #121522;
+  --surface-2: #181c2c;
+  --surface-3: #202538;
   --wall: var(--canvas);
   --wall-deep: var(--canvas-deep);
 
-  --ink: #c9d0dc;
-  --ink-heading: #f4f6fa;
-  --ink-muted: #98a2b3;
-  --ink-subtle: #8b94a7;
+  --ink: #c9cfe3;
+  --ink-heading: #f4f6ff;
+  --ink-muted: #a3abc4;
+  --ink-subtle: #8e97b2;
 
-  --line: #232733;
-  --line-strong: #313747;
+  --line: #252b40;
+  --line-strong: #333a52;
 
-  --brand: #818cf8;
-  --brand-hover: #a5b4fc;
+  --brand: #8f8bff;
+  --brand-hover: #a5a1ff;
   --brand-press: #6366f1;
-  --brand-soft: #1b1f36;
-  --brand-soft-2: #252a4a;
-  --brand-soft-border: #363c63;
-  --brand-ink: #c7d2fe;
-  --brand-isi: #5b5bd6;
-  --brand-isi-hover: #6666d8;
-  --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.32);
+  --brand-soft: #1e1b3a;
+  --brand-soft-2: #2a2552;
+  --brand-soft-border: #3a3566;
+  --brand-ink: #c7c4ff;
+  --violet: #a78bfa;
+  --violet-soft: #281a45;
+  --violet-line: #432c6e;
+  --brand-isi: #5b53d6;
+  --brand-isi-hover: #6d5ce7;
+  --focus-ring: 0 0 0 3px rgba(143, 139, 255, 0.28);
+
+  --tint-indigo-bg: #1e1b3a;
+  --tint-indigo-ink: #c7c4ff;
+  --tint-indigo-line: #332e5e;
+  --tint-violet-bg: #281a45;
+  --tint-violet-ink: #d8c7ff;
+  --tint-violet-line: #432c6e;
+  --tint-amber-bg: #332306;
+  --tint-amber-ink: #fcd34d;
+  --tint-amber-line: #5e430b;
+  --tint-teal-bg: #062b26;
+  --tint-teal-ink: #7ef0d4;
+  --tint-teal-line: #0c4a40;
+  --tint-rose-bg: #3a1220;
+  --tint-rose-ink: #fda4b4;
+  --tint-rose-line: #64203a;
+  --tint-sky-bg: #0b2740;
+  --tint-sky-ink: #93c5fd;
+  --tint-sky-line: #14456b;
+
+  --grad-brand: linear-gradient(135deg, #5b53d6 0%, #7c5cf0 100%);
+  --grad-brand-soft: linear-gradient(135deg, #1e1b3a 0%, #281a45 100%);
+  --grad-sidebar: radial-gradient(520px 320px at 18% 0%, var(--rel-glow), transparent 68%),
+    radial-gradient(380px 300px at 100% 22%, rgba(79, 70, 229, 0.28), transparent 72%),
+    linear-gradient(180deg, #10121f 0%, #0c0e1c 58%, #090a14 100%);
+  --grad-fokus: linear-gradient(120deg, #1e1b4b 0%, #3730a3 48%, #4c1d95 100%);
 
   --wood: #78350f;
   --wood-deep: #d97706;
   --wood-edge: #b45309;
   --wood-soft: #451a03;
 
-  --ok: #6ce9a6;
-  --ok-bg: #052e1c;
-  --ok-line: #085d3a;
-  --late: #fda29b;
-  --late-bg: #3b0d0c;
-  --late-line: #7a271a;
-  --warn: #fec84b;
-  --warn-bg: #3b2006;
-  --warn-line: #7a2e0e;
-  --neutral-bg: #1e232d;
+  --ok: #6ee7b7;
+  --ok-bg: #06281e;
+  --ok-line: #0b5138;
+  --late: #fda4b4;
+  --late-bg: #3a1220;
+  --late-line: #64203a;
+  --warn: #fcd34d;
+  --warn-bg: #332306;
+  --warn-line: #5e430b;
+  --neutral-bg: #202538;
 
   --lempeng-tepi: 0;
-  --lempeng-bayang: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.6);
-  --shadow-dock: 0 16px 40px -12px rgba(0, 0, 0, 0.7);
+  --lempeng-bayang: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -22px rgba(0, 0, 0, 0.8);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 18px -14px rgba(0, 0, 0, 0.7);
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.35), 0 16px 36px -22px rgba(0, 0, 0, 0.8);
+  --shadow-md: 0 10px 28px -12px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 28px 64px -20px rgba(0, 0, 0, 0.8);
+  --shadow-brand: 0 10px 24px -12px rgba(92, 83, 214, 0.65);
+  --shadow-dock: 0 16px 40px -12px rgba(0, 0, 0, 0.75);
 
   --kartu-garis: var(--line);
   --ikon-isi: rgba(129, 140, 248, 0.14);
@@ -300,42 +364,43 @@
   --ikon-garis-b: #e0e7ff;
   --ikon-bayang: rgba(0, 0, 0, 0.4);
 
-  --grafik-aksen: #818cf8;
+  --grafik-aksen: #8f8bff;
   --grafik-oranye: #fdb022;
   --grafik-teal: #2ed3b7;
   --grafik-pink: #f670c7;
   --grafik-ungu: #a48afb;
   --grafik-redup: #667085;
-  --grafik-dasar: #1e232d;
+  --grafik-dasar: #202538;
   --tone-success-accent: #32d583;
-  --pastel-purple-text: #d9d6fe;
-  --pastel-purple-bg: #2f1c6a;
-  --pastel-aksen: #1b1f36;
-  --pastel-aksen-ink: #c7d2fe;
-  --pastel-pink: #4e0d30;
-  --pastel-pink-ink: #fcceee;
-  --pastel-mentega: #3b2006;
-  --pastel-mentega-ink: #fec84b;
-  --pastel-mint: #052e1c;
-  --pastel-mint-ink: #a6f4c5;
-  --sampul-pekerjaan: #1b1f36;
-  --sampul-pekerjaan-ink: #c7d2fe;
-  --sampul-catatan: #2f1c6a;
-  --sampul-catatan-ink: #d9d6fe;
-  --sampul-usaha: #083344;
-  --sampul-usaha-ink: #a5f3fc;
-  --sampul-koperasi: #3b2006;
-  --sampul-koperasi-ink: #fec84b;
-  --sampul-dunia: #172554;
-  --sampul-dunia-ink: #bfdbfe;
+  --pastel-purple-text: #d8c7ff;
+  --pastel-purple-bg: #281a45;
+  --pastel-aksen: #1e1b3a;
+  --pastel-aksen-ink: #c7c4ff;
+  --pastel-pink: #3a1220;
+  --pastel-pink-ink: #fda4b4;
+  --pastel-mentega: #332306;
+  --pastel-mentega-ink: #fcd34d;
+  --pastel-mint: #062b26;
+  --pastel-mint-ink: #7ef0d4;
+  --sampul-pekerjaan: #1e1b3a;
+  --sampul-pekerjaan-ink: #c7c4ff;
+  --sampul-catatan: #281a45;
+  --sampul-catatan-ink: #d8c7ff;
+  --sampul-usaha: #062b26;
+  --sampul-usaha-ink: #7ef0d4;
+  --sampul-koperasi: #332306;
+  --sampul-koperasi-ink: #fcd34d;
+  --sampul-dunia: #0b2740;
+  --sampul-dunia-ink: #93c5fd;
 }
 
 @media (max-width: 767px) {
   :root {
-    --fs-title: 19px;
+    --fs-title: 20px;
     --gutter: 16px;
-    --topbar-h: 56px;
+    --topbar-h: 58px;
     --lempeng-tepi: 0;
-    --lempeng-bayang: 0 1px 2px rgba(16, 24, 40, 0.04);
+    --lempeng-bayang: 0 1px 2px rgba(17, 21, 39, 0.04), 0 8px 20px -18px rgba(17, 21, 39, 0.24);
+    --sidebar-w: 0px;
   }
 }

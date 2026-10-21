@@ -20,6 +20,7 @@ import {
   ArrowUpRight,
   ChevronDown,
   PanelLeftOpen,
+  Users,
 } from 'lucide-react';
 import { usePreference } from '@/lib/usePreference';
 import { WorkspaceSearch } from '@/features/workspace/WorkspaceSearch';
@@ -205,8 +206,13 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
         </nav>
         {/* Tim adalah sumber daftar penanggung jawab tugas; satu klik ke halaman Tim. */}
         <section className="shell-tim" aria-labelledby="shell-tim-judul">
-          <strong id="shell-tim-judul">Tim</strong>
-          <p>Daftar staf untuk penanggung jawab tugas.</p>
+          <span className="shell-tim-ikon" aria-hidden="true">
+            <Users size={17} />
+          </span>
+          <span className="shell-tim-teks">
+            <strong id="shell-tim-judul">Tim</strong>
+            <p>Daftar staf untuk penanggung jawab tugas.</p>
+          </span>
           <Link href="/tim" className="takik-aksi" aria-label="Kelola tim" title="Kelola tim">
             <ArrowUpRight size={18} aria-hidden="true" />
           </Link>
