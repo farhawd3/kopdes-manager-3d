@@ -13,6 +13,11 @@ mengikat; jangan sekadar mewarnai ulang.
 BACA DULU, berurutan:
 1. AGENTS.md — aturan proses, keamanan, Git, pencatatan (wajib dipatuhi).
 2. docs/REDESAIN-TOTAL.md — satu-satunya acuan gaya dan urutan paket.
+   Acuan visual: prototipe docs/desain/redesain-total.html (jalankan
+   `python -m http.server 3300 -d docs/desain`, buka /redesain-total.html,
+   lihat semua halaman, terang dan gelap, lebar 1440 dan 375). Tiru tampilan
+   dan perilakunya dengan komponen React dan CSS proyek; jangan menyalin
+   JavaScript prototipe mentah.
 3. docs/LANJUTAN-AI.md — keadaan terakhir.
 4. .agents/skills/ui-ux-kopdes/SKILL.md — jebakan CSS dan cara memeriksa.
 Abaikan semua berkas di docs/arsip/ dan not-use/.
@@ -32,7 +37,8 @@ ATURAN:
   hanya lewat src/components/ui. h1 hanya di kepala kerangka.
 - Area sentuh 44 px, fokus keyboard terlihat, status selalu bertulisan,
   hormati prefers-reduced-motion dan safe area.
-- Tanpa dependensi baru kecuali disebut di REDESAIN-TOTAL. Grafik = SVG sendiri.
+- Tanpa dependensi baru kecuali disebut di REDESAIN-TOTAL (huruf Figtree via
+  @fontsource). Grafik = SVG sendiri.
 - Bila mengganti nama kelas yang dipakai tes atau scripts/audit-tampilan.mjs,
   perbarui tes/selektor di commit yang sama, jangan menghapus maksud tesnya.
 
@@ -70,5 +76,5 @@ LAPORAN AKHIR (bahasa Indonesia, ringkas):
 
 ## Catatan untuk pemilik
 
-- Satu sesi DeepSeek = satu paket. Paket 1 (fondasi + pemilih palet) dulu; setelah itu buka demo (`npm run dev:demo -- -p 3200`), coba lima palet di menu profil atau Pengaturan › Tampilan, lalu beri tahu pilihan Anda di sesi paket 9 (atau kapan saja) untuk dijadikan bawaan.
+- Satu sesi DeepSeek = satu paket, mulai dari paket 1. Warna aksen bisa Anda pilih sekarang di prototipe (tombol **Tampilan** di kanan bawah); beri tahu pilihan Anda kapan saja untuk dijadikan bawaan (paling lambat paket 9).
 - Bila DeepSeek mengusulkan mengubah fungsi, rute, data, atau Dunia 3D, tolak: redesain ini hanya tampilan.

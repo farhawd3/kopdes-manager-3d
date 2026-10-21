@@ -44,8 +44,8 @@ Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya d
 - Periksa 360, 768, 1024, 1440 px. Halaman operasional memakai navigasi bawah/rel/sidebar; Dunia Koperasi memakai bilah dan panel sendiri.
 - Area sentuh minimal 44 px, fokus keyboard, label form, status memakai teks selain warna.
 - Tabel/Gantt bergulir dalam kontainer atau berubah menjadi kartu di area sempit; hormati reduced-motion dan safe area.
-- Tampilan web sedang **dirombak total** (arahan pemilik 21 Oktober 2026): satu-satunya acuan gaya adalah `docs/REDESAIN-TOTAL.md`. Gaya lama (Workbench, Indigo Studio, Lantai Dunia, Lavender Lekuk, Merah Putih, Taskflow) tidak mengikat; dokumennya diarsipkan di `docs/arsip/`.
-  - Warna aksen belum ditetapkan: web menyediakan pemilih palet (lima pilihan) agar pemilik memilih di demo; bawaan ditetapkan setelah itu dan dicatat di `DESIGN.md` baru.
+- Tampilan web sedang **dirombak total** (arahan pemilik 21 Oktober 2026): satu-satunya acuan gaya adalah `docs/REDESAIN-TOTAL.md` dengan prototipe visual `docs/desain/redesain-total.html` (acuan ClickUp/Monday, berani dan berwarna). Gaya lama (Workbench, Indigo Studio, Lantai Dunia, Lavender Lekuk, Merah Putih, Taskflow) tidak mengikat; dokumennya diarsipkan di `docs/arsip/`.
+  - Warna aksen belum ditetapkan: prototipe dan web menyediakan pemilih aksen (lima pilihan) agar pemilik memilih; bawaan ditetapkan setelah itu dan dicatat di `DESIGN.md` baru.
   - Tetap berlaku: sistem gaya di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); warna mentah hanya di `token.css`, tanpa `!important` (`npm run lint:ui`); kontrol form lewat `src/components/ui` (`npm run check:ui`); navigasi bersumber `src/components/layout/navigasi.ts`; `h1` hanya di kepala kerangka, isi halaman memakai `h2`.
   - Dunia 3D memakai `monitoring.css` sendiri dan tidak termasuk redesain web.
 - Hindari angka operasional palsu, tombol dekoratif, dan slogan. Buku kas hanya uang masuk/keluar tercatat, bukan saldo atau laba.

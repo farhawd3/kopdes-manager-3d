@@ -34,7 +34,7 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 ## Brand Commitments
 
 - Nama produk: Kopdes Manager 3D; di dalam aplikasi: "Dunia Koperasi" untuk diorama.
-- Web sedang dirombak total menjadi task manager yang bersih, rapi, dan profesional (arahan pemilik 21 Oktober 2026); arah di `docs/REDESAIN-TOTAL.md`. Gaya lama tidak mengikat. Warna aksen dipilih pemilik lewat pemilih palet di demo.
+- Web sedang dirombak total menjadi task manager yang bersih, rapi, dan profesional (arahan pemilik 21 Oktober 2026); arah di `docs/REDESAIN-TOTAL.md`. Gaya lama tidak mengikat. Acuan rasa yang dipilih pemilik: **ClickUp / Monday, berani dan berwarna** (warna menandai ruang, proyek, status, prioritas, dan grafik; bukan hiasan). Acuan visual: prototipe `docs/desain/redesain-total.html`. Warna aksen dipilih pemilik dari lima pilihan.
 - Grafik dipakai bila menjawab pertanyaan kerja (berapa, membaik atau tidak, apa yang perlu dikerjakan), selalu dengan ringkasan teks; tidak pernah menampilkan angka contoh atau nol palsu.
 - Tampilan seimbang di semua perangkat: kontrol datar dan padat; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
 - Bahasa UI langsung, ringkas, tanpa slogan motivasi.

@@ -2,6 +2,14 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Prototipe redesain berwarna ala ClickUp/Monday — 21 Oktober 2026
+
+- Alasan: pemilik ingin melihat tampilan baru secara nyata, bebas dari desain lama. Lima arah yang ditawarkan (ordner, buku kas, papan stasiun, monokrom, standar) dinilai "terlalu kuno"; pemilik memilih acuan ClickUp/Monday dengan nuansa berani dan berwarna.
+- Perubahan:
+  - Prototipe interaktif `docs/desain/redesain-total.html` (data contoh): sidebar putih dengan ruang berwarna, Beranda (ubin KPI berwarna, tambah cepat, fokus hari ini, donat status, agenda, beban kerja tim, progres proyek, uang masuk & keluar), Hari ini, Tugas (Daftar berkelompok, Papan, Kalender) dengan sel status berwarna yang bisa diklik, Proyek, Agenda mingguan, Buku kas, laci detail tugas, palet perintah Ctrl K, pemilih lima aksen, tema gelap, dan tata letak ponsel dengan dok bawah.
+  - `docs/REDESAIN-TOTAL.md`, `docs/PROMPT-DEEPSEEK.md`, AGENTS, dan PRODUCT diselaraskan: prototipe menjadi acuan visual, token/warna/huruf (Figtree) mengikuti prototipe.
+- Verifikasi: prototipe diperiksa di peramban pada 1440×900 (semua halaman, terang dan gelap) dan 375×812 (Beranda, Tugas); tanpa galat konsol; tanpa gulir samping di 375 px; palet warna grafik lolos validator dataviz (terang: satu peringatan CVD, diatasi label langsung). Tidak ada perubahan kode aplikasi, jadi tes/build tidak dijalankan.
+- Belum: tinjauan desain terpisah, tampilan tablet 768/1024, halaman selain enam halaman prototipe (ditandai "belum dibuat di prototipe"), rutin harian dan pita minggu belum ada di prototipe, dan implementasi paket 1–9.
 ## Lepas kunci gaya lama dan siapkan brief redesain total — 21 Oktober 2026
 
 - Alasan: arahan pemilik untuk merombak total web menjadi task manager yang bersih, rapi, dan profesional dengan grafik yang mudah dipahami, tanpa terikat desain lama; pekerjaan akan dijalankan dengan DeepSeek. Dokumen dan skill saling bertentangan (Workbench, Indigo Studio, Lantai Dunia, Lavender Lekuk) dan mengunci hex, huruf, serta struktur lama.

@@ -1,16 +1,18 @@
-# Redesain Total Web — "Meja Kerja Terang"
+# Redesain Total Web — "Ruang Kerja Berwarna"
 
-Tanggal: 21 Oktober 2026 · Status: **disetujui sebagai rencana, belum dikerjakan** · Cabang: `tampilan/redesain-total`
+Tanggal: 21 Oktober 2026 · Status: **arah dipilih pemilik, prototipe siap, kode belum dikerjakan** · Cabang: `tampilan/redesain-total`
 
-Arahan pemilik: rombak tampilan web secara total menjadi **task manager yang bersih, rapi, dan profesional**, fitur mudah dijangkau, dan memakai **grafik yang mudah dipahami**. Jangan terikat desain lama. Pemilik belum menentukan warna, jadi web menyediakan **pemilih palet** di demo; warna bawaan ditetapkan setelah pemilik mencoba.
+Arahan pemilik: rombak tampilan web secara total menjadi **task manager yang bersih, rapi, dan profesional**, fitur mudah dijangkau, dan memakai **grafik yang mudah dipahami**. Jangan terikat desain lama. Setelah melihat lima arah (ordner, buku kas, papan stasiun, monokrom, standar) pemilik menilai semuanya "terlalu kuno" lalu memilih **acuan ClickUp / Monday** dengan nuansa **berani dan berwarna**.
 
-Dokumen ini adalah **satu-satunya acuan gaya web**. Dokumen gaya lama (Lavender Lekuk, Lantai Dunia, Workbench) ada di `docs/arsip/` hanya sebagai riwayat. Pola fungsi halaman (apa isi tiap halaman, laci, saran, rute) tetap di [DESAIN-ANTARMUKA](DESAIN-ANTARMUKA.md). Prompt siap pakai untuk agen: [PROMPT-DEEPSEEK](PROMPT-DEEPSEEK.md).
+**Acuan visual utama: prototipe [`docs/desain/redesain-total.html`](desain/redesain-total.html).** Jalankan `python -m http.server 3300 -d docs/desain` lalu buka `http://localhost:3300/redesain-total.html`. Prototipe memuat Beranda, Hari ini, Tugas (Daftar/Papan/Kalender), Proyek, Agenda, Buku kas, laci detail tugas, palet perintah Ctrl K, tambah cepat, pemilih warna aksen, tema gelap, dan tata letak ponsel. Bila brief dan prototipe berbeda soal tampilan, **prototipe menang**; bila soal aturan (data, aksesibilitas, batas produk), **brief dan AGENTS menang**. Prototipe memakai data contoh dan JavaScript polos; jangan menyalin kodenya mentah, bangun ulang dengan komponen React dan CSS proyek.
+
+Dokumen gaya lama (Lavender Lekuk, Lantai Dunia, Workbench) ada di `docs/arsip/` hanya sebagai riwayat. Pola fungsi halaman tetap di [DESAIN-ANTARMUKA](DESAIN-ANTARMUKA.md). Prompt siap pakai untuk agen: [PROMPT-DEEPSEEK](PROMPT-DEEPSEEK.md).
 
 ---
 
 ## 1. Temuan pemeriksaan (demo :3200, 21 Oktober 2026)
 
-- Kode berisi checkpoint "Indigo Studio": rel navigasi ungu gelap bergradien, kartu hero gradien, glow. Bertentangan dengan dokumen lama dan terasa ramai, bukan alat kerja.
+- Kode berisi checkpoint "Indigo Studio": rel navigasi ungu gelap bergradien, kartu hero gradien, glow. Terasa ramai, bukan alat kerja.
 - **Beranda terlalu panjang** (±3.050 px di 1440×900, ±10 modul berurutan). Yang penting tenggelam.
 - **Label ubin terpotong** di lebar 800 px ("TERLAMB…", "JATUH TE…", "Perlu ditin…").
 - **Isi tidak tampil saat gulir cepat** (layar kosong di tengah Beranda); kemungkinan `src/components/ui/useMotionEntry.ts` menunggu IntersectionObserver.
@@ -20,67 +22,78 @@ Dokumen ini adalah **satu-satunya acuan gaya web**. Dokumen gaya lama (Lavender 
 
 ## 2. Konsep
 
-Mode **Operate**: manajer datang untuk menyelesaikan pekerjaan. Kanvas terang netral, panel putih bergaris rambut, **satu aksen** (dipilih pemilik), data lebih dulu, grafik kecil yang langsung menjawab tiga pertanyaan: *berapa*, *membaik atau tidak*, *apa yang harus dikerjakan*. Tidak ada gradien, glow, kartu pastel, ilustrasi hias, atau slogan. Kepribadian datang dari ketepatan: jarak rapi, angka tabular, status jelas.
+Mode **Operate**. Ruang kerja yang hidup dan berwarna seperti ClickUp/Monday, tetapi **warna selalu bekerja**: menandai ruang (Kerja, Catatan, Usaha, Koperasi, Dunia), proyek, status, prioritas, dan seri grafik. Bukan dasbor abu-abu satu aksen, bukan metafora benda lama, bukan gradien atau glow.
 
-Acuan rasa (bukan untuk ditiru): Linear, Todoist, Asana mode daftar — padat, tenang, cepat dipindai.
+Ciri yang wajib terbawa dari prototipe:
+- **Sidebar putih** dengan **ubin huruf berwarna per ruang** yang bisa dilipat dan langsung memuat semua halamannya.
+- **Sel status berisi warna penuh** ala Monday (Dikerjakan kuning, Menunggu ungu, Rencana abu, Selesai hijau) yang bisa diklik untuk mengganti status.
+- **Daftar tugas dikelompokkan per status** dengan kepala pil berwarna ala ClickUp; kolom penanggung jawab (avatar berwarna), tenggat ("Lewat 2 hari" merah, "Hari ini" kuning tua), prioritas (bendera berwarna + teks), proyek (cip berwarna).
+- **Ubin KPI berlatar warna lembut** dengan ikon berisi warna; seluruh ubin adalah tautan.
+- **Kartu proyek** dengan garis warna proyek di atas, ikon huruf, bilah progres tebal, tiga statistik, dan avatar tim.
+- **Grafik berwarna** yang selalu punya ringkasan kalimat dan tabel cadangan.
 
 ## 3. Token (`src/styles/token.css`, ditulis ulang)
 
-Tiga lapis: primitif (hanya di berkas ini) → semantik (dipakai CSS lain) → komponen bila perlu. Terang di `:root`, gelap di `:root.dark`, aksen di `:root[data-palet="…"]` dan `:root.dark[data-palet="…"]`.
+Tiga lapis: primitif (hanya di berkas ini) → semantik (dipakai CSS lain) → komponen bila perlu. Terang di `:root`, gelap di `:root.dark`, aksen di `:root[data-aksen="…"]` (dan kombinasi gelap). Nilai di bawah = nilai di prototipe.
 
 **Netral**
 
 | Token | Terang | Gelap |
 |---|---|---|
-| `--bg` (kanvas) | `#F8F9FB` | `#0B0D12` |
-| `--panel` | `#FFFFFF` | `#12151C` |
-| `--panel-2` (isian, hover, kepala tabel) | `#F3F4F6` | `#181C25` |
-| `--line` | `#E5E7EB` | `#262B36` |
-| `--line-strong` | `#D1D5DB` | `#353B48` |
-| `--text-1` (judul, isi utama) | `#111827` | `#F3F4F6` |
-| `--text-2` (isi sekunder) | `#4B5563` | `#C4C9D4` |
-| `--text-3` (keterangan) | `#6B7280` | `#9AA1AE` |
+| `--bg` (kanvas) | `#F5F6FA` | `#0E1018` |
+| `--panel` | `#FFFFFF` | `#161925` |
+| `--panel-2` (hover, kepala, kolom papan) | `#F0F2F8` | `#1D2130` |
+| `--panel-3` (trek progres) | `#E8EBF4` | `#252A3C` |
+| `--line` | `#E4E7F0` | `#2A2F43` |
+| `--line-2` | `#D3D8E6` | `#383E56` |
+| `--t1` (judul, isi utama) | `#151829` | `#F1F3FA` |
+| `--t2` (isi sekunder) | `#474D66` | `#C2C7DA` |
+| `--t3` (keterangan) | `#646B85` | `#9AA0B8` |
 
-**Aksen — lima palet untuk dipilih pemilik** (nilai awal; boleh disetel asal tes kontras lulus)
+**Aksen — lima pilihan** (pemilik memilih bawaan setelah mencoba; sementara `ungu`)
 
-| `data-palet` | Nama di UI | `--accent` terang | `--accent-hover` | `--accent-soft` | `--accent` gelap | `--accent-text` gelap | `--on-accent` |
-|---|---|---|---|---|---|---|---|
-| `biru` (bawaan sementara) | Biru tinta | `#1D4ED8` | `#1E40AF` | `#EFF4FF` | `#2563EB` | `#93B4FD` | putih |
-| `zamrud` | Zamrud | `#047857` | `#065F46` | `#ECFDF5` | `#047857` | `#6EE7B7` | putih |
-| `indigo` | Indigo | `#4F46E5` | `#4338CA` | `#EEF2FF` | `#4F46E5` | `#A5B4FC` | putih |
-| `grafit` | Grafit | `#18181B` | `#3F3F46` | `#F4F4F5` | `#E4E4E7` | `#E4E4E7` | `#18181B` di gelap, putih di terang |
-| `kunyit` | Kunyit tua | `#B45309` | `#92400E` | `#FFF7ED` | `#B45309` | `#FCD34D` | putih |
+| `data-aksen` | Nama | `--accent` | `--accent-h` | `--accent-soft` terang / gelap | `--accent-ink` terang / gelap |
+|---|---|---|---|---|---|
+| `ungu` | Ungu | `#6D3FE0` | `#5A2FC7` | `#F0EBFF` / `#2A2246` | `#5A2FC7` / `#BCA8FF` |
+| `biru` | Biru | `#2563EB` | `#1D4ED8` | `#EAF1FF` / `#1A2746` | `#1D4ED8` / `#9DBBFF` |
+| `hijau` | Hijau | `#047857` | `#065F46` | `#E3F5EC` / `#14302A` | `#047857` / `#74E0B4` |
+| `oranye` | Oranye | `#C2410C` | `#9A3412` | `#FFEEE3` / `#3A2318` | `#B13A0A` / `#FFB48A` |
+| `magenta` | Magenta | `#BE185D` | `#9D174D` | `#FDEAF2` / `#3A1A2C` | `#A3154F` / `#FF9FCB` |
 
-Setiap palet juga mendefinisikan `--accent-text` terang (= `--accent` atau lebih gelap), `--focus-ring` (aksen 40 % via `color-mix`), dan `--grafik-3` (lihat grafik). Teks di atas isi aksen **selalu** `--on-accent`.
+`--on-accent` selalu putih (semua isi aksen ≥ 4,5:1). `--fokus` = cincin aksen 45 %.
 
-**Status** (sama untuk semua palet, selalu bersama teks): `--ok` hijau, `--warn` kuning tua, `--late` merah, `--info` biru abu; masing-masing `-soft` untuk latar cip. Kontras teks ≥ 4,5:1 di atas `--panel` dan `-soft`.
+**Warna ruang**: Kerja `#7C3AED`, Catatan `#D97706`, Usaha `#16A34A`, Koperasi `#2563EB`, Dunia `#DB2777` (ubin huruf berteks putih).
 
-**Grafik**: `--grafik-1` = `--accent`; `--grafik-2` = slate netral (`#64748B` / gelap `#94A3B8`) untuk pembanding; `--grafik-3` ditentukan per palet agar berbeda rona dari aksen; `--grafik-grid` = `--line`. Distribusi status memakai token status.
+**Status tugas** (isi penuh + teks): Rencana `#64748B`/putih, Dikerjakan `#F5A524`/`#2A1A00`, Menunggu `#7C3AED`/putih, Selesai `#15803D`/putih. "Terlambat" bukan status, melainkan label tenggat merah `--lambat` (`#C81E1E`, gelap `#FF8A8A`); "Hari ini" `--hari` (`#9A5B00`, gelap `#FFC870`).
 
-**Bentuk & jarak**: radius `--r-sm 6px`, `--r-md 8px`, `--r-lg 10px`, `--r-full`; panel tanpa bayangan (garis 1 px saja); `--shadow-pop` hanya untuk menu, popover, dialog, dok ponsel. Jarak 4/8/12/16/24/32. Tinggi kontrol 36 px (desktop, pointer halus) dan ≥ 44 px untuk `pointer: coarse`.
+**Prioritas**: Tinggi `#DC2626`, Sedang `#D97706`, Rendah `#64748B` — ikon bendera berwarna + teks.
 
-**Huruf**: satu keluarga **Plus Jakarta Sans** (sudah lokal). Hapus `@fontsource-variable/bricolage-grotesque` dari `layout.tsx` dan `package.json`. Skala: `h1` 20 px/650, `h2` 16 px/600, isi 14 px/1,5, tabel padat 13 px, label 12 px/600. Angka `tabular-nums`. Tanpa label kecil di atas judul.
+**Warna proyek**: diambil berurutan dari palet grafik.
 
-**Hapus** grup sisa: `--lantai-*`, `--lempeng-*`, `--wood-*`, `--wall-*`, `--pastel-*`, `--grad-*`, `--tint-*`, `--violet-*`, `--sampul-*`, `--rel-*`. Agar tidak semua CSS pecah sekaligus, nama lama yang masih dipakai boleh sementara dipetakan ke token baru di blok "alias sementara" lalu dihapus di paket 9.
+**Grafik** (kategorikal, urutan tetap, lolos validator palet dataviz; selisih CVD terdekat butuh label langsung): terang `#2563EB, #D97706, #7C3AED, #16A34A, #DB2777, #0891B2`; gelap `#3B82F6, #D97706, #8B5CF6, #16A34A, #EC4899, #0891B2`. Uang masuk = seri 1, uang keluar = seri 2.
 
-## 4. Pemilih palet dan tema (permintaan pemilik)
+**Bentuk & jarak**: radius kartu 14 px, kontrol 8–10 px, pil 7 px; panel bergaris 1 px tanpa bayangan; `--shadow-pop` hanya untuk laci, palet perintah, popover, dok ponsel. Tinggi kontrol 38 px desktop, ≥ 44 px sentuh.
 
-- `src/app/layout.tsx`: skrip inline sekarang membaca `hub-theme` (bawaan `system`) dan sisa `hub-color-style` (bawaan `sky`). Ganti: `hub-theme` bawaan **`light`**; `hub-palet` → atribut `data-palet` di `<html>` (bawaan `biru`, nilai tak dikenal jatuh ke `biru`). Dijalankan sebelum render, tanpa kedip.
-- Menu profil di bilah atas: bagian **Warna aksen** (5 swatch bundar berlabel nama, `role="radiogroup"`, panah kiri/kanan berpindah) dan **Tema** (Terang / Gelap / Ikuti sistem).
-- Pengaturan → tab **Tampilan**: pilihan yang sama + **pratinjau** kecil (tombol utama, cip status, satu baris tugas, grafik batang mini) supaya pemilik bisa membandingkan.
-- Simpan di `localStorage` dengan try/catch; tersedia di demo dan produksi (preferensi per pengguna). Satu modul kecil (mis. `src/lib/tampilan.ts`) memegang daftar palet + baca/tulis; jangan menyalin daftar palet di beberapa tempat.
+**Huruf**: **Figtree** (pasang lokal `@fontsource-variable/figtree` atau `@fontsource/figtree`; dependensi baru yang diizinkan). Hapus Plus Jakarta Sans dan Bricolage Grotesque dari `layout.tsx` dan `package.json` setelah semua halaman pindah. Skala: `h1` 26 px/800, judul kartu 15,5 px/700, isi 14 px/1,5, tabel 13 px, label 12 px/700. Angka `tabular-nums`. Tanpa label kecil di atas judul.
 
+**Hapus** grup sisa: `--lantai-*`, `--lempeng-*`, `--wood-*`, `--wall-*`, `--pastel-*`, `--grad-*`, `--tint-*`, `--violet-*`, `--sampul-*`, `--rel-*`. Nama lama yang masih dipakai boleh sementara dipetakan ke token baru di blok "alias sementara" lalu dihapus di paket 9.
+
+## 4. Pemilih aksen dan tema (permintaan pemilik)
+
+- `src/app/layout.tsx`: skrip inline sekarang membaca `hub-theme` (bawaan `system`) dan sisa `hub-color-style` (bawaan `sky`). Ganti: `hub-theme` bawaan **`light`**; `hub-aksen` → atribut `data-aksen` di `<html>` (bawaan `ungu`, nilai tak dikenal jatuh ke bawaan). Dijalankan sebelum render, tanpa kedip.
+- Seperti prototipe: popover **Tampilan** berisi 5 swatch bundar berlabel (`role="radiogroup"`, panah kiri/kanan) dan segmen Terang/Gelap. Di aplikasi, letakkan di menu profil dan Pengaturan → tab **Tampilan** (dengan pratinjau kecil); tombol mengambang hanya untuk prototipe.
+- Simpan di `localStorage` dengan try/catch. Satu modul kecil (mis. `src/lib/tampilan.ts`) memegang daftar aksen + baca/tulis.
 ## 5. Kerangka dan navigasi
 
 Berkas: `src/components/layout/{AppShell.tsx,navigasi.ts,TabHub.tsx}`, `src/components/ui/BottomNav.tsx`, `src/features/workspace/WorkspaceSearch.tsx`, `src/styles/kerangka.css`.
 
-- **Sidebar terang** 240 px (`--panel`, garis kanan 1 px), bukan rel gelap:
+- **Sidebar putih** 252 px (`--panel`, garis kanan 1 px), bukan rel gelap; setiap ruang punya ubin huruf berwarna (lihat prototipe):
   1. Merek (inisial + nama koperasi dari profil).
   2. Tombol **Cari… Ctrl K** selebar sidebar.
   3. Kelompok **Kerja**: Beranda, Hari ini, Tugas, Proyek, Agenda, Linimasa.
   4. Kelompok **Catatan**, **Usaha**, **Koperasi**: bagian yang bisa dilipat dan **langsung memuat semua halamannya** (satu klik ke halaman mana pun). Kelompok halaman aktif selalu terbuka; status lipat disimpan.
   5. **Dunia 3D**, lalu kaki Pengaturan dan Panduan.
-  - Item aktif: latar `--accent-soft`, teks `--accent-text`, garis kiri 2 px aksen. Hapus kartu "Tim" mengambang (Tim tetap di kelompok Koperasi).
+  - Item aktif: latar `--accent-soft`, teks `--accent-ink`, tebal; halaman dalam ruang diberi titik warna ruang. Tanpa garis warna di sisi kiri. Hapus kartu "Tim" mengambang (Tim tetap di kelompok Koperasi).
 - Tablet 768–1023 px: rel ikon 64 px dengan tooltip dan label untuk pembaca layar; tombol untuk membuka sidebar penuh sebagai laci.
 - **Bilah atas**: breadcrumb `Kelompok / Halaman` + `h1`, lalu Cari, **Tambah** (aksen), Notifikasi, Profil.
 - `TabHub` tetap untuk berpindah antarhalaman sekelompok: tab teks dengan garis bawah 2 px, bergulir di ponsel.
@@ -103,11 +116,11 @@ SVG tanpa pustaka (batas JS awal 300 KB). Komponen seragam, satu gaya:
 | `GrafikKosong` | keadaan kosong / galat / "pencatatan belum aktif" |
 
 Aturan wajib:
-- Sumbu batang mulai 0; garis kisi tipis `--grafik-grid`; label nilai langsung pada batang/ujung garis bila muat.
+- Sumbu batang mulai 0; garis kisi tipis `--line`; label nilai langsung pada batang/ujung garis bila muat.
 - Tooltip saat hover **dan** fokus keyboard (setiap titik/batang bisa difokus, atau satu kontrol panah).
 - Bungkus `<figure>` + `<figcaption>` berisi **ringkasan satu kalimat** dari data, mis. "12 tugas selesai minggu ini, naik dari 8".
 - `<details><summary>Lihat tabel</summary>…</details>` sebagai cadangan aksesibel.
-- Warna dari `--grafik-*`; status pakai token status + teks. Rupiah singkat lewat helper `singkat` di `GrafikLembut.tsx`.
+- Warna dari token grafik `--g1`…`--g6` (urutan tetap, tidak diputar ulang); status pakai token status + teks. Rupiah singkat lewat helper `singkat` di `GrafikLembut.tsx`.
 - Memuat, kosong, galat, dan belum aktif dibedakan; **tidak pernah nol palsu**. Tanpa animasi bila reduced-motion.
 - Cetak (Laporan): grafik tetap terbaca hitam-putih (pola/garis putus, label nilai).
 - `ReadinessRadar` dan `RiskMatrix` dipertahankan, gayanya disamakan.
@@ -118,15 +131,15 @@ Aturan wajib:
 
 **Beranda** (`features/dashboard/Dashboard.tsx`) — target ≤ 2 layar di 1440×900:
 1. Kepala ringkas: sapaan + tanggal, pilihan proyek, "Salin laporan hari ini".
-2. **4 ubin KPI** (Terlambat, Jatuh tempo hari ini, Tugas terbuka, Agenda hari ini): angka besar, keterangan, sparkline 7 hari bila datanya ada; seluruh ubin = tautan ke daftar terfilter. Label **membungkus**, tidak terpotong (grid `repeat(auto-fit, minmax(…))`).
-3. **Tambah cepat** satu baris (sintaks `@nama #proyek !prioritas besok` tetap; tetap membuka form terisi).
-4. Dua kolom (≥ 1024 px): **Fokus hari ini** — tugas terlambat, jatuh tempo, dan rapat hari ini dalam **satu daftar berurut** dengan cip status bertulisan | **Rutin harian** ringkas + **Minggu ini** (pita 7 hari).
-5. Baris grafik: **Distribusi status tugas** (batang 100 %, klik segmen → Tugas terfilter), **Selesai 14 hari terakhir** (batang), **Progres proyek** (batang horizontal, maks 6, tiap baris tautan ke proyek).
-6. **Usaha** — hanya bila pencatatan aktif: **Uang masuk vs keluar bulan ini** per minggu (batang grup; jangan sebut saldo/laba) dan **Penjualan 7 hari**. Ringkasan "Tim hari ini" pindah ke Hari ini/Absensi.
+2. **4 ubin KPI berwarna lembut** (Terlambat merah, Jatuh tempo hari ini kuning, Tugas terbuka aksen, Agenda hari ini biru laut): ikon berisi warna, angka besar, keterangan; seluruh ubin = tautan ke daftar terfilter. Label **membungkus**, tidak terpotong (4 kolom → 2 kolom di ≤ 960 px).
+3. **Tambah cepat** satu baris + petunjuk sintaks (`@nama #proyek !prioritas besok`; tetap membuka form terisi di aplikasi).
+4. Grid 12 kolom: **Fokus hari ini** (8 kolom, dua baris) — tugas terlambat, jatuh tempo hari ini, dan besok dalam satu daftar ringkas dengan sel status berwarna | **Status tugas** (donat + legenda berangka) dan **Agenda hari ini** (linimasa jam).
+5. Baris kedua: **Beban kerja tim** (batang bertumpuk per orang menurut status), **Progres proyek** (batang horizontal warna proyek, tautan ke proyek), **Uang masuk & keluar** per pekan (batang grup; hanya bila pencatatan aktif; jangan sebut saldo/laba).
+6. **Rutin harian** dan **Minggu ini** dari Beranda lama tetap ada sebagai kartu ringkas di bawah atau dipindah ke Hari ini; jangan menghapus fitur yang sudah dipakai pemilik.
 
 **Tugas** (`features/records/Records.tsx`, `features/tasks/*`):
 - Bilah alat satu baris: pengalih tampilan bersegmen (Daftar, Papan, Kalender, Gantt, Harian), cip filter, urut, kelompok, cari.
-- Di atas daftar: satu **batang distribusi status** yang bisa diklik untuk memfilter (menggantikan ubin status besar).
+- Di atas daftar: satu **batang distribusi status berwarna** yang bisa diklik untuk memfilter (menggantikan ubin status besar), ditambah kalimat "x dari y tugas selesai".
 - Daftar = **tabel padat** (baris 40 px desktop, ≥ 48 px sentuh), kolom: centang, judul, status, prioritas (ikon + teks), penanggung jawab (avatar), proyek, tenggat. Dikelompokkan per status, kepala kelompok lengket. Kartu di area < 900 px.
 - Papan: kolom netral berlatar `--panel-2`, kartu datar putih bergaris. Kalender dan Gantt: bar aksen, garis "hari ini". Laci detail dan editor memakai bidang ringkas.
 
@@ -156,30 +169,30 @@ Aturan wajib:
 
 ## 9. Tes dan alat yang ikut diubah
 
-- `tests/unit/token-warna.test.ts`: ganti cek hex tetap dengan **kontrak** — tiap palet × tema punya `--accent`, `--accent-hover`, `--accent-soft`, `--accent-text`, `--on-accent`, `--focus-ring`; kontras teks ≥ 4,5:1; teks di atas aksen memakai `--on-accent`. Hapus syarat `--sampul-*` bila sampul dihapus.
+- `tests/unit/token-warna.test.ts`: ganti cek hex tetap dengan **kontrak** — tiap aksen × tema punya `--accent`, `--accent-h`, `--accent-soft`, `--accent-ink`, `--on-accent`; status, ruang, dan prioritas lengkap; kontras teks ≥ 4,5:1; teks di atas aksen memakai `--on-accent`. Hapus syarat `--sampul-*` bila sampul dihapus.
 - `tests/unit/navigasi-hub.test.ts`, `tests/ui/kerangka-hub.test.tsx`, `tests/ui/astra-controls.test.tsx` (dok ponsel), `tests/ui/hub-taskflow.test.tsx`, `tests/ui/redesign.test.tsx`: sesuaikan struktur baru, pertahankan maksudnya (h1 hanya di kerangka, tautan benar, fokus terlihat).
 - `tests/ui/tinjauan-taskflow.test.tsx` mencocokkan nilai CSS mentah (padding, scrollbar): ganti dengan cek perilaku atau hapus bagian yang hanya mengunci gaya lama.
 - `scripts/audit-tampilan.mjs`: selektor kelas tetap (`.quick-action-hub-btn`, `.project-card`, `.record .ui-btn`, `.settings-tab-btn`, …) diperbarui bila kelasnya berubah.
-- Tes baru: fungsi agregasi (`lib/statistik.ts`), ringkasan teks grafik, pemilih palet (baca/tulis + nilai tak dikenal).
+- Tes baru: fungsi agregasi (`lib/statistik.ts`), ringkasan teks grafik, pemilih aksen (baca/tulis + nilai tak dikenal).
 
 ## 10. Urutan paket
 
 Satu paket = satu atau beberapa commit bertema; setiap paket lulus semua verifikasi sebelum lanjut.
 
-1. **Fondasi** — token baru, lima palet, tema terang bawaan, pemilih palet (menu profil + Pengaturan › Tampilan dengan pratinjau), huruf tunggal, `dasar.css` + `komponen.css` (Button, Input, Select, Badge, Card, SegmentedControl, Modal, Toast, EmptyState, Skeleton), tes token. Bukti: `/dev/komponen` di 5 palet × 2 tema. **Setelah paket ini pemilik mencoba palet di demo dan memilih.**
-2. **Kerangka & navigasi** — sidebar terang berkelompok, breadcrumb, palet perintah, dok ponsel, TabHub, tes navigasi.
+1. **Fondasi** — token baru, lima aksen, warna ruang/status/prioritas, tema terang bawaan, pemilih aksen (menu profil + Pengaturan › Tampilan dengan pratinjau), huruf Figtree, `dasar.css` + `komponen.css` (Button, Input, Select, Badge, Card, SegmentedControl, Modal, Toast, EmptyState, Skeleton), tes token. Bukti: `/dev/komponen` di 5 aksen × 2 tema, dibandingkan dengan prototipe. **Pemilik bisa memilih aksen dari prototipe kapan saja; bawaan ditetapkan di paket 9.**
+2. **Kerangka & navigasi** — sidebar putih dengan ruang berwarna yang bisa dilipat, breadcrumb, palet perintah, dok ponsel, TabHub, tes navigasi.
 3. **Kit grafik** — komponen, `lib/statistik.ts`, tes unit, bagian grafik di `/dev/komponen`.
 4. **Beranda**.
 5. **Tugas** — lima tampilan, laci, editor, aksi massal.
 6. **Proyek, Hari ini, Agenda, Linimasa**.
 7. **Catatan + Laporan**.
 8. **Usaha & Koperasi**.
-9. **Penutup** — Pengaturan/PIN/Panduan, pass mode gelap, hapus alias token dan CSS mati, tetapkan palet bawaan pilihan pemilik, tulis `DESIGN.md` baru di akar repo, perbarui STATUS/LANJUTAN-AI/CHECKLIST.
+9. **Penutup** — Pengaturan/PIN/Panduan, pass mode gelap, hapus alias token dan CSS mati, tetapkan aksen bawaan pilihan pemilik, tulis `DESIGN.md` baru di akar repo, perbarui STATUS/LANJUTAN-AI/CHECKLIST.
 
 ## 11. Verifikasi setiap paket
 
 `npm test -- --maxWorkers=2`, `npm run typecheck`, `npm run lint`, `npm run lint:ui`, `npm run check:ui`, `npm run build` (kembalikan `next-env.d.ts` bila berubah), `npm run ukur:bundel` (JS awal ≤ 300 KB). Lalu `npm run dev:demo -- -p 3200` dan `npm run audit:tampilan -- <lebar> <tinggi> [nama]` pada 375×812, 768×1024, 1024×768, 1440×900, terang dan gelap; **lihat tangkapannya**.
 
-Tambahan per paket: palet berganti tanpa kedip dan bertahan setelah muat ulang (1); semua halaman terjangkau ≤ 2 klik dari sidebar atau lewat Ctrl K (2); grafik punya ringkasan teks dan tabel cadangan (3); Beranda ≤ 2 layar di 1440×900 dan label ubin utuh di 360 px (4).
+Tambahan per paket: aksen berganti tanpa kedip dan bertahan setelah muat ulang (1); semua halaman terjangkau ≤ 2 klik dari sidebar atau lewat Ctrl K (2); grafik punya ringkasan teks dan tabel cadangan (3); Beranda ≤ 2 layar di 1440×900 dan label ubin utuh di 360 px (4).
 
 Pemeriksaan di perangkat fisik dilakukan pemilik dan tidak boleh diklaim agen.

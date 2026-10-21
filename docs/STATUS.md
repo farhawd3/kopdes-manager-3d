@@ -4,7 +4,7 @@ Keadaan terkini saja. Timpa bagian yang berubah; jangan menambah riwayat sesi di
 
 ## Ruang kerja web
 
-- **Gaya:** sedang dirombak total menurut [REDESAIN-TOTAL](REDESAIN-TOTAL.md). Kode saat ini masih memuat checkpoint "Indigo Studio" (rel ungu gelap bergradien) yang akan diganti; warna aksen dipilih pemilik lewat pemilih palet setelah paket fondasi.
+- **Gaya:** sedang dirombak total menurut [REDESAIN-TOTAL](REDESAIN-TOTAL.md). Arah dipilih pemilik: acuan ClickUp/Monday, berani dan berwarna; prototipe interaktif di `docs/desain/redesain-total.html`. Kode aplikasi masih memuat checkpoint "Indigo Studio" (rel ungu bergradien) yang akan diganti paket 1–9.
 - **Beranda:** sapaan ringkas, ubin metrik, tambah cepat satu kalimat (`@nama #proyek !prioritas besok`), rutin harian, agenda hari ini dengan Catat hasil, perlu tindakan, minggu ini, proyek berjalan, dan salin laporan harian. Warna hanya untuk status dan aksi, bukan latar dekoratif.
 - **Tugas:** daftar/papan/kalender/Gantt/harian dengan ubin status datar, papan Kanban berkartu rapat, pengalih tampilan, penanggung jawab dari Tim, serta laci dan formulir bergaris tipis.
 - **Agenda (`/rapat`):** jenis rapat/kunjungan/acara/lainnya, Catat hasil ke catatan kegiatan, unduhan ICS, tautan rapat online.
