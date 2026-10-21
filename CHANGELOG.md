@@ -2,6 +2,18 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Arsitektur Kartu & Desain Modul Terinspirasi Volingo — 21 Oktober 2026
+
+- Alasan: arahan pemilik ("refrensi card atau semacamnya. anda sebelumnya cuma mengganti warna. bukan desain. buat desain menjadi seperti website task manager yang layak. lakukan deep research dan mendalam") beserta 3 tangkapan layar referensi UI Volingo. Perubahan sebelumnya hanya token warna; pemilik meminta restrukturisasi desain dan arsitektur kartu secara mendalam dan menyeluruh pada komponen kartu di seluruh aplikasi (Beranda, Papan Scrum, Kalender Tugas, Catatan, dan Proyek).
+- Perubahan:
+  - Rekayasa arsitektur kartu Volingo (`komponen.css`): kartu rounded rectangle murni dengan radius 18–20px, border 1px hangat `#efece6`, menonaktifkan ornamen gigitan takik (`.bertakik::before, ::after { display: none }`), dan menata tombol `.takik-aksi` menjadi tombol lingkaran elegan 36x36px.
+  - Kartu Beranda (`beranda.css`): modul Rutin Harian diubah dari latar merah muda blok masif menjadi kartu putih murni; butir rutin menjadi kartu-kartu individu berbadge pil jam (`07.30`), radio button bulat, dan status pill (`Berikutnya` peach, `✓ Selesai` mint). Agenda harian menjadi kartu acara rapi dengan pil kategori (`Rapat`, `Kunjungan`) dan tombol aksi putih. Kartu proyek berjalan disederhanakan dengan glif tile 48x48px (menggantikan cover art tinggi 112px), progress track elegan, dan hitung mundur tenggat. Pita seleksi hari minggu mengadopsi tab filter Volingo dengan status aktif charcoal gelap `#1C1917` berteks putih.
+  - Kartu Papan Scrum Kanban (`tugas.css`): kartu tugas berbadge kode tegas latar hitam (`TGS-XXX`), pil proyek dengan dot warna, pil prioritas peach, indikator batas waktu jam, subtask checklist dengan progress track mini oranye dan rasio (`1/3`), serta inisial avatar penanggung jawab.
+  - Kartu Kalender Tugas (`catatan.css`): kartu tugas kalender berbadge kode solid dark, status dot, pil prioritas, dan subtask progress track. Ubin KPI status (`ubin-status`) mengadopsi status aktif charcoal gelap berteks putih.
+  - Kartu Modul Proyek (`proyek.css`): tab filter status proyek dan kartu proyek mengadopsi struktur badge kode solid dark dan glif tile 44x44px.
+- Verifikasi: 473 dari 473 tes Vitest lulus 100% (80 berkas), `npm run typecheck` 0 error, `npm run lint:ui` 0 error, `npm run lint` 0 error, `npm run build` lulus (JS awal 248 KB, batas 300 KB), audit visual headless Chrome pada 1440x900 dan 375x812: 0 temuan (Beranda: 0, Tugas: 0, Papan: 0, Kalender: 0, Harian: 0, Gantt: 0, Laci: 0, Editor: 0).
+- Belum: pengujian langsung oleh pemilik di perangkat fisik.
+
 ## Desain & UX Hangat Editorial terinspirasi Volingo — 21 Oktober 2026
 
 - Alasan: arahan pemilik ("coba rancang desain seperti ini https://youtu.be/UWajvtAAV-8 perhatikan kerapian nya perbaiki secara menyeluruh dan baik. rancang ulang sistem ui ux nya dengan baik dan rapi. serta seluruh keterkaitan harus pas. perbaiki kalimat agar natural. periksa secara mendalam dan menyeluruh."). Referensi adalah UI aplikasi task manager Volingo dengan palet warm cream, kartu putih border halus, aksen terracotta/peach, kartu hero fokus harian, pil CTA charcoal tegas, dan kalimat humanis alami.

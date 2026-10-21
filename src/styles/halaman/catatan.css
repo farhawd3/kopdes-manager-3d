@@ -73,7 +73,7 @@
 .metric-income .metric-value { color: var(--ok); }
 .metric-expense .metric-value { color: var(--late); }
 
-/* ---------- Ubin status tugas: ringkasan kartu bersih Lavender Lekuk ---------- */
+/* ---------- Ubin status tugas: ringkasan kartu modern bersih terinspirasi Volingo ---------- */
 .ubin-status-tugas {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -83,35 +83,46 @@
   --ikon-bg: var(--brand-soft);
   --ikon-fg: var(--brand-ink);
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr);
+  grid-template-columns: 38px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
-  min-height: 64px;
-  padding: 10px 14px;
+  gap: 12px;
+  min-height: 68px;
+  padding: 12px 16px;
   border: 1px solid var(--line);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-card, 18px);
   background: var(--surface);
   color: var(--ink);
   font: inherit;
   text-align: left;
   cursor: pointer;
-  box-shadow: none;
-  transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast) var(--ease-out);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
 }
 .ubin-status:hover {
   border-color: var(--brand-soft-border);
   background: var(--surface-2);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
 }
 .ubin-status:active { transform: scale(0.985); }
 .ubin-status[aria-pressed='true'] {
-  border-color: var(--brand);
-  background: var(--brand-soft);
-  box-shadow: 0 0 0 2px var(--brand-soft-border);
+  border-color: var(--ink-heading);
+  background: var(--ink-heading);
+  color: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.ubin-status[aria-pressed='true'] strong,
+.ubin-status[aria-pressed='true'] .ubin-status-label {
+  color: var(--surface);
+}
+.ubin-status[aria-pressed='true'] .ubin-status-ikon {
+  background: color-mix(in srgb, var(--surface) 20%, transparent);
+  color: var(--surface);
 }
 
 .ubin-status.is-proses {
-  --ikon-bg: var(--warn-bg);
-  --ikon-fg: var(--warn);
+  --ikon-bg: var(--brand-soft);
+  --ikon-fg: var(--brand-ink);
 }
 .ubin-status.is-terlambat {
   --ikon-bg: var(--late-bg);
@@ -125,9 +136,9 @@
 .ubin-status-ikon {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
   background: var(--ikon-bg);
   color: var(--ikon-fg);
   flex-shrink: 0;
@@ -469,36 +480,45 @@
 .relation-chip.chip-meeting-join { background: var(--brand-isi); color: var(--on-brand); }
 .task-status-mini { padding: 0 5px; border-radius: 5px; background: rgba(255, 255, 255, 0.6); font-size: 10.5px; font-weight: 700; }
 
-/* ---------- Kartu catatan ---------- */
+/* ---------- Kartu catatan (Volingo Style Card) ---------- */
 .records {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   align-items: stretch;
-  gap: 14px;
+  gap: 16px;
 }
 .record.card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 18px;
-  transition: box-shadow var(--dur), transform var(--dur) var(--ease-out);
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card, 20px);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--dur), border-color var(--dur), transform var(--dur) var(--ease-out);
 }
-.record.card:hover { box-shadow: var(--shadow-md); }
+.record.card:hover {
+  border-color: var(--brand-soft-border);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
 .record.card > .section-head { flex-wrap: wrap; align-items: flex-start; gap: 8px 12px; }
-.record.card > .section-head h3 { display: flex; align-items: flex-start; gap: 10px; min-width: 0; font-size: 15px; font-weight: 600; line-height: 1.35; }
+.record.card > .section-head h3 { display: flex; align-items: flex-start; gap: 10px; min-width: 0; font-size: 16px; font-weight: 700; line-height: 1.35; color: var(--ink-heading); }
 .record-title-text { overflow-wrap: anywhere; }
 .record-domain-icon { flex-shrink: 0; }
 .record-avatar {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--brand-isi);
-  color: var(--on-brand);
+  border-radius: 12px;
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-soft-border);
+  color: var(--brand-ink);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
 }
 .record-meta { display: flex; flex-wrap: wrap; gap: 6px; color: var(--ink-muted); font-size: 12.5px; }
 .record-meta:empty { display: none; }
@@ -506,9 +526,9 @@
 .record-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   min-height: 24px;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: var(--r-full);
   background: var(--surface-2);
   border: 1px solid var(--line);
@@ -516,17 +536,22 @@
   font-size: 11.5px;
   font-weight: 600;
 }
-.record-meta > span.late { background: var(--late-bg); box-shadow: none; color: var(--late); }
+.record-meta > span.late { background: var(--late-bg); border-color: var(--late-line); box-shadow: none; color: var(--late); }
 .record-text { color: var(--ink-muted); font-size: 13px; line-height: 1.55; }
 .record-text strong { color: var(--ink); }
 .record.card > .actions {
   flex-wrap: nowrap;
   margin-top: auto;
-  padding-top: 12px;
+  padding-top: 14px;
   border-top: 1px solid var(--line);
 }
-.record.card > .actions > .ui-btn:first-child { --btn-bg: var(--brand-soft); --btn-fg: var(--brand-ink); --btn-line: var(--brand-soft-border); box-shadow: none; }
-.record.card > .actions > :is(.ui-btn, a) { min-height: 36px; padding: 0 12px; font-size: 13px; }
+.record.card > .actions > .ui-btn:first-child {
+  --btn-bg: var(--brand-soft);
+  --btn-fg: var(--brand-ink);
+  --btn-line: var(--brand-soft-border);
+  box-shadow: none;
+}
+.record.card > .actions > :is(.ui-btn, a) { min-height: 34px; padding: 0 14px; border-radius: var(--r-full); font-size: 12.5px; font-weight: 600; }
 .record-options { position: relative; margin-left: auto; }
 .record-options > summary {
   display: inline-flex;
@@ -735,19 +760,21 @@
 .timeline-notes-snippet { color: var(--ink-muted); font-size: 12.5px; }
 .journal-join-chip { display: inline-flex; align-items: center; gap: 4px; min-height: 24px; padding: 0 8px; border-radius: var(--r-sm); background: var(--brand-isi); color: var(--on-brand); font-size: 12px; font-weight: 600; }
 
-/* ---------- Kartu kalender ---------- */
+/* ---------- Kartu kalender (Volingo Style Task Card) ---------- */
 .calendar-task-card {
   display: grid;
-  gap: 12px;
-  padding: 16px 18px;
-  border: 1px solid var(--kartu-garis);
-  border-radius: var(--r-card);
+  gap: 14px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card, 20px);
   background: var(--surface);
-  box-shadow: var(--shadow);
-  transition: box-shadow var(--dur), border-color var(--dur);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--dur), border-color var(--dur), transform var(--dur) var(--ease-out);
 }
 .calendar-task-card:hover {
   border-color: var(--brand-soft-border);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 .calendar-task-card.is-completed { opacity: 0.75; }
 .cal-card-top-row {
@@ -761,7 +788,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
 }
 .cal-card-top-right { margin-left: auto; }
@@ -787,19 +814,23 @@
 .calendar-task-card .card-task-code {
   display: inline-flex;
   align-items: center;
-  padding: 2px 7px;
-  border-radius: var(--r-full);
-  background: var(--brand-soft);
-  color: var(--brand-ink);
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 6px;
+  background: var(--ink-heading);
+  color: var(--surface);
   font-size: 11px;
   font-weight: 700;
   font-family: var(--font-mono);
+  letter-spacing: 0.02em;
 }
 .calendar-task-card .card-project-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: var(--r-full);
   background: var(--surface-2);
   border: 1px solid var(--line);
@@ -817,26 +848,45 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 7px;
+  padding: 2px 8px;
   border-radius: var(--r-full);
   font-size: 11px;
   font-weight: 700;
   text-transform: capitalize;
 }
+.calendar-task-card .card-priority-pill.priority-tinggi {
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  border: 1px solid var(--brand-soft-border);
+}
+.calendar-task-card .card-priority-pill.priority-mendesak {
+  background: var(--late-bg);
+  color: var(--late);
+  border: 1px solid var(--late-line);
+}
 .card-status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: var(--r-full);
-  background: var(--neutral-bg);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
   color: var(--ink-muted);
   font-size: 11.5px;
   font-weight: 700;
   text-transform: capitalize;
   white-space: nowrap;
 }
-.card-status-badge.status-proses { background: var(--brand-soft); color: var(--brand-ink); }
-.card-status-badge.status-selesai { background: var(--ok-bg); color: var(--ok); }
+.card-status-badge.status-proses {
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  border-color: var(--brand-soft-border);
+}
+.card-status-badge.status-selesai {
+  background: var(--ok-bg);
+  color: var(--ok);
+  border-color: var(--ok-border, var(--line));
+}
 .cal-card-title {
   padding: 0;
   margin: 0;
@@ -844,8 +894,8 @@
   background: transparent;
   color: var(--ink-heading);
   font: inherit;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   line-height: 1.35;
   text-align: left;
   cursor: pointer;
@@ -857,8 +907,8 @@
 .cal-card-desc {
   margin: 4px 0 0;
   color: var(--ink-muted);
-  font-size: 12.5px;
-  line-height: 1.45;
+  font-size: 13px;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -866,16 +916,17 @@
 }
 .cal-card-subtasks-section {
   display: grid;
-  gap: 6px;
-  padding: 10px 12px;
-  border-radius: var(--r-lg);
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
   background: var(--surface-2);
 }
 .cal-subtasks-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 600; color: var(--ink-muted); }
 .cal-subtasks-label { display: inline-flex; align-items: center; gap: 6px; }
-.subtask-mini-track { width: 80px; height: 5px; overflow: hidden; border-radius: 4px; background: var(--line); }
-.subtask-mini-fill { height: 100%; background: var(--ok); }
-.cal-subtasks-list { display: grid; gap: 4px; }
+.subtask-mini-track { width: 84px; height: 6px; overflow: hidden; border-radius: var(--r-full); background: var(--line); }
+.subtask-mini-fill { height: 100%; background: var(--brand); border-radius: var(--r-full); }
+.cal-subtasks-list { display: grid; gap: 6px; }
 .cal-subtask-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .cal-subtask-item.is-done .cal-subtask-title { color: var(--ink-subtle); text-decoration: line-through; }
 .cal-card-footer {
@@ -885,7 +936,7 @@
   justify-content: space-between;
   gap: 8px 12px;
   margin-top: 4px;
-  padding-top: 10px;
+  padding-top: 12px;
   border-top: 1px solid var(--line);
 }
 .cal-card-footer-left {
@@ -900,8 +951,15 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin-left: auto;
+}
+.cal-card-footer-right .ui-btn {
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: var(--r-full);
+  font-size: 12.5px;
+  font-weight: 600;
 }
 .cal-assignee-pill {
   display: inline-flex;
@@ -916,13 +974,13 @@
 .cal-assignee-avatar {
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--brand-soft);
   color: var(--brand-ink);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
 }
 .cal-assignee-name {

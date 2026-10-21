@@ -540,14 +540,14 @@ dialog.ui-modal h2 { font-size: 19px; }
 .avatar-warna.is-teal { background: var(--pastel-mint); color: var(--pastel-mint-ink); }
 .avatar-warna.is-pink { background: var(--pastel-pink); color: var(--pastel-pink-ink); }
 
-/* ---------- Modul: kartu modern bersih, sudut rapi 18px, shadow halus ---------- */
+/* ---------- Modul: kartu modern bersih, sudut rapi 20px, shadow halus terinspirasi Volingo ---------- */
 .modul {
   display: flex;
   flex-direction: column;
   min-width: 0;
   padding: 22px 24px;
   border: 1px solid var(--line);
-  border-radius: var(--lempeng-radius, 18px);
+  border-radius: var(--lempeng-radius, 20px);
   background: var(--surface);
   box-shadow: var(--shadow-sm);
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
@@ -557,71 +557,56 @@ dialog.ui-modal h2 { font-size: 19px; }
   box-shadow: var(--shadow);
 }
 .modul-kepala { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
-.modul-kepala h2 { margin: 0; font-size: var(--fs-h3); font-weight: 600; letter-spacing: -0.01em; }
-.modul-ikon { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 10px; }
-.modul-ikon.pastel-aksen { background: var(--pastel-aksen); color: var(--pastel-aksen-ink); }
-.modul-ikon.pastel-pink { background: var(--pastel-pink); color: var(--pastel-pink-ink); }
-.modul-ikon.pastel-mentega { background: var(--pastel-mentega); color: var(--pastel-mentega-ink); }
-.modul-ikon.pastel-mint { background: var(--pastel-mint); color: var(--pastel-mint-ink); }
+.modul-kepala h2 { margin: 0; font-size: var(--fs-h3); font-weight: 700; letter-spacing: -0.015em; }
+.modul-ikon { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; }
+.modul-ikon.pastel-aksen { background: var(--brand-soft); color: var(--brand-ink); }
+.modul-ikon.pastel-pink { background: var(--brand-soft); color: var(--brand-ink); }
+.modul-ikon.pastel-mentega { background: var(--surface-2); color: var(--ink); }
+.modul-ikon.pastel-mint { background: var(--ok-bg); color: var(--ok); }
 .modul-tautan { position: relative; margin-left: auto; color: var(--ink-muted); font-size: 13px; font-weight: 600; text-decoration: none; }
 /* Area ketuk 44 px untuk tautan teks kecil di kepala kartu */
 .modul-tautan::after { content: ''; position: absolute; inset: -12px 0; }
 .modul-tautan:hover { color: var(--brand-ink); text-decoration: none; }
 .modul-kaki { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 14px; }
-@media (max-width: 767px) { .modul { padding: 16px; } }
+@media (max-width: 767px) { .modul { padding: 18px; } }
 
-/* ---------- Takik Lekuk: sudut kanan atas kartu dicekung dan berisi satu tombol aksi ----------
-   Cekungan dicat dengan warna latar di belakang kartu (--takik-latar), jadi kartu bertakik datar:
-   tanpa garis dan bayangan yang akan memperlihatkan bentuk persegi aslinya. */
+/* ---------- Kartu Header Action (Tombol Aksi Sudut Kartu Modern) ---------- */
 .bertakik {
-  --takik: 54px;
-  --takik-r: 18px;
-  --takik-latar: var(--canvas);
   position: relative;
-  border-color: transparent;
-  box-shadow: none;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
 }
-/* -1px: cat ikut menutup garis tepi 1 px kartu; latar kartu tampil di bawah garis transparan itu */
 .bertakik::before,
 .bertakik::after {
-  content: '';
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  pointer-events: none;
-}
-.bertakik::before {
-  width: var(--takik);
-  height: var(--takik);
-  border-bottom-left-radius: 20px;
-  background: var(--takik-latar);
-}
-.bertakik::after {
-  width: calc(var(--takik) + var(--takik-r));
-  height: calc(var(--takik) + var(--takik-r));
-  background:
-    radial-gradient(circle at 0 100%, transparent calc(var(--takik-r) - 0.5px), var(--takik-latar) var(--takik-r)) left top / var(--takik-r) var(--takik-r) no-repeat,
-    radial-gradient(circle at 0 100%, transparent calc(var(--takik-r) - 0.5px), var(--takik-latar) var(--takik-r)) right bottom / var(--takik-r) var(--takik-r) no-repeat;
+  display: none;
 }
 .takik-aksi {
   position: absolute;
   z-index: 1;
-  top: 0;
-  right: 0;
+  top: 18px;
+  right: 20px;
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--surface);
-  color: var(--ink-heading);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  color: var(--ink-muted);
+  box-shadow: none;
   cursor: pointer;
   transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast) var(--ease-out);
 }
-.takik-aksi:hover { border-color: var(--brand); background: var(--brand-isi); color: var(--on-brand); text-decoration: none; }
-.takik-aksi:active { transform: scale(0.94); }
-.bertakik > .modul-kepala { padding-right: 40px; }
+.takik-aksi:hover {
+  border-color: var(--brand-soft-border);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  transform: scale(1.05);
+  text-decoration: none;
+}
+.takik-aksi:active { transform: scale(0.95); }
+.bertakik > .modul-kepala { padding-right: 48px; }
 @media (prefers-reduced-motion: reduce) { .takik-aksi { transition: none; } }

@@ -5,12 +5,13 @@ Berkas ini untuk agen berikutnya (Claude, Codex, Antigravity, OpenCode, dll.). I
 ## Keadaan (21 Oktober 2026)
 
 - Cabang: `tampilan/papan-tugas-lekuk`.
-- **Gaya Web: Warm Editorial Modern (Terinspirasi Volingo)**:
-  - Canvas krem hangat `#faf8f5`, permukaan kartu putih murni `#ffffff` dengan garis pembatas 1px hangat `#efece6`, sudut membulat 20px elegan.
+- **Gaya Web: Warm Editorial Modern & Arsitektur Kartu Volingo**:
+  - Canvas krem hangat `#faf8f5`, permukaan kartu putih murni `#ffffff` dengan garis pembatas 1px hangat `#efece6`, sudut membulat 18–20px elegan.
+  - Arsitektur kartu terinspirasi Volingo: rounded rectangle murni tanpa takik arcade, badge kode hitam solid (`TGS-XXX`), tab filter aktif charcoal gelap `#1C1917`, pil waktu, dan subtask mini progress track.
   - Aksen terracotta hangat `#ea580c` / `#c2410c` (WCAG AA 5.25:1), pil peach lembut `#fff7ed`, dan tombol aksi charcoal tegas `#1c1917`.
   - Sidebar wordmark `kopdes.` dengan titik aksen terracotta, kartu profil manajer, pil streak operasional (`🔥 Operasional Aktif · Shift Pagi`), dan menu navigasi terstruktur.
-  - Beranda dengan kartu hero spotlight "Saat Hari Ini", kartu motivasi prinsip kerja koperasi, dan bahasa Indonesia natural kontekstual.
-- Verifikasi: 473/473 tes vitest lulus 100% (80 berkas), typecheck 0 error, lint 0 error, lint:ui 0 error, build Next.js lulus (JS awal 248 KB), audit visual headless Chrome 0 temuan.
+  - Beranda dengan kartu hero spotlight "Saat Hari Ini", kartu motivasi prinsip kerja koperasi, dan kartu rutin harian terstruktur.
+- Verifikasi: 473/473 tes vitest lulus 100% (80 berkas), typecheck 0 error, lint 0 error, lint:ui 0 error, build Next.js lulus (JS awal 248 KB), audit visual headless Chrome pada 1440x900 dan 375x812: 0 temuan.
 
 ## Peta kode yang sering disentuh
 
