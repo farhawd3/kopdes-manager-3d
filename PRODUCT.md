@@ -34,7 +34,7 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 ## Brand Commitments
 
 - Nama produk: Kopdes Manager 3D; di dalam aplikasi: "Dunia Koperasi" untuk diorama.
-- Web dirombak total (arahan pemilik 22 Oktober 2026, menggantikan arah ClickUp/Monday 21 Oktober). Acuan rasa: video "Figma Modern Task Manager App" (Dsanis): pastel lembut, kartu putih membulat, cincin progres harian, strip tanggal, elemen melayang; sederhana, bersih, warna enak dilihat; diterjemahkan ke laptop, tablet, dan ponsel dengan banyak interaksi. Acuan visual: prototipe `docs/desain/prototipe.html`.
+- Web dirombak total (arahan pemilik 22 Oktober 2026, menggantikan arah ClickUp/Monday 21 Oktober). Acuan rasa: video "Figma Modern Task Manager App" (Dsanis): pastel lembut, kartu putih membulat, cincin progres harian satu warna (tanpa gradasi, arahan pemilik 23 Okt), strip tanggal, elemen melayang; sederhana, bersih, warna enak dilihat; diterjemahkan ke laptop, tablet, dan ponsel dengan banyak interaksi. Acuan visual: prototipe `docs/desain/prototipe.html`.
 - Tampilan harus bisa diganti kapan saja: semua gaya lewat token per tema; gaya yang berlaku sekarang bukan aturan permanen. Tema Terang Lembut + Gelap, pemilih lima aksen, huruf bawaan Plus Jakarta Sans (dipilih pemilik).
 - Grafik dipakai bila menjawab pertanyaan kerja (berapa, membaik atau tidak, apa yang perlu dikerjakan), selalu dengan ringkasan teks; tidak pernah menampilkan angka contoh atau nol palsu.
 - Tampilan seimbang di HP, tablet, dan laptop; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
