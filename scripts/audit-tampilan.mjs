@@ -11,8 +11,10 @@ import path from 'node:path';
 const [, , lebarArg = '375', tinggiArg = '812', filter] = process.argv;
 const lebar = Number(lebarArg), tinggi = Number(tinggiArg);
 const dasar = process.env.AUDIT_URL || 'http://localhost:3200';
+const tema = process.env.TEMA === 'dark' ? 'dark' : 'light';
+const aksen = process.env.AKSEN || 'ungu';
 const tmp = path.join(os.tmpdir(), 'kopdes-audit');
-const out = path.join(tmp, String(lebar));
+const out = path.join(tmp, String(lebar), tema);
 fs.mkdirSync(out, { recursive: true });
 const chromeBawaan = {
   win32: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -100,6 +102,11 @@ const kirim = (method, params = {}) => new Promise((r) => { const n = ++id; menu
 const nilai = async (expr) => (await kirim('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true })).result?.result?.value;
 
 await kirim('Page.enable');
+// Tema dan aksen disimpan di peramban; tanam sebelum skrip halaman agar audit
+// menguji tema gelap sungguhan, bukan hanya prefers-color-scheme.
+await kirim('Page.addScriptToEvaluateOnNewDocument', {
+  source: `try{localStorage.setItem('hub-theme','${tema}');localStorage.setItem('hub-aksen','${aksen}');}catch(e){}`,
+});
 await kirim('Emulation.setDeviceMetricsOverride', { width: lebar, height: tinggi, deviceScaleFactor: 1, mobile: lebar < 1024 });
 await kirim('Emulation.setTouchEmulationEnabled', { enabled: lebar < 1024, maxTouchPoints: 5 });
 await kirim('Emulation.setEmulatedMedia', {

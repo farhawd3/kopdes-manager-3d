@@ -27,7 +27,14 @@ vi.mock('next/navigation', () => ({
 }));
 vi.mock('@/lib/ThemeContext', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
-  useTheme: () => ({ theme: 'light', toggleTheme: vi.fn() }),
+  useTheme: () => ({
+    theme: 'light',
+    preference: 'light',
+    setTheme: vi.fn(),
+    toggleTheme: vi.fn(),
+    accent: 'ungu',
+    setAccent: vi.fn(),
+  }),
 }));
 
 const task = (id: string, title: string): Item => ({

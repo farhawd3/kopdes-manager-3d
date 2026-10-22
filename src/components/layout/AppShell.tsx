@@ -27,6 +27,7 @@ import { WorkspaceSearch } from '@/features/workspace/WorkspaceSearch';
 import { IkonHalaman } from '@/components/ui/IkonHalaman';
 import { ManagerActionModal } from './ManagerActionModal';
 import { Modal } from '@/components/ui/Modal';
+import { PemilihTampilan } from '@/components/ui/PemilihTampilan';
 import { Notifikasi } from '@/features/notifikasi/Notifikasi';
 import { HUBS, KAKI_SIDEBAR, MENU_KERJA, RUANG_LAIN, hubUntuk, labelHalaman, ruangUntuk } from './navigasi';
 
@@ -296,10 +297,9 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
             </summary>
             <div className="topbar-profil-menu">
               <strong>{name}</strong>
-              <button type="button" onClick={toggleTheme} aria-label="Ganti tema">
-                {theme === 'dark' ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" />}
-                {theme === 'dark' ? 'Mode terang' : 'Mode gelap'}
-              </button>
+              <div className="topbar-profil-tampilan">
+                <PemilihTampilan ringkas />
+              </div>
               <Link href="/pengaturan">
                 <Settings size={17} aria-hidden="true" />
                 Pengaturan

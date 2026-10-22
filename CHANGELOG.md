@@ -2,6 +2,22 @@
 
 Semua perubahan penting dicatat di sini, satu entri per paket kerja (terbaru di atas). Format entri ada di AGENTS.md bagian Proses. Riwayat sebelum repo ini (versi pixel dan pengembangan awal 3D) ada di repo `kopdes-manager-web`.
 
+## Paket 1 Redesain Total — fondasi token, aksen, dan huruf — 22 Oktober 2026
+
+- Alasan: paket pertama dari [REDESAIN-TOTAL](docs/REDESAIN-TOTAL.md) sesuai arahan pemilik (21 Oktober 2026) agar web menjadi task manager yang bersih, rapi, dan profesional dengan acuan ClickUp/Monday yang berani dan berwarna. Desain lama tidak mengikat; fondasi ini menyiapkan token dan komponen sebelum halaman dirombak di paket berikutnya.
+- Perubahan:
+  - Token ditulis ulang di `src/styles/token.css`: netral terang/gelap sesuai prototipe, lima aksen (`ungu` bawaan, `biru`, `hijau`, `oranye`, `magenta`), warna ruang (Kerja/Catatan/Usaha/Koperasi/Dunia), status tugas isi penuh + teks, prioritas, dan enam seri grafik. Panel bergaris 1 px tanpa gradien/glow; warna lama tetap tersedia lewat blok "alias sementara" agar halaman yang belum dirombak tidak rusak (dihapus di paket 9).
+  - Huruf diganti ke **Figtree** (`@fontsource-variable/figtree`); Plus Jakarta Sans dan Bricolage Grotesque dihapus dari `layout.tsx` dan `package.json`.
+  - Pemilih tampilan baru (`PemilihTampilan`): lima swatch aksen berlabel (radiogroup, panah kiri/kanan) + segmen Terang/Gelap. Dipasang di menu profil dan Pengaturan › Tampilan dengan pratinjau kecil; pilihan tersimpan di `localStorage` lewat `src/lib/tampilan.ts` (nilai tak dikenal jatuh ke bawaan).
+  - Tema bawaan menjadi `light` dan aksen `ungu`; skrip di `layout.tsx` menanam `data-aksen`/tema sebelum render tanpa kedip. `ThemeContext` disederhanakan (hapus `system`/warna gaya lama).
+  - `dasar.css` dan `komponen.css` memakai token baru; kontrol 38 px desktop (≥44 px sentuh), fokus berupa cincin `--fokus`, isi `body` memakai `--t1`.
+  - Galeri `/dev/komponen` kini menampilkan pemilih tampilan dan memakai `ThemeProvider` agar bisa diuji pada 5 aksen × 2 tema.
+  - `scripts/audit-tampilan.mjs` menerima `TEMA`/`AKSEN` dan menyimpan tema/aksen ke peramban sebelum audit sehingga mode gelap benar-benar diuji; hasil dipisah per folder tema.
+  - Tes token ditulis ulang menjadi kontrak (5 aksen × 2 tema punya kelima token, kontras teks ≥ 4,5:1, enam seri grafik), ditambah tes unit `tampilan.ts` dan tes UI pemilih tampilan.
+- Verifikasi: `npm test -- --maxWorkers=2` tanpa beban lain: 478 dari 480 lulus (82 berkas); 2 tes Beranda gagal karena checkpoint "Indigo Studio" menambah judul sorotan yang menduplikasi judul rutin (pre-existing, `src/features/dashboard/` tidak disentuh paket ini — akan dirombak di paket 4). `npm run typecheck` 0 error, `npm run lint` 0 error, `npm run lint:ui` 0 error, `npm run build` lulus, `npm run ukur:bundel` 250 KB JS awal (batas 300 KB). `check:ui` gagal karena 50 kontrol HTML mentah di luar `components/ui` — jumlah sama dengan baseline sebelum paket 1; `PemilihTampilan` tidak menambah kontrol mentah.
+- Audit `npm run audit:tampilan` mode demo: 375×812 dan 768×1024 terang dijalankan di `npm run dev:demo` (58 keadaan per lebar, **0 temuan**). Enam kombinasi sisa (1024×768 dan 1440×900 terang, serta empat kombinasi gelap) dijalankan dengan build produksi mode demo (`NEXT_PUBLIC_MODE_DEMO=1 npm run build` + `next start`) karena `next dev` memakan 6–15 detik per halaman (beberapa API 11 detik di lapisan Next.js dev); build produksi melayani halaman yang sama dalam 0,05–0,1 detik. Kode, data demo, dan API identik. Hasil per kombinasi disimpan di `%TEMP%/kopdes-audit/<lebar>/<tema>/laporan.md`.
+- Belum: angka audit 1024/1440 dan mode gelap (sedang berjalan saat entri ditulis); inspeksi visual manual tangkapan layar (model sesi ini tidak menerima masukan gambar, jadi hanya angka temuan dan pemeriksaan programatik yang dipakai); pemilihan aksen bawaan oleh pemilik (paket 9); migrasi 50 kontrol mentah; perombakan halaman (paket 2–9).
+
 ## Prototipe redesain berwarna ala ClickUp/Monday — 21 Oktober 2026
 
 - Alasan: pemilik ingin melihat tampilan baru secara nyata, bebas dari desain lama. Lima arah yang ditawarkan (ordner, buku kas, papan stasiun, monokrom, standar) dinilai "terlalu kuno"; pemilik memilih acuan ClickUp/Monday dengan nuansa berani dan berwarna.

@@ -4,7 +4,8 @@ import { expect, it } from 'vitest';
 const css = readFileSync('src/styles/token.css', 'utf8');
 const blok = (pemilih: string) => css.split(pemilih + ' {')[1]?.split('\n}')[0] ?? '';
 const nilai = (isi: string, nama: string) =>
-  isi.match(new RegExp(`${nama}:\\s*(#[0-9a-fA-F]{6})`))?.[1]?.toLowerCase();
+  isi.match(new RegExp(`--${nama}:\\s*(#[0-9a-fA-F]{6})`))?.[1]?.toLowerCase();
+const punya = (isi: string, nama: string) => new RegExp(`--${nama}:`).test(isi);
 
 function luminans(hex: string) {
   const [r, g, b] = [1, 3, 5]
@@ -17,43 +18,84 @@ const kontras = (a: string, b: string) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-it('aksen dan tinta mengikuti palet Indigo Studio', () => {
-  const terang = blok(':root');
-  expect(nilai(terang, '--brand')).toBe('#4f46e5');
-  expect(nilai(terang, '--brand-hover')).toBe('#4338ca');
-  expect(nilai(terang, '--brand-soft')).toBe('#eef0ff');
-  expect(nilai(terang, '--canvas')).toBe('#f4f6fb');
-  expect(nilai(terang, '--ink-heading')).toBe('#111527');
-  expect(nilai(terang, '--ink-muted')).toBe('#5a6275');
-  expect(nilai(terang, '--rel-bg')).toBe('#15142b');
-  expect(terang).toMatch(/--r-card:\s*16px/);
+const terang = blok(':root');
+const gelap = blok(':root.dark');
+const aksen = ['ungu', 'biru', 'hijau', 'oranye', 'magenta'] as const;
+// Mode gelap mewarisi nilai yang tidak ditimpanya.
+const token = (tema: string, nama: string) => nilai(tema, nama) ?? nilai(terang, nama)!;
+
+it('memakai palet netral dan bentuk Ruang Kerja Berwarna', () => {
+  expect(nilai(terang, 'bg')).toBe('#f5f6fa');
+  expect(nilai(terang, 'panel')).toBe('#ffffff');
+  expect(nilai(terang, 'line')).toBe('#e4e7f0');
+  expect(nilai(terang, 't1')).toBe('#151829');
+  expect(nilai(terang, 't3')).toBe('#646b85');
+  expect(nilai(gelap, 'bg')).toBe('#0e1018');
+  expect(nilai(gelap, 'panel')).toBe('#161925');
+  expect(terang).toMatch(/--r-card:\s*14px/);
+  expect(terang).toMatch(/--font-sans:[^;]*Figtree/);
+  expect(terang).toMatch(/--shadow-sm:\s*none/);
 });
 
-it('teks utama terbaca di kedua tema', () => {
-  for (const pemilih of [':root', ':root.dark']) {
-    const isi = blok(pemilih);
-    const permukaan = nilai(isi, '--surface')!;
-    expect(kontras(nilai(isi, '--ink-heading')!, permukaan)).toBeGreaterThanOrEqual(4.5);
-    expect(kontras(nilai(isi, '--ink-muted')!, permukaan)).toBeGreaterThanOrEqual(4.5);
+it('teks utama dan redup terbaca di kanvas dan panel kedua tema', () => {
+  for (const isi of [terang, gelap]) {
+    const nilaiTema = (nama: string) => nilai(isi, nama) ?? nilai(terang, nama)!;
+    for (const permukaan of ['panel', 'bg']) {
+      const latar = nilaiTema(permukaan);
+      for (const tinta of ['t1', 't2', 't3']) {
+        expect(kontras(nilaiTema(tinta), latar)).toBeGreaterThanOrEqual(4.5);
+      }
+    }
   }
 });
 
-it('teks redup dan teks putih di atas isian lavender tetap terbaca di kedua tema', () => {
-  const terang = blok(':root');
-  for (const pemilih of [':root', ':root.dark']) {
-    const isi = blok(pemilih);
-    // Mode gelap mewarisi token yang tidak ditimpanya.
-    const t = (nama: string) => nilai(isi, nama) ?? nilai(terang, nama)!;
-    expect(kontras(t('--ink-subtle'), t('--surface'))).toBeGreaterThanOrEqual(4.5);
-    expect(kontras(t('--ink-subtle'), t('--canvas'))).toBeGreaterThanOrEqual(4.5);
-    const putih = isi.match(/--on-brand:\s*(#[0-9a-f]{3,6})/i)?.[1] ?? terang.match(/--on-brand:\s*(#[0-9a-f]{3,6})/i)![1];
-    const penuh = putih.length === 4 ? '#' + [...putih.slice(1)].map((c) => c + c).join('') : putih;
-    expect(kontras(penuh, t('--brand-isi'))).toBeGreaterThanOrEqual(4.5);
-    expect(kontras(penuh, t('--brand-isi-hover'))).toBeGreaterThanOrEqual(4.5);
+it('setiap aksen punya lima token dan kontras teks yang cukup di dua tema', () => {
+  for (const id of aksen) {
+    const terangAksen = blok(`:root[data-aksen='${id}']`);
+    const gelapAksen = blok(`:root.dark[data-aksen='${id}']`);
+    for (const isi of [terangAksen, gelapAksen]) {
+      for (const nama of ['accent', 'accent-h', 'accent-soft', 'accent-ink', 'on-accent']) {
+        expect(punya(isi, nama), `${id} · ${nama}`).toBe(true);
+      }
+    }
+    for (const isi of [terangAksen, gelapAksen]) {
+      const nilaiAksen = (nama: string) => nilai(isi, nama) ?? nilai(terangAksen, nama)!;
+      const on = nilaiAksen('on-accent');
+      expect(kontras(on, nilaiAksen('accent')), `${id} on-accent/accent`).toBeGreaterThanOrEqual(4.5);
+      expect(kontras(on, nilaiAksen('accent-h')), `${id} on-accent/accent-h`).toBeGreaterThanOrEqual(4.5);
+      expect(kontras(nilaiAksen('accent-ink'), nilaiAksen('accent-soft')), `${id} ink/soft`).toBeGreaterThanOrEqual(4.5);
+    }
   }
 });
 
-it('teks putih (--on-brand) tidak pernah diletakkan di atas --brand atau --brand-hover', () => {
+it('status, prioritas, dan ruang lengkap dengan teks yang terbaca', () => {
+  for (const status of ['rencana', 'proses', 'tunggu', 'selesai']) {
+    for (const tema of [terang, gelap]) {
+      const latar = token(tema, `status-${status}-bg`);
+      const teks = token(tema, `status-${status}-fg`);
+      expect(latar).toMatch(/^#[0-9a-f]{6}$/);
+      expect(teks).toMatch(/^#[0-9a-f]{6}$/);
+      expect(kontras(teks, latar)).toBeGreaterThanOrEqual(4.5);
+    }
+  }
+  for (const prioritas of ['tinggi', 'sedang', 'rendah']) {
+    expect(nilai(terang, `prio-${prioritas}`)).toMatch(/^#[0-9a-f]{6}$/);
+    expect(nilai(gelap, `prio-${prioritas}`) ?? nilai(terang, `prio-${prioritas}`)).toMatch(/^#[0-9a-f]{6}$/);
+  }
+  for (const ruang of ['kerja', 'catatan', 'usaha', 'koperasi', 'dunia']) {
+    expect(nilai(terang, `ruang-${ruang}`)).toMatch(/^#[0-9a-f]{6}$/);
+    expect(punya(gelap, `ruang-${ruang}`) || punya(terang, `ruang-${ruang}`)).toBe(true);
+  }
+});
+
+it('grafik memakai enam seri berurutan di dua tema', () => {
+  for (const isi of [terang, gelap]) {
+    for (let i = 1; i <= 6; i++) expect(nilai(isi, `g${i}`)).toMatch(/^#[0-9a-f]{6}$/);
+  }
+  expect(nilai(gelap, 'g1')).not.toBe(nilai(terang, 'g1'));
+});
+
+it('teks putih (--on-accent) hanya dipasang pada isian aksen, bukan permukaan lembut', () => {
   const berkas = [
     'src/styles/dasar.css',
     'src/styles/komponen.css',
@@ -64,17 +106,10 @@ it('teks putih (--on-brand) tidak pernah diletakkan di atas --brand atau --brand
   for (const jalur of berkas) {
     const isiBerkas = readFileSync(jalur, 'utf8');
     for (const [, pemilih, isi] of isiBerkas.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-      const teksPutih = /(?:^|[;\s])(?:color|--btn-fg):\s*var\(--on-brand\)/.test(isi);
-      const isianLemah = /(?:background|--btn-bg)[^;]*var\(--brand(?:-hover|-bright)?\)/.test(isi);
+      const teksPutih = /(?:^|[;\s])(?:color|--btn-fg):\s*var\(--(?:on-accent|on-brand)\)/.test(isi);
+      const isianLemah = /(?:background|--btn-bg)[^;]*var\(--(?:accent-soft|accent-ink|brand-soft|brand-soft-2)\)/.test(isi);
       if (teksPutih && isianLemah) pelanggaran.push(`${jalur}: ${pemilih.trim().split('\n').pop()}`);
     }
   }
   expect(pelanggaran).toEqual([]);
-});
-
-it('setiap warna sampul hub punya padanan mode gelap', () => {
-  for (const hub of ['pekerjaan', 'catatan', 'usaha', 'koperasi', 'dunia']) {
-    expect(blok(':root')).toContain(`--sampul-${hub}:`);
-    expect(blok(':root.dark')).toContain(`--sampul-${hub}:`);
-  }
 });

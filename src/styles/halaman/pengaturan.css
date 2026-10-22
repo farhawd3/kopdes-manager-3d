@@ -8,34 +8,12 @@
 .settings-content-grid.settings-panel-single { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
 .settings-container .card { display: grid; align-content: start; gap: 12px; }
 .settings-container .card > p { color: var(--ink-muted); font-size: 13px; }
-.settings-container .color-style-card { display: flex; flex-direction: column; }
-.tema-kepala { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.tema-kepala p { margin-top: 4px; color: var(--ink-muted); font-size: 13px; }
-.tema-mini {
-  display: grid;
-  flex: 1 1 auto;
-  grid-template-columns: 26% 1fr;
-  gap: 10px;
-  min-height: 132px;
-  padding: 10px;
-  border-radius: var(--r-lg);
-  background: var(--canvas);
-  border: 1px solid var(--line);
-  box-shadow: none;
-}
-.tema-mini i { display: block; }
-.tema-mini-samping { display: grid; align-content: start; gap: 8px; padding: 10px 8px; border-radius: 10px; background: var(--surface-3); }
-.tema-mini-samping i { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.7); }
-.tema-mini-samping i:first-child { background: var(--surface); box-shadow: var(--shadow-sm); }
-.tema-mini-isi { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto; gap: 8px; }
-.tema-mini-kartu { border-radius: 10px; background: var(--surface); box-shadow: var(--shadow-sm); }
-.tema-mini-tombol { grid-column: 2; justify-self: end; width: 64px; height: 22px; border-radius: 8px; background: var(--brand); }
-.mode-pilihan { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.mode-pilihan-item { display: grid; justify-items: center; gap: 6px; min-height: 72px; padding: 12px 8px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); color: var(--ink-muted); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
-.mode-pilihan-item:hover { border-color: var(--brand-soft-border); }
-.mode-pilihan-item.is-active { border-color: var(--brand); background: var(--brand-soft); color: var(--brand-ink); }
 .settings-fields-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .settings-reset-row { padding-top: 12px; border-top: 1px solid var(--line); }
+.tampilan-settings { display: grid; align-content: start; gap: 14px; }
+.tampilan-settings .section-head h2 { display: flex; align-items: center; gap: 8px; }
+.tampilan-settings .section-head p { color: var(--ink-muted); font-size: 13px; }
+.tampilan-settings .pratinjau-tampilan { margin-top: 2px; }
 .profile-identity-card { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: var(--r-md); background: var(--surface-2); }
 .profile-avatar-circle { display: grid; place-items: center; width: 52px; height: 52px; flex-shrink: 0; border-radius: 16px; background: var(--brand-isi); color: var(--on-brand); font-weight: 700; }
 .profile-details p, .profile-details small { color: var(--ink-muted); }

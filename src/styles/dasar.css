@@ -7,35 +7,62 @@ html {
 body {
   min-height: 100dvh;
   margin: 0;
-  background: var(--canvas);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--t1);
   font-family: var(--font-sans);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   font-weight: 400;
-  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   margin: 0;
-  color: var(--ink-heading);
+  color: var(--t1);
   font-family: var(--font-display);
-  font-weight: 650;
+  font-weight: 700;
   line-height: var(--lh-tight);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
-h1 { font-size: var(--fs-title); font-weight: 600; letter-spacing: -0.02em; }
-h2 { font-size: var(--fs-h2); }
-h3 { font-size: var(--fs-h3); font-family: var(--font-sans); font-weight: 650; }
-h4 { font-size: var(--fs-body); font-family: var(--font-sans); }
-p { margin: 0; text-wrap: pretty; }
-small { font-size: var(--fs-meta); }
-strong, b { font-weight: 600; }
-a { color: var(--brand-ink); text-decoration: none; text-underline-offset: 3px; }
-a:hover { text-decoration: underline; }
-code, kbd {
+h1 {
+  font-size: var(--fs-title);
+  font-weight: 800;
+}
+h2 {
+  font-size: var(--fs-h2);
+}
+h3 {
+  font-size: var(--fs-h3);
+}
+h4 {
+  font-size: var(--fs-body);
+}
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+small {
+  font-size: var(--fs-meta);
+}
+strong,
+b {
+  font-weight: 600;
+}
+a {
+  color: var(--accent-ink);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+a:hover {
+  text-decoration: underline;
+}
+code,
+kbd {
   font-family: var(--font-mono);
   font-size: 0.86em;
 }
@@ -44,44 +71,81 @@ kbd {
   align-items: center;
   min-width: 20px;
   height: 20px;
-  padding: 0 5px;
-  border: 1px solid var(--line-strong);
-  border-bottom-width: 2px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
   border-radius: var(--r-xs);
-  background: var(--surface);
-  color: var(--ink-muted);
+  background: var(--panel);
+  color: var(--t3);
+  font-family: var(--font-sans);
   font-size: 11px;
+  font-weight: 600;
   line-height: 1;
 }
-hr { margin: 0; border: 0; border-top: 1px solid var(--line); }
-img, svg { flex-shrink: 0; }
-:where(table, td, th) { font-variant-numeric: tabular-nums; }
+hr {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+img,
+svg {
+  flex-shrink: 0;
+}
+:where(table, td, th) {
+  font-variant-numeric: tabular-nums;
+}
 
 /* Permukaan browser ikut tema */
-::selection { background: color-mix(in srgb, var(--brand) 20%, transparent); color: inherit; }
-:root { accent-color: var(--brand); caret-color: var(--brand); }
-* { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 999px; background: var(--line-strong); background-clip: padding-box; }
-::-webkit-scrollbar-track { background: transparent; }
-:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-:focus:not(:focus-visible) { outline: none; }
+::selection {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  color: inherit;
+}
+:root {
+  accent-color: var(--accent);
+  caret-color: var(--accent);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--line-2);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+:focus-visible {
+  outline: none;
+  box-shadow: var(--fokus);
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
 
 /* ---------- Primitif generik ---------- */
 
-/* Kartu panel: putih tanpa garis (garis hanya di mode gelap), bayangan tipis */
+/* Kartu: panel putih bergaris 1 px, tanpa bayangan dan tanpa gradien. */
 .card,
 .ui-card {
   position: relative;
   min-width: 0;
-  padding: 22px;
-  border: 1px solid var(--kartu-garis);
+  padding: 18px;
+  border: 1px solid var(--line);
   border-radius: var(--r-card);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  background: var(--panel);
+  box-shadow: none;
 }
 @media (max-width: 767px) {
-  .card, .ui-card { padding: 18px; }
+  .card,
+  .ui-card {
+    padding: 16px;
+  }
 }
 .ui-card-header,
 .section-head {
@@ -92,23 +156,37 @@ img, svg { flex-shrink: 0; }
   gap: 8px 16px;
   min-width: 0;
 }
-.section-head > div { min-width: 0; }
-.section-head p { margin-top: 4px; color: var(--ink-muted); }
-.card > .section-head + * { margin-top: 14px; }
+.section-head > div {
+  min-width: 0;
+}
+.section-head p {
+  margin-top: 4px;
+  color: var(--t3);
+}
+.card > .section-head + * {
+  margin-top: 14px;
+}
 
 /* Label kecil di atas kontrol (bukan kicker judul) */
 .field-caption {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--ink);
+  color: var(--t1);
   font-size: var(--fs-meta);
   font-weight: 600;
 }
-.eyebrow { display: none; }
+.eyebrow {
+  display: none;
+}
 
-.text-muted { color: var(--ink-muted); }
-.inline-icon { display: inline-block; vertical-align: -2px; }
+.text-muted {
+  color: var(--t3);
+}
+.inline-icon {
+  display: inline-block;
+  vertical-align: -2px;
+}
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -128,17 +206,31 @@ img, svg { flex-shrink: 0; }
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 11px 13px;
   border: 1px solid var(--brand-soft-border);
   border-radius: var(--r-md);
-  background: var(--brand-soft);
-  color: var(--brand-ink);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
   font-size: var(--fs-meta);
   font-weight: 500;
 }
-.notice.error { border-color: var(--late-line); background: var(--late-bg); color: var(--late); }
-.notice.warning, .notice.warn { border-color: var(--warn-line); background: var(--warn-bg); color: var(--warn); }
-.notice.success, .notice.ok { border-color: var(--ok-line); background: var(--ok-bg); color: var(--ok); }
+.notice.error {
+  border-color: var(--late-line);
+  background: var(--late-bg);
+  color: var(--late);
+}
+.notice.warning,
+.notice.warn {
+  border-color: var(--warn-line);
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.notice.success,
+.notice.ok {
+  border-color: var(--ok-line);
+  background: var(--ok-bg);
+  color: var(--ok);
+}
 
 /* Lencana status: teks + warna lembut, tanpa garis tepi */
 .badge,
@@ -147,23 +239,34 @@ img, svg { flex-shrink: 0; }
   align-items: center;
   gap: 5px;
   max-width: 100%;
-  min-height: 20px;
-  padding: 0 7px;
-  border-radius: 4px;
-  background: var(--brand-soft);
-  color: var(--brand-ink);
-  font-size: 11px;
-  font-weight: 600;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 11.5px;
+  font-weight: 700;
   line-height: 1;
   white-space: nowrap;
   text-transform: none;
 }
-.badge::first-letter, .ui-badge::first-letter { text-transform: uppercase; }
-.badge.ok { background: var(--ok-bg); color: var(--ok); }
-.badge.late, .badge.danger { background: var(--late-bg); color: var(--late); }
-.badge.warn { background: var(--warn-bg); color: var(--warn); }
-
-/* Pil ganda ala label dunia: "nama · nilai" */
+.badge::first-letter,
+.ui-badge::first-letter {
+  text-transform: uppercase;
+}
+.badge.ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+.badge.late,
+.badge.danger {
+  background: var(--late-bg);
+  color: var(--late);
+}
+.badge.warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
 
 .title-with-badge {
   display: flex;
@@ -172,7 +275,9 @@ img, svg { flex-shrink: 0; }
   gap: 8px;
 }
 
-.text-input { width: 100%; }
+.text-input {
+  width: 100%;
+}
 .field-group {
   display: grid;
   gap: 6px;
@@ -180,7 +285,9 @@ img, svg { flex-shrink: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Button, IconButton } from './Button';
 import { Input, Textarea } from './Input';
@@ -17,6 +17,8 @@ import { SegmentedControl } from './SegmentedControl';
 import { Legend } from './Legend';
 import { Progress } from './Progress';
 import { EmptyState } from './EmptyState';
+import { PemilihTampilan } from './PemilihTampilan';
+import { ThemeProvider, useTheme } from '@/lib/ThemeContext';
 
 function DragExample() {
   const [column, setColumn] = useState('rencana');
@@ -52,37 +54,33 @@ function DragExample() {
 }
 
 export function ComponentGallery() {
-  const [dark, setDark] = useState(false);
-  const [theme, setTheme] = useState('sage');
+  return (
+    <ThemeProvider>
+      <IsiGaleri />
+    </ThemeProvider>
+  );
+}
+
+function IsiGaleri() {
+  const { theme, toggleTheme } = useTheme();
   const [value, setValue] = useState('2026-10-04');
   const [notice, setNotice] = useState('');
-  useEffect(() => {
-    const root = document.documentElement;
-    const previous = { dark: root.classList.contains('dark'), theme: root.getAttribute('data-theme'), color: root.getAttribute('data-theme-color') };
-    root.classList.toggle('dark', dark);
-    root.setAttribute('data-theme', dark ? 'dark' : 'light');
-    root.setAttribute('data-theme-color', theme);
-    return () => {
-      root.classList.toggle('dark', previous.dark);
-      for (const [attribute, value] of [['data-theme', previous.theme], ['data-theme-color', previous.color]] as const) {
-        if (value === null) root.removeAttribute(attribute); else root.setAttribute(attribute, value);
-      }
-    };
-  }, [dark, theme]);
   return (
     <main className="ui-gallery">
       <h1>Komponen antarmuka</h1>
       <p>
         Pratinjau lokal tanpa koneksi data. Gunakan Tab, hover dan tekan untuk memeriksa fokus serta
-        interaksi.
+        interaksi. Lima aksen dan dua tema di bawah memakai token yang sama dengan aplikasi.
       </p>
-      <Button onClick={() => setDark(!dark)}>{dark ? 'Tema terang' : 'Tema gelap'}</Button>
-      <Select
-        ariaLabel="Warna pratinjau"
-        value={theme}
-        onChange={setTheme}
-        options={['lime', 'peach', 'lavender', 'sage', 'sky']}
-      />
+      <Card>
+        <CardHeader>
+          <h2>Tampilan</h2>
+        </CardHeader>
+        <div className="ui-gallery-tampilan">
+          <PemilihTampilan pratinjau />
+          <Button onClick={toggleTheme}>{theme === 'dark' ? 'Tema terang' : 'Tema gelap'}</Button>
+        </div>
+      </Card>
       <Card>
         <CardHeader>
           <h2>Tombol</h2>

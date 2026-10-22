@@ -16,15 +16,13 @@ import {
   Download,
   Upload,
   KeyRound,
-  Sun,
-  Moon,
-  Monitor,
 } from 'lucide-react';
 import { Select } from '@/components/ui/Select';
+import { PemilihTampilan } from '@/components/ui/PemilihTampilan';
 import type { Item } from '@/features/records/schemas';
 
 export function Settings({ refresh, preferenceScope = '', organization }: { refresh: () => Promise<void>; preferenceScope?: string; organization?: Item }) {
-  const { preference, setTheme } = useTheme();
+  const { setTheme, setAccent } = useTheme();
   const [activeTab, setActiveTab] = useState<'tampilan' | 'profil' | 'keamanan' | 'cadangan'>('tampilan');
   const [density, setDensity] = usePreference(preferenceScope + 'hub-density', 'comfortable');
   const [motion, setMotion] = usePreference(preferenceScope + 'hub-motion', 'system');
@@ -111,48 +109,17 @@ export function Settings({ refresh, preferenceScope = '', organization }: { refr
       {/* ── TAB 1: TAMPILAN & TEMA ───────────────────────────────── */}
       {activeTab === 'tampilan' && (
         <div className="settings-content-grid">
-          {/* Satu tema biru senada Dunia Koperasi 3D; palet lama tidak dipakai lagi. */}
-          <section className="card color-style-card">
-            <div className="tema-kepala">
+          <section className="card tampilan-settings">
+            <div className="section-head">
               <div>
-                <h2>Tema</h2>
-                <p>Biru dunia 3D untuk web dan Dunia Koperasi.</p>
+                <h2>
+                  <Palette size={18} aria-hidden="true" />
+                  Warna & tema
+                </h2>
+                <p>Lima warna aksen dan tema terang/gelap. Pilihan tersimpan di peramban ini.</p>
               </div>
-              <Ikon3D kind="pulau" size={40} />
             </div>
-            <div className="tema-mini" aria-hidden="true">
-              <span className="tema-mini-samping">
-                <i />
-                <i />
-                <i />
-              </span>
-              <span className="tema-mini-isi">
-                <i className="tema-mini-kartu" />
-                <i className="tema-mini-kartu" />
-                <i className="tema-mini-tombol" />
-              </span>
-            </div>
-            <div className="mode-pilihan" role="radiogroup" aria-label="Mode layar">
-              {(
-                [
-                  { value: 'light', label: 'Terang', Icon: Sun },
-                  { value: 'dark', label: 'Gelap', Icon: Moon },
-                  { value: 'system', label: 'Ikuti perangkat', Icon: Monitor },
-                ] as const
-              ).map(({ value, label, Icon }) => (
-                <button
-                  key={value}
-                  type="button"
-                  role="radio"
-                  aria-checked={preference === value}
-                  className={`mode-pilihan-item ${preference === value ? 'is-active' : ''}`}
-                  onClick={() => setTheme(value)}
-                >
-                  <Icon size={18} aria-hidden />
-                  <span>{label}</span>
-                </button>
-              ))}
-            </div>
+            <PemilihTampilan pratinjau />
           </section>
 
           <section className="card appearance-settings">
@@ -205,7 +172,8 @@ export function Settings({ refresh, preferenceScope = '', organization }: { refr
                 type="button"
                 className="btn-reset-appearance"
                 onClick={() => {
-                  setTheme('system');
+                  setTheme('light');
+                  setAccent('ungu');
                   setDensity('comfortable');
                   setMotion('system');
                   setNavStyle('soft');

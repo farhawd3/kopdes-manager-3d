@@ -27,7 +27,14 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/lib/client', () => ({ api: vi.fn(async () => ({ items: [] })), resetAuthNavigation: vi.fn() }));
 vi.mock('@/lib/ThemeContext', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
-  useTheme: () => ({ theme: 'light', toggleTheme: vi.fn() }),
+  useTheme: () => ({
+    theme: 'light',
+    preference: 'light',
+    setTheme: vi.fn(),
+    toggleTheme: vi.fn(),
+    accent: 'ungu',
+    setAccent: vi.fn(),
+  }),
 }));
 afterEach(() => {
   cleanup();
@@ -118,6 +125,6 @@ it('bagian Perlu perhatian di Beranda bisa dituju dari tautan /beranda#perhatian
 it('warna seleksi dan ikon 3D memakai token merek, bukan heks mentah', () => {
   const dasar = readFileSync('src/styles/dasar.css', 'utf8');
   const ikon = readFileSync('src/components/ui/Ikon3D.tsx', 'utf8');
-  expect(dasar).toMatch(/::selection\s*\{[^}]*color-mix\([^)]*var\(--brand\)/);
+  expect(dasar).toMatch(/::selection\s*\{[^}]*color-mix\([^)]*var\(--accent\)/);
   expect(ikon).not.toMatch(/color:\s*'#546fff'/i);
 });

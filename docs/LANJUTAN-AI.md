@@ -2,32 +2,34 @@
 
 Berkas ini untuk agen berikutnya (Claude, Codex, Antigravity, OpenCode, dll.). Isinya hanya keadaan sekarang dan langkah berikut; timpa, jangan menambah catatan sesi.
 
-## Keadaan (21 Oktober 2026)
+## Keadaan (22 Oktober 2026)
 
-- Cabang: `tampilan/redesain-total` (berisi checkpoint gaya "Indigo Studio" dan 13 commit gaya lama yang belum masuk `main`).
-- **Redesain total web: arah dipilih, prototipe siap, kode belum dikerjakan.** Pemilik menolak lima arah dunia sebagai "terlalu kuno" dan memilih acuan ClickUp/Monday, berani dan berwarna. Prototipe interaktif: `docs/desain/redesain-total.html` (`python -m http.server 3300 -d docs/desain`). Acuan tunggal: [REDESAIN-TOTAL](REDESAIN-TOTAL.md); prompt agen: [PROMPT-DEEPSEEK](PROMPT-DEEPSEEK.md). Pemilik akan memakai DeepSeek, satu paket per sesi.
-- Kunci gaya lama sudah dilepas: AGENTS, PRODUCT, DESAIN-ANTARMUKA, skill `ui-ux-kopdes`; `DESIGN.md` dan rencana Workbench diarsipkan di `docs/arsip/`. `DESIGN.md` baru ditulis di paket 9.
-- Warna aksen belum ditetapkan: prototipe punya pemilih lima aksen (Ungu, Biru, Hijau, Oranye, Magenta) dan tema gelap; bawaan sementara Ungu.
-- Kode tampilan masih gaya lama (rel ungu bergradien); temuan yang harus diperbaiki ada di bagian 1 REDESAIN-TOTAL.
-- Verifikasi terakhir kode (sebelum checkpoint): 473/473 tes, typecheck, lint, lint:ui, build lulus; JS awal 248 KB. Checkpoint Indigo Studio belum diuji ulang.
+- Cabang: `tampilan/redesain-total`.
+- **Paket 1 (fondasi) selesai.** Token baru di `src/styles/token.css` (netral terang/gelap, lima aksen, warna ruang/status/prioritas, enam seri grafik), huruf Figtree, tema terang bawaan, dan pemilih aksen + tema (`src/components/ui/PemilihTampilan.tsx`, `src/lib/tampilan.ts`) di menu profil dan Pengaturan › Tampilan.
+- Warna aksen bawaan sementara **Ungu**; pemilik belum memilih. Pemilihan ditetapkan di paket 9.
+- Halaman operasional dan kerangka **belum dirombak**: masih memakai tata letak checkpoint "Indigo Studio" dengan token baru lewat blok "alias sementara". Blok itu dihapus di paket 9 setelah semua halaman pindah.
+- `check:ui` masih gagal karena 50 kontrol HTML mentah di luar `components/ui` (jumlah sama sebelum paket 1); dimigrasi saat halamannya disentuh.
+- Dua tes Beranda gagal karena checkpoint Indigo Studio menambah judul sorotan yang menduplikasi judul rutin; akan hilang saat Beranda dirombak di paket 4.
+- Verifikasi terakhir: 478/480 tes, typecheck/lint/lint:ui/build lulus, JS awal 250 KB; audit 375×812 dan 768×1024 terang 0 temuan (58 keadaan).
 
 ## Peta kode yang sering disentuh
 
 | Bagian | Berkas |
 |---|---|
-| Token dan komponen gaya | `src/styles/token.css`, `komponen.css`, `kerangka.css`, `halaman/*.css`; arah di `docs/REDESAIN-TOTAL.md` |
+| Token dan komponen gaya | `src/styles/token.css`, `dasar.css`, `komponen.css`, `kerangka.css`, `halaman/*.css`; arah di `docs/REDESAIN-TOTAL.md` |
+| Pemilih aksen/tema | `components/ui/PemilihTampilan.tsx`, `lib/tampilan.ts`, `lib/ThemeContext.tsx`, `app/layout.tsx` |
 | Kerangka dan menu | `components/layout/AppShell.tsx`, `navigasi.ts` (`HUBS`, `MENU_KERJA`, `RUANG_LAIN`), `TabHub.tsx`, `components/ui/BottomNav.tsx` |
-| Beranda | `features/dashboard/Dashboard.tsx`, `beranda-bantu.ts` (tambah cepat, laporan, hitung mundur) |
-| Tugas | `features/records/Records.tsx`, `Editor.tsx`, `PilihPenanggung.tsx`, `features/tasks/ScrumBoardView.tsx`, `features/tasks/TaskCalendar.tsx`, `features/tasks/TaskTimeline.tsx`, `features/tasks/UbinStatusTugas.tsx` |
+| Beranda | `features/dashboard/Dashboard.tsx`, `beranda-bantu.ts` |
+| Tugas | `features/records/Records.tsx`, `Editor.tsx`, `features/tasks/*` |
 | Agenda | `features/meetings/jenis.ts`, kolom `jenis` di `records/schemas.ts` |
 | Palet Ctrl+K | `features/workspace/WorkspaceSearch.tsx` |
-| Dunia | `features/dunia-3d/MonitoringDashboard.tsx`, `monitoring.css`, `model/` (lihat skill dunia-koperasi) |
+| Dunia | `features/dunia-3d/MonitoringDashboard.tsx`, `monitoring.css`, `model/` (tidak termasuk redesain) |
 
 ## Langkah berikut (urut)
 
-1. Paket 1 REDESAIN-TOTAL (fondasi + pemilih aksen) — jalankan dengan prompt di PROMPT-DEEPSEEK.
-2. Pemilik memilih aksen bawaan dari prototipe.
-3. Paket 2–9 berurutan, satu paket per sesi.
+1. **Paket 2 — Kerangka & navigasi:** sidebar putih 252 px dengan ruang berwarna yang bisa dilipat dan memuat semua halaman satu klik, breadcrumb + `h1`, palet perintah Ctrl K, dok ponsel 4 item, `TabHub`, sesuaikan tes navigasi/kerangka. Rute/slug tidak berubah.
+2. Paket 3 kit grafik (`components/charts/`, `lib/statistik.ts`), lalu paket 4 Beranda (sekaligus membereskan dua tes Beranda yang gagal).
+3. Paket 5–8 (Tugas, Proyek/Hari ini/Agenda/Linimasa, Catatan+Laporan, Usaha & Koperasi), lalu paket 9 penutup (hapus alias token, tetapkan aksen bawaan pilihan pemilik, tulis `DESIGN.md`).
 4. Pemilik menjalankan migrasi 9 lalu 10 dan seed contoh terbaru di Supabase; periksa keadaan migrasi 1–8 dulu, jangan reset database berisi data.
 
 Jangan menambah render idle ke dunia. Tidak ada migrasi, deploy, atau push tanpa permintaan pemilik.

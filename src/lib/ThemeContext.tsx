@@ -1,31 +1,26 @@
 'use client';
-import { createContext, useContext, useEffect, useSyncExternalStore } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import { usePreference } from './usePreference';
-export type ThemePreference = 'light' | 'dark' | 'system';
-export type ColorStyle = 'lime' | 'peach' | 'lavender' | 'sage' | 'sky' | 'sand';
-type Theme = 'light' | 'dark';
+import { AKSEN_BAWAAN, KUNCI_AKSEN, KUNCI_TEMA, TEMA_BAWAAN, aksenValid, temaValid } from './tampilan';
+import type { Aksen, Tema } from './tampilan';
+
+export type { Aksen, Tema } from './tampilan';
 
 const ThemeContext = createContext<{
-  theme: Theme;
-  preference: ThemePreference;
-  setTheme: (value: ThemePreference) => void;
+  theme: Tema;
+  preference: Tema;
+  setTheme: (value: Tema) => void;
   toggleTheme: () => void;
-  colorStyle: ColorStyle;
-  setColorStyle: (style: ColorStyle) => void;
+  accent: Aksen;
+  setAccent: (value: Aksen) => void;
 }>({
-  theme: 'light',
-  preference: 'system',
+  theme: TEMA_BAWAAN,
+  preference: TEMA_BAWAAN,
   setTheme: () => {},
   toggleTheme: () => {},
-  colorStyle: 'sky',
-  setColorStyle: () => {},
+  accent: AKSEN_BAWAAN,
+  setAccent: () => {},
 });
-
-function subscribe(callback: () => void) {
-  const query = window.matchMedia('(prefers-color-scheme: dark)');
-  query.addEventListener('change', callback);
-  return () => query.removeEventListener('change', callback);
-}
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [density] = usePreference('hub-density', 'comfortable');
@@ -36,41 +31,31 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.dataset.motion = motion === 'minimal' ? 'minimal' : 'system';
     document.documentElement.dataset.navStyle = navStyle === 'ink' ? 'ink' : 'soft';
   }, [density, motion, navStyle]);
-  const [stored, setStored] = usePreference('hub-theme', 'system');
-  const [storedColor, setStoredColor] = usePreference('hub-color-style', 'sky');
-  const preference: ThemePreference = stored === 'light' || stored === 'dark' ? stored : 'system';
-  const colorStyle: ColorStyle = ['lime', 'peach', 'lavender', 'sage', 'sky', 'sand'].includes(
-    storedColor,
-  )
-    ? (storedColor as ColorStyle)
-    : 'sky';
 
-  const systemDark = useSyncExternalStore(
-    subscribe,
-    () => window.matchMedia('(prefers-color-scheme: dark)').matches,
-    () => false,
-  );
-  const theme: Theme = preference === 'system' ? (systemDark ? 'dark' : 'light') : preference;
+  const [stored, setStored] = usePreference(KUNCI_TEMA, TEMA_BAWAAN);
+  const [storedAccent, setStoredAccent] = usePreference(KUNCI_AKSEN, AKSEN_BAWAAN);
+  const preference = temaValid(stored);
+  const accent = aksenValid(storedAccent);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.style.colorScheme = theme;
-  }, [theme]);
+    document.documentElement.classList.toggle('dark', preference === 'dark');
+    document.documentElement.setAttribute('data-theme', preference);
+    document.documentElement.style.colorScheme = preference;
+  }, [preference]);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme-color', colorStyle);
-  }, [colorStyle]);
+    document.documentElement.setAttribute('data-aksen', accent);
+  }, [accent]);
 
   return (
     <ThemeContext.Provider
       value={{
-        theme,
+        theme: preference,
         preference,
-        setTheme: setStored,
-        toggleTheme: () => setStored(theme === 'dark' ? 'light' : 'dark'),
-        colorStyle,
-        setColorStyle: (style: ColorStyle) => setStoredColor(style),
+        setTheme: (value: Tema) => setStored(temaValid(value)),
+        toggleTheme: () => setStored(preference === 'dark' ? 'light' : 'dark'),
+        accent,
+        setAccent: (value: Aksen) => setStoredAccent(aksenValid(value)),
       }}
     >
       {children}
