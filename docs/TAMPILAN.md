@@ -32,6 +32,7 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Komponen | Berkas | Catatan |
 |---|---|---|
 | Laci / lembar bawah | `components/ui/sheet.tsx` | Semua formulir dan detail. Kanan di tablet/laptop, dari bawah di HP |
+| Pengaturan | `features/settings/settings-page.tsx` | Satu halaman tanpa tab: kartu profil, tema lewat pratinjau mini, warna sorotan berupa kapsul, keamanan dan data sebagai baris berkelompok; Ganti PIN di laci |
 | Konfirmasi | `components/ui/confirm.tsx` | Satu-satunya dialog di tengah, hanya untuk tindakan yang tak bisa diurungkan |
 | Toast + Urungkan | `sonner` di kerangka | Hasil aksi; perubahan tugas selalu bisa diurungkan |
 | Tab bergeser | `components/ui/tabs.tsx` | Penanda aktif meluncur (Motion) |

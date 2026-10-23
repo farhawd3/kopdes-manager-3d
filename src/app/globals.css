@@ -9,7 +9,8 @@
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
-:root {
+:root,
+[data-theme='light'] {
   --font-sans: 'Urbanist Variable', 'Urbanist', ui-sans-serif, system-ui, sans-serif;
 
   --canvas: #f3f4f8;

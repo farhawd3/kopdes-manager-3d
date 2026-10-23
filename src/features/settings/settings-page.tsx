@@ -1,12 +1,13 @@
 'use client';
-import { useRef, useState } from 'react';
-import { Check, Download, LockKeyhole, Moon, Pencil, Sun, Upload } from 'lucide-react';
+import { useRef, useState, type ReactNode } from 'react';
+import { Check, ChevronRight, Download, KeyRound, LockKeyhole, Moon, Pencil, Sun, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { useWorkspace } from '@/features/workspace/use-workspace';
 import { RecordFormSheet } from '@/features/records/lazy';
 import { PageLoading } from '@/features/records/records-page';
 import { PageHeader } from '@/components/layout/page-header';
-import { Tabs } from '@/components/ui/tabs';
+import { Sheet } from '@/components/ui/sheet';
+import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Field, Input } from '@/components/ui/field';
 import { ErrorState } from '@/components/ui/states';
@@ -15,93 +16,192 @@ import { Wave } from '@/components/ui/wave';
 import { ACCENTS, useTheme } from '@/lib/theme';
 import { api, resetAuthNavigation } from '@/lib/client';
 import { formatDate } from '@/lib/date';
+import type { Tone } from '@/lib/tones';
 
-const CARD = 'flex flex-col gap-4 rounded-[var(--radius-card)] bg-surface p-5 shadow-card md:p-6';
+const CARD = 'rounded-[var(--radius-card)] bg-surface shadow-card ring-1 ring-line/60';
 
+/**
+ * Pengaturan dalam satu halaman, tanpa tab: kartu profil di atas, tampilan dipilih lewat pratinjau
+ * kecil, lalu keamanan dan data sebagai baris berkelompok seperti pengaturan di HP.
+ */
 export function SettingsPage() {
-  const [tab, setTab] = useState('profile');
   const { data, loading, error, refresh } = useWorkspace('settings');
   const [editing, setEditing] = useState(false);
+  const [pinOpen, setPinOpen] = useState(false);
   const organization = data.organization?.[0];
+  const manager = String(organization?.data.manager || '') || 'Manajer';
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader
-        title="Pengaturan"
-        actions={<Tabs label="Bagian pengaturan" value={tab} onChange={setTab} items={[{ id: 'profile', label: 'Profil koperasi' }, { id: 'look', label: 'Tampilan' }, { id: 'pin', label: 'Keamanan PIN' }, { id: 'backup', label: 'Cadangan data' }]} />}
-      />
+      <PageHeader title="Pengaturan" subtitle="Profil, tampilan, keamanan, dan cadangan data" />
       {error ? (
         <ErrorState message={error} onRetry={() => void refresh()} />
       ) : loading ? (
         <PageLoading />
-      ) : tab === 'profile' ? (
-        <section data-tone="sky" className="relative overflow-hidden rounded-[1.75rem] bg-tone p-6 text-tone-ink md:p-8">
-          <Wave />
-          <div className="relative flex flex-wrap items-start gap-4">
-            <div className="flex-1">
-              <p className="text-sm font-bold">Profil koperasi</p>
-              <h2 className="text-2xl font-extrabold text-ink">{organization ? String(organization.data.title) : 'Belum diisi'}</h2>
-              {organization && (
-                <p className="mt-1 text-sm">
-                  {[organization.data.village, organization.data.district, organization.data.regency, organization.data.province].filter(Boolean).map(String).join(', ') || 'Alamat belum diisi'}
-                </p>
-              )}
-            </div>
-            <Button className="bg-surface/85" onClick={() => setEditing(true)}>
-              <Pencil />
-              {organization ? 'Ubah profil' : 'Isi profil'}
-            </Button>
-          </div>
-          {organization && (
-            <dl className="relative mt-6 grid gap-3 sm:grid-cols-3">
-              {[
-                ['Manajer', String(organization.data.manager || 'Belum diisi')],
-                ['Mulai bekerja', formatDate(String(organization.data.start_date || ''))],
-                ['Target pembukaan', formatDate(String(organization.data.target_date || ''))],
-              ].map(([label, value]) => (
-                <div key={label} className="rounded-2xl bg-surface/70 px-4 py-3">
-                  <dt className="text-xs font-bold opacity-80">{label}</dt>
-                  <dd className="font-bold text-ink">{value}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
-          <p className="relative mt-4 text-sm">Nama manajer dipakai di sapaan Beranda, laporan, dan pilihan penanggung jawab.</p>
-        </section>
-      ) : tab === 'look' ? (
-        <Appearance />
-      ) : tab === 'pin' ? (
-        <ChangePin />
       ) : (
-        <Backup refresh={refresh} />
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
+          <div className="flex flex-col gap-5">
+            <section data-tone="sky" aria-label="Profil" className="relative overflow-hidden rounded-[var(--radius-card)] bg-tone p-5 text-tone-ink ring-1 ring-white/50 ring-inset md:p-6 dark:ring-white/5">
+              <Wave />
+              <div className="relative flex flex-wrap items-center gap-4">
+                <Avatar name={manager} className="size-16 text-lg ring-4" />
+                <div className="min-w-0 flex-1">
+                  <h2 className="truncate text-xl font-extrabold text-ink">{manager}</h2>
+                  <p className="truncate text-sm font-semibold">Manajer · {organization ? String(organization.data.title) : 'Profil koperasi belum diisi'}</p>
+                  {organization && (
+                    <p className="truncate text-xs font-semibold opacity-80">
+                      {[organization.data.village, organization.data.district, organization.data.regency].filter(Boolean).map(String).join(', ') || 'Alamat belum diisi'}
+                    </p>
+                  )}
+                </div>
+                <Button className="bg-surface/85" onClick={() => setEditing(true)}>
+                  <Pencil />
+                  {organization ? 'Ubah' : 'Isi profil'}
+                </Button>
+              </div>
+              {organization && (
+                <dl className="relative mt-5 grid grid-cols-2 gap-2.5">
+                  {[
+                    ['Mulai bekerja', formatDate(String(organization.data.start_date || ''))],
+                    ['Target pembukaan', formatDate(String(organization.data.target_date || ''))],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-xl bg-surface/70 px-3.5 py-2.5">
+                      <dt className="text-xs font-bold opacity-80">{label}</dt>
+                      <dd className="font-bold text-ink">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+              <p className="relative mt-4 text-xs font-semibold opacity-80">Nama manajer dipakai di sapaan, laporan, dan pilihan penanggung jawab.</p>
+            </section>
+            <Appearance />
+          </div>
+          <div className="flex flex-col gap-5">
+            <SettingsGroup title="Keamanan">
+              <SettingsRow icon={<KeyRound />} tone="rose" title="Ganti PIN" description="PIN 6–12 digit untuk membuka aplikasi" onClick={() => setPinOpen(true)} />
+              <SettingsRow
+                icon={<LockKeyhole />}
+                tone="lavender"
+                title="Kunci aplikasi sekarang"
+                description="Keluar dan minta PIN lagi"
+                onClick={async () => {
+                  try {
+                    await api('auth/pin', { action: 'logout' });
+                  } finally {
+                    resetAuthNavigation('/pin');
+                  }
+                }}
+              />
+            </SettingsGroup>
+            <Backup refresh={refresh} />
+          </div>
+        </div>
       )}
+      <Sheet open={pinOpen} onOpenChange={setPinOpen} title="Ganti PIN" description="Setelah diganti, Anda diminta masuk lagi.">
+        <ChangePin />
+      </Sheet>
       <RecordFormSheet open={editing} entity="organization" item={organization} workspace={data} refresh={refresh} onClose={() => setEditing(false)} />
     </div>
+  );
+}
+
+function SettingsGroup({ title, children, note }: { title: string; children: ReactNode; note?: ReactNode }) {
+  return (
+    <section aria-label={title} className="flex flex-col gap-2">
+      <h2 className="px-1 text-[13px] font-bold tracking-[0.06em] text-ink-3 uppercase">{title}</h2>
+      <div className={`${CARD} divide-y divide-line overflow-hidden`}>{children}</div>
+      {note && <p className="px-1 text-xs text-ink-3">{note}</p>}
+    </section>
+  );
+}
+
+function SettingsRow({
+  icon,
+  tone,
+  title,
+  description,
+  onClick,
+  busy,
+}: {
+  icon: ReactNode;
+  tone: Tone;
+  title: string;
+  description: string;
+  onClick?: () => void;
+  busy?: boolean;
+}) {
+  return (
+    <button type="button" onClick={onClick} disabled={busy} className="flex min-h-16 w-full items-center gap-3.5 px-4 py-3 text-left transition hover:bg-surface-2 disabled:opacity-60">
+      <span data-tone={tone} className="grid size-10 shrink-0 place-items-center rounded-xl bg-tone text-tone-bar [&_svg]:size-5">
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-bold text-ink">{title}</span>
+        <span className="block truncate text-[13px] text-ink-3">{description}</span>
+      </span>
+      <ChevronRight className="size-5 shrink-0 text-ink-3" />
+    </button>
+  );
+}
+
+/** Pratinjau mini satu tema: memakai token tema itu sendiri lewat data-theme pada pembungkus. */
+function ThemePreview({ value }: { value: 'light' | 'dark' }) {
+  return (
+    <span data-theme={value} className="flex h-20 w-full gap-1.5 overflow-hidden rounded-xl bg-canvas p-1.5 ring-1 ring-line" aria-hidden="true">
+      <span className="flex w-5 flex-col gap-1 rounded-md bg-surface p-1">
+        <span className="h-1.5 rounded-full bg-accent-strong" />
+        <span className="h-1 rounded-full bg-line" />
+        <span className="h-1 rounded-full bg-line" />
+      </span>
+      <span className="flex flex-1 flex-col gap-1.5">
+        <span className="h-3 rounded-md bg-surface" />
+        <span className="flex flex-1 gap-1.5">
+          <span className="flex-1 rounded-md bg-late" />
+          <span className="flex-1 rounded-md bg-doing" />
+        </span>
+      </span>
+    </span>
   );
 }
 
 function Appearance() {
   const { theme, setTheme, accent, setAccent } = useTheme();
   return (
-    <section className={CARD}>
+    <section aria-label="Tampilan" className={`${CARD} flex flex-col gap-5 p-5 md:p-6`}>
       <div>
         <h2 className="text-lg font-extrabold">Tema</h2>
-        <div className="mt-3 grid max-w-md grid-cols-2 gap-3">
+        <div className="mt-3 grid grid-cols-2 gap-3">
           {(['light', 'dark'] as const).map((value) => (
-            <button key={value} type="button" aria-pressed={theme === value} onClick={() => setTheme(value)} className="flex items-center gap-3 rounded-2xl border-2 border-line p-4 text-left font-bold transition aria-pressed:border-accent-strong aria-pressed:bg-accent">
-              {value === 'light' ? <Sun className="size-5" /> : <Moon className="size-5" />}
-              {value === 'light' ? 'Terang' : 'Gelap'}
+            <button
+              key={value}
+              type="button"
+              aria-pressed={theme === value}
+              onClick={() => setTheme(value)}
+              className="flex flex-col gap-2.5 rounded-2xl p-2 text-left ring-2 ring-transparent transition hover:bg-surface-2 aria-pressed:bg-accent aria-pressed:ring-accent-strong"
+            >
+              <ThemePreview value={value} />
+              <span className="flex items-center gap-2 px-1 pb-0.5 text-sm font-bold">
+                {value === 'light' ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                {value === 'light' ? 'Terang' : 'Gelap'}
+                {theme === value && <Check className="ml-auto size-4 text-accent-ink" strokeWidth={3} />}
+              </span>
             </button>
           ))}
         </div>
       </div>
       <div>
         <h2 className="text-lg font-extrabold">Warna sorotan</h2>
-        <p className="text-sm text-ink-3">Dipakai untuk menu aktif, tab, hari terpilih, dan fokus. Warna kartu tetap mengikuti proyek.</p>
-        <div className="mt-3 flex flex-wrap gap-3">
+        <p className="text-sm text-ink-3">Untuk menu aktif, tab, hari terpilih, dan fokus. Warna kartu tetap mengikuti proyek.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
           {ACCENTS.map((option) => (
-            <button key={option.id} type="button" aria-pressed={accent === option.id} onClick={() => setAccent(option.id)} className="flex flex-col items-center gap-2 rounded-2xl p-2 text-sm font-semibold text-ink-2 aria-pressed:text-ink">
-              <span className="grid size-12 place-items-center rounded-full text-white ring-offset-2 ring-offset-surface" style={{ background: option.swatch, boxShadow: accent === option.id ? `0 0 0 3px var(--surface), 0 0 0 5px ${option.swatch}` : undefined }}>
-                {accent === option.id && <Check className="size-5" strokeWidth={3} />}
+            <button
+              key={option.id}
+              type="button"
+              aria-pressed={accent === option.id}
+              onClick={() => setAccent(option.id)}
+              className="flex h-10 items-center gap-2 rounded-full pr-3.5 pl-1.5 text-sm font-semibold text-ink-2 ring-1 ring-line transition hover:bg-surface-2 aria-pressed:font-bold aria-pressed:text-ink aria-pressed:ring-2 aria-pressed:ring-accent-strong"
+            >
+              <span className="grid size-7 place-items-center rounded-full text-white" style={{ background: option.swatch }}>
+                {accent === option.id && <Check className="size-4" strokeWidth={3} />}
               </span>
               {option.label}
             </button>
@@ -118,7 +218,7 @@ function ChangePin() {
   const [message, setMessage] = useState('');
   return (
     <form
-      className={`${CARD} max-w-lg`}
+      className="flex flex-col gap-4"
       onSubmit={async (event) => {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
@@ -135,7 +235,6 @@ function ChangePin() {
         }
       }}
     >
-      <h2 className="text-lg font-extrabold">Ganti PIN</h2>
       <Field label="PIN sekarang">
         <Input name="pin" type="password" inputMode="numeric" pattern="[0-9]{6,12}" required autoComplete="current-password" />
       </Field>
@@ -154,23 +253,15 @@ function ChangePin() {
 function Backup({ refresh }: { refresh: () => Promise<void> | void }) {
   const confirm = useConfirm();
   const input = useRef<HTMLInputElement>(null);
+  const download = useRef<HTMLAnchorElement>(null);
   const [busy, setBusy] = useState(false);
   return (
-    <section className={`${CARD} max-w-2xl`}>
-      <h2 className="text-lg font-extrabold">Cadangan data</h2>
-      <p className="text-sm text-ink-2">Unduh semua catatan dan laporan sebagai berkas JSON. Berkas tidak dienkripsi; simpan di tempat aman.</p>
-      <div className="flex flex-wrap gap-2">
-        <Button asChild variant="primary">
-          <a href="/api/backup" download>
-            <Download />
-            Unduh cadangan
-          </a>
-        </Button>
-        <Button busy={busy} onClick={() => input.current?.click()}>
-          <Upload />
-          Pulihkan dari berkas
-        </Button>
-      </div>
+    <>
+      <SettingsGroup title="Data" note="Berkas cadangan tidak dienkripsi; simpan di tempat aman. Pemulihan dibatalkan seluruhnya bila ada data yang tidak sah.">
+        <SettingsRow icon={<Download />} tone="mint" title="Unduh cadangan" description="Semua catatan dan laporan sebagai berkas JSON" onClick={() => download.current?.click()} />
+        <SettingsRow icon={<Upload />} tone="peach" title="Pulihkan dari berkas" description="Ganti semua catatan dengan isi cadangan" busy={busy} onClick={() => input.current?.click()} />
+      </SettingsGroup>
+      <a ref={download} href="/api/backup" download hidden aria-hidden="true" tabIndex={-1} />
       <input
         ref={input}
         type="file"
@@ -194,7 +285,6 @@ function Backup({ refresh }: { refresh: () => Promise<void> | void }) {
           }
         }}
       />
-      <p className="text-xs text-ink-3">Pemulihan dibatalkan seluruhnya bila ada data yang tidak sah; data sebelumnya tetap tersimpan.</p>
-    </section>
+    </>
   );
 }

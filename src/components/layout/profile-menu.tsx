@@ -14,7 +14,7 @@ const ITEM =
 /** Profil manajer: tema, warna sorotan, pengaturan, dan kunci aplikasi. */
 export function ProfileMenu({ compact }: { compact?: boolean }) {
   const data = useLoadedWorkspace();
-  const { manager } = organizationInfo(data);
+  const { manager, name: organization } = organizationInfo(data);
   const name = manager || 'Manajer';
   const { theme, setTheme, accent, setAccent } = useTheme();
   return (
@@ -43,18 +43,30 @@ export function ProfileMenu({ compact }: { compact?: boolean }) {
           align="end"
           sideOffset={10}
           collisionPadding={12}
-          className="pop z-50 w-64 rounded-3xl bg-surface p-2 shadow-float"
+          className="pop z-50 w-72 rounded-3xl bg-surface p-2 shadow-float ring-1 ring-line/60"
         >
-          <div className="px-3 py-2">
-            <p className="font-bold">{name}</p>
-            <p className="text-xs text-ink-3">Manajer koperasi</p>
+          <div className="flex items-center gap-3 rounded-2xl bg-surface-2 p-3">
+            <Avatar name={name} className="size-11 ring-0" />
+            <div className="min-w-0">
+              <p className="truncate font-bold">{name}</p>
+              <p className="truncate text-xs text-ink-3">{organization || 'Manajer koperasi'}</p>
+            </div>
           </div>
-          <DropdownMenu.Separator className="my-1 h-px bg-line" />
-          <DropdownMenu.Item className={ITEM} onSelect={(event) => { event.preventDefault(); setTheme(theme === 'dark' ? 'light' : 'dark'); }}>
-            {theme === 'dark' ? <Sun /> : <Moon />}
-            {theme === 'dark' ? 'Tema terang' : 'Tema gelap'}
-          </DropdownMenu.Item>
-          <div className="flex items-center gap-2 px-3 py-2" role="group" aria-label="Warna sorotan">
+          <div className="mt-2 grid grid-cols-2 gap-1 rounded-2xl bg-surface-2 p-1" role="group" aria-label="Tema">
+            {(['light', 'dark'] as const).map((value) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={theme === value}
+                onClick={() => setTheme(value)}
+                className="flex h-9 items-center justify-center gap-2 rounded-xl text-sm font-semibold text-ink-3 transition aria-pressed:bg-surface aria-pressed:font-bold aria-pressed:text-ink aria-pressed:shadow-card"
+              >
+                {value === 'light' ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                {value === 'light' ? 'Terang' : 'Gelap'}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center justify-between px-2 py-3" role="group" aria-label="Warna sorotan">
             {ACCENTS.map((option) => (
               <button
                 key={option.id}
@@ -69,6 +81,7 @@ export function ProfileMenu({ compact }: { compact?: boolean }) {
               </button>
             ))}
           </div>
+          <DropdownMenu.Separator className="mb-1 h-px bg-line" />
           <DropdownMenu.Item asChild className={ITEM}>
             <Link href="/settings">
               <Settings />
