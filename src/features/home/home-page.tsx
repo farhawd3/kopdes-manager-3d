@@ -153,15 +153,12 @@ export function HomePage() {
         <RoutinesCard routines={data.routines || []} checks={checks} setChecks={setChecks} reload={reload} refresh={refresh} ready={routinesReady} />
         <section aria-labelledby="overview-title" className="flex flex-col gap-3">
           <h2 id="overview-title" className="text-lg font-extrabold">Ringkasan tugas</h2>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-3">
-              <StatTile label="Dikerjakan" value={counts.proses} tone="lavender" icon={<LoaderCircle />} note="Sedang berjalan" people={peopleOf('proses')} className="min-h-40" onClick={() => router.push('/tasks?status=proses')} />
-              <StatTile label="Terlambat" value={late} tone="rose" icon={<AlarmClock />} note={late ? 'Perlu ditindak' : 'Tidak ada'} people={peopleOf('terlambat')} onClick={() => router.push('/tasks?status=terlambat')} />
-            </div>
-            <div className="flex flex-col gap-3 pt-7">
-              <StatTile label="Belum" value={counts.rencana} tone="sky" icon={<CircleDashed />} note="Rencana" people={peopleOf('rencana')} onClick={() => router.push('/tasks?status=rencana')} />
-              <StatTile label="Selesai" value={counts.selesai} tone="mint" icon={<CircleCheck />} note="30 hari terakhir" people={peopleOf('selesai')} className="min-h-36" onClick={() => router.push('/tasks?status=selesai')} />
-            </div>
+          {/* Kotak 2×2 sama tinggi, urut alur kerja: belum → dikerjakan → terlambat → selesai. */}
+          <div className="grid auto-rows-fr grid-cols-2 gap-3">
+            <StatTile label="Belum" value={counts.rencana} tone="sky" icon={<CircleDashed />} note="Rencana" people={peopleOf('rencana')} onClick={() => router.push('/tasks?status=rencana')} />
+            <StatTile label="Dikerjakan" value={counts.proses} tone="lavender" icon={<LoaderCircle />} note="Sedang berjalan" people={peopleOf('proses')} onClick={() => router.push('/tasks?status=proses')} />
+            <StatTile label="Terlambat" value={late} tone="rose" icon={<AlarmClock />} note={late ? 'Perlu ditindak' : 'Tidak ada'} people={peopleOf('terlambat')} onClick={() => router.push('/tasks?status=terlambat')} />
+            <StatTile label="Selesai" value={counts.selesai} tone="mint" icon={<CircleCheck />} note="30 hari terakhir" people={peopleOf('selesai')} onClick={() => router.push('/tasks?status=selesai')} />
           </div>
           <form
             className="relative"
