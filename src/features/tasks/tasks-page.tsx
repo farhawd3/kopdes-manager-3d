@@ -215,7 +215,7 @@ export function TasksPage() {
     <div className="flex flex-col gap-5">
       <PageHeader
         title={archive ? (status === 'dibatalkan' ? 'Tugas dibatalkan' : 'Arsip tugas selesai') : projectRow ? String(projectRow.data.title) : 'Tugas'}
-        subtitle={archive ? `${filtered.length} tugas` : `${counts.rencana + counts.proses} tugas aktif · ${counts.terlambat} terlambat`}
+        subtitle={archive ? `${filtered.length} tugas` : `${counts.rencana + counts.proses} aktif · ${counts.terlambat} terlambat`}
         sections={
           archive
             ? undefined
@@ -263,8 +263,8 @@ export function TasksPage() {
           <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink-3" />
           <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari tugas…" className="bg-surface pl-10 shadow-card" />
         </label>
-        {/* Di HP saringan jadi satu baris geser di bawah pencarian, agar tidak menumpuk tiga baris. */}
-        <div className="scrollbar-none -mx-4 flex w-[calc(100%+2rem)] gap-2 overflow-x-auto px-4 py-1 max-sm:order-last sm:contents">
+        {/* Di HP dan tablet kecil saringan jadi satu baris geser di bawah pencarian, agar tidak menumpuk tiga baris. */}
+        <div className="scrollbar-none -mx-4 flex w-[calc(100%+2rem)] gap-2 overflow-x-auto px-4 py-1 max-md:order-last md:-mx-0 md:contents md:px-0">
           <Select aria-label="Proyek" value={project} onChange={(event) => setParam('project', event.target.value || null)} className="w-40 shrink-0 bg-surface shadow-card">
             <option value="">Semua proyek</option>
             {(data.workstreams || []).map((row) => (

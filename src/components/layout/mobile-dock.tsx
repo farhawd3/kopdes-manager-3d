@@ -54,7 +54,7 @@ export function MobileDock({ onAdd, onMenu, adding }: { onAdd: () => void; onMen
     <nav
       aria-label="Navigasi utama"
       data-hidden={hidden || undefined}
-      className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex h-[68px] items-center justify-between rounded-[26px] bg-surface/95 px-2 shadow-float ring-1 ring-line/70 backdrop-blur-md transition-transform duration-300 ease-[var(--ease-out)] data-[hidden]:translate-y-[calc(100%+2rem)] md:hidden"
+      className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 mx-auto flex h-[68px] max-w-[26rem] items-center justify-between rounded-[26px] bg-surface/95 px-2 shadow-float ring-1 ring-line/70 backdrop-blur-md dark:bg-surface-2/95 dark:ring-line-strong transition-transform duration-300 ease-[var(--ease-out)] data-[hidden]:translate-y-[calc(100%+2rem)] md:hidden"
     >
       {items.slice(0, 2).map((item) => renderItem(item.id, item.label, <PageIcon name={item.icon} className="size-[22px]" />, active === item.id, `/${item.id}`))}
       <button

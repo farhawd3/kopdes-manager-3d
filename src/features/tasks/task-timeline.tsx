@@ -91,21 +91,24 @@ export function TaskTimeline({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="mr-auto text-xl font-extrabold">
+        <h2 className="min-w-0 flex-1 text-lg font-extrabold lg:mr-auto lg:flex-none lg:text-xl">
           {formatDate(start)} – {formatDate(end)}
         </h2>
-        <Tabs label="Skala" items={[{ id: 'day', label: 'Hari' }, { id: 'week', label: 'Minggu' }, { id: 'month', label: 'Bulan' }]} value={scale} onChange={(id) => setScale(id as keyof typeof SCALES)} />
-        <Button size="icon" aria-label="Mundur" onClick={() => setStart(addDays(start, -Math.round(span / 2)))}>
-          <ChevronLeft />
-        </Button>
-        <Button onClick={() => setStart(addDays(today(), -7))}>Hari ini</Button>
-        <Button size="icon" aria-label="Maju" onClick={() => setStart(addDays(start, Math.round(span / 2)))}>
-          <ChevronRight />
-        </Button>
-        <Button onClick={fit}>
+        <Button onClick={fit} aria-label="Lihat semua jadwal" className="lg:order-last">
           <CalendarRange />
-          Lihat semua jadwal
+          <span className="max-sm:hidden">Lihat semua</span>
         </Button>
+        <div className="max-lg:basis-full max-lg:h-0" aria-hidden="true" />
+        <Tabs label="Skala" className="max-sm:[&_button]:px-3" items={[{ id: 'day', label: 'Hari' }, { id: 'week', label: 'Minggu' }, { id: 'month', label: 'Bulan' }]} value={scale} onChange={(id) => setScale(id as keyof typeof SCALES)} />
+        <div className="flex items-center rounded-2xl bg-surface p-1 shadow-card" role="group" aria-label="Geser jadwal">
+          <Button size="icon-sm" variant="ghost" aria-label="Mundur" onClick={() => setStart(addDays(start, -Math.round(span / 2)))}>
+            <ChevronLeft />
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setStart(addDays(today(), -7))}>Hari ini</Button>
+          <Button size="icon-sm" variant="ghost" aria-label="Maju" onClick={() => setStart(addDays(start, Math.round(span / 2)))}>
+            <ChevronRight />
+          </Button>
+        </div>
       </div>
       {conflicts > 0 && (
         <p className="flex items-center gap-2 rounded-2xl bg-warn px-4 py-3 text-sm font-semibold text-warn-ink">
