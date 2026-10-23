@@ -1488,14 +1488,7 @@ export function MonitoringDashboard({
         })),
       ]);
   return (
-    <main
-      className={ROOT}
-      data-lokasi={site}
-      data-fase={ambience.phase}
-      data-cuaca={ambience.weather}
-      data-panel={panel ?? undefined}
-      suppressHydrationWarning
-    >
+    <main className={ROOT} data-panel={panel ?? undefined} suppressHydrationWarning>
       <Stage
         site={site}
         input={input}

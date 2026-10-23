@@ -94,7 +94,7 @@ type Draft = { entity: Entity; data: Record<string, unknown> };
 export type SampleItem = Item & { entity: Entity };
 
 /**
- * Membuat seluruh catatan contoh. `hariIni` = tanggal acuan (YYYY-MM-DD, Asia/Jakarta);
+ * Membuat seluruh catatan contoh. `baseDate` = tanggal acuan (YYYY-MM-DD, Asia/Jakarta);
  * semua tanggal relatif terhadapnya agar rapat "hari ini" dan tugas terlambat selalu tampak.
  */
 export function sampleData(baseDate: string): SampleItem[] {

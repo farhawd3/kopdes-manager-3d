@@ -16,7 +16,7 @@ export function searchWorkspace(data: Workspace, text: string, scope = 'all') {
     .flatMap((entity) =>
       (data[entity] || [])
         .filter((row) => {
-          // Search loaded records only. Nothing is sent to a third-party search service.
+          // Hanya mencari catatan yang sudah dimuat; tidak ada yang dikirim ke layanan pencarian luar.
           const project = data.workstreams?.find(
             (project) => project.id === row.data.workstream_id,
           );

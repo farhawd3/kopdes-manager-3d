@@ -1,5 +1,5 @@
 // Unit KDMP yang punya bangunan di dunia: dipakai untuk mencocokkan catatan Gerai dengan
-// bangunannya (world-model.ts). Letak di peta ada di kit/peta.ts.
+// bangunannya (world-model.ts).
 
 export type BuildingStyle =
   'gudang' | 'pendingin' | 'kantor' | 'loket' | 'toko' | 'apotek' | 'klinik';

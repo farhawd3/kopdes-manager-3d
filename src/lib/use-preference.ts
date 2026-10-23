@@ -1,7 +1,7 @@
 'use client';
 import { useSyncExternalStore } from 'react';
 const eventName = 'kopdes-preference';
-// Private browsing can reject writes; keep the user's choice for this session.
+// Mode penyamaran bisa menolak penyimpanan; pilihan pengguna tetap diingat selama sesi ini.
 const temporaryPreferences = new Map<string, string>();
 function subscribe(callback: () => void) {
   window.addEventListener('storage', callback);

@@ -82,7 +82,7 @@ export function useWorkspace(
   const [fetching, setFetching] = useState<Entity | null>(null);
   const [renderedCacheKey, setRenderedCacheKey] = useState(cacheKey);
   if (renderedCacheKey !== cacheKey) {
-    // A new page/scope must never render data belonging to the preceding scope.
+    // Halaman atau saringan baru tidak boleh menampilkan data milik saringan sebelumnya.
     setRenderedCacheKey(cacheKey);
     setData(initialCache?.data || {});
     setMore(initialCache?.more || {});
@@ -243,15 +243,14 @@ export function useWorkspace(
     }
   };
   useEffect(() => {
-    // Synchronize requests with the page and explicit archive filters.
-    // Stale-while-revalidate: if cached data exists, render immediately without flash
+    // Data dari cache tampil langsung (tanpa kedip), lalu dimuat ulang dari server di belakang.
     const cached = workspaceCache.get(cacheKey);
     if (cached) {
       window.dispatchEvent(new CustomEvent('hub-workspace', { detail: cached.data }));
     } else {
       window.dispatchEvent(new CustomEvent('hub-workspace', { detail: null }));
     }
-    // Cancel an obsolete mount before it starts a request (including StrictMode's probe).
+    // Batalkan pemasangan usang sebelum sempat meminta data (termasuk percobaan StrictMode).
     let active = true;
     void Promise.resolve().then(() => {
       if (active) return load();

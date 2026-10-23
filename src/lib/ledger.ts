@@ -17,7 +17,7 @@ export function cashSummary(rows: Item[]) {
 export function stockDifference(row: Item) {
   return Number(row.data.counted_quantity) - Number(row.data.book_quantity);
 }
-// Spreadsheet formulas are escaped even when a cell is quoted.
+// Rumus spreadsheet tetap diamankan walau sel diberi tanda kutip.
 export function csvCell(value: unknown) {
   const text = String(value ?? '');
   return '"' + (/^[\s]*[=+@-]/.test(text) ? "'" + text : text).replaceAll('"', '""') + '"';

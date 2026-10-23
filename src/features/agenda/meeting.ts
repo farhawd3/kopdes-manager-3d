@@ -38,12 +38,13 @@ export function meetingCalendar(item: Item, now = new Date()) {
   };
   const start = new Date(`${data.date}T${data.time}:00+07:00`);
   const end = new Date(start.getTime() + data.duration * 60_000);
-  // Fold by UTF-8 bytes, preserving complete Unicode characters (RFC 5545).
+  // Lipat baris kalender (RFC 5545) menurut jumlah bita UTF-8 tanpa memotong karakter Unicode.
+  const encoder = new TextEncoder();
   const fold = (line: string) => {
     let result = '',
       count = 0;
     for (const char of line) {
-      const size = new TextEncoder().encode(char).length;
+      const size = encoder.encode(char).length;
       if (count + size > 74) {
         result += '\r\n ';
         count = 1;

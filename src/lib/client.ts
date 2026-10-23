@@ -1,9 +1,10 @@
-// In-memory client cache with TTL & mutation invalidation to accelerate requests and save tokens
+// Cache baca di memori browser: bacaan yang sama dalam 60 detik tidak meminta ulang ke server;
+// setiap penyimpanan mengosongkan cache.
 type CacheEntry<T> = { data: T; expiry: number };
 const clientCache = new Map<string, CacheEntry<unknown>>();
 const pendingReads = new Map<string, Promise<unknown>>();
 let cacheGeneration = 0;
-const DEFAULT_TTL_MS = 60_000; // 60 seconds cache for read queries
+const DEFAULT_TTL_MS = 60_000;
 
 export function invalidateCache(pathPrefix?: string) {
   cacheGeneration++;
@@ -30,9 +31,8 @@ export async function api<T>(
   options?: { bypassCache?: boolean; ttlMs?: number },
 ): Promise<T> {
   const isRead = body === undefined && method === 'GET';
-  const cacheKey = `${path}`;
+  const cacheKey = path;
 
-  // Serve from cache if available and not expired for read requests
   if (isRead && !options?.bypassCache) {
     const cached = clientCache.get(cacheKey) as CacheEntry<T> | undefined;
     if (cached && cached.expiry > Date.now()) {
@@ -62,7 +62,6 @@ export async function api<T>(
       );
     }
 
-    // Cache read results
     if (isRead) {
       if (generation === cacheGeneration) {
         clientCache.set(cacheKey, {
@@ -72,7 +71,6 @@ export async function api<T>(
         if (clientCache.size > 100) clientCache.delete(clientCache.keys().next().value!);
       }
     } else {
-      // Invalidate related cache on mutations (POST, PUT, DELETE)
       invalidateCache();
     }
 
