@@ -1,19 +1,30 @@
+import { useId } from 'react';
+
 /**
- * Lipatan lengkung di kanan atas kartu, seperti kartu TaskTrack: bidang V yang sedikit lebih terang
- * dengan tepi lembut. Satu-satunya hiasan kartu; warna mengikuti nada kartu lewat putih transparan.
+ * Lipatan timbul di kanan atas kartu, seperti kartu TaskTrack: dua bidang V yang sedikit lebih
+ * terang dengan bayangan lembut di tepinya, tanpa garis keras. Satu-satunya hiasan kartu; warna
+ * bayangan mengikuti nada kartu (`--tone-bar`).
  */
 export function Wave() {
+  const id = useId();
+  const shadow = (name: string, blur: number, opacity: number) => (
+    <filter id={`${id}-${name}`} x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy={blur * 0.7} stdDeviation={blur} style={{ floodColor: 'var(--tone-bar, #000)', floodOpacity: opacity }} />
+    </filter>
+  );
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 200 120"
+      viewBox="0 0 200 125"
       preserveAspectRatio="xMaxYMin meet"
-      className="pointer-events-none absolute top-0 right-0 h-[7.5rem] w-[12.5rem] text-white dark:opacity-15"
-      fill="none"
+      className="pointer-events-none absolute top-0 right-0 h-[8rem] w-[13rem] text-white dark:opacity-20"
     >
-      <path d="M58 0 L122 70 Q134 83 148 71 L200 24 V0 Z" fill="currentColor" fillOpacity="0.4" />
-      <path d="M58 0 L122 70 Q134 83 148 71 L200 24" stroke="currentColor" strokeOpacity="0.75" strokeWidth="1.4" />
-      <path d="M34 0 L116 90 Q133 107 152 91 L200 48" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1.2" />
+      <defs>
+        {shadow('outer', 5, 0.16)}
+        {shadow('inner', 4, 0.22)}
+      </defs>
+      <path d="M44 -12 L116 72 C132 92 150 92 166 76 L215 32 V-12 Z" fill="currentColor" fillOpacity="0.2" filter={`url(#${id}-outer)`} />
+      <path d="M72 -12 L124 50 C136 64 150 64 162 53 L215 6 V-12 Z" fill="currentColor" fillOpacity="0.38" stroke="currentColor" strokeOpacity="0.45" strokeWidth="0.8" filter={`url(#${id}-inner)`} />
     </svg>
   );
 }

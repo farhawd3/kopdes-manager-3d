@@ -69,7 +69,7 @@ export function TaskCard({
         if (event.key === 'Enter' && event.target === event.currentTarget) onOpen();
       }}
       className={cn(
-        'group relative flex flex-col gap-3 overflow-hidden rounded-[var(--radius-card)] bg-tone p-4 text-tone-ink outline-none transition-shadow hover:shadow-card focus-visible:ring-2 focus-visible:ring-tone-bar',
+        'group relative flex flex-col gap-3 overflow-hidden rounded-[var(--radius-card)] bg-tone p-4 text-tone-ink ring-1 ring-white/50 ring-inset dark:ring-white/5 outline-none transition-shadow hover:shadow-card focus-visible:ring-2 focus-visible:ring-tone-bar',
         draggable && 'cursor-grab touch-pan-y select-none active:cursor-grabbing',
         done && 'opacity-80',
         className,
