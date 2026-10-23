@@ -32,7 +32,7 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Komponen | Berkas | Catatan |
 |---|---|---|
 | Laci / lembar bawah | `components/ui/sheet.tsx` | Semua formulir dan detail. Panel penuh tinggi menempel di kanan (garis sorotan di atas, tutup di kiri atas, judul besar) di tablet/laptop; dari bawah di HP. Detail tugas memakai daftar label–nilai dan subtugas berupa kapsul |
-| Linimasa (Gantt) | `features/tasks/task-timeline.tsx` | Kepala hari dua baris, kolom hari ini berbayang, garis waktu sekarang dengan gelembung jam, batang kapsul berisi avatar |
+| Linimasa (Gantt) | `features/tasks/task-timeline.tsx` | Satu baris per proyek (tugas yang bertumpuk turun ke lajur berikut), kisi hari, kolom hari ini berbayang, garis jam sekarang, batang kapsul berisi avatar; batang terpilih berwarna penuh |
 | Pengaturan | `features/settings/settings-page.tsx` | Satu halaman tanpa tab: kartu profil, tema lewat pratinjau mini, warna sorotan berupa kapsul, keamanan dan data sebagai baris berkelompok; Ganti PIN di laci |
 | Konfirmasi | `components/ui/confirm.tsx` | Satu-satunya dialog di tengah, hanya untuk tindakan yang tak bisa diurungkan |
 | Toast + Urungkan | `sonner` di kerangka | Hasil aksi; perubahan tugas selalu bisa diurungkan |

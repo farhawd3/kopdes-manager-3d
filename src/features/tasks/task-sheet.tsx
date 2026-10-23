@@ -1,7 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Copy, ExternalLink, FileText, Globe2, Link2, Repeat, Send, Trash2, Video, XCircle } from 'lucide-react';
+import { DropdownMenu } from 'radix-ui';
+import { ChevronLeft, ChevronRight, Circle, CircleCheck, CircleDot, CircleSlash, Clock, Copy, Ellipsis, ExternalLink, FileText, Globe2, Link2, ListFilter, Send, SquarePen, Trash2, UserRound, Video, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Item, Task } from '@/features/records/schemas';
 import type { Workspace } from '@/features/workspace/use-workspace';
@@ -16,7 +17,7 @@ import { recordLink } from '@/components/layout/nav';
 import { Sheet } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Check } from '@/components/ui/check';
-import { Input, Select, Textarea } from '@/components/ui/field';
+import { Input, Select } from '@/components/ui/field';
 import { Avatar } from '@/components/ui/avatar';
 import { useConfirm } from '@/components/ui/confirm';
 import { projectTone } from '@/lib/tones';
@@ -45,8 +46,19 @@ const RECURRENCE = [
   ['bulanan', 'Setiap bulan'],
 ] as const;
 
-const SEG =
-  'h-9 flex-1 rounded-xl px-2 text-[13px] font-semibold text-ink-2 transition aria-pressed:bg-surface aria-pressed:text-ink aria-pressed:shadow-card';
+const ICON_BUTTON = 'grid size-9 place-items-center rounded-xl text-ink-2 transition hover:bg-surface-2 hover:text-ink [&_svg]:size-[18px]';
+const MENU_ITEM =
+  'flex h-10 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold text-ink-2 outline-none data-[highlighted]:bg-surface-2 data-[highlighted]:text-ink [&_svg]:size-4';
+const VALUE_ICON = 'size-7 shrink-0 p-1 text-ink-3';
+const VALUE_SELECT = 'h-9 border-transparent bg-transparent pl-1.5 font-medium text-ink hover:bg-surface-2';
+
+/** Ikon status seperti lingkaran "Started" pada acuan: kosong untuk rencana, setengah untuk dikerjakan, centang untuk selesai. */
+function StatusIcon({ status }: { status: string }) {
+  if (status === 'selesai') return <CircleCheck className="size-7 shrink-0 p-1 text-done-ink" />;
+  if (status === 'proses') return <CircleDot className="size-7 shrink-0 p-1 text-accent-strong" />;
+  if (status === 'dibatalkan') return <CircleSlash className="size-7 shrink-0 p-1 text-ink-3" />;
+  return <Circle className="size-7 shrink-0 p-1 text-accent-strong" />;
+}
 
 type Activity = { id: string; user: string; text: string; created_at: string; type: string };
 
@@ -107,6 +119,10 @@ export function TaskSheet({
       toast.error((error as Error).message);
     }
   };
+  const copyLink = () => {
+    const url = `${window.location.origin}/tasks?task=${task.id}`;
+    void navigator.clipboard.writeText(url).then(() => toast('Tautan tugas tersalin'), () => window.prompt('Salin tautan ini:', url));
+  };
   const people = assigneeOptions(ws.staff || [], organizationInfo(ws).manager, String(d.assignee || ''));
   const projects = (ws.workstreams || []).filter((row) => !isProjectHistory(row) || row.id === d.workstream_id);
 
@@ -129,31 +145,10 @@ export function TaskSheet({
             </span>
           ) : undefined
         }
-        footer={
-          <>
-            {d.status !== 'dibatalkan' && (
-              <Button
-                variant="danger"
-                onClick={async () => {
-                  if (await confirm({ title: `Batalkan tugas "${String(d.title)}"?`, description: 'Tugas pindah ke arsip dibatalkan dan bisa dibuka lagi kapan saja.', confirmLabel: 'Batalkan tugas', danger: true })) {
-                    await cancelTask(task, refresh, manager);
-                    onClose();
-                  }
-                }}
-              >
-                <XCircle />
-                Batalkan tugas
-              </Button>
-            )}
-            <Button className="ml-auto" onClick={() => setFullForm(true)}>
-              Formulir lengkap
-            </Button>
-          </>
-        }
       >
         <div className="flex flex-col gap-6">
-          {/* Kepala detail seperti panel acuan: judul besar yang bisa diubah, lalu label kecil. */}
-          <div className="-mt-2 flex flex-col gap-3">
+          {/* Kepala detail seperti panel acuan: judul besar, lalu deretan ikon aksi kecil. */}
+          <div className="-mt-2 flex flex-col gap-1.5">
             <textarea
               value={title}
               rows={1}
@@ -169,46 +164,71 @@ export function TaskSheet({
               }}
               onBlur={() => title.trim() && title.trim() !== d.title && void save({ title: title.trim() }, 'mengubah judul')}
               className={cn(
-                'field-sizing-content -mx-2 w-[calc(100%+1rem)] resize-none rounded-xl bg-transparent px-2 py-1 text-[26px] leading-tight font-extrabold tracking-tight text-ink outline-none hover:bg-surface-2 focus:bg-surface-2',
+                'field-sizing-content -mx-2 w-[calc(100%+1rem)] resize-none rounded-xl bg-transparent px-2 py-1 text-[26px] leading-tight font-bold tracking-tight text-ink outline-none hover:bg-surface-2 focus:bg-surface-2',
                 d.status === 'selesai' && 'text-ink-3 line-through',
               )}
             />
-            <div data-tone={projectTone(project)} className="flex flex-wrap items-center gap-2 text-xs font-bold">
-              <span className="rounded-full border border-[color-mix(in_srgb,var(--tone-bar)_45%,transparent)] bg-tone px-2.5 py-1 text-tone-ink">
-                #{project ? String(project.data.title) : 'tanpa proyek'}
-              </span>
-              <span className={cn('rounded-full bg-surface-2 px-2.5 py-1 text-ink-2', due.late && 'bg-late text-late-ink')}>{due.text}</span>
-              {d.code ? <span className="rounded-full bg-surface-2 px-2.5 py-1 text-ink-3">{String(d.code)}</span> : null}
-              {d.recurrence && d.recurrence !== 'tidak' ? (
-                <span className="flex items-center gap-1 rounded-full bg-surface-2 px-2.5 py-1 text-ink-2">
-                  <Repeat className="size-3" />
-                  {RECURRENCE.find(([value]) => value === d.recurrence)?.[1]} · {String(d.recurrence_time)}
-                </span>
-              ) : null}
+            <div className="-ml-2 flex items-center gap-0.5 text-ink">
+              <button type="button" aria-label="Salin tautan tugas" title="Salin tautan tugas" onClick={copyLink} className={ICON_BUTTON}>
+                <Link2 />
+              </button>
+              <Link href={worldHref('work-items', task.id)} aria-label="Lihat di Dunia Koperasi" title="Lihat di Dunia Koperasi" className={ICON_BUTTON}>
+                <Globe2 />
+              </Link>
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger aria-label="Aksi lain" title="Aksi lain" className={ICON_BUTTON}>
+                  <Ellipsis />
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content align="start" sideOffset={6} className="pop z-[60] w-56 rounded-2xl bg-surface p-1.5 shadow-float ring-1 ring-line/60">
+                    <DropdownMenu.Item className={MENU_ITEM} onSelect={() => setFullForm(true)}>
+                      <SquarePen />
+                      Formulir lengkap
+                    </DropdownMenu.Item>
+                    {d.status !== 'dibatalkan' && (
+                      <DropdownMenu.Item
+                        className={cn(MENU_ITEM, 'text-late-ink data-[highlighted]:bg-late data-[highlighted]:text-late-ink')}
+                        onSelect={async () => {
+                          if (await confirm({ title: `Batalkan tugas "${String(d.title)}"?`, description: 'Tugas pindah ke arsip dibatalkan dan bisa dibuka lagi kapan saja.', confirmLabel: 'Batalkan tugas', danger: true })) {
+                            await cancelTask(task, refresh, manager);
+                            onClose();
+                          }
+                        }}
+                      >
+                        <XCircle />
+                        Batalkan tugas
+                      </DropdownMenu.Item>
+                    )}
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+              {d.code ? <span className="ml-auto text-xs font-semibold text-ink-3">{String(d.code)}</span> : null}
             </div>
           </div>
 
-          <section className="flex flex-col gap-1.5">
-            <h3 className="text-[13px] font-semibold text-ink-3">Uraian</h3>
-            <Textarea
+          <section className="flex flex-col gap-1">
+            <h3 className="text-[13px] font-medium text-ink-3">Uraian</h3>
+            <textarea
               value={description}
+              rows={2}
               placeholder="Tulis uraian singkat tugas ini"
+              aria-label="Uraian"
               onChange={(event) => setDescription(event.target.value)}
               onBlur={() => description !== String(d.description || '') && void save({ description }, 'mengubah uraian')}
-              className="min-h-20 border-transparent bg-surface-2"
+              className="field-sizing-content -mx-2 min-h-12 w-[calc(100%+1rem)] resize-none rounded-xl bg-transparent px-2 py-1 text-sm leading-relaxed text-ink outline-none placeholder:text-ink-3 hover:bg-surface-2 focus:bg-surface-2"
             />
           </section>
 
-          {/* Sifat tugas: label di kiri, nilai di kanan, seperti panel detail acuan. */}
-          <dl className="grid grid-cols-1 items-center gap-x-4 gap-y-1.5 text-sm sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-y-3 max-sm:[&>dd]:mb-3">
-            <dt className="font-semibold text-ink-3">Penanggung jawab</dt>
-            <dd className="flex items-center gap-2">
-              {d.assignee ? <Avatar name={String(d.assignee)} className="size-8 ring-0" /> : null}
+          {/* Sifat tugas: label di kiri, nilai berikon di kanan, seperti panel detail acuan. */}
+          <dl className="grid grid-cols-[7rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2.5 text-sm sm:grid-cols-[8rem_minmax(0,1fr)] [&>dd]:min-w-0 [&>dd]:flex-wrap [&>dd>span.block]:min-w-0 [&>dd>span.block]:flex-1">
+            <dt className="text-ink-3">Penanggung jawab</dt>
+            <dd className="flex items-center gap-1">
+              {d.assignee ? <Avatar name={String(d.assignee)} className="size-7 text-[10px] ring-0" /> : <UserRound className={VALUE_ICON} />}
               <Select
                 value={String(d.assignee || '')}
                 aria-label="Penanggung jawab"
                 onChange={(event) => void save({ assignee: event.target.value }, event.target.value ? `menugaskan ke ${event.target.value}` : 'mengosongkan penanggung jawab')}
-                className="h-9 border-transparent bg-transparent pl-1 font-semibold hover:bg-surface-2"
+                className={VALUE_SELECT}
               >
                 <option value="">Belum ada</option>
                 {people.map((person) => (
@@ -216,45 +236,44 @@ export function TaskSheet({
                 ))}
               </Select>
             </dd>
-            <dt className="font-semibold text-ink-3">Status</dt>
-            <dd className="flex flex-wrap items-center gap-2">
-              <span className="flex gap-1 rounded-xl bg-surface-2 p-1" role="group" aria-label="Status">
+            <dt className="text-ink-3">Status</dt>
+            <dd className="flex items-center gap-1">
+              <StatusIcon status={String(d.status)} />
+              <Select value={String(d.status)} aria-label="Status" onChange={(event) => void setTaskStatus(task, event.target.value as TaskStatus, refresh, manager)} className={cn(VALUE_SELECT, 'w-auto')}>
                 {STATUSES.map(([value, label]) => (
-                  <button key={value} type="button" aria-pressed={d.status === value} onClick={() => void setTaskStatus(task, value, refresh, manager)} className={SEG}>
-                    {label}
-                  </button>
+                  <option key={value} value={value}>{label}</option>
                 ))}
-              </span>
-              {subtasks.length > 0 && <span className="tabular rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-accent-ink">{taskProgress(d as unknown as Task)}%</span>}
+                {d.status === 'dibatalkan' && <option value="dibatalkan">Dibatalkan</option>}
+              </Select>
+              {subtasks.length > 0 && <span className="tabular shrink-0 rounded-md bg-accent px-1.5 py-0.5 text-xs font-semibold text-accent-ink">{taskProgress(d as unknown as Task)}%</span>}
             </dd>
-            <dt className="font-semibold text-ink-3">Prioritas</dt>
-            <dd>
-              <span className="flex flex-wrap gap-1 rounded-xl bg-surface-2 p-1" role="group" aria-label="Prioritas">
+            <dt className="text-ink-3">Prioritas</dt>
+            <dd className="flex items-center gap-1">
+              <ListFilter className={cn(VALUE_ICON, ['tinggi', 'mendesak'].includes(String(d.priority)) ? 'text-late-ink' : 'text-warn-ink')} />
+              <Select value={String(d.priority || 'normal')} aria-label="Prioritas" onChange={(event) => void save({ priority: event.target.value }, `mengubah prioritas menjadi ${PRIORITIES.find(([v]) => v === event.target.value)?.[1]}`)} className={VALUE_SELECT}>
                 {PRIORITIES.map(([value, label]) => (
-                  <button key={value} type="button" aria-pressed={d.priority === value} onClick={() => void save({ priority: value }, `mengubah prioritas menjadi ${label}`)} className={SEG}>
-                    {label}
-                  </button>
+                  <option key={value} value={value}>{label}</option>
                 ))}
-              </span>
+              </Select>
             </dd>
-            <dt className="font-semibold text-ink-3">Tenggat</dt>
-            <dd>
+            <dt className="text-ink-3">Tenggat</dt>
+            <dd className="flex items-center gap-1">
+              <Clock className={cn(VALUE_ICON, 'text-accent-strong')} />
               <Input
                 type="date"
                 aria-label="Tenggat"
                 value={String(d.due_date || '')}
                 onChange={(event) => event.target.value && void save({ due_date: event.target.value }, `memindah tenggat ke ${event.target.value}`)}
-                className="h-9 w-auto border-transparent bg-transparent pl-1 font-semibold hover:bg-surface-2"
+                className="h-9 w-auto border-transparent bg-transparent px-1.5 hover:bg-surface-2"
               />
+              {due.late && <span className="shrink-0 rounded-md bg-late px-1.5 py-0.5 text-xs font-semibold text-late-ink">{due.text}</span>}
             </dd>
-            <dt className="font-semibold text-ink-3">Proyek</dt>
-            <dd>
-              <Select
-                value={String(d.workstream_id || '')}
-                aria-label="Proyek"
-                onChange={(event) => void save({ workstream_id: event.target.value, milestone_id: '' }, 'mengubah proyek')}
-                className="h-9 border-transparent bg-transparent pl-1 font-semibold hover:bg-surface-2"
-              >
+            <dt className="text-ink-3">Proyek</dt>
+            <dd data-tone={projectTone(project)} className="flex items-center gap-1">
+              <span className="grid size-7 shrink-0 place-items-center">
+                <span className="size-3 rounded-[4px] bg-tone-bar" />
+              </span>
+              <Select value={String(d.workstream_id || '')} aria-label="Proyek" onChange={(event) => void save({ workstream_id: event.target.value, milestone_id: '' }, 'mengubah proyek')} className={VALUE_SELECT}>
                 <option value="">Tugas mandiri (tanpa proyek)</option>
                 {projects.map((row) => (
                   <option key={row.id} value={row.id}>{String(row.data.title)}</option>
@@ -268,7 +287,7 @@ export function TaskSheet({
               Subtugas <span className="tabular">{subtasks.filter((s) => s.done).length}/{subtasks.length}</span>
             </h3>
             {/* Subtugas berupa kapsul dengan centang di kanan, seperti acuan. */}
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-2" style={{ ['--tone-bar' as string]: 'var(--accent-strong)' }}>
               {subtasks.map((item, i) => (
                 <li
                   key={i}
@@ -358,9 +377,6 @@ export function TaskSheet({
                     <Link href={recordLink('documents', document.id)}><FileText />{String(document.data.title)}</Link>
                   </Button>
                 )}
-                <Button asChild size="sm">
-                  <Link href={worldHref('work-items', task.id)}><Globe2 />Lihat di dunia</Link>
-                </Button>
               </div>
               <ul className="flex flex-col gap-1">
                 {groups.flatMap((group) =>

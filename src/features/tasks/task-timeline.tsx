@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { CalendarRange, ChevronLeft, ChevronRight, Diamond, TriangleAlert } from 'lucide-react';
 import { toast } from 'sonner';
@@ -16,9 +17,25 @@ import { Avatar } from '@/components/ui/avatar';
 import { useJakartaClock } from '@/lib/clock';
 
 const SCALES = { day: 56, week: 20, month: 7 } as const;
-const ROW = 52;
+// Satu baris per proyek; tugas yang bertumpuk waktunya turun ke lajur berikutnya.
+const LANE = 44;
+const GAP = 8;
 const WEEKDAY = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 type Schedule = { start_date: string; due_date: string };
+
+/** Susun tugas satu proyek ke lajur-lajur agar batang yang waktunya bertumpuk tidak saling menutupi. */
+function packLanes<T>(items: T[], range: (item: T) => [string, string]) {
+  const ends: string[] = [];
+  const placed = items.map((item) => {
+    const [from, to] = range(item);
+    let lane = ends.findIndex((end) => end < from);
+    if (lane < 0) lane = ends.length;
+    ends[lane] = to;
+    return { item, lane };
+  });
+  return { placed, count: Math.max(1, ends.length) };
+}
+
 
 /**
  * Linimasa (Gantt): batang dari tanggal mulai sampai tenggat. Seret untuk menggeser, seret ujung
@@ -44,6 +61,7 @@ export function TaskTimeline({
   const [pending, setPending] = useState<Record<string, Schedule>>({});
   const [saving, setSaving] = useState(false);
   const drag = useRef<{ id: string; x: number; resize: boolean; base: Schedule } | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const px = SCALES[scale];
   const now = useJakartaClock();
   const date = today();
@@ -58,6 +76,15 @@ export function TaskTimeline({
     })
     .sort((a, b) => schedule(a).start_date.localeCompare(schedule(b).start_date));
   const days = Array.from({ length: span }, (_, i) => addDays(start, i));
+  const projectOrder = [...(ws.workstreams || []).map((p) => p.id), ''];
+  const lanes = projectOrder
+    .map((id) => {
+      const own = rows.filter((task) => String(task.data.workstream_id || '') === id || (!id && !projectOrder.includes(String(task.data.workstream_id || ''))));
+      const { placed, count } = packLanes(own, (task) => [schedule(task).start_date, schedule(task).due_date]);
+      const project = ws.workstreams?.find((p) => p.id === id);
+      return { id, title: project ? String(project.data.title) : 'Tanpa proyek', items: placed.map(({ item, lane }) => ({ task: item, lane })), height: count * LANE + GAP * 2 - (LANE - 36) };
+    })
+    .filter((group) => group.items.length);
   const milestones = (ws.milestones || []).filter((m) => String(m.data.due_date) >= start && String(m.data.due_date) <= end);
   const asTasks = active.map((task) => ({ ...(task.data as unknown as Task), id: task.id, ...schedule(task) }));
   const conflicts = asTasks.filter((task) => scheduleConflicts(task, asTasks).length).length;
@@ -131,27 +158,25 @@ export function TaskTimeline({
       )}
       <div className="hidden overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-card ring-1 ring-line/60 md:block">
         <div className="flex">
-          <div className="w-56 shrink-0 border-r border-line">
-            <div className="flex h-20 items-end px-5 pb-3 text-xs font-semibold text-ink-3">Tugas</div>
-            {milestones.length > 0 && <div className="flex h-9 items-center px-5 text-xs font-semibold text-ink-3">Milestone</div>}
-            {rows.map((task) => (
-              <button
-                key={task.id}
-                type="button"
-                onClick={() => onOpen(task.id)}
-                className="block w-full truncate border-t border-line/70 px-5 text-left text-sm font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink"
-                style={{ height: ROW }}
-              >
-                {String(task.data.title)}
-              </button>
+          <div className="w-52 shrink-0">
+            <div className="h-20" />
+            {milestones.length > 0 && <div className="flex h-9 items-center border-t border-line px-5 text-[13px] font-medium text-ink-3">Milestone</div>}
+            {lanes.map((group) => (
+              <div key={group.id} className="flex items-center border-t border-line px-5 text-[13px] font-medium text-ink-3" style={{ height: group.height }}>
+                {group.id ? (
+                  <Link href={`/projects/${group.id}`} className="truncate hover:text-ink">{group.title}</Link>
+                ) : (
+                  <span className="truncate">{group.title}</span>
+                )}
+              </div>
             ))}
           </div>
           <div className="min-w-0 flex-1 overflow-x-auto" data-board>
             <div className="relative" style={{ width: span * px }}>
-              {/* Garis kolom hari dan bayangan kolom hari ini, di belakang batang. */}
+              {/* Kisi kolom hari dan bayangan kolom hari ini, di belakang batang. */}
               <div className="pointer-events-none absolute inset-0 flex" aria-hidden="true">
                 {days.map((day) => (
-                  <span key={day} className={cn('h-full shrink-0 border-l border-line/70', day === date && 'bg-accent/45')} style={{ width: px }} />
+                  <span key={day} className={cn('h-full shrink-0 border-l border-line', day === date && 'bg-[color-mix(in_srgb,var(--accent-strong)_7%,transparent)]')} style={{ width: px }} />
                 ))}
               </div>
               <div className="relative flex h-20">
@@ -159,12 +184,12 @@ export function TaskTimeline({
                   const weekday = new Date(day + 'T12:00:00Z').getUTCDay();
                   const show = scale === 'day' || (scale === 'week' && weekday === 1) || (scale === 'month' && day.endsWith('-01'));
                   return (
-                    <span key={day} className={cn('relative shrink-0 text-center', day === date ? 'text-accent-ink' : 'text-ink-3')} style={{ width: px }}>
+                    <span key={day} className={cn('relative shrink-0 text-center', day === date ? 'text-accent-strong' : 'text-ink-3')} style={{ width: px }}>
                       {show &&
                         (scale === 'day' ? (
                           <span className="absolute inset-x-0 bottom-2.5 flex flex-col items-center leading-tight">
-                            <span className="text-[11px] font-semibold">{WEEKDAY[weekday]}</span>
-                            <span className={cn('tabular text-[15px] font-extrabold', day === date ? 'text-accent-ink' : 'text-ink')}>{Number(day.slice(8))}</span>
+                            <span className="text-[11px] font-medium">{WEEKDAY[weekday]}</span>
+                            <span className={cn('tabular text-[15px] font-bold', day === date ? 'text-accent-strong' : 'text-ink')}>{Number(day.slice(8))}</span>
                           </span>
                         ) : (
                           <span className="absolute bottom-3 left-1.5 text-[11px] font-bold whitespace-nowrap">{scale === 'month' ? formatDate(day).replace(/^\d+ /, '') : formatDate(day)}</span>
@@ -174,7 +199,7 @@ export function TaskTimeline({
                 })}
               </div>
               {milestones.length > 0 && (
-                <div className="relative h-9 border-t border-line/70">
+                <div className="relative h-9 border-t border-line">
                   {milestones.map((m) => (
                     <span key={m.id} title={`${String(m.data.title)} · ${formatDate(String(m.data.due_date))}`} className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent-strong" style={{ left: (daysBetween(start, String(m.data.due_date)) + 0.5) * px }}>
                       <Diamond className={cn('size-4', m.data.actual_date ? 'fill-done-ink text-done-ink' : 'fill-current')} />
@@ -182,65 +207,82 @@ export function TaskTimeline({
                   ))}
                 </div>
               )}
-              {rows.map((task) => {
-                const s = schedule(task);
-                const left = Math.max(0, daysBetween(start, s.start_date)) * px;
-                const right = Math.min(span, daysBetween(start, s.due_date) + 1) * px;
-                const project = ws.workstreams?.find((p) => p.id === task.data.workstream_id);
-                const done = task.data.status === 'selesai';
-                const assignee = String(task.data.assignee || '');
-                return (
-                  <div key={task.id} className="relative border-t border-line/70" style={{ height: ROW }}>
-                    <div
-                      role="slider"
-                      tabIndex={0}
-                      aria-label={`${String(task.data.title)}: ${formatDate(s.start_date)} sampai ${formatDate(s.due_date)}`}
-                      aria-valuetext={`${s.start_date} – ${s.due_date}`}
-                      aria-valuenow={daysBetween(start, s.start_date)}
-                      data-tone={projectTone(project)}
-                      onKeyDown={(event) => {
-                        if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-                        event.preventDefault();
-                        shift(task, event.key === 'ArrowRight' ? 1 : -1, event.shiftKey);
-                      }}
-                      onPointerDown={(event) => {
-                        if (event.pointerType !== 'mouse') return;
-                        event.currentTarget.setPointerCapture(event.pointerId);
-                        drag.current = { id: task.id, x: event.clientX, resize: (event.target as HTMLElement).dataset.grip === 'end', base: s };
-                      }}
-                      onPointerMove={(event) => {
-                        const current = drag.current;
-                        if (!current || current.id !== task.id) return;
-                        const delta = Math.round((event.clientX - current.x) / px);
-                        setPending((all) => ({ ...all, [task.id]: shiftSchedule(current.base, delta, current.resize) }));
-                      }}
-                      onPointerUp={() => (drag.current = null)}
-                      onDoubleClick={() => onOpen(task.id)}
-                      className={cn(
-                        // Batang kapsul seperti acuan; saat dipilih berubah warna penuh dengan teks putih.
-                        'group absolute top-1/2 flex h-9 -translate-y-1/2 cursor-grab items-center gap-2 overflow-hidden rounded-full bg-tone pr-4 pl-1.5 text-[13px] font-semibold whitespace-nowrap text-tone-ink shadow-[0_6px_14px_-10px_var(--tone-bar)] outline-none transition-colors hover:shadow-[0_8px_18px_-8px_var(--tone-bar)] focus-visible:bg-tone-bar focus-visible:text-white active:cursor-grabbing',
-                        done && 'opacity-60',
-                        pending[task.id] && 'bg-tone-bar text-white',
-                      )}
-                      style={{ left, width: Math.max(px, right - left) }}
-                    >
-                      {assignee ? <Avatar name={assignee} className="size-6 shrink-0 text-[9px] ring-2 ring-white/70" /> : <span className="w-1.5 shrink-0" />}
-                      <span className="truncate">{String(task.data.title)}</span>
-                      <span data-grip="end" className="absolute inset-y-0 right-0 w-3 cursor-ew-resize" aria-hidden="true" />
-                    </div>
-                  </div>
-                );
-              })}
+              {lanes.map((group) => (
+                <div key={group.id} className="relative border-t border-line" style={{ height: group.height }}>
+                  {group.items.map(({ task, lane }) => {
+                    const s = schedule(task);
+                    const left = Math.max(0, daysBetween(start, s.start_date)) * px;
+                    const right = Math.min(span, daysBetween(start, s.due_date) + 1) * px;
+                    const project = ws.workstreams?.find((p) => p.id === task.data.workstream_id);
+                    const done = task.data.status === 'selesai';
+                    const people = [String(task.data.assignee || ''), ...((task.data.followers as string[]) || [])].filter((name, index, all) => name && all.indexOf(name) === index);
+                    const solid = selected === task.id || Boolean(pending[task.id]);
+                    return (
+                      <div
+                        key={task.id}
+                        role="slider"
+                        tabIndex={0}
+                        aria-label={`${String(task.data.title)}: ${formatDate(s.start_date)} sampai ${formatDate(s.due_date)}`}
+                        aria-valuetext={`${s.start_date} – ${s.due_date}`}
+                        aria-valuenow={daysBetween(start, s.start_date)}
+                        data-tone={projectTone(project)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') return onOpen(task.id);
+                          if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+                          event.preventDefault();
+                          shift(task, event.key === 'ArrowRight' ? 1 : -1, event.shiftKey);
+                        }}
+                        onFocus={() => setSelected(task.id)}
+                        onPointerDown={(event) => {
+                          setSelected(task.id);
+                          if (event.pointerType !== 'mouse') return;
+                          event.currentTarget.setPointerCapture(event.pointerId);
+                          drag.current = { id: task.id, x: event.clientX, resize: (event.target as HTMLElement).dataset.grip === 'end', base: s };
+                        }}
+                        onPointerMove={(event) => {
+                          const current = drag.current;
+                          if (!current || current.id !== task.id) return;
+                          const delta = Math.round((event.clientX - current.x) / px);
+                          setPending((all) => ({ ...all, [task.id]: shiftSchedule(current.base, delta, current.resize) }));
+                        }}
+                        onPointerUp={() => (drag.current = null)}
+                        onDoubleClick={() => onOpen(task.id)}
+                        className={cn(
+                          // Batang kapsul seperti acuan; batang terpilih berwarna penuh dengan teks putih.
+                          'absolute flex h-9 cursor-grab items-center gap-2 overflow-hidden rounded-full border pr-4 pl-1 text-[13px] font-medium whitespace-nowrap outline-none transition-colors active:cursor-grabbing',
+                          solid
+                            ? 'z-10 border-transparent bg-tone-bar text-white shadow-[0_10px_20px_-10px_var(--tone-bar)]'
+                            : 'border-[color-mix(in_srgb,var(--tone-bar)_22%,transparent)] bg-tone text-ink hover:border-[color-mix(in_srgb,var(--tone-bar)_45%,transparent)]',
+                          done && !solid && 'opacity-60',
+                        )}
+                        style={{ left, width: Math.max(px, right - left), top: GAP + lane * LANE }}
+                      >
+                        {people.length ? (
+                          <span className="flex shrink-0">
+                            {people.slice(0, 2).map((name, index) => (
+                              <Avatar key={name} name={name} className={cn('size-7 text-[9px] ring-2 ring-white', index && '-ml-1.5')} />
+                            ))}
+                          </span>
+                        ) : (
+                          <span className="w-2 shrink-0" />
+                        )}
+                        <span className="truncate">{String(task.data.title)}</span>
+                        <span data-grip="end" className="absolute inset-y-0 right-0 w-3 cursor-ew-resize" aria-hidden="true" />
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
               {date >= start && date <= end && (
                 <span
-                  className="pointer-events-none absolute top-[30px] bottom-0 w-0.5 -translate-x-1/2 bg-accent-strong"
+                  className="pointer-events-none absolute top-[30px] bottom-0 z-20 w-px -translate-x-1/2 bg-accent-strong"
                   style={{ left: (daysBetween(start, date) + (now ? (Number(now.slice(0, 2)) * 60 + Number(now.slice(3))) / 1440 : 0.5)) * px }}
                   aria-hidden="true"
                 >
-                  <span className="absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full rounded-lg bg-surface px-2 py-0.5 text-[11px] font-bold whitespace-nowrap text-ink shadow-card ring-1 ring-line">
+                  <span className="absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full rounded-md bg-surface-2 px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap text-ink-3 ring-1 ring-line">
                     {now || 'Hari ini'}
                   </span>
-                  <span className="absolute top-0 left-1/2 size-2 -translate-x-1/2 rounded-full bg-accent-strong" />
+                  <span className="absolute top-0 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-accent-strong" />
                 </span>
               )}
             </div>
