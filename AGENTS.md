@@ -1,106 +1,82 @@
-# Panduan AI — Kopdes Manager 3D
+# Aturan AI — Kopdes Manager
 
-Ruang kerja manajer KDMP dengan **Dunia Koperasi 3D** (Three.js, diorama isometrik lembut, model dibangun dari kode). Repo: `kopdes-manager-3d`, cabang utama `main`. Versi pixel lama (PixiJS) hidup di repo terpisah `kopdes-manager-web`; jangan menyunting atau menyalin kode pixel ke repo ini.
+Satu-satunya berkas aturan untuk semua AI (Claude, Codex, Antigravity, Gemini, Cursor, OpenCode). Berkas lain (`CLAUDE.md`, `GEMINI.md`, `.cursor/rules`, `.agents/rules`) hanya menunjuk ke sini. Ubah aturan hanya di berkas ini.
 
-## Urutan membaca
+Ruang kerja manajer koperasi desa (KDMP): tugas, proyek, agenda, catatan, dan pencatatan usaha, ditambah Dunia Koperasi 3D yang membaca data yang sama. Repo publik, cabang utama `main`.
 
-1. Periksa Git (`git status -sb`) dan `docs/LANJUTAN-AI.md` untuk melanjutkan sesi.
-2. Dunia Koperasi: `docs/DUNIA-KOPERASI.md` (satu kontrak gaya, data, dan peta kode). Keadaan dan bukti: `docs/STATUS.md`.
-3. Baca dokumen lain sesuai pekerjaan: `docs/DESAIN-ANTARMUKA.md` (halaman operasional), `docs/KEGIATAN-DAN-TUGAS.md`, `docs/ARSITEKTUR.md` (koneksi data), `docs/MIGRASI-SQL.md` sebelum perubahan SQL.
-4. PRD/KEPUTUSAN menyimpan batas produk, CHECKLIST menyimpan penerimaan. Tidak perlu membaca seluruh Markdown untuk setiap perubahan.
-5. Abaikan `not-use/`. Graphify bersifat opsional: baca `graphify-out/` hanya bila pemilik meminta peta kode atau penelusuran Graphify; selain itu gunakan pencarian sumber langsung.
+## Mulai kerja
 
-Arahan langsung pemilik terbaru mengatasi konflik. Jangan membuat kontrak gaya dunia lain. Jangan menghapus catatan pengguna atau fitur operasional untuk merapikan dokumen.
+1. `git status -sb` dan `git branch`. Ada cabang kerja yang belum masuk `main`? Lanjutkan di sana. Jangan buang perubahan pengguna yang belum di-commit.
+2. Baca [docs/STATUS.md](docs/STATUS.md): keadaan sekarang, langkah berikut, keputusan pemilik terbaru.
+3. Baca dokumen lain hanya bila perlu:
 
-## Produk
+| Pekerjaan | Baca |
+|---|---|
+| Fitur dan batas produk | [docs/PRODUK.md](docs/PRODUK.md) |
+| Struktur kode dan aliran data | [docs/KODE.md](docs/KODE.md) |
+| Tampilan, warna, animasi, kata-kata | [docs/TAMPILAN.md](docs/TAMPILAN.md) |
+| Supabase, migrasi, reset, data contoh | [docs/DATABASE.md](docs/DATABASE.md) |
+| Dunia Koperasi 3D | [docs/DUNIA-3D.md](docs/DUNIA-3D.md) |
 
-- Ruang kerja pribadi manajer koperasi: proyek fleksibel tanpa durasi wajib, tugas, milestone, kesiapan gerai, koordinasi, dokumen, risiko, laporan kerja.
-- Pencatatan terpisah dari ruang kerja: anggota, buku kas, barang, stok opname, pengiriman dan mutasi stok, serta (migrasi 10) simpanan anggota, penjualan harian gerai, pembelian ke pemasok, inventaris aset, jadwal & absensi. Simpanan anggota hanya setoran/penarikan pokok, wajib, sukarela (disetujui pemilik 15 Oktober 2026). Belum mencakup POS, akuntansi lengkap, pinjaman, atau kunci AI pengguna.
-- Dunia Koperasi 3D menampilkan data yang sama (kantor bersekat, gerai, gudang, cold storage, pulau). Dunia dan web bertautan dua arah; dunia tidak menulis data sendiri.
-- Identitas berasal dari profil. Jangan mengarang nama, kontak, capaian, atau data operasional. Data contoh hanya di mode demo dan seed berawalan id `c0de0000`.
-- Pengalaman task/project manager terinspirasi Notion: daftar/papan/kalender/Gantt dan catatan terformat. Jangan mengklaim editor blok drag-and-drop, baseline, jalur kritis otomatis, atau kolaborasi real-time.
-- Domain `workstreams` adalah proyek; pertahankan kompatibilitas data lama. Jangan memasang kembali program 90 hari.
-- Bahasa Indonesia sederhana, zona waktu Asia/Jakarta.
+Arahan pemilik yang terbaru menang bila ada yang bertentangan.
 
-## Kode yang mudah dirawat
+## Produk (ringkas)
 
-- Next.js App Router, React, TypeScript strict, Tailwind, Zod, Supabase, Three.js.
-- `app/`: rute tipis; `features/<domain>/`: skema, layanan, UI domain; `components/`: UI bersama; `lib/`: utilitas bersama. Kode dunia di `src/features/dunia-3d/` (model data di `dunia-3d/model/`).
-- Hindari repository serbaguna, abstraksi spekulatif, `any`, dan duplikasi rumus. Satu sumber progres di `lib/progress.ts`; tanggal di `lib/date.ts`.
-- Nama fungsi menjelaskan tindakan; komentar menjelaskan alasan bisnis.
-- Tangani memuat, kosong, galat, dan data. Galat database tidak boleh berubah menjadi angka palsu.
+- Fitur dipertahankan; tampilan boleh diubah kapan saja lewat token tema. Gaya yang berlaku sekarang bukan aturan permanen.
+- Jangan mengarang nama, kontak, angka, atau capaian. Data contoh hanya di mode demo dan seed ber-id awalan `c0de0000`.
+- Buku kas = uang masuk/keluar yang tercatat, bukan saldo atau laba. Opname tidak mengoreksi stok otomatis.
+- Galat dan modul yang belum dimigrasi ditampilkan apa adanya, tidak pernah menjadi angka nol.
+- Bahasa Indonesia sehari-hari, zona waktu Asia/Jakarta. HP, tablet, dan laptop sama penting.
+
+## Kode
+
+- Next.js (App Router) + React + TypeScript strict + Tailwind v4 + Radix (`radix-ui`) + Motion + Zod + Supabase + Three.js.
+- Nama folder, berkas, dan kode dalam bahasa Inggris (berkas `kebab-case`). Alamat halaman bahasa Inggris (`/tasks`). Teks di layar, komentar, dokumen, dan pesan commit dalam bahasa Indonesia.
+- `src/app` rute tipis; `src/features/<domain>` logika dan UI domain; `src/components` UI bersama; `src/lib` utilitas. Lihat [docs/KODE.md](docs/KODE.md).
+- Perubahan terkecil yang lengkap. Tidak ada abstraksi "untuk nanti", tidak ada `any`, tidak ada rumus ganda (progres di `lib/progress.ts`, tanggal di `lib/date.ts`, status tugas di `lib/task-status.ts`).
+- Komentar menjelaskan alasan bisnis, bukan isi kode.
+- Warna mentah hanya di token `src/app/globals.css`. Tanpa gradasi. Komponen memakai kelas token (`bg-surface`, `text-ink-2`, `bg-tone`).
 
 ## Keamanan
 
-- Gunakan Supabase BARU; konfigurasi lama bukan izin menulis database lama.
-- Sebelum migrasi cloud: jelaskan berkas SQL, dampak, dan proyek tujuan, lalu minta konfirmasi. AI tidak menjalankan SQL cloud; reset dan seed dijalankan pemilik.
 - RLS aktif, akses bawaan ditolak, setiap aksi server divalidasi Zod dan sesi.
-- Rahasia server tidak masuk browser, Git, atau log. Repo ini publik: periksa diff dari kunci, token, dan data pribadi sebelum commit. Jangan mengaktifkan layanan berbayar.
-- PIN minimal 6 digit, hash yang sesuai, batas percobaan persisten, sesi kedaluwarsa, cookie HttpOnly/Secure/SameSite, pemeriksaan asal mutasi.
-- Mode demo (`NEXT_PUBLIC_MODE_DEMO=1`) tidak pernah aktif di Vercel (`modeDemo()` memeriksa `VERCEL`).
+- AI tidak menjalankan SQL di cloud. Migrasi ditulis sebagai berkas baru di `supabase/migrations`; pemilik yang menjalankan setelah dijelaskan berkas, dampak, dan proyek tujuannya.
+- Rahasia tidak masuk browser, Git, atau log. Periksa diff dari kunci, token, dan data pribadi sebelum commit.
+- PIN minimal 6 digit; mode demo (`NEXT_PUBLIC_MODE_DEMO=1`) tidak pernah aktif di Vercel.
+- Jangan mengaktifkan layanan berbayar. Push dan deploy hanya atas permintaan pemilik.
 
-## Multiplatform
+## Memeriksa
 
-- Periksa 360, 768, 1024, 1440 px. Halaman operasional memakai navigasi bawah/rel/sidebar; Dunia Koperasi memakai bilah dan panel sendiri.
-- Area sentuh minimal 44 px, fokus keyboard, label form, status memakai teks selain warna.
-- Tabel/Gantt bergulir dalam kontainer atau berubah menjadi kartu di area sempit; hormati reduced-motion dan safe area.
-- Tampilan web sedang **dirombak total** (arahan pemilik 22 Oktober 2026, menggantikan arah ClickUp/Monday): acuan rasa video task manager pastel (lihat `PRODUCT.md`), prototipe visual `docs/desain/prototipe.html`. `docs/REDESAIN-TOTAL.md` sudah usang dan dihapus di Fase 1; aturan baru (Tailwind v4 + shadcn + Motion, nama kode bahasa Inggris) menggantikan sistem gaya di bawah setelah Fase 1.
-  - Warna aksen belum ditetapkan: prototipe dan web menyediakan pemilih aksen (lima pilihan) agar pemilik memilih; bawaan ditetapkan setelah itu dan dicatat di `DESIGN.md` baru.
-  - Tetap berlaku: sistem gaya di `src/styles/` (`token.css` → `dasar.css` → `komponen.css` → `kerangka.css` → `halaman/*.css`); warna mentah hanya di `token.css`, tanpa `!important` (`npm run lint:ui`); kontrol form lewat `src/components/ui` (`npm run check:ui`); navigasi bersumber `src/components/layout/navigasi.ts`; `h1` hanya di kepala kerangka, isi halaman memakai `h2`.
-  - Dunia 3D memakai `monitoring.css` sendiri dan tidak termasuk redesain web.
-- Hindari angka operasional palsu, tombol dekoratif, dan slogan. Buku kas hanya uang masuk/keluar tercatat, bukan saldo atau laba.
+- Saat bekerja: `npm run cek` (tipe, lint, tes yang terkait berkas berubah).
+- Sebelum menggabung ke `main`: `npm run cek:penuh` (tipe, lint, semua tes, build, ukuran JS awal ≤ 500 KB).
+- Perubahan tampilan: jalankan `npm run dev:demo -- -p 3200`, buka halaman yang diubah di lebar 375, 768, dan 1440 px (satu kali tema gelap), lalu lihat hasilnya. Hanya halaman yang diubah.
+- Setelah build, kembalikan `next-env.d.ts` bila berubah.
+- Laporkan apa adanya: tes lama bukan bukti fitur baru jalan; yang belum diperiksa disebut belum.
 
-## Proses (sama untuk semua agen)
+## Mencatat (sama untuk semua AI)
 
-**Mulai sesi**
-1. `git status -sb` dan `git branch`. Ada cabang kerja yang belum masuk `main`? Lanjutkan di sana. Pertahankan perubahan pengguna yang belum di-commit.
-2. Baca `docs/LANJUTAN-AI.md`, lalu hanya dokumen yang relevan dengan tugas.
-
-**Bekerja**
-3. Satu paket kerja konkret yang bisa diverifikasi. Perubahan terkecil yang lengkap.
-4. Perubahan kode: `npm test` (boleh `-- --maxWorkers=2`, tetap seluruh suite), `npm run typecheck`, `npm run lint`, `npm run lint:ui`, `npm run build`, `npm run ukur:bundel` (JS awal ≤ 300 KB). Perubahan tampilan: juga `npm run audit:tampilan -- <lebar> <tinggi> [nama]` dengan `npm run dev:demo -- -p 3200` berjalan, pada 375/768/1024/1440 px, lalu lihat tangkapannya. Dokumentasi saja: periksa diff dan tautan, tanpa mengklaim tes baru. Setelah build, kembalikan `next-env.d.ts` bila berubah.
-
-**Mencatat (wajib sebelum commit)**
-5. `CHANGELOG.md`: satu entri per paket di paling atas, format:
-   ```
-   ## <ringkasan> — <tanggal>
-   - Alasan: kenapa paket ini dibuat (arahan pemilik/masalah).
-   - Perubahan: yang dirasakan pengguna, bukan daftar berkas.
-   - Verifikasi: angka tes/build/audit yang benar-benar dijalankan.
-   - Belum: yang tidak diperiksa atau sisa pekerjaan.
-   ```
-   Coba-coba yang dibatalkan dalam paket yang sama tidak diberi entri sendiri.
-6. `docs/STATUS.md` dan `docs/LANJUTAN-AI.md`: hanya keadaan terkini; timpa bagian yang berubah, jangan menumpuk catatan sesi. `docs/CHECKLIST.md`: centang yang benar-benar selesai.
-
-**Menutup**
-7. Commit di cabang kerja (format di bagian Git). Jangan meninggalkan perubahan belum di-commit.
-8. Laporkan hasil dan batasan secara jujur; tes lama bukan bukti fitur baru selesai, dan pemeriksaan perangkat yang belum dilakukan tidak ditandai.
+- [docs/STATUS.md](docs/STATUS.md): satu-satunya catatan keadaan. Bagian Sekarang, Langkah berikut, dan Keputusan pemilik. Timpa bagian yang berubah, jangan menumpuk catatan sesi.
+- [CHANGELOG.md](CHANGELOG.md): hanya perubahan besar (fitur, fase, migrasi), entri baru di atas dengan format:
+  ```
+  ## <ringkasan> — <tanggal>
+  - Alasan: kenapa dibuat (arahan pemilik atau masalah).
+  - Perubahan: yang dirasakan pengguna.
+  - Verifikasi: tes, build, dan pemeriksaan yang benar-benar dijalankan.
+  - Belum: yang belum diperiksa atau masih tersisa.
+  ```
+  Audit kecil, perbaikan gaya, dan coba-coba tidak dicatat di CHANGELOG.
 
 ## Git
 
-- `main` selalu lulus tes dan bisa dibangun. Kerjakan paket di cabang bertopik, lalu gabungkan lewat pull request.
-- Nama cabang menjelaskan pekerjaan, bukan alat atau orang: `fitur/<topik>`, `perbaikan/<topik>`, `tampilan/<topik>`, `dokumen/<topik>`, `rapikan/<topik>`. Huruf kecil, kata dipisah tanda hubung. Jangan memakai awalan nama AI atau pribadi (mis. `codex/`, `claude/`).
-- Satu cabang kerja aktif untuk semua AI (Claude, Codex, Antigravity, dll.):
-  1. Sebelum mulai, jalankan `git status -sb` dan `git branch`. Bila ada cabang kerja yang belum masuk `main`, lanjutkan di cabang itu; jangan membuat cabang baru.
-  2. Cabang baru hanya dibuat dari `main` terbaru yang bersih, untuk paket baru.
-  3. Setelah paket masuk `main`, hapus cabangnya di lokal dan remote.
-  4. Jangan meninggalkan perubahan belum di-commit di akhir sesi; commit di cabang kerja (boleh belum di-push).
-- Satu paket = satu commit atau beberapa commit kecil per tema (bukan per langkah coba-coba). Pesan berformat `jenis: ringkasan bahasa Indonesia` (huruf kecil, tanpa titik), baris kosong, lalu isi yang menjelaskan alasan. Jenis: `feat` fitur baru, `fix` perbaikan, `style` tampilan, `refactor` rapikan kode, `docs` dokumen, `test` tes, `chore` alat/konfigurasi. Contoh: `fix: perbaiki nominal kas yang terpotong di ponsel`. Tanpa baris atribusi AI.
-- Jangan force-push ke `main`, jangan menulis ulang riwayat yang sudah dibagikan. Push dan deploy hanya atas permintaan pemilik. Panduan lengkap: `CONTRIBUTING.md`.
+- `main` selalu lulus pemeriksaan dan bisa dibangun. Kerjakan di cabang bertopik lalu gabung lewat pull request.
+- Nama cabang: `fitur/…`, `perbaikan/…`, `tampilan/…`, `dokumen/…`, `rapikan/…` (huruf kecil, tanda hubung). Tanpa nama AI atau orang.
+- Satu cabang kerja aktif untuk semua AI; cabang baru hanya dari `main` terbaru yang bersih. Hapus cabang setelah masuk `main`.
+- Pesan commit `jenis: ringkasan bahasa indonesia` (huruf kecil, tanpa titik), baris kosong, lalu alasan. Jenis: `feat`, `fix`, `style`, `refactor`, `docs`, `test`, `chore`. Tanpa baris atribusi AI.
+- Jangan force-push ke `main` atau menulis ulang riwayat bersama. Jangan tinggalkan perubahan belum di-commit di akhir sesi.
 
-## Skill dan peta kode untuk semua AI
+## Skill
 
-- Titik masuk tiap agen: Codex dan OpenCode membaca AGENTS.md langsung; Claude Code lewat CLAUDE.md; Antigravity/Gemini lewat GEMINI.md dan `.agents/rules/`; Cursor lewat `.cursor/rules/`. Semuanya hanya menunjuk ke berkas ini.
-- Skill proyek: `.claude/skills/` (Claude Code) dan salinannya `.agents/skills/` (Codex, Antigravity, OpenCode, agen lain). Ubah di `.claude/skills`, lalu jalankan `node scripts/sync-skills.mjs`; `clean-code` bersumber di `.agents/skills`. Sumber/lisensi pihak ketiga: `.claude/skills/SUMBER.md`.
-- Skill utama: hemat-token, dunia-koperasi, ui-ux-kopdes, backend-kopdes, clean-code; opsional caveman, grill-me/grilling. Skill global `ponytail` (perubahan terkecil yang lengkap; `ponytail-review`/`ponytail-audit` untuk tinjauan) dipasang pemilik untuk Claude, Codex, Antigravity, dan OpenCode. AI tanpa dukungan skill cukup membaca SKILL.md yang relevan.
-- Ubah aturan hanya di AGENTS.md. CLAUDE.md dan GEMINI.md mengimpor berkas ini (@AGENTS.md) dan hanya menambah bagian Graphify; `.cursor/rules/` dan `.agents/rules/` menunjuk ke sini.
-- Hook Graphify lokal (`.claude/settings.json`, `.codex/`, `.gemini/settings.json`) berisi path komputer pemilik dan tidak di-commit.
-- rtk (dipasang global oleh pemilik) meringkas keluaran shell. Bila galat terpotong, jalankan `rtk proxy <perintah>`.
-- Bila pemilik meminta Graphify, gunakan `graphify query`, `graphify path`, atau `graphify explain` pada peta yang ada. Peta kode (`graphify-out/`, tidak di-commit) dibuat ulang dengan `graphify update .` (hanya kode, tanpa AI); tidak wajib diperbarui pada pekerjaan lain. Jangan memproses `docs/` dengan ekstraksi AI tanpa izin pemilik.
-
-## Pencatatan dan rapat
-
-- Acuan aktivasi: `docs/PENCATATAN.md`. Pemeriksaan kemampuan server menentukan apakah pencatatan aktif; jangan menyamarkan migrasi belum terpasang sebagai data nol.
-- Opname menyimpan snapshot stok buku tanpa koreksi stok otomatis.
-- Rapat online memakai tautan pengguna dan unduhan ICS; bukan konferensi video bawaan atau undangan otomatis.
-- Bahasa UI langsung, ringkas, tanpa slogan motivasi. Pilih judul yang menjelaskan isi atau tindakan.
+- Skill bersama di `.agents/skills/` (salinan untuk Claude di `.claude/skills/`): saat ini hanya `grilling`. Sumber dan lisensi: [.agents/skills/SUMBER.md](.agents/skills/SUMBER.md). Jangan menambah skill buatan sendiri tanpa persetujuan pemilik; pengetahuan proyek ditulis di dokumen.
+- Skill global pemilik: `ponytail` (semua AI), serta `impeccable`, `ui-styling`, `superpowers` (Claude). AI tanpa skill itu cukup mengikuti dokumen.
+- `rtk` meringkas keluaran shell; bila keluaran terpotong, jalankan `rtk proxy <perintah>`.
+- Graphify opsional: hanya bila pemilik meminta peta kode. `graphify-out/` tidak di-commit; jangan memproses `docs/` dengan ekstraksi AI tanpa izin.

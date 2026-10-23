@@ -104,7 +104,7 @@ export function geraiView({ model, plans, selected, unavailable, stock, choose, 
         eyebrow={`GERAI · ${(STATUS_LABEL[g.status] ?? g.status).toUpperCase()}`}
         title={g.nama}
         sub={g.unit ? [g.unit.data.kind, g.unit.data.location].filter(Boolean).map(String).join(' · ') || GERAI[g.id].nama : GERAI[g.id].nama}
-        href={g.unit ? recordHref('units', g.unit) : '/gerai'}
+        href={g.unit ? recordHref('units', g.unit) : '/store'}
       />
       <div className="mt-status">
         <Pill nada={statusNada}>{g.buka ? 'Buka' : `Terkunci · ${STATUS_LABEL[g.status] ?? g.status}`}</Pill>
@@ -113,7 +113,7 @@ export function geraiView({ model, plans, selected, unavailable, stock, choose, 
       {!g.buka && (
         <p className="mt-note">
           Unit ini belum dibuka di web. Ruangnya tampil transparan bergembok sampai statusnya Aktif di{' '}
-          <Link href="/gerai">halaman Gerai</Link>.
+          <Link href="/store">halaman Gerai</Link>.
         </p>
       )}
       {g.id === 'kantor' && <p className="mt-note">Kantor koperasi selalu terbuka; pintunya menuju ruang kantor.</p>}
@@ -187,7 +187,7 @@ export function geraiView({ model, plans, selected, unavailable, stock, choose, 
           )}
         </>
       )}
-      <Links items={[{ href: '/gerai', label: 'Halaman Gerai' }, ...(g.unit ? [{ href: '/kesiapan', label: 'Kesiapan' }] : [])]} />
+      <Links items={[{ href: '/store', label: 'Halaman Gerai' }, ...(g.unit ? [{ href: '/store?tab=readiness', label: 'Kesiapan' }] : [])]} />
     </>
   );
 
@@ -214,7 +214,7 @@ export function geraiView({ model, plans, selected, unavailable, stock, choose, 
         <p className="mt-empty">Kantor koperasi tidak memakai tahap kesiapan gerai.</p>
       ) : !g.unit ? (
         <p className="mt-empty">
-          Unit belum tercatat. Tambahkan di <Link href="/gerai">halaman Gerai</Link> untuk mulai dari tahap Rencana.
+          Unit belum tercatat. Tambahkan di <Link href="/store">halaman Gerai</Link> untuk mulai dari tahap Rencana.
         </p>
       ) : (
         <div className="mt-tracker-body">

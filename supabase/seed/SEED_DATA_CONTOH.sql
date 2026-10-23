@@ -1,4 +1,4 @@
--- SEED DATA CONTOH: Kopdes Management Web (349 catatan fiktif)
+-- SEED DATA CONTOH: Kopdes Management Web (358 catatan fiktif)
 -- Tujuan: proyek yang baru direset (<project-ref>). Jalankan SETELAH berkas reset.
 -- Semua nama, nomor, dan angka adalah contoh acak; id diawali c0de0000.
 -- Hapus seluruhnya dengan HAPUS_DATA_CONTOH.sql sebelum mencatat data nyata.
@@ -22,7 +22,7 @@ create function pg_temp.tanggal_contoh(j jsonb) returns jsonb language sql as $f
 $f$;
 insert into public.hub_records(id, entity, data, created_at, updated_at)
 select id::uuid, entity, pg_temp.tanggal_contoh(data::jsonb),
-  now() - make_interval(secs => 349 - n), now() - make_interval(secs => 349 - n)
+  now() - make_interval(secs => 358 - n), now() - make_interval(secs => 358 - n)
 from (values
   ('c0de0000-0001-4000-8000-000000000001', 'organization', '{"title":"KDMP Sukamaju (contoh)","village":"Sukamaju","district":"Ngadirejo","regency":"Temanggung","province":"Jawa Tengah","manager":"Slamet Purnomo","start_date":"@d-120","target_date":"@d240"}', 0),
   ('c0de0000-0005-4000-8000-000000000001', 'units', '{"title":"Gerai Sembako Sukamaju","kind":"sembako","assignee":"Ayu Wijaya","location":"Dusun Ngasem","status":"aktif","slot":"otomatis","physical":"Bangunan tersedia","equipment":"Lengkap","sop":"","staff":"","link":"","notes":""}', 1),
@@ -372,6 +372,15 @@ from (values
   ('c0de0000-0028-4000-8000-000000000040', 'savings', '{"title":"Simpanan wajib · Budi Prasetyo","member_id":"c0de0000-0019-4000-8000-000000000012","date":"@d-30","kind":"wajib","direction":"setor","amount":50000,"reference_number":"SMP-0040","notes":""}', 345),
   ('c0de0000-0028-4000-8000-000000000041', 'savings', '{"title":"Simpanan wajib · Budi Prasetyo","member_id":"c0de0000-0019-4000-8000-000000000012","date":"@d0","kind":"wajib","direction":"setor","amount":50000,"reference_number":"SMP-0041","notes":""}', 346),
   ('c0de0000-0009-4000-8000-000000000004', 'meetings', '{"title":"Kunjungan gudang pemasok beras","jenis":"kunjungan","date":"@d0","time":"10:30","participants":"Slamet Purnomo, Budi Hartono","agenda":"Cek mutu beras dan jadwal kirim bulan depan","minutes":"","mode":"tatap muka","location":"Gudang pemasok","meeting_url":"","duration":60}', 347),
-  ('c0de0000-0009-4000-8000-000000000005', 'meetings', '{"title":"Sosialisasi simpanan anggota","jenis":"acara","date":"@d1","time":"16:00","participants":"Slamet Purnomo, Bambang Wijaya","agenda":"Penjelasan simpanan pokok, wajib, dan sukarela","minutes":"","mode":"tatap muka","location":"Balai desa","meeting_url":"","duration":90}', 348)
+  ('c0de0000-0009-4000-8000-000000000005', 'meetings', '{"title":"Sosialisasi simpanan anggota","jenis":"acara","date":"@d1","time":"16:00","participants":"Slamet Purnomo, Bambang Wijaya","agenda":"Penjelasan simpanan pokok, wajib, dan sukarela","minutes":"","mode":"tatap muka","location":"Balai desa","meeting_url":"","duration":90}', 348),
+  ('c0de0000-0029-4000-8000-000000000001', 'routines', '{"title":"Buka gerai & cek kas modal awal","time":"07:30","days":[1,2,3,4,5,6],"active":true}', 349),
+  ('c0de0000-0029-4000-8000-000000000002', 'routines', '{"title":"Briefing singkat petugas kasir/toko","time":"08:30","days":[1,2,3,4,5,6],"active":true}', 350),
+  ('c0de0000-0029-4000-8000-000000000003', 'routines', '{"title":"Cek persediaan barang rak & stok menipis","time":"10:00","days":[1,2,3,4,5,6,7],"active":true}', 351),
+  ('c0de0000-0029-4000-8000-000000000004', 'routines', '{"title":"Rekapitulasi setoran anggota & kas tengah hari","time":"13:00","days":[1,2,3,4,5,6],"active":true}', 352),
+  ('c0de0000-0029-4000-8000-000000000005', 'routines', '{"title":"Tutup buku kas harian & hitung fisik uang kasir","time":"16:30","days":[1,2,3,4,5,6],"active":true}', 353),
+  ('c0de0000-0029-4000-8000-000000000006', 'routines', '{"title":"Cek keamanan, inventaris, dan kunci gerai","time":"17:00","days":[1,2,3,4,5,6,7],"active":true}', 354),
+  ('c0de0000-0029-4000-8000-000000000007', 'routines', '{"title":"Rapat koordinasi mingguan pengurus","time":"09:00","days":[1],"active":true}', 355),
+  ('c0de0000-0030-4000-8000-000000000001', 'routine-checks', '{"routine_id":"c0de0000-0029-4000-8000-000000000001","date":"@d0"}', 356),
+  ('c0de0000-0030-4000-8000-000000000002', 'routine-checks', '{"routine_id":"c0de0000-0029-4000-8000-000000000002","date":"@d0"}', 357)
 ) as v(id, entity, data, n);
 commit;

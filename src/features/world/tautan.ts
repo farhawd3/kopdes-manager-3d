@@ -9,7 +9,7 @@ export type Tujuan = { lokasi: LokasiMonitoring; pilih: string };
 const LOKASI: LokasiMonitoring[] = ['kantor', 'gerai', 'gudang', 'pendingin', 'pulau'];
 
 /**
- * Tautan dari halaman operasional (`/dunia-koperasi?barang=…`) menjadi lokasi dan objek yang
+ * Tautan dari halaman operasional (`/world?barang=…`) menjadi lokasi dan objek yang
  * dipilih di dunia. Mengembalikan null bila catatannya tidak ada di data yang dimuat.
  */
 export function tujuanTautan(

@@ -655,6 +655,19 @@ export function dataContoh(hariIni: string): ItemContoh[] {
     location: 'Balai desa',
   });
 
+  // ---- Rutin harian (migrasi 11): rutin standar manajer gerai; dua rutin pagi sudah dicentang hari ini.
+  const rutin = [
+    ['07:30', 'Buka gerai & cek kas modal awal', [1, 2, 3, 4, 5, 6]],
+    ['08:30', 'Briefing singkat petugas kasir/toko', [1, 2, 3, 4, 5, 6]],
+    ['10:00', 'Cek persediaan barang rak & stok menipis', [1, 2, 3, 4, 5, 6, 7]],
+    ['13:00', 'Rekapitulasi setoran anggota & kas tengah hari', [1, 2, 3, 4, 5, 6]],
+    ['16:30', 'Tutup buku kas harian & hitung fisik uang kasir', [1, 2, 3, 4, 5, 6]],
+    ['17:00', 'Cek keamanan, inventaris, dan kunci gerai', [1, 2, 3, 4, 5, 6, 7]],
+    ['09:00', 'Rapat koordinasi mingguan pengurus', [1]],
+  ] as const;
+  const idRutin = rutin.map(([time, title, days]) => tambah('routines', { time, title, days: [...days], active: true }));
+  for (const id of idRutin.slice(0, 2)) tambah('routine-checks', { routine_id: id, date: hariIni });
+
   // Validasi dengan skema yang sama dengan server: data contoh tidak boleh lolos tanpa aturan.
   return baris.map(({ entity, data }, i) => {
     const { __id, ...isi } = data;

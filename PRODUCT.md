@@ -29,13 +29,13 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 - Proyek fleksibel, tugas (daftar/papan/kalender/Gantt/harian), milestone, sprint, kegiatan, rapat + ICS, dokumen, risiko/isu, mitra, tim/pelatihan, gerai/kesiapan, laporan; anggota, buku kas, barang, stok opname, pengiriman, mutasi stok.
 - Buku kas hanya uang masuk/keluar tercatat — tidak pernah disebut saldo atau laba. Opname tidak mengubah stok otomatis.
 - Belum ada POS, akuntansi lengkap, pinjaman anggota, kolaborasi real-time, editor blok, unggah berkas. Simpanan anggota (pokok, wajib, sukarela) tersedia sejak migrasi 10.
-- Next.js 16, React 19, TypeScript strict, Three.js. Redesain memakai Tailwind v4 + shadcn/ui (Radix) + Motion. Repo publik.
+- Next.js 16, React 19, TypeScript strict, Tailwind v4, Radix, Motion, Three.js. Repo publik.
 
 ## Brand Commitments
 
 - Nama produk: Kopdes Manager 3D; di dalam aplikasi: "Dunia Koperasi" untuk diorama.
-- Web dirombak total (arahan pemilik 22 Oktober 2026, menggantikan arah ClickUp/Monday 21 Oktober). Acuan rasa: video "Figma Modern Task Manager App" (Dsanis): pastel lembut, kartu putih membulat, cincin progres harian satu warna (tanpa gradasi, arahan pemilik 23 Okt), strip tanggal, elemen melayang; sederhana, bersih, warna enak dilihat; diterjemahkan ke laptop, tablet, dan ponsel dengan banyak interaksi. Acuan visual: prototipe `docs/desain/prototipe.html`.
-- Tampilan harus bisa diganti kapan saja: semua gaya lewat token per tema; gaya yang berlaku sekarang bukan aturan permanen. Tema Terang Lembut + Gelap, pemilih lima aksen, huruf bawaan Plus Jakarta Sans (dipilih pemilik).
+- Tampilan (arahan pemilik 23 Oktober 2026): acuan desain TaskTrack — cangkang putih, kartu pastel penuh berwarna per proyek, label pil bergaris, progres bersegmen, avatar bertumpuk, hiasan lengkung sangat halus; tanpa gradasi; huruf Urbanist; aksi biru tua; navigasi bawah HP putih dengan kapsul pastel. Rincian di `docs/TAMPILAN.md`.
+- Tampilan harus bisa diganti kapan saja: semua gaya lewat token di `src/app/globals.css`; gaya sekarang bukan aturan permanen. Tema terang + gelap, lima warna sorotan.
 - Grafik dipakai bila menjawab pertanyaan kerja (berapa, membaik atau tidak, apa yang perlu dikerjakan), selalu dengan ringkasan teks; tidak pernah menampilkan angka contoh atau nol palsu.
 - Tampilan seimbang di HP, tablet, dan laptop; setiap data yang tampil harus bisa ditindaklanjuti; tidak ada tombol aksi ganda.
 - Bahasa UI Indonesia sehari-hari: langsung, ringkas, tidak terdengar terjemahan, tidak lebay, tanpa slogan motivasi.
@@ -43,7 +43,7 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 ## Evidence on Hand
 
 - Data contoh mode demo: 191 catatan (`src/features/demo/data-contoh.ts`), id berawalan `c0de0000`, berlabel contoh.
-- Tangkapan layar dunia dan web di `docs/gambar/`.
+- Tangkapan layar Dunia 3D di `docs/gambar/`.
 - Tidak ada testimoni, angka pengguna, atau mitra resmi; jangan dikarang.
 
 ## Product Principles

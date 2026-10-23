@@ -121,39 +121,39 @@ const ENTITY_3D: Partial<Record<Entity, Ikon3DKind>> = {
 /** Tautan halaman operasional per ruang kantor. */
 const ROOM_LINKS: Record<Bidang, { href: string; label: string; baru?: boolean }[]> = {
   kerja: [
-    { href: '/tugas?baru=1', label: 'Tugas baru', baru: true },
-    { href: '/tugas', label: 'Tugas' },
+    { href: '/tasks?new=1', label: 'Tugas baru', baru: true },
+    { href: '/tasks', label: 'Tugas' },
   ],
   rapat: [
-    { href: '/rapat?baru=1', label: 'Jadwalkan rapat', baru: true },
-    { href: '/rapat', label: 'Rapat' },
-    { href: '/rapat?bagian=decisions', label: 'Keputusan' },
+    { href: '/agenda?new=1', label: 'Jadwalkan rapat', baru: true },
+    { href: '/agenda', label: 'Rapat' },
+    { href: '/agenda?tab=decisions', label: 'Keputusan' },
   ],
   gym: [
-    { href: '/jurnal?baru=1', label: 'Catat kegiatan', baru: true },
-    { href: '/jurnal', label: 'Kegiatan' },
+    { href: '/notes?new=1', label: 'Catat kegiatan', baru: true },
+    { href: '/notes', label: 'Kegiatan' },
   ],
   manajer: [
-    { href: '/risiko?baru=1', label: 'Catat risiko', baru: true },
-    { href: '/dokumen', label: 'Dokumen' },
-    { href: '/risiko', label: 'Risiko' },
+    { href: '/projects?tab=risks&new=1', label: 'Catat risiko', baru: true },
+    { href: '/documents', label: 'Dokumen' },
+    { href: '/projects?tab=risks', label: 'Risiko' },
   ],
   karyawan: [
-    { href: '/tim?baru=1', label: 'Tambah staf', baru: true },
-    { href: '/gerai', label: 'Halaman Gerai' },
+    { href: '/team?new=1', label: 'Tambah staf', baru: true },
+    { href: '/store', label: 'Halaman Gerai' },
   ],
   stok: [
-    { href: '/barang?baru=1', label: 'Tambah barang', baru: true },
-    { href: '/stok-opname?baru=1', label: 'Catat opname', baru: true },
-    { href: '/barang', label: 'Barang' },
+    { href: '/goods?new=1', label: 'Tambah barang', baru: true },
+    { href: '/goods?tab=counts&new=1', label: 'Catat opname', baru: true },
+    { href: '/goods', label: 'Barang' },
   ],
   kas: [
-    { href: '/keuangan?baru=1&arah=masuk', label: 'Kas masuk', baru: true },
-    { href: '/keuangan?baru=1&arah=keluar', label: 'Kas keluar', baru: true },
-    { href: '/anggota?baru=1', label: 'Anggota baru', baru: true },
-    { href: '/keuangan', label: 'Buku kas' },
+    { href: '/cash?new=1&direction=masuk', label: 'Kas masuk', baru: true },
+    { href: '/cash?new=1&direction=keluar', label: 'Kas keluar', baru: true },
+    { href: '/members?new=1', label: 'Anggota baru', baru: true },
+    { href: '/cash', label: 'Buku kas' },
   ],
-  istirahat: [{ href: '/tim', label: 'Tim' }],
+  istirahat: [{ href: '/team', label: 'Tim' }],
 };
 /** Nama ruang figur: ruang kantor atau unit gerai. */
 const namaArea = (area: Area) =>
@@ -727,8 +727,8 @@ export function MonitoringDashboard({
         <Rows rows={view(rows)} empty="Tidak ada tugas terbuka untuk anggota ini." />
         <Links
           items={[
-            { href: '/tim', label: 'Tim' },
-            { href: '/tugas', label: 'Tugas' },
+            { href: '/team', label: 'Tim' },
+            { href: '/tasks', label: 'Tugas' },
           ]}
         />
       </>
@@ -844,7 +844,7 @@ export function MonitoringDashboard({
                     bar: tugas.length ? selesai / tugas.length : 0,
                     barText: `${selesai}/${tugas.length}`,
                     nada: 'biru' as const,
-                    href: '/tugas',
+                    href: '/tasks',
                   };
                 }),
                 ...milestoneDekat.map((m) => {
@@ -971,8 +971,8 @@ export function MonitoringDashboard({
           </dl>
           <Links
             items={[
-              { href: '/pengiriman?baru=1', label: 'Pengiriman baru', baru: true },
-              { href: '/pengiriman', label: 'Pengiriman' },
+              { href: '/goods?tab=deliveries&new=1', label: 'Pengiriman baru', baru: true },
+              { href: '/goods?tab=deliveries', label: 'Pengiriman' },
             ]}
           />
         </>
@@ -986,7 +986,7 @@ export function MonitoringDashboard({
             eyebrow="DOK · GUDANG"
             title={`Dok ${dock.id}`}
             sub="Tidak ada truk tercatat di dok ini"
-            href="/pengiriman"
+            href="/goods?tab=deliveries"
           />
           <div className="mt-status">
             <Pill nada="hijau">Tersedia</Pill>
@@ -1013,7 +1013,7 @@ export function MonitoringDashboard({
             eyebrow={`RAK · ${where}`}
             title={`Rak ${rack}`}
             sub={stock ? `${items.length} jenis barang` : naText || 'Pencatatan barang belum aktif'}
-            href="/barang"
+            href="/goods"
           />
           {stock ? (
             <>
@@ -1061,8 +1061,8 @@ export function MonitoringDashboard({
           )}
           <Links
             items={[
-              { href: '/barang', label: 'Barang' },
-              { href: '/stok-opname', label: 'Stok opname' },
+              { href: '/goods', label: 'Barang' },
+              { href: '/goods?tab=counts', label: 'Stok opname' },
             ]}
           />
         </>
@@ -1262,7 +1262,7 @@ export function MonitoringDashboard({
           bar: pct / 100,
           barText: `${pct}%`,
           nada: pct >= 100 ? 'hijau' : 'biru',
-          href: `/proyek?id=${encodeURIComponent(row.id)}`,
+          href: `/projects/${encodeURIComponent(row.id)}`,
         })),
       },
     ];
@@ -1425,7 +1425,7 @@ export function MonitoringDashboard({
         onPick={choose}
       />
       <header className="mt-top" data-search={searchOpen || undefined}>
-        <Link className="mt-brand" href="/beranda" aria-label="Kembali ke Beranda">
+        <Link className="mt-brand" href="/home" aria-label="Kembali ke Beranda">
           <Ikon3D kind="kotak" size={34} />
           <span>
             <strong>Dunia Koperasi</strong>
@@ -1595,10 +1595,10 @@ export function MonitoringDashboard({
                   <option value="malam">Malam</option>
                 </select>
               </label>
-              <Link className="mt-pop-item" href="/pengaturan">
+              <Link className="mt-pop-item" href="/settings">
                 <Settings size={16} /> Pengaturan
               </Link>
-              <Link className="mt-pop-item" href="/beranda">
+              <Link className="mt-pop-item" href="/home">
                 <Home size={16} /> Kembali ke Beranda
               </Link>
             </div>

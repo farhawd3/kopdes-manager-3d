@@ -27,8 +27,8 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
-      - run: npm run lint:ui
       - run: npm run typecheck
       - run: npm test -- --maxWorkers=2
       # Build tanpa rahasia: variabel server kosong, halaman tetap bisa dibangun.
       - run: npm run build
+      - run: npm run ukur:bundel

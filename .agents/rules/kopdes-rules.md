@@ -1,4 +1,3 @@
 # Titik masuk aturan AI
 
-Baca [AGENTS](../../AGENTS.md). Berkas ini tidak menambah aturan.
-Keadaan dan langkah berikut: [STATUS](../../docs/STATUS.md) dan [LANJUTAN-AI](../../docs/LANJUTAN-AI.md).
+Baca dan ikuti [AGENTS.md](../../AGENTS.md). Keadaan terkini dan langkah berikut ada di [docs/STATUS.md](../../docs/STATUS.md). Berkas ini tidak menambah aturan.
