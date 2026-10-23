@@ -47,6 +47,10 @@
   --late-ink: #b0213d;
   --warn: #fff0cc;
   --warn-ink: #855700;
+  /* Isi batang progres per status (grafik dan bilah di Dunia 3D). */
+  --done-bar: #2fa874;
+  --warn-bar: #e8a317;
+  --late-bar: #e8577a;
 
   --shadow-card: 0 1px 2px rgb(70 60 150 / 0.03), 0 10px 30px -14px rgb(70 60 150 / 0.14);
   --shadow-float: 0 28px 64px -24px rgb(70 60 150 / 0.3);
@@ -104,6 +108,9 @@
   --late-ink: #ffadbc;
   --warn: #3a2e14;
   --warn-ink: #f2c66a;
+  --done-bar: #4cc890;
+  --warn-bar: #f2b53a;
+  --late-bar: #f07a97;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -16px rgb(0 0 0 / 0.7);
   --shadow-float: 0 24px 56px -20px rgb(0 0 0 / 0.8);
   --scrim: rgb(0 0 0 / 0.55);

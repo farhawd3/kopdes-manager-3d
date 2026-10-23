@@ -20,7 +20,7 @@ Alamat: `/world`. Alamat lama `/dunia-koperasi` dialihkan ke `/world`, parameter
 - Diorama isometrik 3D yang lembut: sudut membulat, material doff pastel, bayangan lembut, perabot membulat.
 - Semua model dibangun dari kode (Three.js, bentuk dasar). Tidak ada berkas model 3D dari luar.
 - Hindari garis tipis dan papan nama melayang. Kode rak, dok, dan nama ruang dicat tipis di lantai. Nama lengkap muncul saat kursor diarahkan.
-- Dunia punya gaya sendiri (`monitoring.css`, kelas `mt-*`). Redesain web tidak berlaku di sini, dan palet web tidak dipakai di scene.
+- Kartu, bilah, dan ikon dunia (`monitoring.css`, kelas `mt-*`) memakai token warna `globals.css`: ikut tema terang/gelap dan nada sorotan aplikasi, tombol utama biru tua, tanpa gradasi. Benda di scene 3D tetap memakai palet pastel sendiri.
 - Cahaya dan panorama jendela mengikuti jam Asia/Jakarta (Pagi/Siang/Senja/Malam). Cuaca bisa dipilih dan diberi label simulasi.
 
 ## Lima lokasi

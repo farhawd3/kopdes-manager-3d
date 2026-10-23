@@ -1,32 +1,35 @@
-/* Monitoring 3D: kanvas penuh, kartu putih melayang bergaya Cerah (abu-lavender, teks biru tua,
-   aksen jenuh hanya untuk grafik/status), aksen biru #546FFF (Taskflow), ikon biru kilap. Dunia selalu terang. Gaya dibatasi .mt-root.
+/* Monitoring 3D: kanvas penuh dengan kartu melayang. Warna hanya dari token globals.css (terang dan
+   gelap mengikuti aplikasi), tanpa gradasi. Gaya dibatasi .mt-root.
    Tata letak: ≥1280 persis referensi; 768–1279 panel sempit, pelacak + daftar bertumpuk di kiri
    bawah; <768 bilah ringkas, KPI bergeser, detail dalam lembar bawah (intip/setengah/penuh). */
 .mt-root {
-  --mt-ink: #171a3a;
-  --mt-text: #2e3250;
-  --mt-muted: #5e6384;
-  --mt-line: #eceef5;
-  --mt-soft: #f8f9fc;
-  --mt-card: rgba(255, 255, 255, 0.97);
-  --mt-blue: #546fff;
-  --mt-blue-ink: #3d58f0;
-  --mt-blue-soft: #eaf0ff;
-  --mt-green: #0b7a70;
-  --mt-green-bar: #2bb7a8;
-  --mt-green-soft: #e2f7f4;
-  --mt-yellow: #a3560a;
-  --mt-yellow-bar: #f5a142;
-  --mt-yellow-soft: #fff3e0;
-  --mt-red: #c23a1f;
-  --mt-red-soft: #fdece8;
-  --mt-gray: #676c8c;
-  --mt-gray-soft: #eceef5;
-  --mt-pink: #c21f5e;
-  --mt-pink-bar: #ee6f9e;
-  --mt-pink-soft: #fde9f1;
+  --mt-ink: var(--ink);
+  --mt-text: var(--ink-2);
+  --mt-muted: var(--ink-3);
+  --mt-line: var(--line);
+  --mt-soft: var(--surface-2);
+  --mt-card: var(--surface);
+  --mt-blue: var(--accent-strong);
+  --mt-blue-ink: var(--accent-ink);
+  --mt-blue-soft: var(--accent);
+  --mt-green: var(--done-ink);
+  --mt-green-bar: var(--done-bar);
+  --mt-green-soft: var(--done);
+  --mt-yellow: var(--warn-ink);
+  --mt-yellow-bar: var(--warn-bar);
+  --mt-yellow-soft: var(--warn);
+  --mt-red: var(--late-ink);
+  --mt-red-soft: var(--late);
+  --mt-gray: var(--ink-3);
+  --mt-gray-soft: var(--surface-3);
+  --mt-pink: var(--late-ink);
+  --mt-pink-bar: var(--late-bar);
+  --mt-pink-soft: var(--late);
+  --mt-primary: var(--action);
+  --mt-primary-hover: var(--action-hover);
+  --mt-on-primary: var(--on-action);
   --mt-radius: 16px;
-  --mt-shadow: 0 12px 32px rgba(23, 26, 58, 0.1), 0 1px 2px rgba(23, 26, 58, 0.05);
+  --mt-shadow: var(--shadow-card);
   --mt-gap: 20px;
   --mt-top: 64px;
   --mt-panel-w: 360px;
@@ -36,27 +39,17 @@
   inset: 0;
   z-index: 30;
   overflow: hidden;
-  background: radial-gradient(ellipse at 45% 50%, #fbf8f4 0%, #f4eee8 55%, #ebe3dc 100%);
+  background: var(--canvas);
   color: var(--mt-ink);
   font-family: var(--font-sans);
   font-size: 13px;
   line-height: 1.4;
-  color-scheme: light;
   -webkit-font-smoothing: antialiased;
 }
 .mt-root *,
 .mt-root *::before,
 .mt-root *::after {
   box-sizing: border-box;
-}
-.mt-root[data-fase='senja'] {
-  background: radial-gradient(ellipse at 45% 50%, #fff6ee, #f3e9f1 58%, #e3ddef);
-}
-.mt-root[data-fase='malam'] {
-  background: radial-gradient(ellipse at 45% 50%, #e9edf8, #d9e0ef 58%, #c8d0e5);
-}
-.mt-root[data-cuaca='hujan'] {
-  background: radial-gradient(ellipse at 45% 50%, #f3eee9, #dfe4ef 58%, #cfd6e7);
 }
 .mt-root a {
   color: inherit;
@@ -77,7 +70,7 @@
   touch-action: manipulation;
 }
 .mt-root :focus-visible {
-  outline: 3px solid #8fb0ff;
+  outline: 3px solid var(--accent-strong);
   outline-offset: 2px;
 }
 .mt-root :is(small, em) {
@@ -88,7 +81,7 @@
   padding: 0 10px;
   border: 1px solid var(--mt-line);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   color: var(--mt-ink);
   font: inherit;
 }
@@ -96,7 +89,7 @@
 /* ---------- Dasar ---------- */
 .mt-card {
   background: var(--mt-card);
-  border: 1px solid rgba(239, 232, 225, 0.9);
+  border: 1px solid var(--line);
   border-radius: var(--mt-radius);
   box-shadow: var(--mt-shadow);
 }
@@ -149,7 +142,7 @@
   padding: 0 14px;
   border: 1px solid var(--mt-line);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   font-weight: 600;
   transition:
     border-color 0.15s,
@@ -157,14 +150,14 @@
     background-color 0.15s;
 }
 .mt-btn.is-primary {
-  border-color: var(--mt-blue);
-  background: var(--mt-blue);
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(84, 111, 255, 0.25);
+  border-color: var(--mt-primary);
+  background: var(--mt-primary);
+  color: var(--mt-on-primary);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--accent-strong) 25%, transparent);
 }
 .mt-btn.is-primary:hover {
-  background: var(--mt-blue-ink);
-  color: #fff;
+  background: var(--mt-primary-hover);
+  color: var(--mt-on-primary);
 }
 .mt-icon-btn {
   position: relative;
@@ -181,7 +174,7 @@
 }
 .mt-btn:hover,
 .mt-icon-btn:hover {
-  border-color: #c9d6fb;
+  border-color: var(--line-strong);
   color: var(--mt-blue);
 }
 .mt-btn:disabled {
@@ -192,7 +185,7 @@
   display: block;
   height: 5px;
   border-radius: 99px;
-  background: #f3eee9;
+  background: var(--surface-3);
   overflow: hidden;
 }
 .mt-bar i {
@@ -267,7 +260,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: #f3eee9;
+  background: var(--surface-3);
 }
 .mt-pins {
   position: absolute;
@@ -286,11 +279,12 @@
   border: 0;
   background: none;
   pointer-events: auto;
-  filter: drop-shadow(0 4px 6px rgba(29, 58, 158, 0.25));
+  filter: drop-shadow(0 4px 6px color-mix(in srgb, var(--accent-ink) 25%, transparent));
   transition: filter 0.15s;
 }
 .mt-pin:hover {
-  filter: drop-shadow(0 6px 10px rgba(29, 58, 158, 0.4)) brightness(1.08);
+  filter: drop-shadow(0 6px 10px color-mix(in srgb, var(--accent-ink) 40%, transparent))
+    brightness(1.08);
 }
 .mt-pin svg {
   display: block;
@@ -303,10 +297,10 @@
   top: 0;
   z-index: 2;
   pointer-events: none;
-  border: 1.5px solid rgba(84, 111, 255, 0.32);
+  border: 1.5px solid color-mix(in srgb, var(--accent-strong) 32%, transparent);
   border-radius: 10px;
-  background: rgba(84, 111, 255, 0.06);
-  box-shadow: 0 0 0 4px rgba(84, 111, 255, 0.06);
+  background: color-mix(in srgb, var(--accent-strong) 6%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-strong) 6%, transparent);
 }
 .mt-mark[data-jenis='orang'] {
   border-radius: 14px;
@@ -316,7 +310,7 @@
   width: var(--siku);
   height: var(--siku);
   border: 3px solid var(--mt-blue);
-  filter: drop-shadow(0 2px 4px rgba(84, 111, 255, 0.35));
+  filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--accent-strong) 35%, transparent));
 }
 .mt-mark i:nth-child(1) {
   top: -3px;
@@ -359,8 +353,8 @@
   display: none;
 }
 .mt-mark-ruang polygon {
-  fill: rgba(84, 111, 255, 0.07);
-  stroke: rgba(84, 111, 255, 0.38);
+  fill: color-mix(in srgb, var(--accent-strong) 7%, transparent);
+  stroke: color-mix(in srgb, var(--accent-strong) 38%, transparent);
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
@@ -370,7 +364,7 @@
   stroke-width: 3.5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 2px 4px rgba(84, 111, 255, 0.35));
+  filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--accent-strong) 35%, transparent));
 }
 /* Label pilihan ala "TRK-2307 Docking": nama di pil biru, status di bagian muda. */
 .mt-tag {
@@ -386,16 +380,16 @@
   border-radius: 8px;
   font-size: 12px;
   font-weight: 700;
-  box-shadow: 0 6px 16px rgba(84, 111, 255, 0.28);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent-strong) 28%, transparent);
 }
 .mt-tag b {
   padding: 5px 9px;
-  background: var(--mt-blue);
-  color: #fff;
+  background: var(--mt-primary);
+  color: var(--mt-on-primary);
 }
 .mt-tag span {
   padding: 5px 9px;
-  background: #dfe8ff;
+  background: var(--accent);
   color: var(--mt-blue-ink);
   font-weight: 600;
 }
@@ -408,7 +402,7 @@
   pointer-events: none;
   padding: 5px 10px;
   border-radius: 8px;
-  background: #fff;
+  background: var(--surface);
   color: var(--mt-ink);
   font-size: 12px;
   font-weight: 600;
@@ -459,8 +453,8 @@
   gap: 14px;
   height: var(--mt-top);
   padding: 0 var(--mt-gap);
-  background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(239, 232, 225, 0.9);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border-bottom: 1px solid var(--line);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -500,7 +494,7 @@
   padding: 0 8px 0 12px;
   border: 1px solid var(--mt-line);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
   color: var(--mt-muted);
 }
 .mt-search input {
@@ -514,7 +508,7 @@
   outline: none;
 }
 .mt-search input::placeholder {
-  color: #a59a92;
+  color: var(--ink-3);
 }
 .mt-search kbd {
   display: grid;
@@ -528,8 +522,8 @@
   font: 600 11px/1 var(--font-sans);
 }
 .mt-search:focus-within {
-  border-color: #b9cbf8;
-  box-shadow: 0 0 0 3px rgba(84, 111, 255, 0.14);
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-strong) 14%, transparent);
 }
 .mt-search-close,
 .mt-search-open {
@@ -573,11 +567,11 @@
   padding: 4px 10px 4px 5px;
   border: 1px solid var(--mt-line);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   text-align: left;
 }
 .mt-lokasi-btn:hover {
-  border-color: #c9d6fb;
+  border-color: var(--line-strong);
 }
 .mt-badge {
   display: grid;
@@ -586,8 +580,8 @@
   height: 32px;
   padding: 0 6px;
   border-radius: 8px;
-  background: var(--mt-blue);
-  color: #fff;
+  background: var(--mt-primary);
+  color: var(--mt-on-primary);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.3px;
@@ -664,8 +658,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  background: var(--done-bar);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--done-bar) 20%, transparent);
 }
 .mt-menu {
   position: relative;
@@ -682,10 +676,10 @@
   min-width: 17px;
   height: 17px;
   padding: 0 4px;
-  border: 2px solid #fff;
+  border: 2px solid var(--surface);
   border-radius: 99px;
-  background: #ef4444;
-  color: #fff;
+  background: var(--brand);
+  color: var(--on-brand);
   font-size: 9px;
   font-weight: 800;
 }
@@ -732,13 +726,10 @@
   height: 38px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: linear-gradient(145deg, #7f9dff, var(--mt-blue));
-  color: #fff;
+  background: var(--accent);
+  color: var(--accent-ink);
   font-weight: 800;
-  box-shadow:
-    inset 0 -3px 0 rgba(20, 40, 120, 0.25),
-    0 0 0 2px #fff,
-    0 2px 6px rgba(60, 40, 30, 0.2);
+  box-shadow: 0 0 0 2px var(--surface);
 }
 .mt-user-pop {
   display: grid;
@@ -819,7 +810,7 @@
 }
 .mt-kpi:not(:disabled):hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px rgba(60, 40, 30, 0.13);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--ink) 13%, transparent);
 }
 
 .mt-kpi-body {
@@ -877,8 +868,8 @@
   gap: 8px;
   max-width: 720px;
   padding: 10px 12px;
-  border-color: #f2d7a6;
-  background: #fff8e8;
+  border-color: color-mix(in srgb, var(--warn-ink) 25%, transparent);
+  background: var(--warn);
 }
 
 /* ---------- Lembar (pembungkus panel, pelacak, daftar) ---------- */
@@ -963,7 +954,7 @@
   padding: 10px 12px;
   border: 1px solid var(--mt-line);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
 }
 .mt-stats small {
   display: block;
@@ -1003,9 +994,9 @@
   font-weight: 600;
 }
 .mt-seg button[aria-pressed='true'] {
-  background: #fff;
+  background: var(--surface);
   color: var(--mt-ink);
-  box-shadow: 0 1px 4px rgba(60, 40, 30, 0.12);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--ink) 12%, transparent);
 }
 .mt-actions {
   display: flex;
@@ -1034,25 +1025,25 @@
   font-weight: 700;
 }
 .mt-links a:hover {
-  background: #dce6ff;
+  background: var(--accent);
 }
 .mt-links a.is-baru {
-  background: var(--mt-blue);
-  color: #fff;
-  box-shadow: 0 4px 10px rgba(84, 111, 255, 0.25);
+  background: var(--mt-primary);
+  color: var(--mt-on-primary);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--accent-strong) 25%, transparent);
 }
 .mt-links a.is-baru:hover {
-  background: var(--mt-blue-ink);
+  background: var(--mt-primary-hover);
 }
 .mt-add {
-  border-color: var(--mt-blue);
-  background: var(--mt-blue);
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(84, 111, 255, 0.3);
+  border-color: var(--mt-primary);
+  background: var(--mt-primary);
+  color: var(--mt-on-primary);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--accent-strong) 30%, transparent);
 }
 .mt-add:hover {
-  background: var(--mt-blue-ink);
-  color: #fff;
+  background: var(--mt-primary-hover);
+  color: var(--mt-on-primary);
 }
 .mt-progress {
   display: flex;
@@ -1076,7 +1067,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 9px 0;
-  border-bottom: 1px solid #f3eee9;
+  border-bottom: 1px solid var(--line);
 }
 .mt-kv dt {
   color: var(--mt-muted);
@@ -1102,7 +1093,7 @@
   color: var(--mt-muted);
 }
 .mt-rows li + li {
-  border-top: 1px solid #f3eee9;
+  border-top: 1px solid var(--line);
 }
 .mt-row {
   display: flex;
@@ -1136,7 +1127,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(145deg, #e3eaff, #c7d5fd);
+  background: var(--accent);
   color: var(--mt-blue-ink);
   font-size: 12px;
   font-weight: 800;
@@ -1187,7 +1178,7 @@
 }
 .mt-row-arrow {
   flex-shrink: 0;
-  color: #b3a8a0;
+  color: var(--ink-3);
 }
 
 /* ---------- Pelacak kiri bawah ---------- */
@@ -1261,7 +1252,7 @@
   left: calc(-50% + 21px);
   height: 2px;
   border-radius: 2px;
-  background: #e8e0d8;
+  background: var(--line-strong);
 }
 .mt-steps li.is-done::before,
 .mt-steps li.is-now::before {
@@ -1273,21 +1264,21 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 2px solid #e8e0d8;
-  background: #fff;
-  color: #ada29a;
+  border: 2px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-3);
 }
 .mt-steps .is-done .mt-step-dot {
   border-color: var(--mt-blue);
   background: var(--mt-blue);
-  color: #fff;
-  box-shadow: inset 0 -2px 0 rgba(20, 40, 120, 0.25);
+  color: var(--mt-on-primary);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--ink) 25%, transparent);
 }
 .mt-steps .is-now .mt-step-dot {
   border: 3px solid var(--mt-blue);
-  background: #fff;
+  background: var(--surface);
   color: var(--mt-blue);
-  box-shadow: 0 0 0 5px rgba(84, 111, 255, 0.14);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-strong) 14%, transparent);
 }
 .mt-steps strong {
   max-width: 100%;
@@ -1318,8 +1309,8 @@
   background: var(--mt-soft);
 }
 .mt-mini:hover {
-  border-color: #c9d6fb;
-  background: #fff;
+  border-color: var(--line-strong);
+  background: var(--surface);
 }
 .mt-mini-art {
   display: grid;
@@ -1328,7 +1319,7 @@
   width: 56px;
   height: 56px;
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
 }
 .mt-mini > span:nth-child(2) {
   flex: 1;
@@ -1393,13 +1384,13 @@
 }
 .mt-tabs [role='tab'] span {
   margin-left: 2px;
-  color: #a99e96;
+  color: var(--ink-3);
   font-weight: 600;
 }
 .mt-tabs [role='tab'][aria-selected='true'] {
-  background: #fff;
+  background: var(--surface);
   color: var(--mt-ink);
-  box-shadow: 0 1px 4px rgba(60, 40, 30, 0.12);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--ink) 12%, transparent);
 }
 .mt-tabs > header > small {
   margin-left: auto;
@@ -1649,8 +1640,8 @@
     height: 180px;
     padding-bottom: env(safe-area-inset-bottom);
     border-radius: 22px 22px 0 0;
-    background: #fff;
-    box-shadow: 0 -10px 34px rgba(60, 40, 30, 0.16);
+    background: var(--surface);
+    box-shadow: 0 -10px 34px color-mix(in srgb, var(--ink) 16%, transparent);
     transition: height 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .mt-root[data-sheet='setengah'] .mt-sheet {
@@ -1673,7 +1664,7 @@
     width: 40px;
     height: 5px;
     border-radius: 99px;
-    background: #ddd4cc;
+    background: var(--line-strong);
   }
   .mt-sheet-body {
     display: block;
@@ -2056,7 +2047,7 @@
 }
 .mt-tumpuk .is-abu,
 .mt-legenda .is-abu {
-  background: #d9cfc6;
+  background: var(--line-strong);
 }
 .mt-batang-daftar {
   display: grid;
