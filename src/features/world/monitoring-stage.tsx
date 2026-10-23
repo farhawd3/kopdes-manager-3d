@@ -1,32 +1,32 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Home, Minus, Plus, RotateCcw, RotateCw } from 'lucide-react';
-import type { MonitoringScene, PinPeta } from './monitoring-scene';
-import type { LokasiMonitoring } from './bidang';
+import type { MonitoringScene, AttentionPin } from './monitoring-scene';
+import type { WorldSite } from './office-rooms';
 import type { CharacterPlan } from './character-plan';
-import type { LogistikInput } from './warehouse-room';
-import type { Suasana } from './monitor-data';
+import type { LogisticsInput } from './warehouse-room';
+import type { Ambience } from './monitor-data';
 
 type Props = {
-  lokasi: LokasiMonitoring;
-  input: LogistikInput;
+  site: WorldSite;
+  input: LogisticsInput;
   plans: CharacterPlan[];
   selected: string;
   tag: string;
-  suasana: Suasana;
+  ambience: Ambience;
   /** Hal yang perlu perhatian (≤5), tampil sebagai pin biru. */
-  pins: PinPeta[];
+  pins: AttentionPin[];
   onPick: (key: string) => void;
 };
 
 /** Jembatan React ↔ adegan WebGL: lazy load, fallback, kontrol peta, dan label pilihan. */
 export function MonitoringStage({
-  lokasi,
+  site,
   input,
   plans,
   selected,
   tag,
-  suasana,
+  ambience,
   pins,
   onPick,
 }: Props) {
@@ -35,18 +35,18 @@ export function MonitoringStage({
   const hover = useRef<HTMLDivElement>(null);
   const pinLayer = useRef<HTMLDivElement>(null);
   const mark = useRef<HTMLDivElement>(null);
-  const markRuang = useRef<SVGSVGElement>(null);
+  const markRoom = useRef<SVGSVGElement>(null);
   const scene = useRef<MonitoringScene | null>(null);
-  const latest = useRef({ lokasi, input, plans, selected, suasana, pins, onPick });
+  const latest = useRef({ site, input, plans, selected, ambience, pins, onPick });
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    latest.current = { lokasi, input, plans, selected, suasana, pins, onPick };
+    latest.current = { site, input, plans, selected, ambience, pins, onPick };
   });
   useEffect(() => {
-    scene.current?.show(lokasi, input);
+    scene.current?.show(site, input);
     scene.current?.select(latest.current.selected);
-  }, [lokasi, input]);
+  }, [site, input]);
   useEffect(() => {
     scene.current?.setPlans(plans);
   }, [plans]);
@@ -54,8 +54,8 @@ export function MonitoringStage({
     scene.current?.select(selected);
   }, [selected]);
   useEffect(() => {
-    scene.current?.setSuasana(suasana);
-  }, [suasana]);
+    scene.current?.setAmbience(ambience);
+  }, [ambience]);
   useEffect(() => {
     scene.current?.setPins(pins);
   }, [pins]);
@@ -69,22 +69,22 @@ export function MonitoringStage({
     };
     element.addEventListener('webglcontextlost', fail, true);
     import('./monitoring-scene')
-      .then(({ buatMonitoring }) => {
+      .then(({ createMonitoring }) => {
         if (cancelled) return;
-        const s = buatMonitoring(element, {
+        const s = createMonitoring(element, {
           onPick: (key) => latest.current.onPick(key),
           tag: label.current,
           hover: hover.current,
           pins: pinLayer.current,
           mark: mark.current,
-          markRuang: markRuang.current,
+          markRoom: markRoom.current,
         });
         scene.current = s;
         const now = latest.current;
         s.setPlans(now.plans);
-        s.show(now.lokasi, now.input);
+        s.show(now.site, now.input);
         s.select(now.selected);
-        s.setSuasana(now.suasana);
+        s.setAmbience(now.ambience);
         s.setPins(now.pins);
       })
       .catch(fail);
@@ -96,12 +96,12 @@ export function MonitoringStage({
     };
   }, [attempt]);
   // Label pilihan "Nama · status": bagian kedua tampil sebagai status di pil biru.
-  const [judul, status] = tag.split(' · ');
+  const [title, status] = tag.split(' · ');
   return (
     <div className="mt-stage">
       <div ref={host} className="mt-canvas" />
       <div ref={pinLayer} className="mt-pins" />
-      <svg ref={markRuang} className="mt-mark-ruang" aria-hidden="true">
+      <svg ref={markRoom} className="mt-mark-ruang" aria-hidden="true">
         <polygon />
         <path />
       </svg>
@@ -113,7 +113,7 @@ export function MonitoringStage({
       </div>
       <div ref={hover} className="mt-hover" hidden aria-hidden="true" />
       <div ref={label} className="mt-tag" hidden aria-hidden="true">
-        <b>{judul}</b>
+        <b>{title}</b>
         {status && <span>{status}</span>}
       </div>
       {failed && (
@@ -153,7 +153,7 @@ export function MonitoringStage({
           type="button"
           aria-label="Putar ke kiri"
           title="Putar ke kiri"
-          onClick={() => scene.current?.putar(-1)}
+          onClick={() => scene.current?.rotate(-1)}
         >
           <RotateCcw size={16} />
         </button>
@@ -161,7 +161,7 @@ export function MonitoringStage({
           type="button"
           aria-label="Putar ke kanan"
           title="Putar ke kanan"
-          onClick={() => scene.current?.putar(1)}
+          onClick={() => scene.current?.rotate(1)}
         >
           <RotateCw size={16} />
         </button>

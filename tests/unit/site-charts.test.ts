@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { grafikLokasi } from '@/features/world/grafik-lokasi';
+import { siteCharts } from '@/features/world/site-charts';
 import type { WorldModel } from '@/features/world/model/world-model';
 import type { Item } from '@/features/records/schemas';
 
@@ -10,12 +10,12 @@ const model = {
     coldRacks: { C1: [], C2: [], C3: [] },
   },
 } as unknown as WorldModel;
-const dasar = { model, hari: '2026-10-15', stock: true, shipping: true, unavailable: false };
+const dasar = { model, day: '2026-10-15', stock: true, shipping: true, unavailable: false };
 
 it('tugas terbuka dipisah: lewat tenggat, dikerjakan, rencana', () => {
-  const [tumpuk] = grafikLokasi({
+  const [tumpuk] = siteCharts({
     ...dasar,
-    lokasi: 'kantor',
+    site: 'kantor',
     data: {
       'work-items': [
         row('1', { status: 'proses', due_date: '2026-10-10' }),
@@ -26,22 +26,22 @@ it('tugas terbuka dipisah: lewat tenggat, dikerjakan, rencana', () => {
     },
   });
   expect(tumpuk).toMatchObject({
-    jenis: 'tumpuk',
-    bagian: [
-      { label: 'Lewat tenggat', nilai: 1 },
-      { label: 'Dikerjakan', nilai: 1 },
-      { label: 'Rencana', nilai: 1 },
+    kind: 'tumpuk',
+    segments: [
+      { label: 'Lewat tenggat', value: 1 },
+      { label: 'Dikerjakan', value: 1 },
+      { label: 'Rencana', value: 1 },
     ],
   });
 });
 
 it('gerai tanpa migrasi 10 menulis belum aktif, bukan nol', () => {
-  const [grafik] = grafikLokasi({ ...dasar, lokasi: 'gerai', data: {} });
-  expect(grafik).toMatchObject({ jenis: 'catatan', teks: expect.stringContaining('belum aktif') });
+  const [grafik] = siteCharts({ ...dasar, site: 'gerai', data: {} });
+  expect(grafik).toMatchObject({ kind: 'catatan', text: expect.stringContaining('belum aktif') });
 });
 
 it('data belum tersedia tidak menghasilkan angka', () => {
-  expect(grafikLokasi({ ...dasar, unavailable: true, lokasi: 'gudang', data: {} })).toEqual([
-    { jenis: 'catatan', judul: 'Grafik', teks: 'Data belum tersedia.' },
+  expect(siteCharts({ ...dasar, unavailable: true, site: 'gudang', data: {} })).toEqual([
+    { kind: 'catatan', title: 'Grafik', text: 'Data belum tersedia.' },
   ]);
 });

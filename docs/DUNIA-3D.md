@@ -65,7 +65,7 @@ Angka yang tidak tersedia ditulis "—". Modul yang belum aktif ditulis belum ak
 
 ## Parameter alamat
 
-Web membuka dunia di objek yang tepat lewat `worldHref()` di `world-link.tsx`. Dunia membacanya di `tautan.ts`.
+Web membuka dunia di objek yang tepat lewat `worldHref()` di `world-link.tsx`. Dunia membacanya di `link-target.ts`.
 
 | Parameter | Isi | Membuka |
 |---|---|---|
@@ -83,7 +83,7 @@ Bila catatan tidak ada di data yang dimuat, dunia tidak memilih apa pun.
 ## Kontrol dan layar
 
 - Bilah atas: pencarian (pintasan `/`), pemilih lokasi, tombol Tambah (pusat aksi yang sama dengan web), jam WIB, lonceng, menu profil (muat ulang, suasana, Pengaturan, Beranda).
-- Kartu: tiga KPI per lokasi, panel detail, pelacak, daftar bertab. Panel Ringkasan memuat grafik ringkas per lokasi (`grafik-lokasi.tsx`, batang CSS tanpa pustaka grafik).
+- Kartu: tiga KPI per lokasi, panel detail, pelacak, daftar bertab. Panel Ringkasan memuat grafik ringkas per lokasi (`site-charts.tsx`, batang CSS tanpa pustaka grafik).
 - Kontrol peta: perbesar/perkecil 0,6–5×, putar kiri/kanan, tampilan awal. Pilih figur untuk diikuti kamera; geser atau reset melepasnya.
 - Layar ≥1280 px tata letak penuh. 768–1279 panel diringkas. Di bawah 768 px detail tampil di lembar bawah; geser satu jari, cubit dua jari. Layar potret mulai dalam keadaan diperbesar.
 
@@ -105,20 +105,20 @@ Semua di `src/features/world/`.
 |---|---|
 | `world-page.tsx` | Halaman `/world`: memuat workspace lalu memanggil dashboard |
 | `world-link.tsx` | `worldHref()` dan `hasWorldPlace()` untuk tombol "Lihat di dunia" di web |
-| `tautan.ts` | Membaca parameter alamat menjadi lokasi dan objek terpilih |
+| `link-target.ts` | Membaca parameter alamat menjadi lokasi dan objek terpilih |
 | `monitoring-dashboard.tsx` | Lokasi, KPI, panel detail, pelacak, daftar bertab, pencarian, keadaan data |
 | `monitoring-stage.tsx` | Jembatan React ke WebGL, lazy load, kontrol peta, label pilihan, fallback |
 | `monitoring-scene.ts` | Kamera, cahaya, lokasi, figur berjalan, pin, raycast, geser/zoom, pembersihan |
-| `monitor-cards.tsx`, `gerai-cards.tsx`, `grafik-lokasi.tsx` | Kartu panel, kartu gerai, grafik ringkas |
-| `monitoring.css` | Gaya dunia (`mt-*`), terpisah dari web |
+| `monitor-cards.tsx`, `store-cards.tsx`, `site-charts.tsx` | Kartu panel, kartu gerai, grafik ringkas |
+| `monitoring.css` | Gaya dunia (`mt-*`), terpisah dari web; satu-satunya pengecualian gaya kode yang tersisa |
 | `monitor-data.ts`, `character-plan.ts` | Turunan data murni: baris dan angka per ruang, rencana tempat figur |
-| `bidang.ts`, `monitoring-room.ts` | Tata ruang kantor, sekat kaca, titik lewat figur, pintu gudang |
-| `gerai.ts`, `gerai-room.ts` | Status unit gerai dan model kawasan gerai |
-| `warehouse-room.ts`, `logistik.ts` | Gudang, cold storage, rak, palet, forklift, truk |
-| `pulau.ts`, `bangunan-lembut.ts` | Pulau melayang dan bangunan bergaya mainan |
-| `suasana.ts` | Panorama jendela dan fase waktu Jakarta |
-| `karakter.ts`, `orang.ts` | Figur chibi dan bagian yang dianimasikan |
-| `bentuk.ts`, `perabot.ts`, `tulisan.ts`, `optimasi.ts` | Bentuk dasar, perabot, tulisan lantai, penanda benda bergerak |
+| `office-rooms.ts`, `monitoring-room.ts` | Tata ruang kantor, sekat kaca, titik lewat figur, pintu gudang |
+| `store.ts`, `store-room.ts` | Status unit gerai dan model kawasan gerai |
+| `warehouse-room.ts`, `logistics.ts` | Gudang, cold storage, rak, palet, forklift, truk |
+| `island.ts`, `soft-building.ts` | Pulau melayang dan bangunan bergaya mainan |
+| `ambience.ts` | Panorama jendela dan fase waktu Jakarta |
+| `character.ts`, `person.ts` | Figur chibi dan bagian yang dianimasikan |
+| `shapes.ts`, `furniture.ts`, `floor-text.ts`, `moving.ts` | Bentuk dasar, perabot, tulisan lantai, penanda benda bergerak |
 | `icon-3d.tsx` | Ikon dan thumbnail barang berbasis SVG |
 | `model/world-model.ts` | Adapter workspace → model dunia |
 | `model/district.ts` | Unit KDMP yang punya bangunan |

@@ -1,5 +1,5 @@
 'use client';
-import { GrafikRingkasan, grafikLokasi } from './grafik-lokasi';
+import { ChartList, siteCharts } from './site-charts';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -38,12 +38,12 @@ import {
 import type { Workspace } from '@/features/workspace/use-workspace';
 import { recordHref } from '@/features/notifications/follow-ups';
 import type { Entity, Item, Task } from '../records/schemas';
-import { BIDANG, type Bidang, type LokasiMonitoring } from './bidang';
+import { OFFICE_ROOMS, type OfficeRoom, type WorldSite } from './office-rooms';
 import { ACTION_LABEL, MAX_FIGURES, isOffice, monitoringPlans, type Area } from './character-plan';
-import { GERAI, infoGerai, type GeraiId } from './gerai';
-import { geraiView, ikonGerai } from './gerai-cards';
+import { STORES, storeInfo, type StoreId } from './store';
+import { storeView, storeIcon } from './store-cards';
 import {
-  ACTION_NADA,
+  ACTION_TONE,
   DELIVERY_LABEL,
   deliveryInfo,
   deliveryRow,
@@ -57,18 +57,18 @@ import {
   searchRecords,
   taskRow,
   truckNote,
-  suasanaJam,
-  type Baris,
-  type Cuaca,
-  type Konteks,
-  type Nada,
-  type Suasana,
+  ambienceAt,
+  type RecordRow,
+  type Weather,
+  type RoomContext,
+  type Tone,
+  type Ambience,
 } from './monitor-data';
 import {
   IconTile,
   KpiCard,
   Links,
-  LokasiPicker,
+  SitePicker,
   PanelHead,
   Pager,
   Pill,
@@ -83,9 +83,9 @@ import {
   type Step,
   type Tab,
 } from './monitor-cards';
-import type { PinPeta } from './monitoring-scene';
-import { Ikon3D, thumbBarang, type Ikon3DKind } from '@/features/world/icon-3d';
-import { tujuanTautan } from './tautan';
+import type { AttentionPin } from './monitoring-scene';
+import { Icon3D, itemThumbKind, type Icon3DKind } from '@/features/world/icon-3d';
+import { linkTarget } from './link-target';
 import { Sheet } from '@/components/ui/sheet';
 import { QuickActionsPanel } from '@/components/layout/quick-actions';
 import './monitoring.css';
@@ -95,7 +95,7 @@ const Stage = dynamic(() => import('./monitoring-stage').then((m) => m.Monitorin
   loading: () => <div className="mt-stage mt-fallback">Menyiapkan kantor…</div>,
 });
 
-const ROOM_3D: Record<Bidang, Ikon3DKind> = {
+const ROOM_3D: Record<OfficeRoom, Icon3DKind> = {
   kerja: 'meja',
   rapat: 'kalender',
   gym: 'dumbel',
@@ -105,7 +105,7 @@ const ROOM_3D: Record<Bidang, Ikon3DKind> = {
   kas: 'dompet',
   istirahat: 'kopi',
 };
-const ENTITY_3D: Partial<Record<Entity, Ikon3DKind>> = {
+const ENTITY_3D: Partial<Record<Entity, Icon3DKind>> = {
   'work-items': 'papan',
   meetings: 'kalender',
   documents: 'dokumen',
@@ -119,51 +119,51 @@ const ENTITY_3D: Partial<Record<Entity, Ikon3DKind>> = {
   'cash-entries': 'dompet',
 };
 /** Tautan halaman operasional per ruang kantor. */
-const ROOM_LINKS: Record<Bidang, { href: string; label: string; baru?: boolean }[]> = {
+const ROOM_LINKS: Record<OfficeRoom, { href: string; label: string; isNew?: boolean }[]> = {
   kerja: [
-    { href: '/tasks?new=1', label: 'Tugas baru', baru: true },
+    { href: '/tasks?new=1', label: 'Tugas baru', isNew: true },
     { href: '/tasks', label: 'Tugas' },
   ],
   rapat: [
-    { href: '/agenda?new=1', label: 'Jadwalkan rapat', baru: true },
+    { href: '/agenda?new=1', label: 'Jadwalkan rapat', isNew: true },
     { href: '/agenda', label: 'Rapat' },
     { href: '/agenda?tab=decisions', label: 'Keputusan' },
   ],
   gym: [
-    { href: '/notes?new=1', label: 'Catat kegiatan', baru: true },
+    { href: '/notes?new=1', label: 'Catat kegiatan', isNew: true },
     { href: '/notes', label: 'Kegiatan' },
   ],
   manajer: [
-    { href: '/projects?tab=risks&new=1', label: 'Catat risiko', baru: true },
+    { href: '/projects?tab=risks&new=1', label: 'Catat risiko', isNew: true },
     { href: '/documents', label: 'Dokumen' },
     { href: '/projects?tab=risks', label: 'Risiko' },
   ],
   karyawan: [
-    { href: '/team?new=1', label: 'Tambah staf', baru: true },
+    { href: '/team?new=1', label: 'Tambah staf', isNew: true },
     { href: '/store', label: 'Halaman Gerai' },
   ],
   stok: [
-    { href: '/goods?new=1', label: 'Tambah barang', baru: true },
-    { href: '/goods?tab=counts&new=1', label: 'Catat opname', baru: true },
+    { href: '/goods?new=1', label: 'Tambah barang', isNew: true },
+    { href: '/goods?tab=counts&new=1', label: 'Catat opname', isNew: true },
     { href: '/goods', label: 'Barang' },
   ],
   kas: [
-    { href: '/cash?new=1&direction=masuk', label: 'Kas masuk', baru: true },
-    { href: '/cash?new=1&direction=keluar', label: 'Kas keluar', baru: true },
-    { href: '/members?new=1', label: 'Anggota baru', baru: true },
+    { href: '/cash?new=1&direction=masuk', label: 'Kas masuk', isNew: true },
+    { href: '/cash?new=1&direction=keluar', label: 'Kas keluar', isNew: true },
+    { href: '/members?new=1', label: 'Anggota baru', isNew: true },
     { href: '/cash', label: 'Buku kas' },
   ],
   istirahat: [{ href: '/team', label: 'Tim' }],
 };
 /** Nama ruang figur: ruang kantor atau unit gerai. */
-const namaArea = (area: Area) =>
-  isOffice(area) ? BIDANG[area].nama : GERAI[area.slice(6) as GeraiId].nama;
-const LOKASI: Record<LokasiMonitoring, { label: string; kode: string; icon: Ikon3DKind }> = {
-  kantor: { label: 'Kantor', kode: 'KTR', icon: 'kantor' },
-  gerai: { label: 'Gerai', kode: 'GRI', icon: 'toko' },
-  gudang: { label: 'Gudang', kode: 'GDG', icon: 'gudang' },
-  pendingin: { label: 'Cold storage', kode: 'CS', icon: 'salju' },
-  pulau: { label: 'Pulau koperasi', kode: 'PLU', icon: 'pulau' },
+const areaName = (area: Area) =>
+  isOffice(area) ? OFFICE_ROOMS[area].name : STORES[area.slice(6) as StoreId].name;
+const SITES: Record<WorldSite, { label: string; code: string; icon: Icon3DKind }> = {
+  kantor: { label: 'Kantor', code: 'KTR', icon: 'kantor' },
+  gerai: { label: 'Gerai', code: 'GRI', icon: 'toko' },
+  gudang: { label: 'Gudang', code: 'GDG', icon: 'gudang' },
+  pendingin: { label: 'Cold storage', code: 'CS', icon: 'salju' },
+  pulau: { label: 'Pulau koperasi', code: 'PLU', icon: 'pulau' },
 };
 const ENTITY_LABEL: Partial<Record<Entity, string>> = {
   'work-items': 'tugas',
@@ -174,7 +174,7 @@ const ENTITY_LABEL: Partial<Record<Entity, string>> = {
   deliveries: 'pengiriman',
   journal: 'kegiatan',
 };
-const jam = (now: Date) =>
+const clockTime = (now: Date) =>
   new Intl.DateTimeFormat('id-ID', {
     timeZone: 'Asia/Jakarta',
     hour: '2-digit',
@@ -196,23 +196,23 @@ type Props = {
   fetching?: Entity | null;
 };
 
-const view = (rows: Baris[]): RowView[] =>
+const view = (rows: RecordRow[]): RowView[] =>
   rows.map((r) => {
-    const barang = r.entity === 'inventory-items';
+    const isGoods = r.entity === 'inventory-items';
     return {
       key: r.key,
       title: String(r.item.data.title),
-      sub: barang
+      sub: isGoods
         ? `Minimum ${String(r.item.data.minimum_quantity ?? '—')} · Rak ${String(r.item.data.rack || '—')}`
         : r.note,
-      value: barang ? String(r.item.data.book_quantity ?? '—') : undefined,
-      unit: barang ? String(r.item.data.measurement || '') : undefined,
+      value: isGoods ? String(r.item.data.book_quantity ?? '—') : undefined,
+      unit: isGoods ? String(r.item.data.measurement || '') : undefined,
       pill: r.pill,
-      nada: r.nada,
+      tone: r.tone,
       href: recordHref(r.entity, r.item),
-      ikon: ENTITY_3D[r.entity],
-      thumb: barang
-        ? thumbBarang(String(r.item.data.title), String(r.item.data.measurement || ''))
+      icon: ENTITY_3D[r.entity],
+      thumb: isGoods
+        ? itemThumbKind(String(r.item.data.title), String(r.item.data.measurement || ''))
         : undefined,
       avatar:
         r.entity === 'staff' ? String(r.item.data.title).slice(0, 1).toUpperCase() : undefined,
@@ -220,10 +220,10 @@ const view = (rows: Baris[]): RowView[] =>
   });
 
 /** "3 / 20" dari roomStats menjadi angka dan total terpisah untuk kotak statistik. */
-const statDari = (s: { label: string; value: string; bar?: number }): Stat => {
+const toStat = (s: { label: string; value: string; bar?: number }): Stat => {
   const [value, total] = s.value.split(' / ');
-  const peringatan = /tenggat|minimum|Risiko|diperbarui|Keluar/.test(s.label);
-  return { label: s.label, value, total, bar: s.bar, nada: peringatan ? 'kuning' : 'hijau' };
+  const warn = /tenggat|minimum|Risiko|diperbarui|Keluar/.test(s.label);
+  return { label: s.label, value, total, bar: s.bar, tone: warn ? 'kuning' : 'hijau' };
 };
 
 export function MonitoringDashboard({
@@ -238,7 +238,7 @@ export function MonitoringDashboard({
   loadMore,
   fetching,
 }: Props) {
-  const [lokasi, setLokasi] = useState<LokasiMonitoring>('kantor');
+  const [site, setSite] = useState<WorldSite>('kantor');
   const [selected, setSelected] = useState('kerja');
   const [lateOnly, setLateOnly] = useState(false);
   const [query, setQuery] = useState('');
@@ -253,12 +253,12 @@ export function MonitoringDashboard({
   const [busy, setBusy] = useState(false);
   const [refreshError, setRefreshError] = useState('');
   const [now, setNow] = useState(() => new Date());
-  const [cuaca, setCuaca] = useState<Cuaca>('cerah');
-  const [fase, setFase] = useState<Suasana['fase'] | 'otomatis'>('otomatis');
+  const [weather, setWeather] = useState<Weather>('cerah');
+  const [phase, setPhase] = useState<Ambience['phase'] | 'otomatis'>('otomatis');
   const searchInput = useRef<HTMLInputElement>(null);
-  const [aksiOpen, setAksiOpen] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
   const params = useSearchParams();
-  const [tautanDipakai, setTautanDipakai] = useState('');
+  const [appliedLink, setAppliedLink] = useState('');
   const {
     open: bellOpen,
     setOpen: setBellOpen,
@@ -271,9 +271,9 @@ export function MonitoringDashboard({
     root: userRoot,
     trigger: userTrigger,
   } = usePopover();
-  const suasana = useMemo(
-    () => ({ ...suasanaJam(now, cuaca), ...(fase === 'otomatis' ? {} : { fase }) }),
-    [now, cuaca, fase],
+  const ambience = useMemo(
+    () => ({ ...ambienceAt(now, weather), ...(phase === 'otomatis' ? {} : { phase }) }),
+    [now, weather, phase],
   );
   useEffect(() => {
     const tick = () => {
@@ -312,7 +312,7 @@ export function MonitoringDashboard({
   const stock = operations !== false && !unavailable;
   const shipping = logistics !== false && !unavailable;
   const input = useMemo(() => ({ model, stock, deliveries: shipping }), [model, stock, shipping]);
-  const ctx: Konteks = {
+  const ctx: RoomContext = {
     model,
     date,
     now,
@@ -327,60 +327,60 @@ export function MonitoringDashboard({
   };
   const deliveries = shipping ? activeDeliveries(model.deliveries) : [];
   // Domain web lain yang ikut tampil di dunia: sprint, milestone, mitra, pelatihan, mutasi stok.
-  const sprintAktif = (unavailable ? [] : data.sprints || []).filter(
+  const activeSprints = (unavailable ? [] : data.sprints || []).filter(
     (sp) => sp.data.status === 'aktif',
   );
-  const milestoneDekat = (unavailable ? [] : data.milestones || [])
+  const upcomingMilestones = (unavailable ? [] : data.milestones || [])
     .filter((m) => !m.data.actual_date && m.data.due_date)
     .sort((a, b) => String(a.data.due_date).localeCompare(String(b.data.due_date)))
     .slice(0, 3);
-  const mitra = (unavailable ? [] : data.stakeholders || [])
+  const partners = (unavailable ? [] : data.stakeholders || [])
     .slice()
     .sort((a, b) =>
       String(b.data.last_contact || '').localeCompare(String(a.data.last_contact || '')),
     );
-  const pelatihan = unavailable ? [] : model.trainings;
-  const mutasi = (unavailable ? [] : data['stock-movements'] || [])
+  const trainings = unavailable ? [] : model.trainings;
+  const movements = (unavailable ? [] : data['stock-movements'] || [])
     .slice()
     .sort((a, b) => String(b.data.date).localeCompare(String(a.data.date)));
-  const namaBarang = (id: unknown) =>
+  const itemName = (id: unknown) =>
     String((data['inventory-items'] || []).find((b) => b.id === id)?.data.title || 'Barang');
-  const riwayatStok = (row: Item, jenis: 'mutasi' | 'opname'): RowView => {
-    if (jenis === 'opname') {
-      const selisih = Number(row.data.counted_quantity) - Number(row.data.book_quantity);
+  const stockHistoryRow = (row: Item, kind: 'mutasi' | 'opname'): RowView => {
+    if (kind === 'opname') {
+      const diff = Number(row.data.counted_quantity) - Number(row.data.book_quantity);
       return {
         key: row.id,
-        title: `Opname ${namaBarang(row.data.item_id)}`,
+        title: `Opname ${itemName(row.data.item_id)}`,
         sub: `${formatDate(String(row.data.date))} · fisik ${String(row.data.counted_quantity)} dari buku ${String(row.data.book_quantity)}`,
-        ikon: 'cek',
-        pill: selisih ? `Selisih ${selisih > 0 ? '+' : ''}${selisih}` : 'Sesuai',
-        nada: selisih ? 'kuning' : 'hijau',
+        icon: 'cek',
+        pill: diff ? `Selisih ${diff > 0 ? '+' : ''}${diff}` : 'Sesuai',
+        tone: diff ? 'kuning' : 'hijau',
         href: recordHref('stock-counts', row),
       };
     }
-    const masuk = ['masuk', 'koreksi tambah'].includes(String(row.data.kind));
+    const incoming = ['masuk', 'koreksi tambah'].includes(String(row.data.kind));
     return {
       key: row.id,
-      title: namaBarang(row.data.item_id),
+      title: itemName(row.data.item_id),
       sub: `${formatDate(String(row.data.date))} · ${String(row.data.kind)}${row.data.book_after !== undefined ? ` · stok ${String(row.data.book_after)}` : ''}`,
-      ikon: 'kotak',
-      pill: `${masuk ? '+' : '−'}${String(row.data.quantity)}`,
-      nada: masuk ? 'hijau' : 'kuning',
+      icon: 'kotak',
+      pill: `${incoming ? '+' : '−'}${String(row.data.quantity)}`,
+      tone: incoming ? 'hijau' : 'kuning',
       href: recordHref('stock-movements', row),
     };
   };
   // Progres proyek dihitung dari semua tugas proyek (termasuk yang selesai), sama seperti halaman Proyek.
-  const proyek = (unavailable ? [] : data.workstreams || [])
+  const projects = (unavailable ? [] : data.workstreams || [])
     .filter((row) => !isProjectHistory(row))
     .map((row) => {
-      const tugas = (data['work-items'] || [])
+      const projectTasks = (data['work-items'] || [])
         .filter((t) => t.data.workstream_id === row.id)
         .map((t) => ({ status: String(t.data.status) as Task['status'] }));
       return {
         row,
-        total: tugas.filter((t) => t.status !== 'dibatalkan').length,
-        done: tugas.filter((t) => t.status === 'selesai').length,
-        pct: planProgress(tugas),
+        total: projectTasks.filter((t) => t.status !== 'dibatalkan').length,
+        done: projectTasks.filter((t) => t.status === 'selesai').length,
+        pct: planProgress(projectTasks),
       };
     });
   const lateTasks = model.tasks.filter((t) => isLate(t, date));
@@ -388,10 +388,10 @@ export function MonitoringDashboard({
   const openIssues = (unavailable ? [] : data.issues || []).filter(
     (r) => r.data.status === 'terbuka',
   );
-  const geraiInfo = infoGerai(model);
+  const stores = storeInfo(model);
 
   const defaultFor = useCallback(
-    (loc: LokasiMonitoring) =>
+    (loc: WorldSite) =>
       loc === 'pulau'
         ? ''
         : loc === 'kantor'
@@ -406,8 +406,8 @@ export function MonitoringDashboard({
     [model],
   );
   const go = useCallback(
-    (loc: LokasiMonitoring) => {
-      setLokasi(loc);
+    (loc: WorldSite) => {
+      setSite(loc);
       setSelected(defaultFor(loc));
       setLateOnly(false);
     },
@@ -415,11 +415,11 @@ export function MonitoringDashboard({
   );
   const choose = useCallback(
     (key: string) => {
-      if (key.startsWith('pintu-')) return go(key.slice(6) as LokasiMonitoring);
+      if (key.startsWith('pintu-')) return go(key.slice(6) as WorldSite);
       if (key.startsWith('orang:')) {
         const p = plans.find((p) => `orang:${p.id}` === key);
-        if (p) setLokasi(isOffice(p.area) ? 'kantor' : 'gerai');
-      } else if (key in BIDANG) setLokasi('kantor');
+        if (p) setSite(isOffice(p.area) ? 'kantor' : 'gerai');
+      } else if (key in OFFICE_ROOMS) setSite('kantor');
       setSelected(key);
       setLateOnly(false);
       // Ponsel: pilihan baru membuka lembar detail setengah layar.
@@ -443,13 +443,13 @@ export function MonitoringDashboard({
   }
 
   // Tautan dari halaman operasional (mis. ?barang=…) diterapkan sekali setelah data termuat.
-  const tautanKey = params?.toString() ?? '';
-  if (tautanKey && tautanKey !== tautanDipakai && !unavailable && Object.keys(data).length) {
-    setTautanDipakai(tautanKey);
-    const t = tujuanTautan(new URLSearchParams(tautanKey), model, plans, geraiInfo);
+  const linkKey = params?.toString() ?? '';
+  if (linkKey && linkKey !== appliedLink && !unavailable && Object.keys(data).length) {
+    setAppliedLink(linkKey);
+    const t = linkTarget(new URLSearchParams(linkKey), model, plans, stores);
     if (t) {
-      setLokasi(t.lokasi);
-      setSelected(t.pilih || defaultFor(t.lokasi));
+      setSite(t.site);
+      setSelected(t.pick || defaultFor(t.site));
       setPanel('detail');
     }
   }
@@ -459,15 +459,15 @@ export function MonitoringDashboard({
   const person = selected.startsWith('orang:')
     ? plans.find((p) => `orang:${p.id}` === selected)
     : undefined;
-  const room: Bidang =
+  const room: OfficeRoom =
     person && isOffice(person.area)
       ? person.area
-      : selected in BIDANG
-        ? (selected as Bidang)
+      : selected in OFFICE_ROOMS
+        ? (selected as OfficeRoom)
         : 'kerja';
-  const gerai =
-    lokasi === 'gerai'
-      ? geraiView({
+  const storeCards =
+    site === 'gerai'
+      ? storeView({
           model,
           plans,
           selected,
@@ -483,12 +483,12 @@ export function MonitoringDashboard({
   const inRacks = rackIds.flatMap((id) => model.inventory.racks[id]);
   const cold = coldRackIds.flatMap((id) => model.inventory.coldRacks[id]);
   const proses = model.tasks.filter((t) => t.data.status === 'proses').length;
-  const bukaGerai = geraiInfo.filter((g) => g.buka && g.id !== 'kantor').length;
-  const subLokasi: Record<LokasiMonitoring, string> = unavailable
+  const openStores = stores.filter((g) => g.open && g.id !== 'kantor').length;
+  const siteSubtitle: Record<WorldSite, string> = unavailable
     ? { kantor: naText, gerai: naText, gudang: naText, pendingin: naText, pulau: naText }
     : {
         kantor: `${Math.min(MAX_FIGURES, plans.filter((p) => isOffice(p.area)).length)} figur · ${proses} tugas proses`,
-        gerai: `${bukaGerai}/${geraiInfo.length - 1} gerai buka`,
+        gerai: `${openStores}/${stores.length - 1} gerai buka`,
         gudang: shipping
           ? `${model.trucks.length} truk · ${model.inventory.low.length} stok minimum`
           : 'Pengiriman belum aktif',
@@ -498,15 +498,15 @@ export function MonitoringDashboard({
 
   // ---------- KPI (tiga kartu seperti referensi) ----------
   let kpis: Parameters<typeof KpiCard>[0][];
-  if (gerai) kpis = gerai.kpis;
-  else if (lokasi === 'kantor' || lokasi === 'pulau') {
+  if (storeCards) kpis = storeCards.kpis;
+  else if (site === 'kantor' || site === 'pulau') {
     const next = meetingTimeline(model.meetings, now).find((s) => s.state === 'nanti');
     kpis = [
       {
         icon: 'papan',
         label: 'Tugas terbuka',
         value: dash(model.tasks.length),
-        chip: unavailable ? undefined : { text: `${proses} proses`, nada: 'hijau' },
+        chip: unavailable ? undefined : { text: `${proses} proses`, tone: 'hijau' },
         foot: naText || 'tugas · kantor',
         onClick: () => choose('kerja'),
       },
@@ -517,8 +517,8 @@ export function MonitoringDashboard({
         chip: unavailable
           ? undefined
           : lateTasks.length
-            ? { text: 'perlu tindak', nada: 'merah' }
-            : { text: 'aman', nada: 'hijau' },
+            ? { text: 'perlu tindak', tone: 'merah' }
+            : { text: 'aman', tone: 'hijau' },
         foot: naText || `per ${formatDate(date)}`,
         onClick: () => {
           choose('kerja');
@@ -532,9 +532,9 @@ export function MonitoringDashboard({
         chip: unavailable
           ? undefined
           : model.currentMeeting
-            ? { text: 'berlangsung', nada: 'hijau' }
+            ? { text: 'berlangsung', tone: 'hijau' }
             : next
-              ? { text: `${next.time} WIB`, nada: 'biru' }
+              ? { text: `${next.time} WIB`, tone: 'biru' }
               : undefined,
         foot:
           naText ||
@@ -542,15 +542,15 @@ export function MonitoringDashboard({
         onClick: () => choose('rapat'),
       },
     ];
-  } else if (lokasi === 'gudang') {
-    const dok = model.trucks.filter((t) => t.place === 'dok').length;
+  } else if (site === 'gudang') {
+    const docked = model.trucks.filter((t) => t.place === 'dok').length;
     const low = inRacks.filter(isBelowMinimum).length;
     kpis = [
       {
         icon: 'kotak',
         label: 'Barang di rak',
         value: dash(inRacks.length, stock),
-        chip: stock && low ? { text: `${low} minimum`, nada: 'kuning' } : undefined,
+        chip: stock && low ? { text: `${low} minimum`, tone: 'kuning' } : undefined,
         foot: naText || (stock ? 'jenis · rak A–F' : 'Pencatatan barang belum aktif'),
         onClick: () => choose('rak-A'),
       },
@@ -558,10 +558,10 @@ export function MonitoringDashboard({
         icon: 'truk',
         label: 'Truk di lokasi',
         value: dash(model.trucks.length, shipping),
-        chip: shipping ? { text: `${dok} di dok`, nada: 'biru' } : undefined,
+        chip: shipping ? { text: `${docked} di dok`, tone: 'biru' } : undefined,
         foot:
           naText ||
-          (shipping ? `${model.trucks.length - dok} antre · D1–D4` : 'Pengiriman belum aktif'),
+          (shipping ? `${model.trucks.length - docked} antre · D1–D4` : 'Pengiriman belum aktif'),
         onClick: () => model.trucks[0] && choose(`kirim-${model.trucks[0].delivery.id}`),
       },
       {
@@ -578,7 +578,7 @@ export function MonitoringDashboard({
         icon: 'salju',
         label: 'Barang dingin',
         value: dash(cold.length, stock),
-        chip: stock && low ? { text: `${low} minimum`, nada: 'kuning' } : undefined,
+        chip: stock && low ? { text: `${low} minimum`, tone: 'kuning' } : undefined,
         foot: naText || (stock ? 'jenis · rak C1–C3' : 'Pencatatan barang belum aktif'),
         onClick: () => choose('rak-C1'),
       },
@@ -595,16 +595,16 @@ export function MonitoringDashboard({
           unavailable || !stock
             ? '—'
             : String(coldRackIds.filter((id) => model.inventory.coldRacks[id].length).length),
-        chip: unavailable || !stock ? undefined : { text: 'dari 3', nada: 'biru' },
+        chip: unavailable || !stock ? undefined : { text: 'dari 3', tone: 'biru' },
         foot: naText || 'rak berisi barang tercatat',
       },
     ];
   }
 
   // ---------- Pin perhatian (≤5); daftar dibuat ulang hanya bila isinya berubah ----------
-  const pinList: PinPeta[] = [];
+  const pinList: AttentionPin[] = [];
   if (!unavailable) {
-    if (lokasi === 'kantor') {
+    if (site === 'kantor') {
       if (lateTasks.length)
         pinList.push({
           key: 'kerja',
@@ -618,7 +618,7 @@ export function MonitoringDashboard({
         });
       if (openRisks.length)
         pinList.push({ key: 'manajer', label: `${openRisks.length} risiko terbuka` });
-    } else if (lokasi === 'gudang') {
+    } else if (site === 'gudang') {
       if (stock)
         for (const id of rackIds)
           if (model.inventory.racks[id].some(isBelowMinimum))
@@ -629,24 +629,24 @@ export function MonitoringDashboard({
             key: `kirim-${t.delivery.id}`,
             label: `${String(t.delivery.data.license_plate || t.delivery.data.title)} di dok`,
           });
-    } else if (lokasi === 'pendingin') {
+    } else if (site === 'pendingin') {
       if (stock)
         for (const id of coldRackIds)
           if (model.inventory.coldRacks[id].some(isBelowMinimum))
             pinList.push({ key: `rak-${id}`, label: `Rak ${id}: stok di bawah minimum` });
-    } else if (lokasi === 'gerai') {
-      for (const g of geraiInfo)
+    } else if (site === 'gerai') {
+      for (const g of stores)
         if (g.status === 'siap buka')
-          pinList.push({ key: `g:${g.id}`, label: `${g.nama} siap dibuka` });
+          pinList.push({ key: `g:${g.id}`, label: `${g.name} siap dibuka` });
     }
   }
   const pinKey = JSON.stringify(pinList.slice(0, 5));
-  const pins = useMemo(() => JSON.parse(pinKey) as PinPeta[], [pinKey]);
+  const pins = useMemo(() => JSON.parse(pinKey) as AttentionPin[], [pinKey]);
 
   // ---------- Panel detail ----------
   let panelBody: ReactNode;
   let tag = '';
-  if (lokasi === 'pulau') {
+  if (site === 'pulau') {
     panelBody = (
       <>
         <PanelHead
@@ -656,16 +656,16 @@ export function MonitoringDashboard({
           sub="Pilih bangunan untuk masuk ke ruangan"
         />
         <div className="mt-status">
-          <Pill nada="biru">Pulau melayang</Pill>
+          <Pill tone="biru">Pulau melayang</Pill>
           <span>4 lokasi terhubung</span>
         </div>
         <Stats
           items={[
             {
               label: 'Gerai aktif',
-              value: dash(bukaGerai),
-              total: unavailable ? undefined : String(geraiInfo.length - 1),
-              bar: unavailable ? undefined : bukaGerai / Math.max(1, geraiInfo.length - 1),
+              value: dash(openStores),
+              total: unavailable ? undefined : String(stores.length - 1),
+              bar: unavailable ? undefined : openStores / Math.max(1, stores.length - 1),
             },
             { label: 'Tim tercatat', value: dash(model.staff.length) },
             { label: 'Barang tercatat', value: dash(model.inventory.items.length, stock) },
@@ -676,7 +676,7 @@ export function MonitoringDashboard({
         <Rows
           rows={(['kantor', 'gerai', 'gudang', 'pendingin'] as const).map((id) => ({
             key: id,
-            title: LOKASI[id].label,
+            title: SITES[id].label,
             sub:
               id === 'kantor'
                 ? 'Ruang kerja, rapat, kas & anggota'
@@ -685,23 +685,23 @@ export function MonitoringDashboard({
                   : id === 'gudang'
                     ? 'Rak barang, dok dan pengiriman'
                     : 'Barang dingin di rak C1–C3',
-            ikon: LOKASI[id].icon,
+            icon: SITES[id].icon,
             pill: 'Masuk',
-            nada: 'biru',
+            tone: 'biru',
             onClick: () => go(id),
           }))}
           empty=""
         />
       </>
     );
-  } else if (person && (lokasi === 'kantor' || lokasi === 'gerai')) {
+  } else if (person && (site === 'kantor' || site === 'gerai')) {
     tag = `${person.name} · ${ACTION_LABEL[person.action]}`;
     const rows = roomRows('kerja', ctx, { person: person.name });
     panelBody = (
       <>
         <PanelHead
           icon="tim"
-          eyebrow={`TIM · ${namaArea(person.area).toUpperCase()}`}
+          eyebrow={`TIM · ${areaName(person.area).toUpperCase()}`}
           title={person.name}
           sub={person.reason}
           onClose={() =>
@@ -709,8 +709,8 @@ export function MonitoringDashboard({
           }
         />
         <div className="mt-status">
-          <Pill nada={ACTION_NADA[person.action]}>{ACTION_LABEL[person.action]}</Pill>
-          <span>Di {namaArea(person.area)}</span>
+          <Pill tone={ACTION_TONE[person.action]}>{ACTION_LABEL[person.action]}</Pill>
+          <span>Di {areaName(person.area)}</span>
         </div>
         {person.mascot && (
           <p className="mt-note">
@@ -722,8 +722,8 @@ export function MonitoringDashboard({
             { label: 'Tugas terbuka', value: String(rows.length) },
             {
               label: 'Lewat tenggat',
-              value: String(rows.filter((r) => r.nada === 'merah').length),
-              nada: 'kuning',
+              value: String(rows.filter((r) => r.tone === 'merah').length),
+              tone: 'kuning',
             },
           ]}
         />
@@ -737,15 +737,15 @@ export function MonitoringDashboard({
         />
       </>
     );
-  } else if (gerai) {
-    tag = gerai.tag;
-    panelBody = gerai.panelBody;
-  } else if (lokasi === 'kantor') {
-    const zone = BIDANG[room];
+  } else if (storeCards) {
+    tag = storeCards.tag;
+    panelBody = storeCards.panelBody;
+  } else if (site === 'kantor') {
+    const zone = OFFICE_ROOMS[room];
     const here = plans.slice(0, MAX_FIGURES).filter((p) => p.area === room).length;
-    tag = `${zone.nama} · ${here} figur`;
+    tag = `${zone.name} · ${here} figur`;
     const rows = unavailable ? [] : roomRows(room, ctx, { lateOnly });
-    const empty: Record<Bidang, string> = {
+    const empty: Record<OfficeRoom, string> = {
       kerja: lateOnly ? 'Tidak ada tugas lewat tenggat.' : 'Tidak ada tugas terbuka.',
       istirahat: 'Semua anggota sedang punya tugas atau kegiatan.',
       rapat: 'Belum ada rapat hari ini atau keputusan tercatat.',
@@ -766,19 +766,19 @@ export function MonitoringDashboard({
         <PanelHead
           icon={ROOM_3D[room]}
           eyebrow="RUANG · KANTOR"
-          title={zone.nama}
+          title={zone.name}
           sub={unavailable ? 'Data belum tersedia' : `${here} figur di ruangan`}
           href={zone.href}
         />
         <div className="mt-status">
-          <Pill nada={!unavailable && here ? 'hijau' : 'abu'}>
+          <Pill tone={!unavailable && here ? 'hijau' : 'abu'}>
             {unavailable ? 'Belum tersedia' : here ? 'Ada aktivitas' : 'Sepi'}
           </Pill>
           <span>
             {rows.length ? `${rows.length} catatan terkait` : 'Belum ada catatan terkait'}
           </span>
         </div>
-        {!unavailable && <Stats items={roomStats(room, ctx).map(statDari)} />}
+        {!unavailable && <Stats items={roomStats(room, ctx).map(toStat)} />}
         {room === 'kerja' && (
           <div className="mt-seg" role="group" aria-label="Saring tugas">
             <button type="button" aria-pressed={!lateOnly} onClick={() => setLateOnly(false)}>
@@ -808,20 +808,20 @@ export function MonitoringDashboard({
             </div>
             <Section title="Ringkasan gerai" meta="status" />
             <Rows
-              rows={geraiInfo.map((g) => ({
+              rows={stores.map((g) => ({
                 key: g.id,
-                title: g.nama,
+                title: g.name,
                 sub:
                   g.id === 'kantor'
                     ? 'Selalu buka'
                     : g.unit
                       ? `Status ${g.status}`
                       : 'Belum tercatat di web',
-                pill: g.buka ? 'Buka' : 'Terkunci',
-                nada: g.buka ? 'hijau' : 'abu',
-                ikon: ikonGerai(g),
+                pill: g.open ? 'Buka' : 'Terkunci',
+                tone: g.open ? 'hijau' : 'abu',
+                icon: storeIcon(g),
                 onClick: () => {
-                  setLokasi('gerai');
+                  setSite('gerai');
                   setSelected(`g:${g.id}`);
                 },
               }))}
@@ -834,38 +834,45 @@ export function MonitoringDashboard({
         )}
         {!unavailable &&
           room === 'kerja' &&
-          (sprintAktif.length > 0 || milestoneDekat.length > 0) && (
+          (activeSprints.length > 0 || upcomingMilestones.length > 0) && (
             <>
               <Section title="Sprint & milestone" meta="tenggat" />
               <Rows
                 rows={[
-                  ...sprintAktif.map((sp) => {
-                    const tugas = (data['work-items'] || []).filter(
+                  ...activeSprints.map((sp) => {
+                    const projectTasks = (data['work-items'] || []).filter(
                       (t) => t.data.sprint_id === sp.id,
                     );
-                    const selesai = tugas.filter((t) => t.data.status === 'selesai').length;
+                    const doneCount = projectTasks.filter(
+                      (t) => t.data.status === 'selesai',
+                    ).length;
                     return {
                       key: sp.id,
                       title: String(sp.data.title),
                       sub: `${String(sp.data.goal || 'Sprint aktif')}${sp.data.end_date ? ` · sampai ${formatDate(String(sp.data.end_date))}` : ''}`,
-                      ikon: 'bendera' as const,
-                      bar: tugas.length ? selesai / tugas.length : 0,
-                      barText: `${selesai}/${tugas.length}`,
-                      nada: 'biru' as const,
+                      icon: 'bendera' as const,
+                      bar: projectTasks.length ? doneCount / projectTasks.length : 0,
+                      barText: `${doneCount}/${projectTasks.length}`,
+                      tone: 'biru' as const,
                       href: '/tasks',
                     };
                   }),
-                  ...milestoneDekat.map((m) => {
-                    const sisa = Math.round(
+                  ...upcomingMilestones.map((m) => {
+                    const daysLeft = Math.round(
                       (Date.parse(String(m.data.due_date)) - Date.parse(date)) / 86400000,
                     );
                     return {
                       key: m.id,
                       title: String(m.data.title),
                       sub: `Tenggat ${formatDate(String(m.data.due_date))}`,
-                      ikon: 'bendera' as const,
-                      pill: sisa < 0 ? 'Lewat' : sisa === 0 ? 'Hari ini' : `${sisa} hari lagi`,
-                      nada: (sisa < 0 ? 'merah' : sisa <= 3 ? 'kuning' : 'biru') as Nada,
+                      icon: 'bendera' as const,
+                      pill:
+                        daysLeft < 0
+                          ? 'Lewat'
+                          : daysLeft === 0
+                            ? 'Hari ini'
+                            : `${daysLeft} hari lagi`,
+                      tone: (daysLeft < 0 ? 'merah' : daysLeft <= 3 ? 'kuning' : 'biru') as Tone,
                       href: recordHref('milestones', m),
                     };
                   }),
@@ -874,23 +881,23 @@ export function MonitoringDashboard({
               />
             </>
           )}
-        {!unavailable && room === 'manajer' && mitra.length > 0 && (
+        {!unavailable && room === 'manajer' && partners.length > 0 && (
           <>
             <Section title="Mitra" meta="kontak terakhir" />
             <Rows
-              rows={mitra.slice(0, 5).map((m) => {
-                const interaksi = (data.interactions || [])
+              rows={partners.slice(0, 5).map((m) => {
+                const lastInteraction = (data.interactions || [])
                   .filter((i) => i.data.stakeholder_id === m.id)
                   .sort((a, b) => String(b.data.date).localeCompare(String(a.data.date)))[0];
                 return {
                   key: m.id,
                   title: String(m.data.title),
-                  sub: interaksi
-                    ? `${String(interaksi.data.title)} · ${formatDate(String(interaksi.data.date))}`
+                  sub: lastInteraction
+                    ? `${String(lastInteraction.data.title)} · ${formatDate(String(lastInteraction.data.date))}`
                     : String(m.data.category || 'Belum ada interaksi'),
-                  ikon: 'jabat' as const,
+                  icon: 'jabat' as const,
                   pill: m.data.follow_up ? 'Tindak lanjut' : undefined,
-                  nada: 'kuning' as const,
+                  tone: 'kuning' as const,
                   href: recordHref('stakeholders', m),
                 };
               })}
@@ -898,20 +905,20 @@ export function MonitoringDashboard({
             />
           </>
         )}
-        {!unavailable && room === 'gym' && pelatihan.length > 0 && (
+        {!unavailable && room === 'gym' && trainings.length > 0 && (
           <>
             <Section title="Pelatihan hari ini" meta="peserta" />
             <Rows
-              rows={pelatihan.map((t) => ({
+              rows={trainings.map((t) => ({
                 key: t.id,
                 title: String(t.data.title),
                 sub: String(
                   (data.staff || []).find((st) => st.id === t.data.staff_id)?.data.title ||
                     'Peserta belum diisi',
                 ),
-                ikon: 'dumbel' as const,
+                icon: 'dumbel' as const,
                 pill: t.data.status === 'selesai' ? 'Selesai' : 'Berlangsung',
-                nada: (t.data.status === 'selesai' ? 'hijau' : 'biru') as Nada,
+                tone: (t.data.status === 'selesai' ? 'hijau' : 'biru') as Tone,
                 href: recordHref('trainings', t),
               }))}
               empty=""
@@ -937,7 +944,7 @@ export function MonitoringDashboard({
       </>
     );
   } else {
-    const isCold = lokasi === 'pendingin';
+    const isCold = site === 'pendingin';
     const where = isCold ? 'COLD STORAGE' : 'GUDANG';
     const dock = selected.startsWith('dok-')
       ? dockList(model).find((d) => `dok-${d.id}` === selected)
@@ -961,7 +968,7 @@ export function MonitoringDashboard({
             href={recordHref('deliveries', delivery)}
           />
           <div className="mt-status">
-            <Pill nada="biru">{DELIVERY_LABEL[String(delivery.data.status)] || 'Tercatat'}</Pill>
+            <Pill tone="biru">{DELIVERY_LABEL[String(delivery.data.status)] || 'Tercatat'}</Pill>
             <span>{spot ? truckNote(spot, model) : 'Belum di lokasi'}</span>
           </div>
           {stage >= 0 && (
@@ -984,7 +991,7 @@ export function MonitoringDashboard({
           </dl>
           <Links
             items={[
-              { href: '/goods?tab=deliveries&new=1', label: 'Pengiriman baru', baru: true },
+              { href: '/goods?tab=deliveries&new=1', label: 'Pengiriman baru', isNew: true },
               { href: '/goods?tab=deliveries', label: 'Pengiriman' },
             ]}
           />
@@ -1002,7 +1009,7 @@ export function MonitoringDashboard({
             href="/goods?tab=deliveries"
           />
           <div className="mt-status">
-            <Pill nada="hijau">Tersedia</Pill>
+            <Pill tone="hijau">Tersedia</Pill>
             <span>{dock.waiting.length} truk menunggu dok ini</span>
           </div>
           <Rows
@@ -1031,7 +1038,7 @@ export function MonitoringDashboard({
           {stock ? (
             <>
               <div className="mt-status">
-                <Pill nada={!items.length ? 'abu' : low ? 'kuning' : 'hijau'}>
+                <Pill tone={!items.length ? 'abu' : low ? 'kuning' : 'hijau'}>
                   {!items.length ? 'Kosong' : low ? `${low} di bawah minimum` : 'Stok aman'}
                 </Pill>
                 <span>{isCold ? 'Rak pendingin' : 'Rak gudang'}</span>
@@ -1044,7 +1051,7 @@ export function MonitoringDashboard({
                     value: String(items.length - low),
                     total: String(items.length),
                     bar: items.length ? (items.length - low) / items.length : 0,
-                    nada: low ? 'kuning' : 'hijau',
+                    tone: low ? 'kuning' : 'hijau',
                   },
                 ]}
               />
@@ -1052,22 +1059,22 @@ export function MonitoringDashboard({
               <Rows rows={view(items.map(itemRow))} empty="Belum ada barang tercatat di rak ini." />
               {(() => {
                 const ids = new Set(items.map((i) => i.id));
-                const riwayat = [
+                const history = [
                   ...(data['stock-movements'] || [])
                     .filter((m) => ids.has(String(m.data.item_id)))
-                    .map((m) => ({ row: m, jenis: 'mutasi' as const })),
+                    .map((m) => ({ row: m, kind: 'mutasi' as const })),
                   ...(data['stock-counts'] || [])
                     .filter((c) => ids.has(String(c.data.item_id)))
-                    .map((c) => ({ row: c, jenis: 'opname' as const })),
+                    .map((c) => ({ row: c, kind: 'opname' as const })),
                 ]
                   .sort((a, b) => String(b.row.data.date).localeCompare(String(a.row.data.date)))
                   .slice(0, 5);
-                if (!riwayat.length) return null;
+                if (!history.length) return null;
                 return (
                   <>
                     <Section title="Riwayat stok" meta="mutasi & opname" />
                     <Rows
-                      rows={riwayat.map(({ row, jenis }) => riwayatStok(row, jenis))}
+                      rows={history.map(({ row, kind }) => stockHistoryRow(row, kind))}
                       empty=""
                     />
                   </>
@@ -1093,13 +1100,9 @@ export function MonitoringDashboard({
   // ---------- Pelacak (kiri bawah) ----------
   let tracker: ReactNode;
   const trackerLabel =
-    lokasi === 'gerai'
-      ? 'Kesiapan'
-      : lokasi === 'kantor' || lokasi === 'pulau'
-        ? 'Agenda'
-        : 'Pengiriman';
-  if (gerai) tracker = gerai.tracker;
-  else if (lokasi === 'kantor' || lokasi === 'pulau') {
+    site === 'gerai' ? 'Kesiapan' : site === 'kantor' || site === 'pulau' ? 'Agenda' : 'Pengiriman';
+  if (storeCards) tracker = storeCards.tracker;
+  else if (site === 'kantor' || site === 'pulau') {
     const timeline = meetingTimeline(model.meetings, now);
     const start = Math.max(0, timeline.findIndex((s) => s.state !== 'selesai') - 2);
     const shown = (
@@ -1131,14 +1134,14 @@ export function MonitoringDashboard({
             {focus && (
               <Link className="mt-mini" href={recordHref('meetings', focus.row)}>
                 <span className="mt-mini-art" aria-hidden="true">
-                  <Ikon3D kind="kalender" size={44} />
+                  <Icon3D kind="kalender" size={44} />
                 </span>
                 <span>
                   <strong>{String(focus.row.data.title)}</strong>
                   <small>
                     {String(focus.row.data.location || focus.row.data.mode || 'Ruang rapat')}
                   </small>
-                  <Pill nada={focus.state === 'berlangsung' ? 'hijau' : 'biru'}>
+                  <Pill tone={focus.state === 'berlangsung' ? 'hijau' : 'biru'}>
                     {focus.state === 'berlangsung' ? 'Berlangsung' : 'Berikutnya'}
                   </Pill>
                   <small>
@@ -1161,7 +1164,7 @@ export function MonitoringDashboard({
       const next = (index + step + deliveries.length) % deliveries.length;
       setTrackIndex(next);
       const id = deliveries[next].id;
-      if (lokasi === 'gudang' && model.trucks.some((t) => t.delivery.id === id))
+      if (site === 'gudang' && model.trucks.some((t) => t.delivery.id === id))
         setSelected(`kirim-${id}`);
       else if (selected.startsWith('kirim-')) setSelected('rak-A');
     };
@@ -1200,14 +1203,14 @@ export function MonitoringDashboard({
             />
             <Link className="mt-mini" href={recordHref('deliveries', d)}>
               <span className="mt-mini-art" aria-hidden="true">
-                <Ikon3D kind="truk" size={44} />
+                <Icon3D kind="truk" size={44} />
               </span>
               <span>
                 <strong>{String(d.data.title)}</strong>
                 <small>
                   {String(d.data.driver_name || d.data.vehicle || 'Pengemudi belum diisi')}
                 </small>
-                <Pill nada={deliveryRow(d).nada}>{deliveryRow(d).pill}</Pill>
+                <Pill tone={deliveryRow(d).tone}>{deliveryRow(d).pill}</Pill>
                 <small>{deliveryRow(d).note}</small>
               </span>
               <ChevronRight size={16} className="mt-mini-go" aria-hidden="true" />
@@ -1221,10 +1224,10 @@ export function MonitoringDashboard({
   // ---------- Daftar bertab (kanan bawah) ----------
   let tabs: Tab[];
   let tabTitle: string;
-  if (gerai) {
+  if (storeCards) {
     tabTitle = 'Kawasan gerai';
-    tabs = gerai.tabs;
-  } else if (lokasi === 'kantor' || lokasi === 'pulau') {
+    tabs = storeCards.tabs;
+  } else if (site === 'kantor' || site === 'pulau') {
     tabTitle = model.title;
     tabs = [
       {
@@ -1235,9 +1238,9 @@ export function MonitoringDashboard({
         rows: plans.map((p) => ({
           key: p.id,
           title: p.name,
-          sub: `${namaArea(p.area)} · ${p.reason}`,
+          sub: `${areaName(p.area)} · ${p.reason}`,
           pill: ACTION_LABEL[p.action],
-          nada: ACTION_NADA[p.action],
+          tone: ACTION_TONE[p.action],
           avatar: p.name.slice(0, 1).toUpperCase(),
           active: selected === `orang:${p.id}`,
           onClick: () => choose(`orang:${p.id}`),
@@ -1246,18 +1249,18 @@ export function MonitoringDashboard({
       {
         id: 'ruang',
         label: 'Ruang',
-        count: String(Object.keys(BIDANG).length),
+        count: String(Object.keys(OFFICE_ROOMS).length),
         empty: '',
-        rows: (Object.keys(BIDANG) as Bidang[]).map((id) => {
+        rows: (Object.keys(OFFICE_ROOMS) as OfficeRoom[]).map((id) => {
           const n = plans.slice(0, MAX_FIGURES).filter((p) => p.area === id).length;
           return {
             key: id,
-            title: BIDANG[id].nama,
+            title: OFFICE_ROOMS[id].name,
             sub: unavailable ? 'Data belum tersedia' : `${n} figur`,
-            ikon: ROOM_3D[id],
+            icon: ROOM_3D[id],
             pill: n ? 'Aktif' : 'Sepi',
-            nada: n ? 'hijau' : 'abu',
-            active: lokasi === 'kantor' && selected === id,
+            tone: n ? 'hijau' : 'abu',
+            active: site === 'kantor' && selected === id,
             onClick: () => choose(id),
           };
         }),
@@ -1272,21 +1275,21 @@ export function MonitoringDashboard({
       {
         id: 'proyek',
         label: 'Proyek',
-        count: dash(proyek.length),
+        count: dash(projects.length),
         empty: unavailable ? 'Data belum tersedia.' : 'Belum ada proyek berjalan.',
-        rows: proyek.map(({ row, done, total, pct }) => ({
+        rows: projects.map(({ row, done, total, pct }) => ({
           key: row.id,
           title: String(row.data.title),
           sub: `${done}/${total} tugas selesai${row.data.target_date ? ` · target ${formatDate(String(row.data.target_date))}` : ''}`,
-          ikon: 'folder' as const,
+          icon: 'folder' as const,
           bar: pct / 100,
           barText: `${pct}%`,
-          nada: pct >= 100 ? 'hijau' : 'biru',
+          tone: pct >= 100 ? 'hijau' : 'biru',
           href: `/projects/${encodeURIComponent(row.id)}`,
         })),
       },
     ];
-  } else if (lokasi === 'gudang') {
+  } else if (site === 'gudang') {
     tabTitle = 'Gudang';
     const rackRows = (ids: readonly string[]): RowView[] =>
       ids.map((id) => {
@@ -1297,10 +1300,10 @@ export function MonitoringDashboard({
           title: `Rak ${id}`,
           sub: `${items.length} jenis barang`,
           pill: low ? `${low} minimum` : items.length ? 'Aman' : 'Kosong',
-          nada: low ? 'kuning' : items.length ? 'hijau' : 'abu',
+          tone: low ? 'kuning' : items.length ? 'hijau' : 'abu',
           bar: items.length ? (items.length - low) / items.length : 0,
           barText: `${items.length - low}/${items.length}`,
-          ikon: 'rak',
+          icon: 'rak',
           active: selected === `rak-${id}`,
           onClick: () => choose(`rak-${id}`),
         };
@@ -1319,8 +1322,8 @@ export function MonitoringDashboard({
                 ? String(dk.spot.delivery.data.license_plate || dk.spot.delivery.data.title)
                 : 'Tidak ada truk',
               pill: dk.spot ? DELIVERY_LABEL[String(dk.spot.delivery.data.status)] : 'Tersedia',
-              nada: dk.spot ? 'biru' : 'hijau',
-              ikon: dk.spot ? 'truk' : 'gudang',
+              tone: dk.spot ? 'biru' : 'hijau',
+              icon: dk.spot ? 'truk' : 'gudang',
               active:
                 selected === `dok-${dk.id}` ||
                 (!!dk.spot && selected === `kirim-${dk.spot.delivery.id}`),
@@ -1339,8 +1342,8 @@ export function MonitoringDashboard({
               title: String(s.delivery.data.license_plate || s.delivery.data.title),
               sub: `${String(s.delivery.data.title)} · ${truckNote(s, model)}`,
               pill: DELIVERY_LABEL[String(s.delivery.data.status)],
-              nada: s.place === 'dok' ? 'biru' : 'kuning',
-              ikon: 'truk',
+              tone: s.place === 'dok' ? 'biru' : 'kuning',
+              icon: 'truk',
               active: selected === `kirim-${s.delivery.id}`,
               onClick: () => choose(`kirim-${s.delivery.id}`),
             }))
@@ -1356,9 +1359,9 @@ export function MonitoringDashboard({
       {
         id: 'mutasi',
         label: 'Mutasi',
-        count: dash(mutasi.length, shipping),
+        count: dash(movements.length, shipping),
         empty: shipping ? 'Belum ada mutasi stok tercatat.' : 'Pengiriman belum aktif.',
-        rows: shipping ? mutasi.slice(0, 20).map((m) => riwayatStok(m, 'mutasi')) : [],
+        rows: shipping ? movements.slice(0, 20).map((m) => stockHistoryRow(m, 'mutasi')) : [],
       },
     ];
   } else {
@@ -1379,10 +1382,10 @@ export function MonitoringDashboard({
                 title: `Rak ${id}`,
                 sub: `${items.length} jenis barang`,
                 pill: n ? `${n} minimum` : items.length ? 'Aman' : 'Kosong',
-                nada: n ? 'kuning' : items.length ? 'hijau' : 'abu',
+                tone: n ? 'kuning' : items.length ? 'hijau' : 'abu',
                 bar: items.length ? (items.length - n) / items.length : 0,
                 barText: `${items.length - n}/${items.length}`,
-                ikon: 'salju',
+                icon: 'salju',
                 active: selected === `rak-${id}`,
                 onClick: () => choose(`rak-${id}`),
               } as RowView;
@@ -1408,45 +1411,45 @@ export function MonitoringDashboard({
     ? []
     : view([
         ...lateTasks.map((t) => taskRow(t, date)),
-        ...openRisks.map((r): Baris => ({
+        ...openRisks.map((r): RecordRow => ({
           key: `risk-${r.id}`,
           entity: 'risks',
           item: r,
           note: String(r.data.assignee || 'Belum ada penanggung jawab'),
           pill: 'Risiko terbuka',
-          nada: 'kuning',
+          tone: 'kuning',
         })),
-        ...openIssues.map((r): Baris => ({
+        ...openIssues.map((r): RecordRow => ({
           key: `issue-${r.id}`,
           entity: 'issues',
           item: r,
           note: `${String(r.data.assignee || 'Belum ada penanggung jawab')}${r.data.due_date ? ` · ${formatDate(String(r.data.due_date))}` : ''}`,
           pill: 'Isu terbuka',
-          nada: 'merah',
+          tone: 'merah',
         })),
       ]);
   return (
     <main
       className="mt-root"
-      data-lokasi={lokasi}
-      data-fase={suasana.fase}
-      data-cuaca={suasana.cuaca}
+      data-lokasi={site}
+      data-fase={ambience.phase}
+      data-cuaca={ambience.weather}
       data-panel={panel ?? undefined}
       suppressHydrationWarning
     >
       <Stage
-        lokasi={lokasi}
+        site={site}
         input={input}
         plans={plans}
         selected={selected}
         tag={tag}
-        suasana={suasana}
+        ambience={ambience}
         pins={pins}
         onPick={choose}
       />
       <header className="mt-top" data-search={searchOpen || undefined}>
         <Link className="mt-brand" href="/home" aria-label="Kembali ke Beranda">
-          <Ikon3D kind="kotak" size={34} />
+          <Icon3D kind="kotak" size={34} />
           <span>
             <strong>Dunia Koperasi</strong>
             {(DEMO || preview) && (
@@ -1503,14 +1506,14 @@ export function MonitoringDashboard({
         >
           <Search size={18} />
         </button>
-        <LokasiPicker
-          value={lokasi}
-          onChange={(id) => go(id as LokasiMonitoring)}
-          options={(Object.keys(LOKASI) as LokasiMonitoring[]).map((id) => ({
+        <SitePicker
+          value={site}
+          onChange={(id) => go(id as WorldSite)}
+          options={(Object.keys(SITES) as WorldSite[]).map((id) => ({
             id,
-            kode: LOKASI[id].kode,
-            label: LOKASI[id].label,
-            sub: subLokasi[id],
+            code: SITES[id].code,
+            label: SITES[id].label,
+            sub: siteSubtitle[id],
           }))}
         />
         <button
@@ -1518,12 +1521,12 @@ export function MonitoringDashboard({
           className="mt-icon-btn mt-add"
           aria-label="Tambah catatan"
           title="Tambah tugas, rapat, kas, atau barang"
-          onClick={() => setAksiOpen(true)}
+          onClick={() => setActionsOpen(true)}
         >
           <Plus size={18} />
         </button>
         <span className="mt-live" title="Waktu Asia/Jakarta" suppressHydrationWarning>
-          <i aria-hidden="true" /> {jam(now)} <small>WIB</small>
+          <i aria-hidden="true" /> {clockTime(now)} <small>WIB</small>
         </span>
         <div className="mt-menu" ref={bellRoot}>
           <button
@@ -1593,8 +1596,8 @@ export function MonitoringDashboard({
                 <span>Cuaca simulasi</span>
                 <select
                   aria-label="Cuaca simulasi"
-                  value={cuaca}
-                  onChange={(e) => setCuaca(e.target.value as Cuaca)}
+                  value={weather}
+                  onChange={(e) => setWeather(e.target.value as Weather)}
                 >
                   <option value="cerah">Cerah</option>
                   <option value="berawan">Berawan</option>
@@ -1605,8 +1608,8 @@ export function MonitoringDashboard({
                 <span>Suasana waktu</span>
                 <select
                   aria-label="Suasana waktu"
-                  value={fase}
-                  onChange={(e) => setFase(e.target.value as typeof fase)}
+                  value={phase}
+                  onChange={(e) => setPhase(e.target.value as typeof phase)}
                 >
                   <option value="otomatis">Ikuti jam WIB</option>
                   <option value="pagi">Pagi</option>
@@ -1654,12 +1657,12 @@ export function MonitoringDashboard({
         )}
       </section>
       <Sheet
-        open={aksiOpen}
-        onOpenChange={setAksiOpen}
+        open={actionsOpen}
+        onOpenChange={setActionsOpen}
         title="Tambah catatan"
         description="Pilih yang ingin dicatat"
       >
-        <QuickActionsPanel onPick={() => setAksiOpen(false)} />
+        <QuickActionsPanel onPick={() => setActionsOpen(false)} />
       </Sheet>
       <nav className="mt-dock mt-card" aria-label="Panel dunia" ref={dock}>
         {(
@@ -1677,7 +1680,7 @@ export function MonitoringDashboard({
             aria-controls="world-inspector"
             onClick={() => setPanel(panel === t.id ? null : t.id)}
           >
-            <Ikon3D kind={t.icon} size={28} />
+            <Icon3D kind={t.icon} size={28} />
             <span>{t.label}</span>
           </button>
         ))}
@@ -1703,7 +1706,7 @@ export function MonitoringDashboard({
                 : panel === 'agenda'
                   ? trackerLabel
                   : 'Detail pilihan'}{' '}
-            · {LOKASI[lokasi].label}
+            · {SITES[site].label}
           </strong>
           <button
             type="button"
@@ -1727,12 +1730,12 @@ export function MonitoringDashboard({
               ))}
             </div>
             {panel === 'ringkasan' && (
-              <GrafikRingkasan
-                grafik={grafikLokasi({
-                  lokasi,
+              <ChartList
+                grafik={siteCharts({
+                  site,
                   data,
                   model,
-                  hari: date,
+                  day: date,
                   stock,
                   shipping,
                   unavailable,
@@ -1743,11 +1746,11 @@ export function MonitoringDashboard({
           <div hidden={panel !== 'agenda'}>{tracker}</div>
           <div hidden={panel !== 'daftar'}>
             <TabsCard
-              key={lokasi}
-              icon={lokasi === 'kantor' ? 'tim' : LOKASI[lokasi].icon}
+              key={site}
+              icon={site === 'kantor' ? 'tim' : SITES[site].icon}
               title={tabTitle}
               tabs={tabs}
-              label={`Daftar ${LOKASI[lokasi].label.toLowerCase()}`}
+              label={`Daftar ${SITES[site].label.toLowerCase()}`}
             />
           </div>
         </div>

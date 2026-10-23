@@ -20,7 +20,7 @@ Semua kode baru mengikuti aturan ini; `npm run cek` memeriksanya.
 - **Gaya tampilan:** kelas Tailwind dengan token dari `globals.css`; tidak ada berkas CSS per komponen. Gabung kelas lewat `cn()`.
 - **State:** state lokal React; data lewat `useWorkspace`; pilihan pengguna lewat `usePreference`; nilai dari luar React lewat `useSyncExternalStore`, bukan `setState` di dalam efek.
 - **Interaksi:** Radix untuk laci, menu, dan dialog; Motion untuk animasi; `sonner` untuk toast dengan Urungkan.
-- **Pengecualian yang belum dirapikan:** `src/features/world` masih memakai nama bahasa Indonesia dan `monitoring.css` sendiri.
+- **Pengecualian yang belum dirapikan:** Dunia 3D (`src/features/world`) masih memakai `monitoring.css` sendiri (kelas `mt-*`, ±2.000 baris), belum token Tailwind. Nama kode dan berkasnya sudah bahasa Inggris; nilai string yang tersimpan atau tampil di alamat (`lokasi=`, `pilih=`, `kantor`, `gerai`, …) tetap bahasa Indonesia.
 
 ## Struktur folder
 

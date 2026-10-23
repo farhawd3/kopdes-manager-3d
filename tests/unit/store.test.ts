@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest';
 import { Mesh } from 'three';
 import { getWorldModel } from '@/features/world/model/world-model';
-import { GERAI_IDS, infoGerai } from '@/features/world/gerai';
-import { ruangGerai } from '@/features/world/gerai-room';
+import { STORE_IDS, storeInfo } from '@/features/world/store';
+import { buildStores } from '@/features/world/store-room';
 import { monitoringPlans } from '@/features/world/character-plan';
 import type { Item } from '@/features/records/schemas';
 
@@ -31,7 +31,7 @@ const model = getWorldModel(
 );
 
 it('status gerai hanya dari catatan Gerai: aktif buka, lainnya terkunci', () => {
-  const info = Object.fromEntries(infoGerai(model).map((g) => [g.id, [g.buka, g.status, g.nama]]));
+  const info = Object.fromEntries(storeInfo(model).map((g) => [g.id, [g.open, g.status, g.name]]));
   expect(info.kantor).toEqual([true, 'aktif', 'Kantor koperasi']);
   expect(info.sembako).toEqual([true, 'aktif', 'Toko Sembako']);
   expect(info.klinik).toEqual([false, 'persiapan', 'Klinik']);
@@ -47,19 +47,19 @@ it('staf unit yang buka melayani gerai; unit terkunci tidak memindahkan staf; ma
 });
 
 it('kawasan gerai: sepuluh ruang, pintu ke kantor/gudang/cold storage, ruang terkunci transparan bergembok', () => {
-  const info = infoGerai(model);
-  const { root, areas, slots } = ruangGerai(info);
+  const info = storeInfo(model);
+  const { root, areas, slots } = buildStores(info);
   expect([...areas.keys()].filter((k) => k.startsWith('g:'))).toEqual(
-    GERAI_IDS.map((id) => `g:${id}`),
+    STORE_IDS.map((id) => `g:${id}`),
   );
   expect(['pintu-kantor', 'pintu-gudang', 'pintu-pendingin'].every((k) => areas.has(k))).toBe(true);
   expect(areas.get('g:klinik')!.material.transparent).toBe(true);
   expect(areas.get('g:sembako')!.material.transparent).toBe(false);
-  const locked = info.filter((g) => !g.buka).length;
+  const locked = info.filter((g) => !g.open).length;
   // Satu mesh ruang per gerai ditambah satu gembok per gerai yang belum buka.
   const geraiMesh = root.children.filter(
-    (c) => c instanceof Mesh && String(c.userData.bidang).startsWith('g:'),
+    (c) => c instanceof Mesh && String(c.userData.areaKey).startsWith('g:'),
   );
-  expect(geraiMesh.length).toBe(GERAI_IDS.length + locked);
+  expect(geraiMesh.length).toBe(STORE_IDS.length + locked);
   expect(slots.sembako).toHaveLength(3);
 });

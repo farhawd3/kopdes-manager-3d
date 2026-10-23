@@ -13,26 +13,26 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import type { Nada } from './monitor-data';
-import { Ikon3D, ThumbBarang, type Ikon3DKind, type ThumbKind } from '@/features/world/icon-3d';
+import type { Tone } from './monitor-data';
+import { Icon3D, ItemThumb, type Icon3DKind, type ThumbKind } from '@/features/world/icon-3d';
 
-export function Pill({ nada, children }: { nada: Nada; children: ReactNode }) {
-  return <span className={`mt-pill is-${nada}`}>{children}</span>;
+export function Pill({ tone, children }: { tone: Tone; children: ReactNode }) {
+  return <span className={`mt-pill is-${tone}`}>{children}</span>;
 }
 
 /** Ubin putih-biru muda berisi ikon biru kilap. */
 export function IconTile({
   icon,
   size = 30,
-  nada,
+  tone,
 }: {
-  icon: Ikon3DKind;
+  icon: Icon3DKind;
   size?: number;
-  nada?: Nada;
+  tone?: Tone;
 }) {
   return (
-    <span className={`mt-tile${nada ? ` is-${nada}` : ''}`} aria-hidden="true">
-      <Ikon3D kind={icon} size={size} />
+    <span className={`mt-tile${tone ? ` is-${tone}` : ''}`} aria-hidden="true">
+      <Icon3D kind={icon} size={size} />
     </span>
   );
 }
@@ -62,7 +62,7 @@ export function usePopover() {
   return { open, setOpen, root, trigger };
 }
 
-export type KpiChip = { text: string; nada: Nada };
+export type KpiChip = { text: string; tone: Tone };
 export function KpiCard({
   icon,
   label,
@@ -71,7 +71,7 @@ export function KpiCard({
   foot,
   onClick,
 }: {
-  icon: Ikon3DKind;
+  icon: Icon3DKind;
   label: string;
   value: string;
   chip?: KpiChip;
@@ -85,7 +85,7 @@ export function KpiCard({
         <small>{label}</small>
         <span className="mt-kpi-value">
           <strong>{value}</strong>
-          {chip && <em className={`is-${chip.nada}`}>{chip.text}</em>}
+          {chip && <em className={`is-${chip.tone}`}>{chip.text}</em>}
         </span>
         <span className="mt-kpi-foot">{foot}</span>
       </span>
@@ -93,7 +93,7 @@ export function KpiCard({
   );
 }
 
-export type Stat = { label: string; value: string; total?: string; bar?: number; nada?: Nada };
+export type Stat = { label: string; value: string; total?: string; bar?: number; tone?: Tone };
 /** Kotak statistik 2 × 2: label kecil, angka tebal "x / y", bilah progres berwarna. */
 export function Stats({ items }: { items: Stat[] }) {
   return (
@@ -106,7 +106,7 @@ export function Stats({ items }: { items: Stat[] }) {
             {s.total && <span> / {s.total}</span>}
           </strong>
           {s.bar !== undefined && (
-            <span className={`mt-bar is-${s.nada || 'biru'}`} aria-hidden="true">
+            <span className={`mt-bar is-${s.tone || 'biru'}`} aria-hidden="true">
               <i style={{ width: `${Math.round(Math.max(0, Math.min(1, s.bar)) * 100)}%` }} />
             </span>
           )}
@@ -124,7 +124,7 @@ export function PanelHead({
   href,
   onClose,
 }: {
-  icon: Ikon3DKind;
+  icon: Icon3DKind;
   eyebrow: string;
   title: string;
   sub?: string;
@@ -171,15 +171,15 @@ export function Section({ title, meta }: { title: string; meta?: string }) {
 }
 
 /** Tautan ke halaman operasional terkait, berupa pil kecil di bawah panel. */
-export function Links({ items }: { items: { href: string; label: string; baru?: boolean }[] }) {
+export function Links({ items }: { items: { href: string; label: string; isNew?: boolean }[] }) {
   if (!items.length) return null;
   return (
     <nav className="mt-links" aria-label="Halaman terkait">
       {items.map((l) => (
-        <Link key={l.href} href={l.href} className={l.baru ? 'is-baru' : undefined}>
-          {l.baru && <Plus size={13} aria-hidden="true" />}
+        <Link key={l.href} href={l.href} className={l.isNew ? 'is-baru' : undefined}>
+          {l.isNew && <Plus size={13} aria-hidden="true" />}
           {l.label}
-          {!l.baru && <ArrowUpRight size={13} aria-hidden="true" />}
+          {!l.isNew && <ArrowUpRight size={13} aria-hidden="true" />}
         </Link>
       ))}
     </nav>
@@ -191,14 +191,14 @@ export type RowView = {
   title: string;
   sub: string;
   pill?: string;
-  nada?: Nada;
+  tone?: Tone;
   href?: string;
   onClick?: () => void;
   active?: boolean;
   bar?: number;
   /** Teks kecil di samping bilah, mis. "2/6". */
   barText?: string;
-  ikon?: Ikon3DKind;
+  icon?: Icon3DKind;
   thumb?: ThumbKind;
   /** Inisial nama sebagai avatar bila baris mewakili orang. */
   avatar?: string;
@@ -214,11 +214,11 @@ export function Rows({ rows, empty }: { rows: RowView[]; empty: string }) {
           <>
             {r.thumb ? (
               <span className="mt-row-ikon" aria-hidden="true">
-                <ThumbBarang kind={r.thumb} size={30} />
+                <ItemThumb kind={r.thumb} size={30} />
               </span>
-            ) : r.ikon ? (
+            ) : r.icon ? (
               <span className="mt-row-ikon" aria-hidden="true">
-                <Ikon3D kind={r.ikon} size={26} />
+                <Icon3D kind={r.icon} size={26} />
               </span>
             ) : null}
             {r.avatar && (
@@ -236,11 +236,11 @@ export function Rows({ rows, empty }: { rows: RowView[]; empty: string }) {
                 {r.unit && <small>{r.unit}</small>}
               </span>
             )}
-            {r.pill && <Pill nada={r.nada || 'abu'}>{r.pill}</Pill>}
+            {r.pill && <Pill tone={r.tone || 'abu'}>{r.pill}</Pill>}
             {r.bar !== undefined && (
               <span className="mt-row-bar">
                 <span
-                  className={`mt-bar is-${r.nada === 'kuning' || r.nada === 'merah' ? r.nada : 'hijau'}`}
+                  className={`mt-bar is-${r.tone === 'kuning' || r.tone === 'merah' ? r.tone : 'hijau'}`}
                   aria-hidden="true"
                 >
                   <i style={{ width: `${Math.round(r.bar * 100)}%` }} />
@@ -344,7 +344,7 @@ export function TabsCard({
   tabs,
   label,
 }: {
-  icon: Ikon3DKind;
+  icon: Icon3DKind;
   title: string;
   tabs: Tab[];
   label: string;
@@ -381,15 +381,15 @@ export function TabsCard({
   );
 }
 
-export type LokasiOpsi = { id: string; kode: string; label: string; sub: string };
+export type SiteOption = { id: string; code: string; label: string; sub: string };
 /** Pemilih lokasi ala "WH-01 Riverside Hub": lencana kode, nama, ringkasan, daftar pilihan. */
-export function LokasiPicker({
+export function SitePicker({
   value,
   options,
   onChange,
 }: {
   value: string;
-  options: LokasiOpsi[];
+  options: SiteOption[];
   onChange: (id: string) => void;
 }) {
   const { open, setOpen, root, trigger } = usePopover();
@@ -407,7 +407,7 @@ export function LokasiPicker({
         aria-label={`Lokasi: ${now.label}. Ganti lokasi`}
         onClick={() => setOpen(!open)}
       >
-        <b className="mt-badge">{now.kode}</b>
+        <b className="mt-badge">{now.code}</b>
         <span>
           <strong>{now.label}</strong>
           <small>{now.sub}</small>
@@ -431,7 +431,7 @@ export function LokasiPicker({
                   trigger.current?.focus();
                 }}
               >
-                <b className="mt-badge">{o.kode}</b>
+                <b className="mt-badge">{o.code}</b>
                 <span>
                   <strong>{o.label}</strong>
                   <small>{o.sub}</small>
@@ -447,7 +447,7 @@ export function LokasiPicker({
 }
 
 export type SheetState = 'intip' | 'setengah' | 'penuh';
-const URUT: SheetState[] = ['intip', 'setengah', 'penuh'];
+const SHEET_ORDER: SheetState[] = ['intip', 'setengah', 'penuh'];
 /**
  * Lembar bawah untuk ponsel: pegangan diketuk berganti intip → setengah → penuh, atau diseret
  * naik/turun. Di layar lebar komponen ini hanya pembungkus tanpa gaya (lihat monitoring.css).
@@ -463,11 +463,11 @@ export function Sheet({
   label: string;
   children: ReactNode;
 }) {
-  const awal = useRef<number | null>(null);
-  const geser = (dy: number) => {
-    const i = URUT.indexOf(state);
-    if (Math.abs(dy) < 24) return onState(URUT[(i + 1) % URUT.length]);
-    onState(URUT[Math.max(0, Math.min(URUT.length - 1, i + (dy < 0 ? 1 : -1)))]);
+  const startY = useRef<number | null>(null);
+  const step = (dy: number) => {
+    const i = SHEET_ORDER.indexOf(state);
+    if (Math.abs(dy) < 24) return onState(SHEET_ORDER[(i + 1) % SHEET_ORDER.length]);
+    onState(SHEET_ORDER[Math.max(0, Math.min(SHEET_ORDER.length - 1, i + (dy < 0 ? 1 : -1)))]);
   };
   return (
     <section className="mt-sheet" data-state={state} aria-label={label}>
@@ -477,21 +477,23 @@ export function Sheet({
         aria-label={state === 'penuh' ? 'Kecilkan panel' : 'Besarkan panel'}
         aria-expanded={state !== 'intip'}
         onPointerDown={(e) => {
-          awal.current = e.clientY;
+          startY.current = e.clientY;
           e.currentTarget.setPointerCapture?.(e.pointerId);
         }}
         onPointerUp={(e) => {
-          const dy = awal.current === null ? 0 : e.clientY - awal.current;
-          awal.current = null;
-          geser(dy);
+          const dy = startY.current === null ? 0 : e.clientY - startY.current;
+          startY.current = null;
+          step(dy);
         }}
         onClick={(e) => {
           // Enter/Spasi (detail 0) berganti tahap; ketukan/seretan ditangani pointer di atas.
-          if (e.detail === 0) geser(0);
+          if (e.detail === 0) step(0);
         }}
         onKeyDown={(e) => {
-          if (e.key === 'ArrowUp') onState(URUT[Math.min(2, URUT.indexOf(state) + 1)]);
-          if (e.key === 'ArrowDown') onState(URUT[Math.max(0, URUT.indexOf(state) - 1)]);
+          if (e.key === 'ArrowUp')
+            onState(SHEET_ORDER[Math.min(2, SHEET_ORDER.indexOf(state) + 1)]);
+          if (e.key === 'ArrowDown')
+            onState(SHEET_ORDER[Math.max(0, SHEET_ORDER.indexOf(state) - 1)]);
         }}
       >
         <i aria-hidden="true" />

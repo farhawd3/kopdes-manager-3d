@@ -15,10 +15,10 @@ import {
 import { isBelowMinimum, type WorldModel } from './model/world-model';
 import { recordHref } from '@/features/notifications/follow-ups';
 import type { Checklist, Item } from '../records/schemas';
-import type { LokasiMonitoring } from './bidang';
+import type { WorldSite } from './office-rooms';
 import { ACTION_LABEL, type CharacterPlan } from './character-plan';
-import { GERAI, UNIT_STEPS, infoGerai, type GeraiId, type GeraiInfo } from './gerai';
-import { ACTION_NADA, itemRow } from './monitor-data';
+import { STORES, UNIT_STEPS, storeInfo, type StoreId, type StoreInfo } from './store';
+import { ACTION_TONE, itemRow } from './monitor-data';
 import { readiness } from '@/lib/progress';
 import {
   IconTile,
@@ -34,14 +34,15 @@ import {
   type Step,
   type Tab,
 } from './monitor-cards';
-import { thumbBarang, type Ikon3DKind } from '@/features/world/icon-3d';
+import { itemThumbKind, type Icon3DKind } from '@/features/world/icon-3d';
 
-const IKON: Partial<Record<GeraiId, Ikon3DKind>> = {
+const STORE_ICON: Partial<Record<StoreId, Icon3DKind>> = {
   kantor: 'kantor',
   logistik: 'gudang',
   'cold-storage': 'salju',
 };
-export const ikonGerai = (g: GeraiInfo): Ikon3DKind => (g.buka ? (IKON[g.id] ?? 'toko') : 'gembok');
+export const storeIcon = (g: StoreInfo): Icon3DKind =>
+  g.open ? (STORE_ICON[g.id] ?? 'toko') : 'gembok';
 const STATUS_LABEL: Record<string, string> = {
   rencana: 'Rencana',
   persiapan: 'Persiapan',
@@ -51,12 +52,12 @@ const STATUS_LABEL: Record<string, string> = {
   'belum tercatat': 'Belum tercatat',
 };
 /** Pintu lokasi lain dari ruang gerai tertentu. */
-const PINTU: Partial<Record<GeraiId, [Exclude<LokasiMonitoring, 'pulau'>, string]>> = {
+const DOORS: Partial<Record<StoreId, [Exclude<WorldSite, 'pulau'>, string]>> = {
   kantor: ['kantor', 'Masuk kantor'],
   logistik: ['gudang', 'Masuk gudang'],
   'cold-storage': ['pendingin', 'Masuk cold storage'],
 };
-const PINTU_IKON = { kantor: Briefcase, gudang: Warehouse, pendingin: Snowflake, gerai: Store };
+const DOOR_ICON = { kantor: Briefcase, gudang: Warehouse, pendingin: Snowflake, gerai: Store };
 
 type Input = {
   model: WorldModel;
@@ -65,17 +66,17 @@ type Input = {
   unavailable: boolean;
   stock: boolean;
   choose: (key: string) => void;
-  go: (loc: LokasiMonitoring) => void;
+  go: (loc: WorldSite) => void;
   /** Daftar periksa kesiapan dari halaman Kesiapan (opsional). */
   checklist?: Item[];
 };
 
-const stafUnit = (model: WorldModel, unit?: Item) =>
+const unitStaff = (model: WorldModel, unit?: Item) =>
   unit ? model.staff.filter((s) => String(s.data.unit_id || '') === unit.id) : [];
-const stokUnit = (model: WorldModel, unit?: Item) =>
+const unitStock = (model: WorldModel, unit?: Item) =>
   unit ? model.inventory.atUnits.filter((b) => String(b.data.unit_id || '') === unit.id) : [];
 
-export function geraiView({
+export function storeView({
   model,
   plans,
   selected,
@@ -85,27 +86,27 @@ export function geraiView({
   go,
   checklist = [],
 }: Input) {
-  const info = infoGerai(model);
-  const buka = info.filter((g) => g.buka && g.id !== 'kantor');
+  const info = storeInfo(model);
+  const openStores = info.filter((g) => g.open && g.id !== 'kantor');
   const serve = plans.filter((p) => p.action === 'serve');
-  const rendah = info.flatMap((g) => stokUnit(model, g.unit)).filter(isBelowMinimum);
+  const low = info.flatMap((g) => unitStock(model, g.unit)).filter(isBelowMinimum);
   const na = unavailable ? 'Data belum tersedia' : '';
   const kpis: Parameters<typeof KpiCard>[0][] = [
     {
       icon: 'toko',
       label: 'Gerai buka',
-      value: unavailable ? '—' : String(buka.length),
-      chip: unavailable ? undefined : { text: `dari ${info.length - 1}`, nada: 'hijau' },
+      value: unavailable ? '—' : String(openStores.length),
+      chip: unavailable ? undefined : { text: `dari ${info.length - 1}`, tone: 'hijau' },
       foot: na || 'unit berstatus aktif di web',
     },
     {
       icon: 'gembok',
       label: 'Belum dibuka',
-      value: unavailable ? '—' : String(info.length - 1 - buka.length),
+      value: unavailable ? '—' : String(info.length - 1 - openStores.length),
       chip:
-        unavailable || !stock || !rendah.length
+        unavailable || !stock || !low.length
           ? undefined
-          : { text: `${rendah.length} stok minimum`, nada: 'kuning' },
+          : { text: `${low.length} stok minimum`, tone: 'kuning' },
       foot: na || 'terkunci sampai aktif',
     },
     {
@@ -116,13 +117,13 @@ export function geraiView({
     },
   ];
 
-  const id = (selected.startsWith('g:') ? selected.slice(2) : 'sembako') as GeraiId;
+  const id = (selected.startsWith('g:') ? selected.slice(2) : 'sembako') as StoreId;
   const g = info.find((i) => i.id === id) ?? info[0];
-  const staf = stafUnit(model, g.unit);
-  const barang = stokUnit(model, g.unit);
-  const pintu = PINTU[g.id];
+  const staff = unitStaff(model, g.unit);
+  const goods = unitStock(model, g.unit);
+  const door = DOORS[g.id];
   // Kesiapan: butir wajib berstatus selesai dari halaman Kesiapan untuk unit ini.
-  const siap = g.unit
+  const readyPct = g.unit
     ? readiness(
         checklist
           .filter((c) => c.data.unit_id === g.unit!.id)
@@ -132,29 +133,29 @@ export function geraiView({
           })),
       )
     : null;
-  const statusNada = g.buka ? 'hijau' : g.unit ? 'kuning' : 'abu';
-  const tag = g.nama;
+  const statusTone = g.open ? 'hijau' : g.unit ? 'kuning' : 'abu';
+  const tag = g.name;
   const panelBody: ReactNode = (
     <>
       <PanelHead
-        icon={ikonGerai(g)}
+        icon={storeIcon(g)}
         eyebrow={`GERAI · ${(STATUS_LABEL[g.status] ?? g.status).toUpperCase()}`}
-        title={g.nama}
+        title={g.name}
         sub={
           g.unit
             ? [g.unit.data.kind, g.unit.data.location].filter(Boolean).map(String).join(' · ') ||
-              GERAI[g.id].nama
-            : GERAI[g.id].nama
+              STORES[g.id].name
+            : STORES[g.id].name
         }
         href={g.unit ? recordHref('units', g.unit) : '/store'}
       />
       <div className="mt-status">
-        <Pill nada={statusNada}>
-          {g.buka ? 'Buka' : `Terkunci · ${STATUS_LABEL[g.status] ?? g.status}`}
+        <Pill tone={statusTone}>
+          {g.open ? 'Buka' : `Terkunci · ${STATUS_LABEL[g.status] ?? g.status}`}
         </Pill>
         {g.unit?.data.assignee ? <span>PJ {String(g.unit.data.assignee)}</span> : null}
       </div>
-      {!g.buka && (
+      {!g.open && (
         <p className="mt-note">
           Unit ini belum dibuka di web. Ruangnya tampil transparan bergembok sampai statusnya Aktif
           di <Link href="/store">halaman Gerai</Link>.
@@ -163,29 +164,29 @@ export function geraiView({
       {g.id === 'kantor' && (
         <p className="mt-note">Kantor koperasi selalu terbuka; pintunya menuju ruang kantor.</p>
       )}
-      {pintu && (
+      {door && (
         <div className="mt-actions">
-          <button type="button" className="mt-btn is-primary" onClick={() => go(pintu[0])}>
+          <button type="button" className="mt-btn is-primary" onClick={() => go(door[0])}>
             {(() => {
-              const Icon = PINTU_IKON[pintu[0]];
+              const Icon = DOOR_ICON[door[0]];
               return <Icon size={15} />;
             })()}{' '}
-            {pintu[1]}
+            {door[1]}
           </button>
         </div>
       )}
       {g.id !== 'kantor' && (
         <Stats
           items={[
-            { label: 'Staf ditugaskan', value: unavailable ? '—' : String(staf.length) },
-            ...(siap === null
+            { label: 'Staf ditugaskan', value: unavailable ? '—' : String(staff.length) },
+            ...(readyPct === null
               ? []
               : [
                   {
                     label: 'Kesiapan wajib',
-                    value: `${siap}%`,
-                    bar: siap / 100,
-                    nada: siap >= 100 ? ('hijau' as const) : ('biru' as const),
+                    value: `${readyPct}%`,
+                    bar: readyPct / 100,
+                    tone: readyPct >= 100 ? ('hijau' as const) : ('biru' as const),
                   },
                 ]),
             {
@@ -193,13 +194,13 @@ export function geraiView({
               value:
                 unavailable || !stock
                   ? '—'
-                  : String(barang.length - barang.filter(isBelowMinimum).length),
-              total: unavailable || !stock || !barang.length ? undefined : String(barang.length),
+                  : String(goods.length - goods.filter(isBelowMinimum).length),
+              total: unavailable || !stock || !goods.length ? undefined : String(goods.length),
               bar:
-                unavailable || !stock || !barang.length
+                unavailable || !stock || !goods.length
                   ? undefined
-                  : 1 - barang.filter(isBelowMinimum).length / barang.length,
-              nada: barang.some(isBelowMinimum) ? 'kuning' : 'hijau',
+                  : 1 - goods.filter(isBelowMinimum).length / goods.length,
+              tone: goods.some(isBelowMinimum) ? 'kuning' : 'hijau',
             },
           ]}
         />
@@ -208,14 +209,14 @@ export function geraiView({
         <>
           <Section title="Staf unit" meta="aktivitas" />
           <Rows
-            rows={staf.map((s) => {
+            rows={staff.map((s) => {
               const plan = plans.find((p) => p.id === s.id);
               return {
                 key: s.id,
                 title: String(s.data.title),
                 sub: String(s.data.role || s.data.section || 'Peran belum diisi'),
                 pill: plan ? ACTION_LABEL[plan.action] : undefined,
-                nada: plan ? ACTION_NADA[plan.action] : undefined,
+                tone: plan ? ACTION_TONE[plan.action] : undefined,
                 avatar: String(s.data.title).slice(0, 1).toUpperCase(),
                 href: recordHref('staff', s),
               };
@@ -225,7 +226,7 @@ export function geraiView({
           <Section title="Barang di unit" meta="satuan" />
           {stock ? (
             <Rows
-              rows={barang.map((b) => {
+              rows={goods.map((b) => {
                 const r = itemRow(b);
                 return {
                   key: r.key,
@@ -234,8 +235,8 @@ export function geraiView({
                   value: String(b.data.book_quantity ?? '—'),
                   unit: String(b.data.measurement || ''),
                   pill: r.pill,
-                  nada: r.nada,
-                  thumb: thumbBarang(String(b.data.title), String(b.data.measurement || '')),
+                  tone: r.tone,
+                  thumb: itemThumbKind(String(b.data.title), String(b.data.measurement || '')),
                   href: recordHref('inventory-items', b),
                 };
               })}
@@ -256,20 +257,20 @@ export function geraiView({
   );
 
   // Kesiapan unit: rencana → persiapan → siap uji → siap buka → aktif.
-  const tahap = UNIT_STEPS.indexOf(g.status as (typeof UNIT_STEPS)[number]);
-  const ikonTahap = [ClipboardCheck, Wrench, PackageCheck, Store, Store];
+  const stage = UNIT_STEPS.indexOf(g.status as (typeof UNIT_STEPS)[number]);
+  const stageIcons = [ClipboardCheck, Wrench, PackageCheck, Store, Store];
   const steps: Step[] = UNIT_STEPS.map((s, i) => ({
     key: s,
     label: STATUS_LABEL[s],
-    sub: i < tahap ? 'Selesai' : i === tahap ? 'Sekarang' : 'Menunggu',
-    state: i < tahap || (i === tahap && s === 'aktif') ? 'done' : i === tahap ? 'now' : 'next',
-    icon: ikonTahap[i],
+    sub: i < stage ? 'Selesai' : i === stage ? 'Sekarang' : 'Menunggu',
+    state: i < stage || (i === stage && s === 'aktif') ? 'done' : i === stage ? 'now' : 'next',
+    icon: stageIcons[i],
   }));
   const tracker = (
     <section className="mt-card mt-tracker" aria-label="Kesiapan gerai">
       <header>
-        <IconTile icon={ikonGerai(g)} size={24} />
-        <h2>Kesiapan {g.nama}</h2>
+        <IconTile icon={storeIcon(g)} size={24} />
+        <h2>Kesiapan {g.name}</h2>
         <small>{STATUS_LABEL[g.status] ?? g.status}</small>
       </header>
       {unavailable ? (
@@ -293,22 +294,22 @@ export function geraiView({
     {
       id: 'gerai',
       label: 'Gerai',
-      count: unavailable ? '—' : `${buka.length}/${info.length - 1}`,
+      count: unavailable ? '—' : `${openStores.length}/${info.length - 1}`,
       empty: 'Data belum tersedia.',
       rows: unavailable
         ? []
         : info.map((i): RowView => ({
             key: i.id,
-            title: i.nama,
+            title: i.name,
             sub:
               i.id === 'kantor'
                 ? 'Selalu buka · pintu ke kantor'
                 : i.unit
                   ? `${STATUS_LABEL[i.status] ?? i.status}${i.unit.data.kind ? ` · ${String(i.unit.data.kind)}` : ''}`
                   : 'Belum tercatat di web',
-            pill: i.buka ? 'Buka' : 'Terkunci',
-            nada: i.buka ? 'hijau' : 'abu',
-            ikon: ikonGerai(i),
+            pill: i.open ? 'Buka' : 'Terkunci',
+            tone: i.open ? 'hijau' : 'abu',
+            icon: storeIcon(i),
             active: selected === `g:${i.id}`,
             onClick: () => choose(`g:${i.id}`),
           })),
@@ -321,9 +322,9 @@ export function geraiView({
       rows: serve.map((p) => ({
         key: p.id,
         title: p.name,
-        sub: GERAI[p.area.slice(6) as GeraiId]?.nama ?? p.reason,
+        sub: STORES[p.area.slice(6) as StoreId]?.name ?? p.reason,
         pill: ACTION_LABEL[p.action],
-        nada: ACTION_NADA[p.action],
+        tone: ACTION_TONE[p.action],
         avatar: p.name.slice(0, 1).toUpperCase(),
         active: selected === `orang:${p.id}`,
         onClick: () => choose(`orang:${p.id}`),
@@ -332,18 +333,18 @@ export function geraiView({
     {
       id: 'stok',
       label: 'Stok minimum',
-      count: unavailable || !stock ? '—' : String(rendah.length),
+      count: unavailable || !stock ? '—' : String(low.length),
       empty: stock ? 'Tidak ada barang gerai di bawah minimum.' : 'Pencatatan barang belum aktif.',
       rows: stock
-        ? rendah.map((b) => {
+        ? low.map((b) => {
             const r = itemRow(b);
             return {
               key: r.key,
               title: String(b.data.title),
               sub: r.note,
               pill: r.pill,
-              nada: r.nada,
-              thumb: thumbBarang(String(b.data.title), String(b.data.measurement || '')),
+              tone: r.tone,
+              thumb: itemThumbKind(String(b.data.title), String(b.data.measurement || '')),
               href: recordHref('inventory-items', b),
             };
           })

@@ -14,12 +14,12 @@ import {
 import { staffTasks } from './model/schedule';
 import { cashSummary, rupiah } from '@/lib/ledger';
 import { ACTION_LABEL, type CharacterAction, type CharacterPlan } from './character-plan';
-import type { Bidang } from './bidang';
+import type { OfficeRoom } from './office-rooms';
 
-export type Nada = 'biru' | 'hijau' | 'kuning' | 'merah' | 'abu';
-export type Cuaca = 'cerah' | 'berawan' | 'hujan';
-export type Suasana = { cuaca: Cuaca; fase: 'pagi' | 'siang' | 'senja' | 'malam' };
-export function suasanaJam(now: Date, cuaca: Cuaca): Suasana {
+export type Tone = 'biru' | 'hijau' | 'kuning' | 'merah' | 'abu';
+export type Weather = 'cerah' | 'berawan' | 'hujan';
+export type Ambience = { weather: Weather; phase: 'pagi' | 'siang' | 'senja' | 'malam' };
+export function ambienceAt(now: Date, weather: Weather): Ambience {
   const h = Number(
     new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Asia/Jakarta',
@@ -27,18 +27,21 @@ export function suasanaJam(now: Date, cuaca: Cuaca): Suasana {
       hourCycle: 'h23',
     }).format(now),
   );
-  return { cuaca, fase: h < 5 || h >= 19 ? 'malam' : h < 10 ? 'pagi' : h < 16 ? 'siang' : 'senja' };
+  return {
+    weather,
+    phase: h < 5 || h >= 19 ? 'malam' : h < 10 ? 'pagi' : h < 16 ? 'siang' : 'senja',
+  };
 }
-export type Baris = {
+export type RecordRow = {
   key: string;
   entity: Entity;
   item: Item;
   note: string;
   pill: string;
-  nada: Nada;
+  tone: Tone;
 };
-export type Statistik = { label: string; value: string; bar?: number };
-export type Konteks = {
+export type RoomStat = { label: string; value: string; bar?: number };
+export type RoomContext = {
   model: WorldModel;
   date: string;
   now: Date;
@@ -60,7 +63,7 @@ export const DELIVERY_LABEL: Record<string, string> = {
   diperiksa: 'Diperiksa',
   selesai: 'Selesai',
 };
-export const ACTION_NADA: Record<CharacterAction, Nada> = {
+export const ACTION_TONE: Record<CharacterAction, Tone> = {
   rest: 'abu',
   plan: 'kuning',
   work: 'biru',
@@ -76,7 +79,7 @@ export const isLate = (task: Item, date: string) =>
 const qty = (item: Item) =>
   `${String(item.data.book_quantity ?? '—')} ${String(item.data.measurement || '')}`.trim();
 
-export function taskRow(task: Item, date: string): Baris {
+export function taskRow(task: Item, date: string): RecordRow {
   const late = isLate(task, date);
   return {
     key: `task-${task.id}`,
@@ -84,11 +87,11 @@ export function taskRow(task: Item, date: string): Baris {
     item: task,
     note: `${String(task.data.assignee || 'Belum ditugaskan')}${task.data.due_date ? ` · ${formatDate(String(task.data.due_date))}` : ''}`,
     pill: late ? 'Lewat tenggat' : task.data.status === 'proses' ? 'Dikerjakan' : 'Terbuka',
-    nada: late ? 'merah' : task.data.status === 'proses' ? 'biru' : 'abu',
+    tone: late ? 'merah' : task.data.status === 'proses' ? 'biru' : 'abu',
   };
 }
 
-export function itemRow(item: Item): Baris {
+export function itemRow(item: Item): RecordRow {
   const low = isBelowMinimum(item);
   return {
     key: `item-${item.id}`,
@@ -96,11 +99,11 @@ export function itemRow(item: Item): Baris {
     item,
     note: `Stok ${qty(item)} · minimum ${String(item.data.minimum_quantity ?? '—')}`,
     pill: low ? 'Stok rendah' : 'Tersedia',
-    nada: low ? 'kuning' : 'hijau',
+    tone: low ? 'kuning' : 'hijau',
   };
 }
 
-export function deliveryRow(delivery: Item): Baris {
+export function deliveryRow(delivery: Item): RecordRow {
   const dock = String(delivery.data.dock || '');
   return {
     key: `delivery-${delivery.id}`,
@@ -114,11 +117,11 @@ export function deliveryRow(delivery: Item): Baris {
       .filter(Boolean)
       .join(' · '),
     pill: DELIVERY_LABEL[String(delivery.data.status)] || 'Tercatat',
-    nada: ['tiba', 'diperiksa'].includes(String(delivery.data.status)) ? 'hijau' : 'biru',
+    tone: ['tiba', 'diperiksa'].includes(String(delivery.data.status)) ? 'hijau' : 'biru',
   };
 }
 
-function documentRow(doc: Item, date: string): Baris {
+function documentRow(doc: Item, date: string): RecordRow {
   const until = doc.data.expires_date ? String(doc.data.expires_date) : '';
   const expired = !!until && until < date;
   const soon = !!until && !expired && until <= addDays(date, 30);
@@ -128,11 +131,11 @@ function documentRow(doc: Item, date: string): Baris {
     item: doc,
     note: until ? `Berlaku sampai ${formatDate(until)}` : 'Tanpa tanggal kedaluwarsa',
     pill: expired ? 'Kedaluwarsa' : soon ? 'Segera habis' : until ? 'Berlaku' : 'Tanpa batas',
-    nada: expired ? 'merah' : soon ? 'kuning' : until ? 'hijau' : 'abu',
+    tone: expired ? 'merah' : soon ? 'kuning' : until ? 'hijau' : 'abu',
   };
 }
 
-function stafRuang(id: Bidang, ctx: Konteks): Baris[] {
+function roomStaff(id: OfficeRoom, ctx: RoomContext): RecordRow[] {
   return ctx.model.staff.flatMap((staff) => {
     const plan = ctx.plans.find((p) => p.id === staff.id);
     if (plan?.area !== id) return [];
@@ -142,16 +145,16 @@ function stafRuang(id: Bidang, ctx: Konteks): Baris[] {
       item: staff,
       note: `${String(staff.data.role || staff.data.section || 'Peran belum diisi')} · ${staffTasks(ctx.model.tasks, String(staff.data.title)).length} tugas terbuka`,
       pill: ACTION_LABEL[plan.action],
-      nada: ACTION_NADA[plan.action],
+      tone: ACTION_TONE[plan.action],
     };
   });
 }
 
 /** Tugas terbuka: terlambat lebih dulu, lalu tenggat terdekat; bisa disaring per anggota. */
 export function taskRows(
-  ctx: Konteks,
+  ctx: RoomContext,
   filter: { lateOnly?: boolean; person?: string } = {},
-): Baris[] {
+): RecordRow[] {
   const { model, date } = ctx;
   const tasks = filter.person ? staffTasks(model.tasks, filter.person) : model.tasks;
   return tasks
@@ -165,7 +168,7 @@ export function taskRows(
 }
 
 /** Catatan meja manajer: dokumen dan risiko belum ditutup (keputusan ada di ruang Rapat). */
-function manajerRows(ctx: Konteks): Baris[] {
+function managerRows(ctx: RoomContext): RecordRow[] {
   return [
     ...[...ctx.documents]
       .sort((a, b) =>
@@ -174,76 +177,76 @@ function manajerRows(ctx: Konteks): Baris[] {
       .map((doc) => documentRow(doc, ctx.date)),
     ...(ctx.risks || [])
       .filter((r) => r.data.status !== 'ditutup')
-      .map((r): Baris => ({
+      .map((r): RecordRow => ({
         key: `risk-${r.id}`,
         entity: 'risks',
         item: r,
         note: `Risiko · ${String(r.data.assignee || 'Belum ada penanggung jawab')}`,
         pill: r.data.status === 'ditangani' ? 'Ditangani' : 'Terbuka',
-        nada: r.data.status === 'ditangani' ? 'biru' : 'kuning',
+        tone: r.data.status === 'ditangani' ? 'biru' : 'kuning',
       })),
   ];
 }
 
 /** Catatan kas terbaru dan anggota; hanya uang masuk/keluar tercatat (bukan saldo atau laba). */
-export function kasRows(ctx: Konteks): Baris[] {
+export function cashRows(ctx: RoomContext): RecordRow[] {
   if (ctx.operations === false) return [];
   return [
     ...[...(ctx.cash || [])]
       .sort((a, b) => String(b.data.date || '').localeCompare(String(a.data.date || '')))
       .slice(0, 8)
-      .map((c): Baris => ({
+      .map((c): RecordRow => ({
         key: `cash-${c.id}`,
         entity: 'cash-entries',
         item: c,
         note: `${c.data.direction === 'masuk' ? 'Masuk' : 'Keluar'} ${rupiah(Number(c.data.amount) || 0)} · ${formatDate(String(c.data.date || ''))}`,
         pill: c.data.direction === 'masuk' ? 'Masuk' : 'Keluar',
-        nada: c.data.direction === 'masuk' ? 'hijau' : 'kuning',
+        tone: c.data.direction === 'masuk' ? 'hijau' : 'kuning',
       })),
     ...[...(ctx.members || [])]
       .sort((a, b) => String(b.data.date || '').localeCompare(String(a.data.date || '')))
       .slice(0, 10)
-      .map((m): Baris => ({
+      .map((m): RecordRow => ({
         key: `member-${m.id}`,
         entity: 'members',
         item: m,
         note: `Anggota · No. ${String(m.data.member_number || '—')}`,
         pill: m.data.status === 'nonaktif' ? 'Nonaktif' : 'Aktif',
-        nada: m.data.status === 'nonaktif' ? 'abu' : 'hijau',
+        tone: m.data.status === 'nonaktif' ? 'abu' : 'hijau',
       })),
   ];
 }
 
 /** Daftar catatan per ruang; `person` dan `lateOnly` menyaring tugas di Ruang kerja. */
 export function roomRows(
-  id: Bidang,
-  ctx: Konteks,
+  id: OfficeRoom,
+  ctx: RoomContext,
   filter: { lateOnly?: boolean; person?: string } = {},
-): Baris[] {
+): RecordRow[] {
   const { model, now } = ctx;
   if (id === 'kerja') return taskRows(ctx, filter);
-  if (id === 'istirahat' || id === 'karyawan') return stafRuang(id, ctx);
-  if (id === 'manajer') return manajerRows(ctx);
+  if (id === 'istirahat' || id === 'karyawan') return roomStaff(id, ctx);
+  if (id === 'manajer') return managerRows(ctx);
   if (id === 'rapat')
     return [
-      ...meetingTimeline(model.meetings, now).map((step): Baris => ({
+      ...meetingTimeline(model.meetings, now).map((step): RecordRow => ({
         key: `meeting-${step.row.id}`,
         entity: 'meetings',
         item: step.row,
         note: `${step.time}–${step.end} WIB`,
         pill: { selesai: 'Selesai', berlangsung: 'Berlangsung', nanti: 'Mendatang' }[step.state],
-        nada: ({ selesai: 'abu', berlangsung: 'hijau', nanti: 'biru' } as const)[step.state],
+        tone: ({ selesai: 'abu', berlangsung: 'hijau', nanti: 'biru' } as const)[step.state],
       })),
       ...[...(ctx.decisions || [])]
         .sort((a, b) => String(b.data.date || '').localeCompare(String(a.data.date || '')))
         .slice(0, 5)
-        .map((d): Baris => ({
+        .map((d): RecordRow => ({
           key: `decision-${d.id}`,
           entity: 'decisions',
           item: d,
           note: d.data.date ? `Keputusan · ${formatDate(String(d.data.date))}` : 'Keputusan',
           pill: 'Keputusan',
-          nada: 'abu',
+          tone: 'abu',
         })),
     ];
   if (id === 'gym')
@@ -257,7 +260,7 @@ export function roomRows(
           ? `Tugas: ${String(task.data.title)}`
           : String(row.data.notes || 'Jurnal hari ini').slice(0, 80),
         pill: 'Hari ini',
-        nada: 'kuning',
+        tone: 'kuning',
       };
     });
   if (id === 'stok')
@@ -265,13 +268,13 @@ export function roomRows(
       ...(ctx.operations === false ? [] : model.inventory.low.map(itemRow)),
       ...(ctx.logistics === false ? [] : activeDeliveries(model.deliveries).map(deliveryRow)),
     ];
-  return kasRows(ctx);
+  return cashRows(ctx);
 }
 
-const persen = (a: number, b: number) => (b ? a / b : 0);
+const ratio = (a: number, b: number) => (b ? a / b : 0);
 
 /** Dua angka ringkas per ruang; `—` bila kemampuan server belum aktif. */
-export function roomStats(id: Bidang, ctx: Konteks): Statistik[] {
+export function roomStats(id: OfficeRoom, ctx: RoomContext): RoomStat[] {
   const { model, date } = ctx;
   if (id === 'kerja') {
     const busy = model.tasks.filter((t) => t.data.status === 'proses').length;
@@ -279,7 +282,7 @@ export function roomStats(id: Bidang, ctx: Konteks): Statistik[] {
       {
         label: 'Dikerjakan',
         value: `${busy} / ${model.tasks.length}`,
-        bar: persen(busy, model.tasks.length),
+        bar: ratio(busy, model.tasks.length),
       },
       { label: 'Lewat tenggat', value: String(model.tasks.filter((t) => isLate(t, date)).length) },
     ];
@@ -297,7 +300,7 @@ export function roomStats(id: Bidang, ctx: Konteks): Statistik[] {
     const done = steps.filter((s) => s.state === 'selesai').length;
     return [
       { label: 'Rapat hari ini', value: String(steps.length) },
-      { label: 'Selesai', value: `${done} / ${steps.length}`, bar: persen(done, steps.length) },
+      { label: 'Selesai', value: `${done} / ${steps.length}`, bar: ratio(done, steps.length) },
     ];
   }
   if (id === 'manajer') {
@@ -305,7 +308,7 @@ export function roomStats(id: Bidang, ctx: Konteks): Statistik[] {
     return [
       {
         label: 'Dokumen perlu diperbarui',
-        value: String(docs.filter((r) => r.nada === 'merah' || r.nada === 'kuning').length),
+        value: String(docs.filter((r) => r.tone === 'merah' || r.tone === 'kuning').length),
       },
       {
         label: 'Risiko terbuka',
@@ -345,10 +348,10 @@ export function roomStats(id: Bidang, ctx: Konteks): Statistik[] {
       { label: 'Anggota aktif', value: '—' },
       { label: 'Kas tercatat', value: '—' },
     ];
-  const kas = cashSummary(ctx.cash || []);
+  const cash = cashSummary(ctx.cash || []);
   return [
-    { label: 'Masuk tercatat', value: rupiah(kas.incoming) },
-    { label: 'Keluar tercatat', value: rupiah(kas.outgoing) },
+    { label: 'Masuk tercatat', value: rupiah(cash.incoming) },
+    { label: 'Keluar tercatat', value: rupiah(cash.outgoing) },
   ];
 }
 
@@ -399,9 +402,9 @@ export function deliveryInfo(delivery: Item): [string, string][] {
   ).filter(([, v]) => v);
 }
 
-export type HasilCari = { key: string; entity: Entity; item: Item; kind: string };
+export type SearchResult = { key: string; entity: Entity; item: Item; kind: string };
 /** Pencarian lintas catatan yang sudah dimuat; paling banyak delapan hasil. */
-export function searchRecords(ctx: Konteks, query: string): HasilCari[] {
+export function searchRecords(ctx: RoomContext, query: string): SearchResult[] {
   const q = query.trim().toLocaleLowerCase('id');
   if (!q) return [];
   const { model } = ctx;
@@ -419,7 +422,7 @@ export function searchRecords(ctx: Konteks, query: string): HasilCari[] {
       ? []
       : [['deliveries', 'Pengiriman', model.deliveries] as [Entity, string, Item[]]]),
   ];
-  const hasil: HasilCari[] = [];
+  const results: SearchResult[] = [];
   for (const [entity, kind, rows] of sources)
     for (const item of rows)
       if (
@@ -427,6 +430,6 @@ export function searchRecords(ctx: Konteks, query: string): HasilCari[] {
           .toLocaleLowerCase('id')
           .includes(q)
       )
-        hasil.push({ key: `${entity}-${item.id}`, entity, item, kind });
-  return hasil.slice(0, 8);
+        results.push({ key: `${entity}-${item.id}`, entity, item, kind });
+  return results.slice(0, 8);
 }

@@ -298,7 +298,9 @@ export function zoneSummaries(
   const atDock = model.trucks.filter((spot) => spot.place === 'dok').length;
   const queued = model.trucks.length - atDock;
   const working = model.tasks.filter((row) => row.data.status === 'proses').length;
-  const niaga = model.plots.filter((plot) => plot.id === 'sembako' || plot.id.startsWith('gerai-'));
+  const commerce = model.plots.filter(
+    (plot) => plot.id === 'sembako' || plot.id.startsWith('gerai-'),
+  );
   return {
     semua: {
       note: `${model.plots.filter((plot) => plot.unit).length}/${model.plots.length} gerai tercatat · ${model.trucks.length} truk`,
@@ -321,9 +323,9 @@ export function zoneSummaries(
       total: 2,
     },
     gerai: {
-      note: `${niaga.filter((plot) => plot.unit).length}/${niaga.length} gerai tercatat`,
-      value: niaga.filter((plot) => plot.unit).length,
-      total: niaga.length,
+      note: `${commerce.filter((plot) => plot.unit).length}/${commerce.length} gerai tercatat`,
+      value: commerce.filter((plot) => plot.unit).length,
+      total: commerce.length,
     },
     lahan: { note: 'Enam petak · data lahan belum dicatat' },
   };

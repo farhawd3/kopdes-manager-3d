@@ -8,7 +8,7 @@ import {
   roomRows,
   roomStats,
   searchRecords,
-  type Konteks,
+  type RoomContext,
 } from '@/features/world/monitor-data';
 import type { Item } from '@/features/records/schemas';
 
@@ -54,7 +54,7 @@ const data = {
 };
 const model = getWorldModel(data, now);
 const plans = monitoringPlans(model);
-const ctx: Konteks = { model, date, now, documents: [], plans };
+const ctx: RoomContext = { model, date, now, documents: [], plans };
 
 it('aktivitas tercatat menentukan ruang figur; nonaktif tidak tampil', () => {
   const by = Object.fromEntries(plans.map((p) => [p.name, [p.area, p.action]]));
@@ -66,9 +66,9 @@ it('aktivitas tercatat menentukan ruang figur; nonaktif tidak tampil', () => {
     Dodi: ['istirahat', 'rest'],
   });
   expect(plans.find((p) => p.name === 'Sari')?.mascot).toBe(true);
-  expect(plans.find((p) => p.name === 'Citra')?.rupa.rambut).toBe('hijab');
-  expect(plans.find((p) => p.name === 'Budi')?.rupa.baju).toBe(0x86c3a3);
-  expect(plans.find((p) => p.name === 'Sari')?.rupa.seragam).toBe('jas');
+  expect(plans.find((p) => p.name === 'Citra')?.look.hairStyle).toBe('hijab');
+  expect(plans.find((p) => p.name === 'Budi')?.look.shirt).toBe(0x86c3a3);
+  expect(plans.find((p) => p.name === 'Sari')?.look.uniform).toBe('jas');
 });
 
 it('daftar ruang: tugas terlambat lebih dulu, saring per anggota', () => {

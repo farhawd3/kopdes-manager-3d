@@ -38,7 +38,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-export type Ikon3DKind =
+export type Icon3DKind =
   | 'kotak'
   | 'truk'
   | 'jam'
@@ -95,20 +95,20 @@ const C = Math.cos(Math.PI / 6);
 const iso = (x: number, y: number, z: number): P => [24 + (x - y) * C, 30 + (x + y) * 0.5 - z];
 const pts = (list: P[]) => list.map(([a, b]) => `${a.toFixed(2)},${b.toFixed(2)}`).join(' ');
 
-function campur(hex: string, ke: string, t: number) {
+function mix(hex: string, to: string, t: number) {
   const a = parseInt(hex.slice(1), 16),
-    b = parseInt(ke.slice(1), 16);
+    b = parseInt(to.slice(1), 16);
   const ch = (s: number) => Math.round(((a >> s) & 255) * (1 - t) + ((b >> s) & 255) * t);
   return `#${((ch(16) << 16) | (ch(8) << 8) | ch(0)).toString(16).padStart(6, '0')}`;
 }
 
 /** Id gradasi unik per ikon; disaring agar aman dipakai dalam url(#…). */
 type Ctx = { id: string };
-const u = (c: Ctx, nama: string) => `url(#${c.id}-${nama})`;
+const u = (c: Ctx, name: string) => `url(#${c.id}-${name})`;
 
 function Defs({ c }: { c: Ctx }) {
-  const g = (nama: string, a: string, b: string, x2 = 0, y2 = 1) => (
-    <linearGradient id={`${c.id}-${nama}`} x1="0" y1="0" x2={x2} y2={y2}>
+  const g = (name: string, a: string, b: string, x2 = 0, y2 = 1) => (
+    <linearGradient id={`${c.id}-${name}`} x1="0" y1="0" x2={x2} y2={y2}>
       <stop offset="0" stopColor={a} />
       <stop offset="1" stopColor={b} />
     </linearGradient>
@@ -134,8 +134,8 @@ function Defs({ c }: { c: Ctx }) {
   );
 }
 
-/** Balok isometrik: tiga sisi bergradasi dan tepi depan berkilau. `warna` = balok berwarna. */
-function Balok({
+/** Balok isometrik: tiga sisi bergradasi dan tepi depan berkilau. `color` = balok berwarna. */
+function Block({
   c,
   x,
   y,
@@ -143,8 +143,8 @@ function Balok({
   w,
   d,
   h,
-  warna,
-  kilau = true,
+  color,
+  shine = true,
 }: {
   c: Ctx;
   x: number;
@@ -153,12 +153,12 @@ function Balok({
   w: number;
   d: number;
   h: number;
-  warna?: string;
-  kilau?: boolean;
+  color?: string;
+  shine?: boolean;
 }) {
-  const kiri = warna ?? u(c, 'kiri'),
-    kanan = warna ? campur(warna, '#1e2a4a', 0.22) : u(c, 'kanan'),
-    atas = warna ? campur(warna, '#ffffff', 0.35) : u(c, 'atas');
+  const left = color ?? u(c, 'kiri'),
+    right = color ? mix(color, '#1e2a4a', 0.22) : u(c, 'kanan'),
+    top = color ? mix(color, '#ffffff', 0.35) : u(c, 'atas');
   const f = (p: P[], fill: string) => (
     <polygon points={pts(p)} fill={fill} stroke={fill} strokeWidth={0.9} strokeLinejoin="round" />
   );
@@ -166,17 +166,17 @@ function Balok({
     <g>
       {f(
         [iso(x, y + d, z), iso(x + w, y + d, z), iso(x + w, y + d, z + h), iso(x, y + d, z + h)],
-        kiri,
+        left,
       )}
       {f(
         [iso(x + w, y, z), iso(x + w, y + d, z), iso(x + w, y + d, z + h), iso(x + w, y, z + h)],
-        kanan,
+        right,
       )}
       {f(
         [iso(x, y, z + h), iso(x + w, y, z + h), iso(x + w, y + d, z + h), iso(x, y + d, z + h)],
-        atas,
+        top,
       )}
-      {kilau && (
+      {shine && (
         <polyline
           points={pts([iso(x, y + d, z + h), iso(x + w, y + d, z + h), iso(x + w, y, z + h)])}
           fill="none"
@@ -192,16 +192,16 @@ function Balok({
 }
 
 /** Garis/sisipan pada permukaan isometrik. */
-function Garis({
+function Line({
   a,
   b,
-  warna = '#fff',
+  color = '#fff',
   w = 1.4,
   o = 1,
 }: {
   a: [number, number, number];
   b: [number, number, number];
-  warna?: string;
+  color?: string;
   w?: number;
   o?: number;
 }) {
@@ -213,14 +213,14 @@ function Garis({
       y1={y1}
       x2={x2}
       y2={y2}
-      stroke={warna}
+      stroke={color}
       strokeOpacity={o}
       strokeWidth={w}
       strokeLinecap="round"
     />
   );
 }
-function Bidang({ p, fill, o = 1 }: { p: P[]; fill: string; o?: number }) {
+function Face({ p, fill, o = 1 }: { p: P[]; fill: string; o?: number }) {
   return (
     <polygon
       points={pts(p)}
@@ -234,7 +234,7 @@ function Bidang({ p, fill, o = 1 }: { p: P[]; fill: string; o?: number }) {
   );
 }
 
-const SIMBOL: Record<Ikon3DKind, LucideIcon> = {
+const SYMBOLS: Record<Icon3DKind, LucideIcon> = {
   kotak: Package,
   truk: Truck,
   jam: Clock3,
@@ -272,23 +272,23 @@ const SIMBOL: Record<Ikon3DKind, LucideIcon> = {
 };
 
 /** Simbol dua warna pada ubin timbul; satu bentuk dan pencahayaan untuk seluruh aplikasi. */
-export function Ikon3D({
+export function Icon3D({
   kind,
   size = 32,
   className,
-  rapat = false,
+  compact = false,
 }: {
-  kind: Ikon3DKind;
+  kind: Icon3DKind;
   size?: number;
   className?: string;
-  rapat?: boolean;
+  compact?: boolean;
 }) {
   const id = useId().replace(/[^a-zA-Z0-9_-]/g, '');
-  const Icon = SIMBOL[kind];
+  const Icon = SYMBOLS[kind];
   // Tanpa ubin latar: simbol dua nada (garis gradasi token --ikon-garis-*, isian --ikon-isi) berbayang halus.
   return (
     <svg
-      viewBox={rapat ? '5 5 38 38' : '2 2 44 44'}
+      viewBox={compact ? '5 5 38 38' : '2 2 44 44'}
       width={size}
       height={size}
       aria-hidden="true"
@@ -317,25 +317,25 @@ export function Ikon3D({
 }
 
 // ---------- Thumbnail barang berwarna ----------
-function Karung({ c, warna, label }: { c: Ctx; warna: string; label: string }) {
+function Sack({ c, color, label }: { c: Ctx; color: string; label: string }) {
   const d = 'M13 12q11-4 22 0l2 22q-1 6-13 6t-13-6Z';
   return (
     <>
-      <path d={d} transform="translate(0 2.4)" fill={campur(warna, '#3a2a1a', 0.35)} />
-      <path d={d} fill={warna} />
-      <path d="M13 12q11-4 22 0l-1 3q-10-3-20 0Z" fill={campur(warna, '#3a2a1a', 0.18)} />
+      <path d={d} transform="translate(0 2.4)" fill={mix(color, '#3a2a1a', 0.35)} />
+      <path d={d} fill={color} />
+      <path d="M13 12q11-4 22 0l-1 3q-10-3-20 0Z" fill={mix(color, '#3a2a1a', 0.18)} />
       <rect x={17} y={21} width={14} height={9} rx={2} fill={label} />
       <path d={d} fill={u(c, 'kilap')} />
     </>
   );
 }
-function Botol({ c, isi, tutup }: { c: Ctx; isi: string; tutup: string }) {
+function Bottle({ c, body, cap }: { c: Ctx; body: string; cap: string }) {
   const d = 'M20 12h8v4q5 3 5 9v12a4 4 0 0 1-4 4H19a4 4 0 0 1-4-4V25q0-6 5-9Z';
   return (
     <>
-      <path d={d} transform="translate(0 2)" fill={campur(isi, '#2a2a3a', 0.35)} />
-      <path d={d} fill={isi} />
-      <rect x={19} y={6} width={10} height={6.5} rx={2} fill={tutup} />
+      <path d={d} transform="translate(0 2)" fill={mix(body, '#2a2a3a', 0.35)} />
+      <path d={d} fill={body} />
+      <rect x={19} y={6} width={10} height={6.5} rx={2} fill={cap} />
       <rect x={17.5} y={26} width={13} height={8} rx={2} fill="#fff" fillOpacity={0.85} />
       <path d={d} fill={u(c, 'kilap')} />
     </>
@@ -345,13 +345,13 @@ function Botol({ c, isi, tutup }: { c: Ctx; isi: string; tutup: string }) {
 const THUMB: Record<ThumbKind, (c: Ctx) => ReactNode> = {
   kardus: (c) => (
     <>
-      <Balok c={c} x={-9} y={-9} z={0} w={18} d={18} h={14} warna="#d9a066" />
-      <Garis a={[-9, -1.5, 14]} b={[9, -1.5, 14]} warna="#f3d7ae" w={3} />
-      <Garis a={[9, -1.5, 14]} b={[9, -1.5, 7]} warna="#f3d7ae" w={3} o={0.8} />
+      <Block c={c} x={-9} y={-9} z={0} w={18} d={18} h={14} color="#d9a066" />
+      <Line a={[-9, -1.5, 14]} b={[9, -1.5, 14]} color="#f3d7ae" w={3} />
+      <Line a={[9, -1.5, 14]} b={[9, -1.5, 7]} color="#f3d7ae" w={3} o={0.8} />
     </>
   ),
-  karung: (c) => <Karung c={c} warna="#efe6d2" label="#3b68f0" />,
-  'karung-hijau': (c) => <Karung c={c} warna="#7cc59a" label="#f6f1e3" />,
+  karung: (c) => <Sack c={c} color="#efe6d2" label="#3b68f0" />,
+  'karung-hijau': (c) => <Sack c={c} color="#7cc59a" label="#f6f1e3" />,
   galon: (c) => (
     <>
       <path
@@ -366,7 +366,7 @@ const THUMB: Record<ThumbKind, (c: Ctx) => ReactNode> = {
       <path d="M14 18q0-5 5-6h10q5 1 5 6v18a5 5 0 0 1-5 5H19a5 5 0 0 1-5-5Z" fill={u(c, 'kilap')} />
     </>
   ),
-  botol: (c) => <Botol c={c} isi="#f2c64f" tutup="#e0742f" />,
+  botol: (c) => <Bottle c={c} body="#f2c64f" cap="#e0742f" />,
   obat: (c) => (
     <>
       <rect
@@ -393,7 +393,7 @@ const THUMB: Record<ThumbKind, (c: Ctx) => ReactNode> = {
   ),
   telur: (c) => (
     <>
-      <Balok c={c} x={-11} y={-8} z={0} w={22} d={16} h={3} warna="#c9b08f" />
+      <Block c={c} x={-11} y={-8} z={0} w={22} d={16} h={3} color="#c9b08f" />
       {[-6, 0, 6].map((x) =>
         [-3, 3].map((y) => {
           const [cx, cy] = iso(x, y, 5);
@@ -468,9 +468,9 @@ const THUMB: Record<ThumbKind, (c: Ctx) => ReactNode> = {
   ),
   susu: (c) => (
     <>
-      <Balok c={c} x={-6} y={-6} z={0} w={12} d={12} h={18} warna="#f4f6fb" />
-      <Bidang p={[iso(-6, 6, 18), iso(6, 6, 18), iso(6, 0, 23), iso(-6, 0, 23)]} fill="#ffffff" />
-      <Bidang p={[iso(-5, 6, 4), iso(5, 6, 4), iso(5, 6, 11), iso(-5, 6, 11)]} fill="#6aa8ef" />
+      <Block c={c} x={-6} y={-6} z={0} w={12} d={12} h={18} color="#f4f6fb" />
+      <Face p={[iso(-6, 6, 18), iso(6, 6, 18), iso(6, 0, 23), iso(-6, 0, 23)]} fill="#ffffff" />
+      <Face p={[iso(-5, 6, 4), iso(5, 6, 4), iso(5, 6, 11), iso(-5, 6, 11)]} fill="#6aa8ef" />
     </>
   ),
   'kopi-pak': (c) => (
@@ -490,7 +490,7 @@ const THUMB: Record<ThumbKind, (c: Ctx) => ReactNode> = {
   lembaran: (c) => (
     <>
       {[0, 1, 2].map((i) => (
-        <Balok
+        <Block
           key={i}
           c={c}
           x={-11}
@@ -499,7 +499,7 @@ const THUMB: Record<ThumbKind, (c: Ctx) => ReactNode> = {
           w={22}
           d={16}
           h={2.6}
-          warna={i === 2 ? '#7aa7d9' : '#5d8cc4'}
+          color={i === 2 ? '#7aa7d9' : '#5d8cc4'}
         />
       ))}
     </>
@@ -507,25 +507,25 @@ const THUMB: Record<ThumbKind, (c: Ctx) => ReactNode> = {
 };
 
 /** Thumbnail barang berwarna menurut nama/satuan; jatuh ke kardus bila tidak dikenali. */
-export function thumbBarang(title: string, satuan = ''): ThumbKind {
-  const t = `${title} ${satuan}`.toLowerCase();
-  const ada = (...k: string[]) => k.some((s) => t.includes(s));
-  if (ada('pupuk', 'bibit', 'benih')) return 'karung-hijau';
-  if (ada('karung', 'sak', 'beras', 'gula', 'tepung')) return 'karung';
-  if (ada('galon', 'air mineral')) return 'galon';
-  if (ada('obat', 'paracetamol', 'strip', 'tablet', 'kapsul')) return 'obat';
-  if (ada('minyak', 'botol', 'vitamin', 'sabun cair')) return 'botol';
-  if (ada('telur', 'tray')) return 'telur';
-  if (ada('sayur', 'ikat', 'bayam', 'kangkung')) return 'sayur';
-  if (ada('ikan', 'nila', 'lele')) return 'ikan';
-  if (ada('daging', 'ayam', 'sapi')) return 'daging';
-  if (ada('susu', 'liter')) return 'susu';
-  if (ada('kopi', 'teh')) return 'kopi-pak';
-  if (ada('terpal', 'lembar', 'plastik')) return 'lembaran';
+export function itemThumbKind(title: string, unit = ''): ThumbKind {
+  const t = `${title} ${unit}`.toLowerCase();
+  const has = (...k: string[]) => k.some((s) => t.includes(s));
+  if (has('pupuk', 'bibit', 'benih')) return 'karung-hijau';
+  if (has('karung', 'sak', 'beras', 'gula', 'tepung')) return 'karung';
+  if (has('galon', 'air mineral')) return 'galon';
+  if (has('obat', 'paracetamol', 'strip', 'tablet', 'kapsul')) return 'obat';
+  if (has('minyak', 'botol', 'vitamin', 'sabun cair')) return 'botol';
+  if (has('telur', 'tray')) return 'telur';
+  if (has('sayur', 'ikat', 'bayam', 'kangkung')) return 'sayur';
+  if (has('ikan', 'nila', 'lele')) return 'ikan';
+  if (has('daging', 'ayam', 'sapi')) return 'daging';
+  if (has('susu', 'liter')) return 'susu';
+  if (has('kopi', 'teh')) return 'kopi-pak';
+  if (has('terpal', 'lembar', 'plastik')) return 'lembaran';
   return 'kardus';
 }
 
-export function ThumbBarang({ kind, size = 32 }: { kind: ThumbKind; size?: number }) {
+export function ItemThumb({ kind, size = 32 }: { kind: ThumbKind; size?: number }) {
   const c = { id: `t${useId().replace(/[^a-zA-Z0-9_-]/g, '')}` };
   return (
     <svg
@@ -543,5 +543,5 @@ export function ThumbBarang({ kind, size = 32 }: { kind: ThumbKind; size?: numbe
   );
 }
 
-export const IKON3D_KINDS = Object.keys(SIMBOL) as Ikon3DKind[];
+export const ICON3D_KINDS = Object.keys(SYMBOLS) as Icon3DKind[];
 export const THUMB_KINDS = Object.keys(THUMB) as ThumbKind[];

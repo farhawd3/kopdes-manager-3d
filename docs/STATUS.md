@@ -16,7 +16,7 @@ Satu-satunya catatan keadaan untuk semua AI dan manusia. Timpa bagian yang berub
 1. Pemilik meninjau tampilan di `npm run dev:demo -- -p 3200` (HP, tablet, laptop) dan memberi koreksi.
 2. Pemilik menjalankan migrasi 11 di Supabase (setelah migrasi 1–10), lalu seed contoh bila perlu (`docs/DATABASE.md`).
 3. Setelah disetujui: `npm run cek:penuh`, push cabang, buka pull request ke `main`.
-4. Belum dikerjakan: menerjemahkan nama dalam kode Dunia 3D (`src/features/world`) dan `lib/server/demo-db.ts` ke bahasa Inggris; halaman Agenda masih tampilan daftar umum (belum kalender pekan khusus); tes perilaku UI baru belum ditulis (hanya tes logika).
+4. Belum dikerjakan: memindahkan `monitoring.css` Dunia 3D ke kelas Tailwind/token (nama kode dan berkas Dunia 3D sudah bahasa Inggris); halaman Agenda masih tampilan daftar umum (belum kalender pekan khusus); tes perilaku UI baru belum ditulis (hanya tes logika).
 
 ## Keputusan pemilik yang berlaku
 
