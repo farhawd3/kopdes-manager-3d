@@ -47,7 +47,7 @@ import { SegmentBar } from '@/components/ui/progress';
 import { usePreference } from '@/lib/use-preference';
 import { downloadCsv } from '@/lib/ledger';
 import { addDays, formatDate, today } from '@/lib/date';
-import { isActiveTask, taskStatusChange, type TaskStatus } from '@/lib/task-status';
+import { isActiveTask, isOverdue, taskStatusChange, type TaskStatus } from '@/lib/task-status';
 import { planProgress } from '@/lib/progress';
 import { catalog } from '@/features/records/catalog';
 import { countTaskStates } from './status-counts';
@@ -142,7 +142,7 @@ export function TasksPage() {
           return false;
         if (view === 'list' && !archive) {
           if (status === 'terlambat') {
-            if (!(isActiveTask(d.status) && d.due_date && String(d.due_date) < date)) return false;
+            if (!isOverdue(d, date)) return false;
           } else if (status) {
             if (d.status !== status) return false;
           } else if (!isActiveTask(d.status)) return false;

@@ -2,6 +2,7 @@
 // material dipakai bersama (cache) agar adegan berisi banyak benda tetap ringan.
 import {
   BoxGeometry,
+  Group,
   CapsuleGeometry,
   ConeGeometry,
   CylinderGeometry,
@@ -9,6 +10,7 @@ import {
   MeshStandardMaterial,
   SphereGeometry,
   type BufferGeometry,
+  type Object3D,
   type ColorRepresentation,
 } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
@@ -140,4 +142,24 @@ export function pyramid(w: number, h: number, d: number, color: ColorRepresentat
     return geo;
   });
   return toMesh(g, color);
+}
+
+/** Group berisi benda-benda yang diberikan. */
+export function group(...children: Parameters<Group['add']>) {
+  const g = new Group();
+  g.add(...children);
+  return g;
+}
+
+/** Putar objek pada sumbu y lalu kembalikan objek yang sama. */
+export function rotated<T extends Object3D>(o: T, rot: number) {
+  o.rotation.y = rot;
+  return o;
+}
+
+/** Warna papan penanda/tulisan: warna ruang (#rrggbb) dipekatkan agar terbaca di atas kaca dan karpet. */
+export function darken(hex: string, t = 0.82) {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = (s: number) => Math.round(((n >> s) & 255) * t);
+  return (ch(16) << 16) | (ch(8) << 8) | ch(0);
 }

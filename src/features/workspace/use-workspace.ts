@@ -7,7 +7,7 @@ import {
   operationEntities,
   routineEntities,
 } from '../records/constants';
-import { api } from '@/lib/client';
+import { api, invalidateCache } from '@/lib/client';
 import { pageEntities } from './scope';
 import type { ListQuery } from '../records/query';
 export type Workspace = Partial<Record<Entity, Item[]>>;
@@ -117,7 +117,7 @@ export function useWorkspace(
     },
     [scopeKey, slug],
   );
-  const refresh = useCallback(async () => {
+  const load = useCallback(async () => {
     const current = ++generation.current;
     setFetching(null);
     try {
@@ -193,6 +193,11 @@ export function useWorkspace(
       if (current === generation.current) setLoading(false);
     }
   }, [slug, pathFor, recordKey, cacheKey]);
+  // Muat ulang yang diminta pengguna atau setelah menyimpan selalu ke server, bukan cache baca 60 detik.
+  const refresh = useCallback(() => {
+    invalidateCache();
+    return load();
+  }, [load]);
   const loadMore = async (entity: Entity) => {
     if (
       loading ||
@@ -249,14 +254,14 @@ export function useWorkspace(
     // Cancel an obsolete mount before it starts a request (including StrictMode's probe).
     let active = true;
     void Promise.resolve().then(() => {
-      if (active) return refresh();
+      if (active) return load();
     });
     const requestRef = generation;
     return () => {
       active = false;
       requestRef.current++;
     };
-  }, [refresh, cacheKey]);
+  }, [load, cacheKey]);
   return {
     data,
     loading,

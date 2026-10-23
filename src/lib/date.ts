@@ -6,6 +6,16 @@ export function today(now = new Date()): string {
     day: '2-digit',
   }).format(now);
 }
+const JAKARTA_TIME = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Asia/Jakarta',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+});
+/** Jam WIB "HH:MM" (00–23). */
+export function jakartaTime(now: Date | number = new Date()): string {
+  return JAKARTA_TIME.format(now);
+}
 export function addDays(value: string, amount: number): string {
   const date = new Date(value + 'T12:00:00Z');
   date.setUTCDate(date.getUTCDate() + amount);

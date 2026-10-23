@@ -29,8 +29,3 @@ export function scopeProgress(tasks: Pick<Task, 'status' | 'subtasks'>[]): numbe
     ? Math.round(active.reduce((sum, task) => sum + taskProgress(task), 0) / active.length)
     : 0;
 }
-export function isOverdue(task: Pick<Task, 'status' | 'due_date'>, date: string) {
-  return (
-    !!task.due_date && !['selesai', 'dibatalkan'].includes(task.status) && task.due_date < date
-  );
-}

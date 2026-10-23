@@ -9,7 +9,7 @@ import {
   type BufferGeometry,
   type Object3D,
 } from 'three';
-import { sphere, place, box, cylinder } from './shapes';
+import { sphere, place, box, cylinder, rotated, darken } from './shapes';
 import { chair, cabinet, door, openShelf, sofa, plant } from './furniture';
 import { forklift, pallet, sackPallet, rollerDoor, cartonStack } from './logistics';
 import {
@@ -60,11 +60,6 @@ function crossSign(color: number) {
   );
   return g;
 }
-function rotated<T extends Object3D>(o: T, rot: number) {
-  o.rotation.y = rot;
-  return o;
-}
-
 /** Gembok melayang: tanda unit belum dibuka di web. */
 function padlock() {
   const g = new Group();
@@ -285,10 +280,4 @@ export function buildStores(info: StoreInfo[]) {
   );
   root.add(paintLabels(labels));
   return { root, areas, slots };
-}
-
-function darken(hex: string, t = 0.82) {
-  const n = parseInt(hex.slice(1), 16);
-  const ch = (s: number) => Math.round(((n >> s) & 255) * t);
-  return (ch(16) << 16) | (ch(8) << 8) | ch(0);
 }

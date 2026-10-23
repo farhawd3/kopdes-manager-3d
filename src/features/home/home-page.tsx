@@ -34,7 +34,7 @@ import { ErrorState, EmptyState } from '@/components/ui/states';
 import { SegmentBar } from '@/components/ui/progress';
 import { Wave } from '@/components/ui/wave';
 import { addDays, formatDate, today, weekDays } from '@/lib/date';
-import { isActiveTask } from '@/lib/task-status';
+import { isActiveTask, isOverdue } from '@/lib/task-status';
 import { scopeProgress } from '@/lib/progress';
 import { projectTone } from '@/lib/tones';
 import { cn } from '@/lib/utils';
@@ -106,11 +106,7 @@ export function HomePage() {
   const peopleOf = (state: 'rencana' | 'proses' | 'selesai' | 'terlambat') => [
     ...new Set(
       tasks
-        .filter((t) =>
-          state === 'terlambat'
-            ? isActiveTask(t.data.status) && t.data.due_date && String(t.data.due_date) < date
-            : t.data.status === state,
-        )
+        .filter((t) => (state === 'terlambat' ? isOverdue(t.data, date) : t.data.status === state))
         .map((t) => String(t.data.assignee || ''))
         .filter(Boolean),
     ),

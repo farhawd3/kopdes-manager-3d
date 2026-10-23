@@ -1,19 +1,13 @@
 // Model logistik bergaya lembut: rak baja, palet, karung, kardus, forklift, truk, pintu gulung.
 // Alas di y = 0, menghadap +z; ukuran mengikuti satuan perabot (1 ≈ 50 cm).
 import { Group, type ColorRepresentation } from 'three';
-import { COLOR, sphere, place, box, cylinder } from './shapes';
+import { COLOR, sphere, place, box, cylinder, group } from './shapes';
 
 // Warna rak mengikuti palet hangat diorama (bukan baja industri): tiang lavender, balok kayu.
 const BEAM = COLOR.wood;
 const POST = COLOR.lavender;
 const CARTON = 0xd9aa72;
 const SACK = 0xefe3cb;
-
-function group(...children: Parameters<Group['add']>) {
-  const g = new Group();
-  g.add(...children);
-  return g;
-}
 
 /** Tumpukan kardus n buah di atas satu sama lain, sedikit bergeser agar terasa ditumpuk tangan. */
 export function cartonStack(n = 3, color: ColorRepresentation = CARTON) {

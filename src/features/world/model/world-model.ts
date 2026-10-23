@@ -1,29 +1,8 @@
-import { z } from 'zod';
-import { addDays, today } from '@/lib/date';
+import { jakartaTime, today } from '@/lib/date';
 import type { Workspace } from '@/features/workspace/use-workspace';
-import { allBuildings, lots } from './district';
+import { allBuildings } from './district';
 import type { Item } from '../../records/schemas';
 
-export const worldPreferencesSchema = z.object({
-  version: z.literal(1).default(1),
-  weather: z.enum(['otomatis', 'cerah', 'berawan', 'hujan']).default('otomatis'),
-  // Bawaan siang seperti video; waktu otomatis WIB tetap dapat dipilih di Suasana.
-  time: z.enum(['otomatis', 'pagi', 'siang', 'senja', 'malam']).default('siang'),
-  outfit: z.enum(['biru', 'lavender', 'hijau']).default('biru'),
-  // Rupa avatar manajer (preferensi perangkat); belum diisi = sosok netral bertopi KDMP.
-  look_head: z
-    .enum(['belum diisi', 'tidak ada', 'hijab', 'peci', 'topi KDMP'])
-    .default('belum diisi'),
-  look_hair: z.enum(['belum diisi', 'pendek', 'panjang', 'ikal']).default('belum diisi'),
-  look_skin: z.enum(['belum diisi', 'terang', 'sawo matang', 'gelap']).default('belum diisi'),
-  look_glasses: z.enum(['tidak', 'ya']).default('tidak'),
-  quality: z.enum(['otomatis', 'tinggi', 'sedang', 'hemat']).default('otomatis'),
-});
-/**
- * luar: distrik; dalam: interior kantor; balai: interior balai desa; gudang: interior gudang
- * logistik; pendingin: interior cold storage; gerai:<id bangunan>: interior gerai (sembako, …).
- */
-export type WorldLocation = 'luar' | 'dalam' | 'balai' | 'gudang' | 'pendingin' | `gerai:${string}`;
 export type CharacterActivity = 'idle' | 'work' | 'meeting' | 'gym';
 
 export function getWorldModel(data: Workspace, now: Date, previousTrucks: TruckSpot[] = []) {
@@ -64,40 +43,12 @@ export function getWorldModel(data: Workspace, now: Date, previousTrucks: TruckS
     deliveries: data.deliveries || [],
     staff: data.staff || [],
     members: data.members || [],
-    notices: noticeBoard(data.decisions || [], data.documents || [], date),
     trucks: placeTrucks(data.deliveries || [], 4, 3, previousTrucks),
-    // Riwayat 7 hari (WIB) untuk mini grafik KPI; hanya dari tanggal yang tercatat.
-    week: {
-      meetings: weekCounts(data.meetings || [], (row) => String(row.data.date || ''), date),
-      deliveries: weekCounts(
-        data.deliveries || [],
-        (row) => String(row.data.arrived_date || row.data.planned_date || ''),
-        date,
-      ),
-      tasks: weekCounts(data['work-items'] || [], (row) => row.created_at.slice(0, 10), date),
-    },
     title: String(data.organization?.[0]?.data.title || 'Koperasi'),
     manager: String(data.organization?.[0]?.data.manager || 'Manajer'),
   };
 }
 export type WorldModel = ReturnType<typeof getWorldModel>;
-
-/**
- * Isi papan pengumuman: tiga keputusan terbaru dan dokumen yang kedaluwarsa atau akan
- * kedaluwarsa dalam 30 hari. Hanya dari catatan; tanpa catatan papan kosong.
- */
-export function noticeBoard(decisions: Item[], documents: Item[], date: string) {
-  const limit = addDays(date, 30);
-  return {
-    decisions: [...decisions]
-      .sort((a, b) => String(b.data.date).localeCompare(String(a.data.date)))
-      .slice(0, 3),
-    documents: documents
-      .filter((row) => row.data.expires_date && String(row.data.expires_date) <= limit)
-      .sort((a, b) => String(a.data.expires_date).localeCompare(String(b.data.expires_date)))
-      .slice(0, 3),
-  };
-}
 
 export const deliverySteps = ['dipesan', 'dikirim', 'tiba', 'diperiksa', 'selesai'] as const;
 
@@ -220,12 +171,7 @@ export function meetingTimeline(meetings: Item[], now: Date): MeetingStep[] {
       const time = String(row.data.time || '09:00');
       const start = Date.parse(`${date}T${time}:00+07:00`);
       const finish = start + Number(row.data.duration || 60) * 60000;
-      const end = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Asia/Jakarta',
-        hour: '2-digit',
-        minute: '2-digit',
-        hourCycle: 'h23',
-      }).format(finish);
+      const end = jakartaTime(finish);
       const state: MeetingStep['state'] =
         now.getTime() >= finish ? 'selesai' : now.getTime() >= start ? 'berlangsung' : 'nanti';
       return { row, time, end, state, start };
@@ -246,7 +192,7 @@ const matchesKind = (unit: Item, kinds: string[]) => {
  * Gerai menempati bangunan sesuai Jenis (sembako, apotek, klinik, simpan pinjam, cold storage);
  * jenis lain mengisi kavling gerai tambahan menurut kolom Lahan (1–3) lalu urutan dibuat.
  * Gerai berjenis logistik menjadi catatan gudang. Bangunan tanpa gerai tampil sebagai rencana.
- * Gerai lebih banyak dari kavling tetap ada di daftar Gerai (overflow).
+ * Gerai lebih banyak dari kavling tetap ada di daftar Gerai.
  */
 export function placeUnits(units: Item[]) {
   const taken = new Map<string, Item>();
@@ -275,64 +221,9 @@ export function placeUnits(units: Item[]) {
     plots: unitBuildings.map((building) => ({
       id: building.id,
       name: building.name,
-      lotName: lots.find((lot) => lot.buildings.includes(building))!.name,
       building,
       unit: taken.get(building.id),
     })),
     warehouseUnit,
-    overflow: rest.length,
   };
-}
-
-export type ZoneSummary = { note: string; value?: number; total?: number };
-
-/**
- * Ringkasan per zona untuk pemilih zona (pola dropdown situs pada video): angka hanya dari
- * data — gerai tercatat per kavling, dok terisi dari pengiriman, tugas dan rapat hari ini.
- */
-export function zoneSummaries(
-  model: WorldModel,
-): Record<'semua' | 'gudang' | 'kantor' | 'kesehatan' | 'gerai' | 'lahan', ZoneSummary> {
-  const recorded = (ids: string[]) =>
-    model.plots.filter((plot) => ids.includes(plot.id) && plot.unit).length;
-  const atDock = model.trucks.filter((spot) => spot.place === 'dok').length;
-  const queued = model.trucks.length - atDock;
-  const working = model.tasks.filter((row) => row.data.status === 'proses').length;
-  const commerce = model.plots.filter(
-    (plot) => plot.id === 'sembako' || plot.id.startsWith('gerai-'),
-  );
-  return {
-    semua: {
-      note: `${model.plots.filter((plot) => plot.unit).length}/${model.plots.length} gerai tercatat · ${model.trucks.length} truk`,
-      value: model.plots.filter((plot) => plot.unit).length,
-      total: model.plots.length,
-    },
-    gudang: {
-      note: `${atDock}/4 dok terisi · ${queued} antre · ${recorded(['cold-storage']) ? 'cold storage tercatat' : 'cold storage rencana'}`,
-      value: atDock,
-      total: 4,
-    },
-    kantor: {
-      note: `${model.meetings.length} rapat hari ini · ${model.tasks.length} tugas terbuka`,
-      value: working,
-      total: model.tasks.length,
-    },
-    kesehatan: {
-      note: `${recorded(['klinik', 'apotek'])}/2 unit tercatat`,
-      value: recorded(['klinik', 'apotek']),
-      total: 2,
-    },
-    gerai: {
-      note: `${commerce.filter((plot) => plot.unit).length}/${commerce.length} gerai tercatat`,
-      value: commerce.filter((plot) => plot.unit).length,
-      total: commerce.length,
-    },
-    lahan: { note: 'Enam petak · data lahan belum dicatat' },
-  };
-}
-
-/** Jumlah catatan per hari selama 7 hari terakhir sampai `date` (lama → baru). */
-export function weekCounts(rows: Item[], dateOf: (row: Item) => string, date: string) {
-  const days = [6, 5, 4, 3, 2, 1, 0].map((back) => addDays(date, -back));
-  return days.map((day) => rows.filter((row) => dateOf(row) === day).length);
 }

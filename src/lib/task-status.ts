@@ -22,6 +22,11 @@ export function isActiveTask(status: unknown): boolean {
   return !isClosedTask(status);
 }
 
+/** Lewat tenggat: masih aktif dan tenggatnya sebelum `date` (YYYY-MM-DD, WIB). */
+export function isOverdue(task: { status?: unknown; due_date?: unknown }, date: string): boolean {
+  return isActiveTask(task.status) && !!task.due_date && String(task.due_date) < date;
+}
+
 export type TaskAction = 'plan' | 'start' | 'complete' | 'reopen' | 'cancel';
 
 export type TaskStatusChange = {

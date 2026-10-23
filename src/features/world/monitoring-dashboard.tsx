@@ -23,8 +23,9 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { today, formatDate } from '@/lib/date';
+import { today, formatDate, jakartaTime } from '@/lib/date';
 import { cn } from '@/lib/utils';
+import { isOverdue } from '@/lib/task-status';
 import { planProgress } from '@/lib/progress';
 import { isProjectHistory } from '@/features/projects/lifecycle';
 import {
@@ -50,7 +51,6 @@ import {
   deliveryRow,
   deliveryStage,
   dockList,
-  isLate,
   itemRow,
   rackItems,
   roomRows,
@@ -220,13 +220,8 @@ const ENTITY_LABEL: Partial<Record<Entity, string>> = {
   deliveries: 'pengiriman',
   journal: 'kegiatan',
 };
-const clockTime = (now: Date) =>
-  new Intl.DateTimeFormat('id-ID', {
-    timeZone: 'Asia/Jakarta',
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  }).format(now);
+// Jam di bilah dunia memakai titik ala penulisan Indonesia (19.30).
+const clockTime = (now: Date) => jakartaTime(now).replace(':', '.');
 const DEMO = process.env.NEXT_PUBLIC_MODE_DEMO === '1';
 
 type Props = {
@@ -429,7 +424,7 @@ export function MonitoringDashboard({
         pct: planProgress(projectTasks),
       };
     });
-  const lateTasks = model.tasks.filter((t) => isLate(t, date));
+  const lateTasks = model.tasks.filter((t) => isOverdue(t.data, date));
   const openRisks = risks.filter((r) => r.data.status === 'terbuka');
   const openIssues = (unavailable ? [] : data.issues || []).filter(
     (r) => r.data.status === 'terbuka',

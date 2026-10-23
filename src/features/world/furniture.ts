@@ -1,13 +1,7 @@
 // Perabot diorama dari bentuk dasar. Satuan: 1 ≈ 50 cm; setiap fungsi mengembalikan Group yang
 // alasnya di y = 0 dan menghadap +z (ke kamera), lalu diputar/ditempatkan oleh pemanggil.
-import { Group, type ColorRepresentation } from 'three';
-import { COLOR, sphere, place, capsule, box, cylinder } from './shapes';
-
-function group(...children: Parameters<Group['add']>) {
-  const g = new Group();
-  g.add(...children);
-  return g;
-}
+import type { ColorRepresentation } from 'three';
+import { COLOR, sphere, place, capsule, box, cylinder, group } from './shapes';
 
 export function desk(w = 1.8, d = 0.9, color: ColorRepresentation = COLOR.wood) {
   const leg = (x: number, z: number) => place(box(0.18, 0.74, 0.18, COLOR.woodDark, 0.08), x, 0, z);

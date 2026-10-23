@@ -33,7 +33,7 @@ Arahan pemilik yang terbaru menang bila ada yang bertentangan.
 - Next.js (App Router) + React + TypeScript strict + Tailwind v4 + Radix (`radix-ui`) + Motion + Zod + Supabase + Three.js.
 - Nama folder, berkas, dan kode dalam bahasa Inggris (berkas `kebab-case`). Alamat halaman bahasa Inggris (`/tasks`). Teks di layar, komentar, dokumen, dan pesan commit dalam bahasa Indonesia.
 - `src/app` rute tipis; `src/features/<domain>` logika dan UI domain; `src/components` UI bersama; `src/lib` utilitas. Lihat [docs/KODE.md](docs/KODE.md).
-- Perubahan terkecil yang lengkap. Tidak ada abstraksi "untuk nanti", tidak ada `any`, tidak ada rumus ganda (progres di `lib/progress.ts`, tanggal di `lib/date.ts`, status tugas di `lib/task-status.ts`).
+- Perubahan terkecil yang lengkap. Tidak ada abstraksi "untuk nanti", tidak ada `any`, tidak ada rumus ganda (progres di `lib/progress.ts`, tanggal di `lib/date.ts`, status tugas dan lewat tenggat di `lib/task-status.ts`, pencocokan nama di `lib/people.ts`).
 - Komentar menjelaskan alasan bisnis, bukan isi kode.
 - Warna mentah hanya di token `src/app/globals.css`. Tanpa gradasi. Komponen memakai kelas token (`bg-surface`, `text-ink-2`, `bg-tone`).
 

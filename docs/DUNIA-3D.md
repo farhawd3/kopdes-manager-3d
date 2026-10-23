@@ -121,7 +121,6 @@ Semua di `src/features/world/`.
 | `icon-3d.tsx` | Ikon dan thumbnail barang berbasis SVG |
 | `model/world-model.ts` | Adapter workspace → model dunia |
 | `model/district.ts` | Unit KDMP yang punya bangunan |
-| `model/schedule.ts` | Jadwal figur dan pencocokan nama |
 
 ## Batas
 

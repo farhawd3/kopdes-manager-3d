@@ -50,10 +50,16 @@ export async function api<T>(
         : { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) },
     );
 
-    const result = await response.json();
-    if (!response.ok) {
+    // Hosting bisa membalas halaman galat HTML (mis. batas waktu habis); jangan tampilkan galat parse.
+    const result = await response.json().catch(() => null);
+    if (!response.ok || result === null) {
       if (response.status === 401 && path !== 'auth/pin') resetAuthNavigation('/pin');
-      throw new Error(result.error || 'Permintaan gagal.');
+      throw new Error(
+        result?.error ||
+          (result === null
+            ? 'Server sedang bermasalah. Coba lagi sebentar lagi.'
+            : 'Permintaan gagal.'),
+      );
     }
 
     // Cache read results

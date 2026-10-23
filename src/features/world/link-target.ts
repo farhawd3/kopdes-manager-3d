@@ -2,7 +2,7 @@ import { coldRackIds, rackIds, type WorldModel } from './model/world-model';
 import type { WorldSite } from './office-rooms';
 import { OFFICE_ROOMS } from './office-rooms';
 import { isOffice, type CharacterPlan } from './character-plan';
-import { sameName } from './model/schedule';
+import { sameName } from '@/lib/people';
 import type { StoreInfo } from './store';
 
 export type LinkTarget = { site: WorldSite; pick: string };

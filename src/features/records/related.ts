@@ -1,7 +1,7 @@
 import { catalog, formatChoiceLabel, labels, options, references } from './catalog';
 import type { Entity, Item } from './schemas';
 import type { Workspace } from '@/features/workspace/use-workspace';
-import { listedIn, sameName } from '@/features/world/model/schedule';
+import { listedIn, sameName } from '@/lib/people';
 import { formatDate } from '@/lib/date';
 import { rupiah } from '@/lib/ledger';
 

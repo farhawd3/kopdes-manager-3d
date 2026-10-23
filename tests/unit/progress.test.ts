@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { planProgress, taskProgress, readiness, isOverdue } from '@/lib/progress';
+import { planProgress, taskProgress, readiness } from '@/lib/progress';
+import { isOverdue } from '@/lib/task-status';
 import { today, addDays, daysBetween, nextOccurrence } from '@/lib/date';
 import { schemas, date } from '@/features/records/schemas';
 import { buildPlan } from '../fixtures/legacy-plan';

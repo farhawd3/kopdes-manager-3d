@@ -7,7 +7,7 @@ import {
   type Object3D,
 } from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { COLOR, sphere, place, box, cylinder } from './shapes';
+import { COLOR, sphere, place, box, cylinder, rotated, darken } from './shapes';
 import {
   dispenser,
   rug,
@@ -418,11 +418,6 @@ function workDesk(g: Group, x: number, z: number, chairColor = 0x7f9fe0) {
   g.add(place(set, x, 0.06, z));
 }
 
-function rotated<T extends Object3D>(o: T, rot: number) {
-  o.rotation.y = rot;
-  return o;
-}
-
 function furnishRoom(id: OfficeRoom, g: Group) {
   const { x: cx, z: cz } = OFFICE_ROOMS[id];
   const at = <T extends Object3D>(o: T, x: number, z: number, y = 0.06) =>
@@ -744,11 +739,4 @@ export function buildOffice() {
   );
   root.add(paintLabels(labels));
   return { root, areas };
-}
-
-/** Warna papan penanda/tulisan: warna ruang dipekatkan agar terbaca di atas kaca dan karpet. */
-function darken(hex: string, t = 0.82) {
-  const n = parseInt(hex.slice(1), 16);
-  const ch = (s: number) => Math.round(((n >> s) & 255) * t);
-  return (ch(16) << 16) | (ch(8) << 8) | ch(0);
 }

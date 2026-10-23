@@ -1,13 +1,6 @@
 'use client';
 import { useSyncExternalStore } from 'react';
-
-const jakartaTime = () =>
-  new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Asia/Jakarta',
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  }).format(new Date());
+import { jakartaTime } from './date';
 
 const subscribeClock = (callback: () => void) => {
   const timer = window.setInterval(callback, 30_000);
@@ -16,7 +9,11 @@ const subscribeClock = (callback: () => void) => {
 
 /** Jam WIB "HH:MM", diperbarui tiap 30 detik; kosong saat render di server. */
 export function useJakartaClock() {
-  return useSyncExternalStore(subscribeClock, jakartaTime, () => '');
+  return useSyncExternalStore(
+    subscribeClock,
+    () => jakartaTime(),
+    () => '',
+  );
 }
 
 /** Sapaan sesuai jam WIB; "Halo" selama jam belum diketahui (render server). */

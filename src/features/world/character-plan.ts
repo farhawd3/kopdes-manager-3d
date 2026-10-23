@@ -1,5 +1,5 @@
 import type { WorldModel } from './model/world-model';
-import { listedIn, sameName } from './model/schedule';
+import { listedIn, sameName } from '@/lib/people';
 import type { Item } from '../records/schemas';
 import type { OfficeRoom } from './office-rooms';
 import { lookFromStaff, type CharacterLook } from './character';

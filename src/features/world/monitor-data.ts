@@ -1,6 +1,6 @@
 // Turunan data kartu monitoring (murni, diuji). Hanya membaca catatan web; angka yang tidak
 // tersedia ditandai oleh pemanggil, bukan diganti nol.
-import { addDays, formatDate } from '@/lib/date';
+import { addDays, formatDate, jakartaTime } from '@/lib/date';
 import type { Entity, Item } from '../records/schemas';
 import {
   activeDeliveries,
@@ -11,7 +11,8 @@ import {
   type TruckSpot,
   type WorldModel,
 } from './model/world-model';
-import { staffTasks } from './model/schedule';
+import { sameName } from '@/lib/people';
+import { isActiveTask, isOverdue } from '@/lib/task-status';
 import { cashSummary, rupiah } from '@/lib/ledger';
 import { ACTION_LABEL, type CharacterAction, type CharacterPlan } from './character-plan';
 import type { OfficeRoom } from './office-rooms';
@@ -20,13 +21,7 @@ export type Tone = 'biru' | 'hijau' | 'kuning' | 'merah' | 'abu';
 export type Weather = 'cerah' | 'berawan' | 'hujan';
 export type Ambience = { weather: Weather; phase: 'pagi' | 'siang' | 'senja' | 'malam' };
 export function ambienceAt(now: Date, weather: Weather): Ambience {
-  const h = Number(
-    new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Asia/Jakarta',
-      hour: '2-digit',
-      hourCycle: 'h23',
-    }).format(now),
-  );
+  const h = Number(jakartaTime(now).slice(0, 2));
   return {
     weather,
     phase: h < 5 || h >= 19 ? 'malam' : h < 10 ? 'pagi' : h < 16 ? 'siang' : 'senja',
@@ -73,14 +68,15 @@ export const ACTION_TONE: Record<CharacterAction, Tone> = {
   serve: 'hijau',
 };
 
-export const isLate = (task: Item, date: string) =>
-  Boolean(task.data.due_date && String(task.data.due_date) < date);
+/** Tugas aktif milik satu anggota (nama penanggung jawab persis sama). */
+const staffTasks = (tasks: Item[], name: string) =>
+  tasks.filter((task) => isActiveTask(task.data.status) && sameName(task.data.assignee, name));
 
 const qty = (item: Item) =>
   `${String(item.data.book_quantity ?? '—')} ${String(item.data.measurement || '')}`.trim();
 
 export function taskRow(task: Item, date: string): RecordRow {
-  const late = isLate(task, date);
+  const late = isOverdue(task.data, date);
   return {
     key: `task-${task.id}`,
     entity: 'work-items',
@@ -158,10 +154,10 @@ export function taskRows(
   const { model, date } = ctx;
   const tasks = filter.person ? staffTasks(model.tasks, filter.person) : model.tasks;
   return tasks
-    .filter((row) => !filter.lateOnly || isLate(row, date))
+    .filter((row) => !filter.lateOnly || isOverdue(row.data, date))
     .sort(
       (a, b) =>
-        Number(isLate(b, date)) - Number(isLate(a, date)) ||
+        Number(isOverdue(b.data, date)) - Number(isOverdue(a.data, date)) ||
         String(a.data.due_date || '9999').localeCompare(String(b.data.due_date || '9999')),
     )
     .map((task) => taskRow(task, date));
@@ -284,7 +280,10 @@ export function roomStats(id: OfficeRoom, ctx: RoomContext): RoomStat[] {
         value: `${busy} / ${model.tasks.length}`,
         bar: ratio(busy, model.tasks.length),
       },
-      { label: 'Lewat tenggat', value: String(model.tasks.filter((t) => isLate(t, date)).length) },
+      {
+        label: 'Lewat tenggat',
+        value: String(model.tasks.filter((t) => isOverdue(t.data, date)).length),
+      },
     ];
   }
   if (id === 'istirahat')

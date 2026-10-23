@@ -8,6 +8,7 @@ import { coldRackIds, isBelowMinimum, rackIds, type WorldModel } from './model/w
 import type { Tone } from './monitor-data';
 import type { WorldSite } from './office-rooms';
 import { cn } from '@/lib/utils';
+import { isOverdue } from '@/lib/task-status';
 import { Bar, Section } from './monitor-cards';
 
 type Segment = { label: string; value: number; tone: Tone | 'pink' };
@@ -74,22 +75,22 @@ export function siteCharts({
   if (unavailable) return [{ kind: 'catatan', title: 'Grafik', text: 'Data belum tersedia.' }];
   const tasks = data['work-items'] || [];
   const open = tasks.filter((row) => ['rencana', 'proses'].includes(String(row.data.status)));
-  const isOverdue = (row: Item) => String(row.data.due_date || '9999') < day;
+  const late = (row: Item) => isOverdue(row.data, day);
   const taskCharts: Chart[] = [
     {
       kind: 'tumpuk',
       title: 'Tugas terbuka',
       meta: `${open.length} tugas`,
       segments: [
-        { label: 'Lewat tenggat', value: open.filter(isOverdue).length, tone: 'merah' },
+        { label: 'Lewat tenggat', value: open.filter(late).length, tone: 'merah' },
         {
           label: 'Dikerjakan',
-          value: open.filter((row) => !isOverdue(row) && row.data.status === 'proses').length,
+          value: open.filter((row) => !late(row) && row.data.status === 'proses').length,
           tone: 'biru',
         },
         {
           label: 'Rencana',
-          value: open.filter((row) => !isOverdue(row) && row.data.status === 'rencana').length,
+          value: open.filter((row) => !late(row) && row.data.status === 'rencana').length,
           tone: 'abu',
         },
       ],
