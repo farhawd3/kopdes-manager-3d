@@ -193,6 +193,29 @@ it('isi laporan tidak sah ditolak sebelum pemulihan database', async () => {
   expect(mocks.rpc).not.toHaveBeenCalled();
 });
 
+it('referensi dan prasyarat yang hilang atau salah jenis ditolak sebelum pemulihan', async () => {
+  const exported = await (await GET()).json();
+  const organization = exported.records[0];
+  const task = (data: Record<string, unknown>) => ({
+    id: randomUUID(),
+    entity: 'work-items',
+    data: { title: 'Tugas uji', due_date: '2026-10-10', ...data },
+    created_at: '2026-10-07T12:00:00Z',
+    updated_at: '2026-10-07T12:00:00Z',
+  });
+  for (const records of [
+    [organization, task({ workstream_id: randomUUID() })],
+    // Id ada, tetapi milik profil koperasi, bukan proyek.
+    [organization, task({ workstream_id: organization.id })],
+    [organization, task({ dependencies: [randomUUID()] })],
+  ]) {
+    const response = await POST(request({ ...exported, records }));
+    expect(response.status).toBe(503);
+    expect((await response.json()).error).toMatch(/dalam cadangan tidak lengkap/);
+  }
+  expect(mocks.rpc).not.toHaveBeenCalled();
+});
+
 it('pemulihan yang gagal mempertahankan profil dan laporan sebelumnya', async () => {
   await database.query(
     "insert into public.manager_reports(title,period_start,period_end,snapshot,status) values('Laporan sebelumnya','2026-10-01','2026-10-07',$1::jsonb,'draft')",

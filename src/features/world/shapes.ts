@@ -4,7 +4,6 @@ import {
   BoxGeometry,
   Group,
   CapsuleGeometry,
-  ConeGeometry,
   CylinderGeometry,
   Mesh,
   MeshStandardMaterial,
@@ -130,18 +129,6 @@ export function place<
 >(o: T, x: number, y: number, z: number) {
   o.position.set(x, y, z);
   return o;
-}
-
-/** Atap limas (piramida empat sisi) selebar w × d, setinggi h. */
-export function pyramid(w: number, h: number, d: number, color: ColorRepresentation) {
-  const g = cached(`l${w}|${h}|${d}`, () => {
-    const geo = new ConeGeometry(Math.SQRT1_2, 1, 4);
-    geo.rotateY(Math.PI / 4);
-    geo.translate(0, 0.5, 0);
-    geo.scale(w, h, d);
-    return geo;
-  });
-  return toMesh(g, color);
 }
 
 /** Group berisi benda-benda yang diberikan. */

@@ -488,6 +488,3 @@ export function ItemThumb({ kind, size = 32 }: { kind: ThumbKind; size?: number 
     </svg>
   );
 }
-
-export const ICON3D_KINDS = Object.keys(SYMBOLS) as Icon3DKind[];
-export const THUMB_KINDS = Object.keys(THUMB) as ThumbKind[];

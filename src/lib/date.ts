@@ -1,10 +1,30 @@
+// Pemformat dibuat sekali: membuat Intl.DateTimeFormat di setiap panggilan mahal untuk daftar panjang.
+const JAKARTA_DATE = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Jakarta',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+const MONTH_LABEL = new Intl.DateTimeFormat('id-ID', {
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+const DATE_LABEL = new Intl.DateTimeFormat('id-ID', {
+  timeZone: 'Asia/Jakarta',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+const DATE_TIME_LABEL = new Intl.DateTimeFormat('id-ID', {
+  timeZone: 'Asia/Jakarta',
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  hourCycle: 'h23',
+});
+
 export function today(now = new Date()): string {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Jakarta',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(now);
+  return JAKARTA_DATE.format(now);
 }
 const JAKARTA_TIME = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Asia/Jakarta',
@@ -33,11 +53,7 @@ export function monthRange(
   const last = new Date(first);
   last.setUTCMonth(last.getUTCMonth() + 1, 0);
   const end = last.toISOString().slice(0, 10);
-  const label = new Intl.DateTimeFormat('id-ID', {
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'UTC',
-  }).format(first);
+  const label = MONTH_LABEL.format(first);
   return { start, end: end > until ? until : end, label };
 }
 /** Tujuh tanggal Senin–Minggu dari pekan yang memuat `value` (pekan Indonesia dimulai Senin). */
@@ -71,23 +87,11 @@ export function formatDate(value?: string | null): string {
   if (isNaN(parsed.getTime())) {
     return 'Belum ditentukan';
   }
-  return new Intl.DateTimeFormat('id-ID', {
-    timeZone: 'Asia/Jakarta',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(parsed);
+  return DATE_LABEL.format(parsed);
 }
 
 export function formatDateTime(value?: string | null): string {
   const parsed = value ? new Date(value) : null;
   if (!parsed || Number.isNaN(parsed.getTime())) return '—';
-  return (
-    new Intl.DateTimeFormat('id-ID', {
-      timeZone: 'Asia/Jakarta',
-      dateStyle: 'medium',
-      timeStyle: 'short',
-      hourCycle: 'h23',
-    }).format(parsed) + ' WIB'
-  );
+  return DATE_TIME_LABEL.format(parsed) + ' WIB';
 }

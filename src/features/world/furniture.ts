@@ -86,15 +86,6 @@ export function plant(scale = 1) {
   return g;
 }
 
-/** Jendela untuk dinding; tebal kecil, ditempel di permukaan dinding. */
-export function wallWindow(w = 1.5, h = 1.2) {
-  return group(
-    place(box(w, h, 0.12, COLOR.wood, 0.04), 0, 0, 0),
-    place(box(w / 2 - 0.12, h - 0.2, 0.04, COLOR.glassBlue, 0.02, 0.35), -w / 4 + 0.02, 0.1, 0.05),
-    place(box(w / 2 - 0.12, h - 0.2, 0.04, COLOR.glassBlue, 0.02, 0.35), w / 4 - 0.02, 0.1, 0.05),
-  );
-}
-
 export function door() {
   return group(
     place(box(1.1, 2.3, 0.12, COLOR.woodDark, 0.05), 0, 0, 0),

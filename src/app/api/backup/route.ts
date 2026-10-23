@@ -131,18 +131,17 @@ export async function POST(request: Request) {
     }
     if (backup.records.filter((row) => row.entity === 'organization').length !== 1)
       throw new Error('Cadangan harus memiliki tepat satu profil koperasi.');
+    // Id → jenis catatan, agar cek referensi tidak menyisir seluruh cadangan per kolom.
+    const entityOf = new Map(backup.records.map((row) => [row.id, row.entity]));
     for (const record of backup.records) {
       const values = record.data as Record<string, unknown>;
       for (const [field, entity] of Object.entries(references)) {
-        if (
-          values[field] &&
-          !backup.records.some((row) => row.id === values[field] && row.entity === entity)
-        )
+        if (values[field] && entityOf.get(String(values[field])) !== entity)
           throw new Error('Referensi dalam cadangan tidak lengkap.');
       }
       if (record.entity === 'work-items') {
         for (const id of schemas['work-items'].parse(record.data).dependencies)
-          if (!backup.records.some((row) => row.id === id && row.entity === 'work-items'))
+          if (entityOf.get(id) !== 'work-items')
             throw new Error('Prasyarat dalam cadangan tidak lengkap.');
       }
     }
