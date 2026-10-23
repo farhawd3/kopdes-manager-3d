@@ -94,7 +94,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <LazyMotion features={loadMotion}>
     <ConfirmProvider>
       <div className="flex min-h-dvh">
-        <Suspense fallback={<div className="hidden w-[84px] md:block lg:w-[264px]" />}>
+        <Suspense fallback={<div className="hidden w-[88px] md:block" />}>
           <Sidebar />
         </Suspense>
         <div className="flex min-w-0 flex-1 flex-col">

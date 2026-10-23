@@ -17,15 +17,13 @@ import { Sheet } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Check } from '@/components/ui/check';
 import { Input, Select, Textarea } from '@/components/ui/field';
-import { SegmentBar } from '@/components/ui/progress';
 import { Avatar } from '@/components/ui/avatar';
-import { Wave } from '@/components/ui/wave';
 import { useConfirm } from '@/components/ui/confirm';
 import { projectTone } from '@/lib/tones';
 import { taskProgress } from '@/lib/progress';
 import { formatDateTime } from '@/lib/date';
 import { cn } from '@/lib/utils';
-import { cancelTask, saveTask, setTaskStatus, toggleTaskDone } from './task-actions';
+import { cancelTask, saveTask, setTaskStatus } from './task-actions';
 import { dueText } from './task-card';
 import type { TaskStatus } from '@/lib/task-status';
 
@@ -119,7 +117,6 @@ export function TaskSheet({
         onOpenChange={(next) => !next && onClose()}
         wide
         title={<span className="sr-only">{String(d.title)}</span>}
-        description={project ? String(project.data.title) : 'Tugas mandiri'}
         headerExtra={
           siblings.length > 1 && onNavigate ? (
             <span className="flex gap-1">
@@ -155,136 +152,144 @@ export function TaskSheet({
         }
       >
         <div className="flex flex-col gap-6">
-          <section data-tone={projectTone(project)} className="relative overflow-hidden rounded-[var(--radius-card)] bg-tone p-5 text-tone-ink">
-            <Wave />
-            <div className="relative flex items-start gap-3">
-              <Check checked={d.status === 'selesai'} onChange={() => void toggleTaskDone(task, refresh, manager)} label={d.status === 'selesai' ? 'Buka lagi' : 'Tandai selesai'} className="mt-1.5" />
-              <textarea
-                value={title}
-                rows={1}
-                aria-label="Judul tugas"
-                maxLength={200}
-                onChange={(event) => setTitle(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    event.preventDefault();
-                    event.currentTarget.blur();
-                  }
-                  if (event.key === 'Escape') setTitle(String(d.title));
-                }}
-                onBlur={() => title.trim() && title.trim() !== d.title && void save({ title: title.trim() }, 'mengubah judul')}
-                className="field-sizing-content w-full resize-none rounded-lg bg-transparent text-xl leading-snug font-extrabold text-ink outline-none focus:bg-surface/50"
-              />
-            </div>
-            <div className="relative mt-4 flex flex-wrap items-center gap-2 text-xs font-bold">
-              <span className={cn('rounded-full bg-surface/75 px-2.5 py-1', due.late && 'text-late-ink')}>{due.text}</span>
-              {d.code ? <span className="rounded-full border border-tone-line px-2.5 py-0.5">{String(d.code)}</span> : null}
+          {/* Kepala detail seperti panel acuan: judul besar yang bisa diubah, lalu label kecil. */}
+          <div className="-mt-2 flex flex-col gap-3">
+            <textarea
+              value={title}
+              rows={1}
+              aria-label="Judul tugas"
+              maxLength={200}
+              onChange={(event) => setTitle(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  event.currentTarget.blur();
+                }
+                if (event.key === 'Escape') setTitle(String(d.title));
+              }}
+              onBlur={() => title.trim() && title.trim() !== d.title && void save({ title: title.trim() }, 'mengubah judul')}
+              className={cn(
+                'field-sizing-content -mx-2 w-[calc(100%+1rem)] resize-none rounded-xl bg-transparent px-2 py-1 text-[26px] leading-tight font-extrabold tracking-tight text-ink outline-none hover:bg-surface-2 focus:bg-surface-2',
+                d.status === 'selesai' && 'text-ink-3 line-through',
+              )}
+            />
+            <div data-tone={projectTone(project)} className="flex flex-wrap items-center gap-2 text-xs font-bold">
+              <span className="rounded-full border border-[color-mix(in_srgb,var(--tone-bar)_45%,transparent)] bg-tone px-2.5 py-1 text-tone-ink">
+                #{project ? String(project.data.title) : 'tanpa proyek'}
+              </span>
+              <span className={cn('rounded-full bg-surface-2 px-2.5 py-1 text-ink-2', due.late && 'bg-late text-late-ink')}>{due.text}</span>
+              {d.code ? <span className="rounded-full bg-surface-2 px-2.5 py-1 text-ink-3">{String(d.code)}</span> : null}
               {d.recurrence && d.recurrence !== 'tidak' ? (
-                <span className="flex items-center gap-1 rounded-full border border-tone-line px-2.5 py-0.5">
+                <span className="flex items-center gap-1 rounded-full bg-surface-2 px-2.5 py-1 text-ink-2">
                   <Repeat className="size-3" />
                   {RECURRENCE.find(([value]) => value === d.recurrence)?.[1]} · {String(d.recurrence_time)}
                 </span>
               ) : null}
             </div>
-            {subtasks.length > 0 && (
-              <div className="relative mt-4 flex flex-col gap-1.5">
-                <span className="flex justify-between text-xs font-bold">
-                  Progres <span className="tabular">{taskProgress(d as unknown as Task)}%</span>
-                </span>
-                <SegmentBar value={taskProgress(d as unknown as Task)} segments={10} label="Progres tugas" />
-              </div>
-            )}
-          </section>
+          </div>
 
-          <dl className="grid gap-3 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <dt className="text-xs font-bold text-ink-3">Status</dt>
-              <dd className="flex gap-1 rounded-2xl bg-surface-2 p-1" role="group" aria-label="Status">
-                {STATUSES.map(([value, label]) => (
-                  <button key={value} type="button" aria-pressed={d.status === value} onClick={() => void setTaskStatus(task, value, refresh, manager)} className={SEG}>
-                    {label}
-                  </button>
-                ))}
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <dt className="text-xs font-bold text-ink-3">Prioritas</dt>
-              <dd className="flex gap-1 rounded-2xl bg-surface-2 p-1" role="group" aria-label="Prioritas">
-                {PRIORITIES.map(([value, label]) => (
-                  <button key={value} type="button" aria-pressed={d.priority === value} onClick={() => void save({ priority: value }, `mengubah prioritas menjadi ${label}`)} className={SEG}>
-                    {label}
-                  </button>
-                ))}
-              </dd>
-            </div>
-            <label className="flex flex-col gap-1.5">
-              <dt className="text-xs font-bold text-ink-3">Tenggat</dt>
-              <dd>
-                <Input type="date" value={String(d.due_date || '')} onChange={(event) => event.target.value && void save({ due_date: event.target.value }, `memindah tenggat ke ${event.target.value}`)} />
-              </dd>
-            </label>
-            <label className="flex flex-col gap-1.5">
-              <dt className="text-xs font-bold text-ink-3">Proyek</dt>
-              <dd>
-                <Select value={String(d.workstream_id || '')} onChange={(event) => void save({ workstream_id: event.target.value, milestone_id: '' }, 'mengubah proyek')}>
-                  <option value="">Tugas mandiri (tanpa proyek)</option>
-                  {projects.map((row) => (
-                    <option key={row.id} value={row.id}>{String(row.data.title)}</option>
-                  ))}
-                </Select>
-              </dd>
-            </label>
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <dt className="text-xs font-bold text-ink-3">Penanggung jawab</dt>
-              <dd className="flex flex-wrap gap-2">
-                {[{ name: '', role: '' }, ...people].map((person) => (
-                  <button
-                    key={person.name || 'none'}
-                    type="button"
-                    aria-pressed={String(d.assignee || '').toLowerCase() === person.name.toLowerCase()}
-                    onClick={() => void save({ assignee: person.name }, person.name ? `menugaskan ke ${person.name}` : 'mengosongkan penanggung jawab')}
-                    className={cn('flex h-10 items-center gap-2 rounded-full border border-line bg-surface pr-3 text-[13px] font-semibold text-ink-2 transition aria-pressed:border-transparent aria-pressed:bg-accent aria-pressed:text-accent-ink', person.name ? 'pl-1' : 'pl-3')}
-                  >
-                    {person.name && <Avatar name={person.name} className="size-8 ring-0" />}
-                    {person.name || 'Belum ada'}
-                  </button>
-                ))}
-              </dd>
-            </div>
-          </dl>
-
-          <section className="flex flex-col gap-2">
-            <h3 className="text-xs font-bold text-ink-3">Uraian</h3>
+          <section className="flex flex-col gap-1.5">
+            <h3 className="text-[13px] font-semibold text-ink-3">Uraian</h3>
             <Textarea
               value={description}
               placeholder="Tulis uraian singkat tugas ini"
               onChange={(event) => setDescription(event.target.value)}
               onBlur={() => description !== String(d.description || '') && void save({ description }, 'mengubah uraian')}
+              className="min-h-20 border-transparent bg-surface-2"
             />
           </section>
 
+          {/* Sifat tugas: label di kiri, nilai di kanan, seperti panel detail acuan. */}
+          <dl className="grid grid-cols-1 items-center gap-x-4 gap-y-1.5 text-sm sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-y-3 max-sm:[&>dd]:mb-3">
+            <dt className="font-semibold text-ink-3">Penanggung jawab</dt>
+            <dd className="flex items-center gap-2">
+              {d.assignee ? <Avatar name={String(d.assignee)} className="size-8 ring-0" /> : null}
+              <Select
+                value={String(d.assignee || '')}
+                aria-label="Penanggung jawab"
+                onChange={(event) => void save({ assignee: event.target.value }, event.target.value ? `menugaskan ke ${event.target.value}` : 'mengosongkan penanggung jawab')}
+                className="h-9 border-transparent bg-transparent pl-1 font-semibold hover:bg-surface-2"
+              >
+                <option value="">Belum ada</option>
+                {people.map((person) => (
+                  <option key={person.name} value={person.name}>{person.name}</option>
+                ))}
+              </Select>
+            </dd>
+            <dt className="font-semibold text-ink-3">Status</dt>
+            <dd className="flex flex-wrap items-center gap-2">
+              <span className="flex gap-1 rounded-xl bg-surface-2 p-1" role="group" aria-label="Status">
+                {STATUSES.map(([value, label]) => (
+                  <button key={value} type="button" aria-pressed={d.status === value} onClick={() => void setTaskStatus(task, value, refresh, manager)} className={SEG}>
+                    {label}
+                  </button>
+                ))}
+              </span>
+              {subtasks.length > 0 && <span className="tabular rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-accent-ink">{taskProgress(d as unknown as Task)}%</span>}
+            </dd>
+            <dt className="font-semibold text-ink-3">Prioritas</dt>
+            <dd>
+              <span className="flex flex-wrap gap-1 rounded-xl bg-surface-2 p-1" role="group" aria-label="Prioritas">
+                {PRIORITIES.map(([value, label]) => (
+                  <button key={value} type="button" aria-pressed={d.priority === value} onClick={() => void save({ priority: value }, `mengubah prioritas menjadi ${label}`)} className={SEG}>
+                    {label}
+                  </button>
+                ))}
+              </span>
+            </dd>
+            <dt className="font-semibold text-ink-3">Tenggat</dt>
+            <dd>
+              <Input
+                type="date"
+                aria-label="Tenggat"
+                value={String(d.due_date || '')}
+                onChange={(event) => event.target.value && void save({ due_date: event.target.value }, `memindah tenggat ke ${event.target.value}`)}
+                className="h-9 w-auto border-transparent bg-transparent pl-1 font-semibold hover:bg-surface-2"
+              />
+            </dd>
+            <dt className="font-semibold text-ink-3">Proyek</dt>
+            <dd>
+              <Select
+                value={String(d.workstream_id || '')}
+                aria-label="Proyek"
+                onChange={(event) => void save({ workstream_id: event.target.value, milestone_id: '' }, 'mengubah proyek')}
+                className="h-9 border-transparent bg-transparent pl-1 font-semibold hover:bg-surface-2"
+              >
+                <option value="">Tugas mandiri (tanpa proyek)</option>
+                {projects.map((row) => (
+                  <option key={row.id} value={row.id}>{String(row.data.title)}</option>
+                ))}
+              </Select>
+            </dd>
+          </dl>
+
           <section className="flex flex-col gap-2">
-            <h3 className="flex justify-between text-xs font-bold text-ink-3">
+            <h3 className="flex justify-between text-[13px] font-semibold text-ink-3">
               Subtugas <span className="tabular">{subtasks.filter((s) => s.done).length}/{subtasks.length}</span>
             </h3>
-            <ul className="flex flex-col gap-1">
+            {/* Subtugas berupa kapsul dengan centang di kanan, seperti acuan. */}
+            <ul className="flex flex-col gap-2">
               {subtasks.map((item, i) => (
-                <li key={i} className="group flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-surface-2">
+                <li
+                  key={i}
+                  className={cn('group flex min-h-11 items-center gap-2 rounded-full border py-1 pr-1.5 pl-4 transition', item.done ? 'border-transparent bg-accent' : 'border-line hover:bg-surface-2')}
+                >
+                  <span className={cn('flex-1 text-sm font-semibold', item.done ? 'text-accent-ink' : 'text-ink')}>{item.title}</span>
+                  <button
+                    type="button"
+                    aria-label={`Hapus subtugas ${item.title}`}
+                    onClick={() => void save({ subtasks: subtasks.filter((_, j) => j !== i) }, `menghapus subtugas "${item.title}"`)}
+                    className="grid size-8 place-items-center rounded-full text-ink-3 opacity-0 transition group-hover:opacity-100 hover:bg-late hover:text-late-ink focus:opacity-100 max-md:opacity-100"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
                   <Check
                     size="sm"
                     checked={item.done}
                     label={item.title}
                     onChange={() => void save({ subtasks: subtasks.map((s, j) => (j === i ? { ...s, done: !s.done } : s)) }, `${item.done ? 'membuka' : 'menyelesaikan'} subtugas "${item.title}"`)}
+                    className="mr-1"
                   />
-                  <span className={cn('flex-1 text-sm', item.done && 'text-ink-3 line-through')}>{item.title}</span>
-                  <button
-                    type="button"
-                    aria-label={`Hapus subtugas ${item.title}`}
-                    onClick={() => void save({ subtasks: subtasks.filter((_, j) => j !== i) }, `menghapus subtugas "${item.title}"`)}
-                    className="grid size-8 place-items-center rounded-lg text-ink-3 opacity-0 transition group-hover:opacity-100 hover:bg-late hover:text-late-ink focus:opacity-100 max-md:opacity-100"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
                 </li>
               ))}
             </ul>
@@ -297,8 +302,10 @@ export function TaskSheet({
                 setSubtask('');
               }}
             >
-              <Input value={subtask} onChange={(event) => setSubtask(event.target.value)} placeholder="Tambah subtugas" />
-              <Button type="submit" variant="secondary" disabled={!subtask.trim()}>Tambah</Button>
+              <Input value={subtask} onChange={(event) => setSubtask(event.target.value)} placeholder="Tambah subtugas" className="rounded-full" />
+              <Button type="submit" variant="secondary" disabled={!subtask.trim()} className="rounded-full">
+                Tambah
+              </Button>
             </form>
           </section>
 

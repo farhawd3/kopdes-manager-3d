@@ -31,7 +31,8 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 
 | Komponen | Berkas | Catatan |
 |---|---|---|
-| Laci / lembar bawah | `components/ui/sheet.tsx` | Semua formulir dan detail. Kanan di tablet/laptop, dari bawah di HP |
+| Laci / lembar bawah | `components/ui/sheet.tsx` | Semua formulir dan detail. Panel penuh tinggi menempel di kanan (garis sorotan di atas, tutup di kiri atas, judul besar) di tablet/laptop; dari bawah di HP. Detail tugas memakai daftar label–nilai dan subtugas berupa kapsul |
+| Linimasa (Gantt) | `features/tasks/task-timeline.tsx` | Kepala hari dua baris, kolom hari ini berbayang, garis waktu sekarang dengan gelembung jam, batang kapsul berisi avatar |
 | Pengaturan | `features/settings/settings-page.tsx` | Satu halaman tanpa tab: kartu profil, tema lewat pratinjau mini, warna sorotan berupa kapsul, keamanan dan data sebagai baris berkelompok; Ganti PIN di laci |
 | Konfirmasi | `components/ui/confirm.tsx` | Satu-satunya dialog di tengah, hanya untuk tindakan yang tak bisa diurungkan |
 | Toast + Urungkan | `sonner` di kerangka | Hasil aksi; perubahan tugas selalu bisa diurungkan |
@@ -45,8 +46,8 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 
 ## Kerangka
 
-- Laptop (≥ 1024 px): sidebar 264 px dengan grup Kerja, Catatan, Usaha, Koperasi, lalu proyek aktif dan profil.
-- Tablet (768–1023 px): rel ikon 84 px dengan label kecil.
+- Laptop (≥ 1024 px): rel ikon 88 px (acuan "Task management") dengan keterangan saat disorot; tombol "Perluas menu" membuka sidebar 256 px berlabel (grup Kerja, Catatan, Usaha, Koperasi, proyek aktif). Pilihan disimpan di peramban (`kopdes-sidebar`).
+- Tablet (768–1023 px): selalu rel ikon 88 px.
 - HP (< 768 px): bilah atas ringkas + navigasi bawah melayang. Item aktif mengembang menjadi kapsul pastel berlabel yang meluncur; tombol tambah koral (warna logo) di tengah membuka menu tambah cepat. Bilah bawah minggir saat menggulir ke bawah dan muncul lagi saat menggulir ke atas (`lib/use-hide-on-scroll.ts`), agar tidak menutupi isi. Saringan Tugas menjadi satu baris geser.
 - Bilah atas: sapaan dan nama manajer di kiri, cari (Ctrl K) di tengah, lalu satu kapsul putih berisi lonceng dan tombol Tambah, lalu avatar. Di HP: avatar + sapaan, kapsul berisi ikon cari dan lonceng.
 - Menu aktif di sidebar: kapsul putih berbayang dengan ikon berwarna sorotan.

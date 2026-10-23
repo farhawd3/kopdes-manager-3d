@@ -13,12 +13,12 @@
 [data-theme='light'] {
   --font-sans: 'Urbanist Variable', 'Urbanist', ui-sans-serif, system-ui, sans-serif;
 
-  --canvas: #f3f4f8;
+  --canvas: #f4f4fa;
   --surface: #ffffff;
-  --surface-2: #f7f8fb;
-  --surface-3: #eef0f5;
-  --line: #e6e8ef;
-  --line-strong: #d4d8e3;
+  --surface-2: #f8f8fc;
+  --surface-3: #efeff7;
+  --line: #ececf4;
+  --line-strong: #d9d9e7;
   --ink: #1a1f33;
   --ink-2: #4f566e;
   --ink-3: #676d86;
@@ -48,8 +48,8 @@
   --warn: #fff0cc;
   --warn-ink: #855700;
 
-  --shadow-card: 0 1px 2px rgb(26 31 51 / 0.04), 0 10px 28px -16px rgb(26 31 51 / 0.18);
-  --shadow-float: 0 24px 56px -20px rgb(26 31 51 / 0.32);
+  --shadow-card: 0 1px 2px rgb(70 60 150 / 0.03), 0 10px 30px -14px rgb(70 60 150 / 0.14);
+  --shadow-float: 0 28px 64px -24px rgb(70 60 150 / 0.3);
   --scrim: rgb(14 17 30 / 0.32);
   color-scheme: light;
 }
@@ -146,7 +146,7 @@
   --color-tone-line: var(--tone-line);
   --shadow-card: var(--shadow-card);
   --shadow-float: var(--shadow-float);
-  --radius-card: 0.875rem;
+  --radius-card: 1.125rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 

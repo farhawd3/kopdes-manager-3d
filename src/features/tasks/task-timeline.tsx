@@ -12,8 +12,12 @@ import { projectTone } from '@/lib/tones';
 import { cn } from '@/lib/utils';
 import { saveTask } from './task-actions';
 import { TaskRow } from './task-card';
+import { Avatar } from '@/components/ui/avatar';
+import { useJakartaClock } from '@/lib/clock';
 
-const SCALES = { day: 44, week: 18, month: 7 } as const;
+const SCALES = { day: 56, week: 20, month: 7 } as const;
+const ROW = 52;
+const WEEKDAY = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 type Schedule = { start_date: string; due_date: string };
 
 /**
@@ -41,6 +45,8 @@ export function TaskTimeline({
   const [saving, setSaving] = useState(false);
   const drag = useRef<{ id: string; x: number; resize: boolean; base: Schedule } | null>(null);
   const px = SCALES[scale];
+  const now = useJakartaClock();
+  const date = today();
   const end = addDays(start, span - 1);
   const active = tasks.filter((task) => task.data.status !== 'dibatalkan' && task.data.due_date);
   const schedule = (task: Item): Schedule =>
@@ -123,31 +129,52 @@ export function TaskTimeline({
           <Button size="sm" className="bg-surface text-ink" busy={saving} onClick={() => void savePending()}>Simpan jadwal</Button>
         </div>
       )}
-      <div className="hidden overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-card md:block">
+      <div className="hidden overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-card ring-1 ring-line/60 md:block">
         <div className="flex">
           <div className="w-56 shrink-0 border-r border-line">
-            <div className="flex h-12 items-end border-b border-line px-4 pb-2 text-xs font-bold text-ink-3">Tugas</div>
-            {milestones.length > 0 && <div className="flex h-9 items-center border-b border-line px-4 text-xs font-bold text-ink-3">Milestone</div>}
+            <div className="flex h-20 items-end px-5 pb-3 text-xs font-semibold text-ink-3">Tugas</div>
+            {milestones.length > 0 && <div className="flex h-9 items-center px-5 text-xs font-semibold text-ink-3">Milestone</div>}
             {rows.map((task) => (
-              <button key={task.id} type="button" onClick={() => onOpen(task.id)} className="block h-12 w-full truncate border-b border-line/60 px-4 text-left text-sm font-semibold hover:bg-surface-2">
+              <button
+                key={task.id}
+                type="button"
+                onClick={() => onOpen(task.id)}
+                className="block w-full truncate border-t border-line/70 px-5 text-left text-sm font-semibold text-ink-2 hover:bg-surface-2 hover:text-ink"
+                style={{ height: ROW }}
+              >
                 {String(task.data.title)}
               </button>
             ))}
           </div>
           <div className="min-w-0 flex-1 overflow-x-auto" data-board>
             <div className="relative" style={{ width: span * px }}>
-              <div className="flex h-12 border-b border-line">
-                {days.map((date) => {
-                  const show = scale === 'day' || (scale === 'week' && new Date(date + 'T12:00:00Z').getUTCDay() === 1) || (scale === 'month' && date.endsWith('-01'));
+              {/* Garis kolom hari dan bayangan kolom hari ini, di belakang batang. */}
+              <div className="pointer-events-none absolute inset-0 flex" aria-hidden="true">
+                {days.map((day) => (
+                  <span key={day} className={cn('h-full shrink-0 border-l border-line/70', day === date && 'bg-accent/45')} style={{ width: px }} />
+                ))}
+              </div>
+              <div className="relative flex h-20">
+                {days.map((day) => {
+                  const weekday = new Date(day + 'T12:00:00Z').getUTCDay();
+                  const show = scale === 'day' || (scale === 'week' && weekday === 1) || (scale === 'month' && day.endsWith('-01'));
                   return (
-                    <span key={date} className={cn('relative shrink-0 border-l border-line/40 text-[10px] font-bold text-ink-3', date === today() && 'text-late-ink')} style={{ width: px }}>
-                      {show && <span className="absolute bottom-1.5 left-1 whitespace-nowrap">{scale === 'month' ? formatDate(date).replace(/^\d+ /, '') : Number(date.slice(8))}</span>}
+                    <span key={day} className={cn('relative shrink-0 text-center', day === date ? 'text-accent-ink' : 'text-ink-3')} style={{ width: px }}>
+                      {show &&
+                        (scale === 'day' ? (
+                          <span className="absolute inset-x-0 bottom-2.5 flex flex-col items-center leading-tight">
+                            <span className="text-[11px] font-semibold">{WEEKDAY[weekday]}</span>
+                            <span className={cn('tabular text-[15px] font-extrabold', day === date ? 'text-accent-ink' : 'text-ink')}>{Number(day.slice(8))}</span>
+                          </span>
+                        ) : (
+                          <span className="absolute bottom-3 left-1.5 text-[11px] font-bold whitespace-nowrap">{scale === 'month' ? formatDate(day).replace(/^\d+ /, '') : formatDate(day)}</span>
+                        ))}
                     </span>
                   );
                 })}
               </div>
               {milestones.length > 0 && (
-                <div className="relative h-9 border-b border-line">
+                <div className="relative h-9 border-t border-line/70">
                   {milestones.map((m) => (
                     <span key={m.id} title={`${String(m.data.title)} · ${formatDate(String(m.data.due_date))}`} className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent-strong" style={{ left: (daysBetween(start, String(m.data.due_date)) + 0.5) * px }}>
                       <Diamond className={cn('size-4', m.data.actual_date ? 'fill-done-ink text-done-ink' : 'fill-current')} />
@@ -161,8 +188,9 @@ export function TaskTimeline({
                 const right = Math.min(span, daysBetween(start, s.due_date) + 1) * px;
                 const project = ws.workstreams?.find((p) => p.id === task.data.workstream_id);
                 const done = task.data.status === 'selesai';
+                const assignee = String(task.data.assignee || '');
                 return (
-                  <div key={task.id} className="relative h-12 border-b border-line/60">
+                  <div key={task.id} className="relative border-t border-line/70" style={{ height: ROW }}>
                     <div
                       role="slider"
                       tabIndex={0}
@@ -189,26 +217,36 @@ export function TaskTimeline({
                       onPointerUp={() => (drag.current = null)}
                       onDoubleClick={() => onOpen(task.id)}
                       className={cn(
-                        'absolute top-2 flex h-8 cursor-grab items-center overflow-hidden rounded-xl bg-tone pr-3 pl-3 text-xs font-bold whitespace-nowrap text-tone-ink outline-none focus-visible:ring-2 focus-visible:ring-tone-bar active:cursor-grabbing',
+                        // Batang kapsul seperti acuan; saat dipilih berubah warna penuh dengan teks putih.
+                        'group absolute top-1/2 flex h-9 -translate-y-1/2 cursor-grab items-center gap-2 overflow-hidden rounded-full bg-tone pr-4 pl-1.5 text-[13px] font-semibold whitespace-nowrap text-tone-ink shadow-[0_6px_14px_-10px_var(--tone-bar)] outline-none transition-colors hover:shadow-[0_8px_18px_-8px_var(--tone-bar)] focus-visible:bg-tone-bar focus-visible:text-white active:cursor-grabbing',
                         done && 'opacity-60',
-                        pending[task.id] && 'ring-2 ring-action',
+                        pending[task.id] && 'bg-tone-bar text-white',
                       )}
                       style={{ left, width: Math.max(px, right - left) }}
                     >
-                      <span className="absolute inset-y-0 left-0 w-1 bg-tone-bar" />
+                      {assignee ? <Avatar name={assignee} className="size-6 shrink-0 text-[9px] ring-2 ring-white/70" /> : <span className="w-1.5 shrink-0" />}
                       <span className="truncate">{String(task.data.title)}</span>
-                      <span data-grip="end" className="absolute inset-y-0 right-0 w-2.5 cursor-ew-resize bg-tone-bar/40" aria-hidden="true" />
+                      <span data-grip="end" className="absolute inset-y-0 right-0 w-3 cursor-ew-resize" aria-hidden="true" />
                     </div>
                   </div>
                 );
               })}
-              {today() >= start && today() <= end && (
-                <span className="pointer-events-none absolute top-0 bottom-0 w-0.5 bg-late-ink" style={{ left: (daysBetween(start, today()) + 0.5) * px }} aria-hidden="true" />
+              {date >= start && date <= end && (
+                <span
+                  className="pointer-events-none absolute top-[30px] bottom-0 w-0.5 -translate-x-1/2 bg-accent-strong"
+                  style={{ left: (daysBetween(start, date) + (now ? (Number(now.slice(0, 2)) * 60 + Number(now.slice(3))) / 1440 : 0.5)) * px }}
+                  aria-hidden="true"
+                >
+                  <span className="absolute -top-1 left-1/2 -translate-x-1/2 -translate-y-full rounded-lg bg-surface px-2 py-0.5 text-[11px] font-bold whitespace-nowrap text-ink shadow-card ring-1 ring-line">
+                    {now || 'Hari ini'}
+                  </span>
+                  <span className="absolute top-0 left-1/2 size-2 -translate-x-1/2 rounded-full bg-accent-strong" />
+                </span>
               )}
             </div>
           </div>
         </div>
-        {!rows.length && <p className="p-6 text-center text-sm text-ink-3">Tidak ada tugas pada rentang ini. Tekan &quot;Lihat semua jadwal&quot;.</p>}
+        {!rows.length && <p className="p-6 text-center text-sm text-ink-3">Tidak ada tugas pada rentang ini. Tekan &quot;Lihat semua&quot;.</p>}
       </div>
       <div className="flex flex-col gap-2 md:hidden">
         {rows.map((task) => (
