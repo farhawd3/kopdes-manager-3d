@@ -7,22 +7,25 @@ import { PageIcon } from '@/components/ui/icon';
 import { DOCK, PAGES } from './nav';
 import { activePage } from './sidebar';
 import { cn } from '@/lib/utils';
+import { useHideOnScroll } from '@/lib/use-hide-on-scroll';
 
 const CAPSULE = { type: 'spring', stiffness: 460, damping: 36 } as const;
 
 /**
  * Navigasi bawah HP: bilah putih melayang. Item aktif mengembang menjadi kapsul pastel berlabel
- * yang meluncur saat pindah tab; tombol tambah bulat di tengah.
+ * yang meluncur saat pindah tab; tombol tambah koral (warna logo) di tengah. Bilah minggir saat
+ * menggulir ke bawah supaya tidak menutupi isi halaman.
  */
-export function MobileDock({ onAdd, onMenu }: { onAdd: () => void; onMenu: () => void }) {
+export function MobileDock({ onAdd, onMenu, adding }: { onAdd: () => void; onMenu: () => void; adding?: boolean }) {
   const pathname = usePathname();
+  const hidden = useHideOnScroll();
   const active = activePage(pathname);
   const inDock = active && DOCK.includes(active);
   const items = DOCK.map((id) => ({ id, label: PAGES[id].label, icon: PAGES[id].icon }));
   const renderItem = (id: string, label: string, icon: React.ReactNode, isActive: boolean, href?: string) => {
     const content = (
       <>
-        {isActive && <motion.span layoutId="dock-capsule" transition={CAPSULE} className="absolute inset-0 rounded-full bg-accent" />}
+        {isActive && <motion.span layoutId="dock-capsule" transition={CAPSULE} className="absolute inset-0 rounded-[18px] bg-accent" />}
         <span className="relative flex items-center gap-1.5">
           {icon}
           {isActive && (
@@ -34,7 +37,7 @@ export function MobileDock({ onAdd, onMenu }: { onAdd: () => void; onMenu: () =>
       </>
     );
     const className = cn(
-      'relative flex h-12 items-center justify-center rounded-full px-3.5 transition-colors',
+      'relative flex h-12 min-w-12 items-center justify-center rounded-[18px] px-3.5 transition-colors',
       isActive ? 'text-accent-ink' : 'text-ink-3',
     );
     return href ? (
@@ -50,16 +53,18 @@ export function MobileDock({ onAdd, onMenu }: { onAdd: () => void; onMenu: () =>
   return (
     <nav
       aria-label="Navigasi utama"
-      className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex h-16 items-center justify-between rounded-full bg-surface px-2 shadow-float md:hidden"
+      data-hidden={hidden || undefined}
+      className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex h-[68px] items-center justify-between rounded-[26px] bg-surface/95 px-2 shadow-float ring-1 ring-line/70 backdrop-blur-md transition-transform duration-300 ease-[var(--ease-out)] data-[hidden]:translate-y-[calc(100%+2rem)] md:hidden"
     >
       {items.slice(0, 2).map((item) => renderItem(item.id, item.label, <PageIcon name={item.icon} className="size-[22px]" />, active === item.id, `/${item.id}`))}
       <button
         type="button"
         onClick={onAdd}
         aria-label="Tambah catatan"
-        className="grid size-14 -translate-y-3 place-items-center rounded-full bg-action text-on-action shadow-float transition active:scale-95"
+        aria-expanded={adding}
+        className="grid size-[52px] shrink-0 place-items-center rounded-[18px] bg-brand text-on-brand shadow-[0_10px_22px_-8px_var(--brand)] transition active:scale-95"
       >
-        <Plus className="size-7" strokeWidth={2.4} />
+        <Plus className={cn('size-6 transition-transform duration-300', adding && 'rotate-45')} strokeWidth={2.6} />
       </button>
       {items.slice(2).map((item) => renderItem(item.id, item.label, <PageIcon name={item.icon} className="size-[22px]" />, active === item.id, `/${item.id}`))}
       {renderItem('menu', 'Menu', <LayoutGrid className="size-[22px]" />, Boolean(active && !inDock))}

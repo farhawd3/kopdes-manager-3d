@@ -233,11 +233,12 @@ export function TasksPage() {
                     { id: 'timeline', label: 'Linimasa', icon: <CalendarRange /> },
                   ]}
                 />,
-                ...(assignees.length ? [<AvatarStack key="people" names={assignees} max={3} className="max-md:hidden" />] : []),
+                ...(assignees.length ? [<AvatarStack key="people" names={assignees} max={3} className="max-lg:hidden" />] : []),
               ]
         }
         actions={
-          <Button variant="primary" onClick={() => addTask()} disabled={closedProject}>
+          // Di HP tombol tambah koral di bilah bawah sudah membuka tugas baru.
+          <Button variant="primary" onClick={() => addTask()} disabled={closedProject} className="max-md:hidden">
             <Plus />
             Tugas baru
           </Button>
@@ -262,41 +263,44 @@ export function TasksPage() {
           <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink-3" />
           <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari tugas…" className="bg-surface pl-10 shadow-card" />
         </label>
-        <Select aria-label="Proyek" value={project} onChange={(event) => setParam('project', event.target.value || null)} className="w-40 bg-surface shadow-card">
-          <option value="">Semua proyek</option>
-          {(data.workstreams || []).map((row) => (
-            <option key={row.id} value={row.id}>{String(row.data.title)}</option>
-          ))}
-        </Select>
-        <Select aria-label="Penanggung jawab" value={assignee} onChange={(event) => setAssignee(event.target.value)} className="w-40 bg-surface shadow-card">
-          <option value="">Semua orang</option>
-          <option value="-">Belum ada penanggung jawab</option>
-          {people.map((name) => (
-            <option key={name} value={name}>{name}</option>
-          ))}
-        </Select>
-        <Select aria-label="Prioritas" value={priority} onChange={(event) => setPriority(event.target.value)} className="w-40 bg-surface shadow-card">
-          <option value="">Semua prioritas</option>
-          {['mendesak', 'tinggi', 'normal', 'rendah'].map((p) => (
-            <option key={p} value={p}>{p[0].toUpperCase() + p.slice(1)}</option>
-          ))}
-        </Select>
-        {(data.sprints || []).length > 0 && (
-          <Select aria-label="Periode kerja" value={sprint} onChange={(event) => setSprint(event.target.value)} className="w-40 bg-surface shadow-card">
-            <option value="">Semua periode</option>
-            {(data.sprints || []).map((row) => (
+        {/* Di HP saringan jadi satu baris geser di bawah pencarian, agar tidak menumpuk tiga baris. */}
+        <div className="scrollbar-none -mx-4 flex w-[calc(100%+2rem)] gap-2 overflow-x-auto px-4 py-1 max-sm:order-last sm:contents">
+          <Select aria-label="Proyek" value={project} onChange={(event) => setParam('project', event.target.value || null)} className="w-40 shrink-0 bg-surface shadow-card">
+            <option value="">Semua proyek</option>
+            {(data.workstreams || []).map((row) => (
               <option key={row.id} value={row.id}>{String(row.data.title)}</option>
             ))}
           </Select>
-        )}
-        {view === 'list' && (
-          <Select aria-label="Urutkan" value={sort} onChange={(event) => setSort(event.target.value)} className="w-40 bg-surface shadow-card">
-            <option value="due">Tenggat terdekat</option>
-            <option value="priority">Prioritas</option>
-            <option value="title">Judul A–Z</option>
-            <option value="updated">Terakhir diubah</option>
+          <Select aria-label="Penanggung jawab" value={assignee} onChange={(event) => setAssignee(event.target.value)} className="w-40 shrink-0 bg-surface shadow-card">
+            <option value="">Semua orang</option>
+            <option value="-">Belum ada penanggung jawab</option>
+            {people.map((name) => (
+              <option key={name} value={name}>{name}</option>
+            ))}
           </Select>
-        )}
+          <Select aria-label="Prioritas" value={priority} onChange={(event) => setPriority(event.target.value)} className="w-40 shrink-0 bg-surface shadow-card">
+            <option value="">Semua prioritas</option>
+            {['mendesak', 'tinggi', 'normal', 'rendah'].map((p) => (
+              <option key={p} value={p}>{p[0].toUpperCase() + p.slice(1)}</option>
+            ))}
+          </Select>
+          {(data.sprints || []).length > 0 && (
+            <Select aria-label="Periode kerja" value={sprint} onChange={(event) => setSprint(event.target.value)} className="w-40 shrink-0 bg-surface shadow-card">
+              <option value="">Semua periode</option>
+              {(data.sprints || []).map((row) => (
+                <option key={row.id} value={row.id}>{String(row.data.title)}</option>
+              ))}
+            </Select>
+          )}
+          {view === 'list' && (
+            <Select aria-label="Urutkan" value={sort} onChange={(event) => setSort(event.target.value)} className="w-40 shrink-0 bg-surface shadow-card">
+              <option value="due">Tenggat terdekat</option>
+              <option value="priority">Prioritas</option>
+              <option value="title">Judul A–Z</option>
+              <option value="updated">Terakhir diubah</option>
+            </Select>
+          )}
+        </div>
         <Popover.Root>
           <Popover.Trigger asChild>
             <Button size="icon" className="size-11 shadow-card" aria-label="Tampilan tersimpan" title="Tampilan tersimpan">

@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from 'react';
 
 /** Garis tegak pemisah bagian di bilah kepala, seperti bilah atas TaskTrack. */
 export function HeaderDivider() {
-  return <span className="hidden h-11 w-px bg-line md:block" aria-hidden="true" />;
+  return <span className="hidden h-11 w-px bg-line lg:block" aria-hidden="true" />;
 }
 
 /**

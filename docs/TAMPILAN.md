@@ -18,7 +18,7 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Permukaan | `canvas`, `surface`, `surface-2`, `surface-3`, `line`, `line-strong` | latar, kartu, garis |
 | Teks | `ink`, `ink-2`, `ink-3` | utama, kedua, keterangan (kontras ≥ 4.5:1) |
 | Aksi | `action`, `action-hover`, `on-action` | tombol utama biru tua |
-| Logo | `brand`, `on-brand` | hanya tanda Kopdes (ubin koral), tidak untuk tombol |
+| Logo | `brand`, `on-brand` | tanda Kopdes (ubin koral), titik pengingat, dan tombol tambah di bilah bawah HP |
 | Sorotan | `accent`, `accent-ink`, `accent-strong` | menu aktif, tab, hari terpilih, fokus; 5 pilihan pengguna |
 | Status | `plan`, `doing`, `done`, `late`, `warn` (+ `-ink`) | rencana, dikerjakan, selesai, terlambat, perhatian |
 | Nada kartu | `tone`, `tone-ink`, `tone-bar`, `tone-line` | dipasang lewat `data-tone="rose\|peach\|sky\|lavender\|mint\|lemon\|slate"` |
@@ -46,8 +46,8 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 
 - Laptop (≥ 1024 px): sidebar 264 px dengan grup Kerja, Catatan, Usaha, Koperasi, lalu proyek aktif dan profil.
 - Tablet (768–1023 px): rel ikon 84 px dengan label kecil.
-- HP (< 768 px): bilah atas ringkas + navigasi bawah melayang. Item aktif mengembang menjadi kapsul pastel berlabel yang meluncur; tombol tambah bulat di tengah membuka menu tambah cepat.
-- Bilah atas: sapaan dan nama manajer di kiri, cari (Ctrl K) di tengah, lonceng, tombol Tambah, avatar. Di HP: avatar + sapaan, ikon cari, lonceng.
+- HP (< 768 px): bilah atas ringkas + navigasi bawah melayang. Item aktif mengembang menjadi kapsul pastel berlabel yang meluncur; tombol tambah koral (warna logo) di tengah membuka menu tambah cepat. Bilah bawah minggir saat menggulir ke bawah dan muncul lagi saat menggulir ke atas (`lib/use-hide-on-scroll.ts`), agar tidak menutupi isi. Saringan Tugas menjadi satu baris geser.
+- Bilah atas: sapaan dan nama manajer di kiri, cari (Ctrl K) di tengah, lalu satu kapsul putih berisi lonceng dan tombol Tambah, lalu avatar. Di HP: avatar + sapaan, kapsul berisi ikon cari dan lonceng.
 - Menu aktif di sidebar: kapsul putih berbayang dengan ikon berwarna sorotan.
 
 ## Gerak

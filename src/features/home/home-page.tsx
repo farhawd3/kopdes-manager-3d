@@ -200,10 +200,10 @@ export function HomePage() {
           </div>
         </div>
         {deadlines.length ? (
-          <div ref={carousel} className="scrollbar-none -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:-mx-1 md:px-1">
+          <div ref={carousel} className="scrollbar-none -mx-4 flex snap-x snap-mandatory items-start gap-4 overflow-x-auto px-4 pb-2 md:-mx-1 md:px-1">
             {deadlines.map((row, index) => (
               <div key={row.id} className="enter w-[min(19rem,80vw)] shrink-0 snap-start" style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}>
-                <TaskCard task={row} ws={data} refresh={refresh} onOpen={() => setOpenTask(row.id)} className="h-full" />
+                <TaskCard task={row} ws={data} refresh={refresh} onOpen={() => setOpenTask(row.id)} />
               </div>
             ))}
           </div>

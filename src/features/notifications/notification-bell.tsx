@@ -74,12 +74,12 @@ export function NotificationBell() {
       }}
     >
       <Popover.Trigger
-        className="relative grid size-11 place-items-center rounded-full bg-surface text-ink ring-1 ring-line transition hover:ring-line-strong"
+        className="relative grid size-10 place-items-center rounded-full text-ink transition hover:bg-surface-2"
         aria-label={unseen ? `Pengingat, ${unseen} baru` : 'Pengingat'}
       >
         <Bell className="size-5" />
         {unseen > 0 && (
-          <span className="absolute top-2.5 right-3 size-2.5 rounded-full bg-brand ring-2 ring-surface" aria-hidden="true" />
+          <span className="absolute top-2 right-2.5 size-2.5 rounded-full bg-brand ring-2 ring-surface" aria-hidden="true" />
         )}
       </Popover.Trigger>
       <Popover.Portal>

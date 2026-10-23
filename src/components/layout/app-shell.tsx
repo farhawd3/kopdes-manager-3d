@@ -106,25 +106,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => setPalette(true)}
-              className="flex h-12 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 text-sm font-semibold text-ink-2 shadow-card transition hover:text-ink max-md:size-11 max-md:shrink-0 max-md:justify-center max-md:rounded-full max-md:px-0 max-md:shadow-none max-md:ring-1 max-md:ring-line md:w-[min(34rem,40vw)] lg:mx-auto"
+              className="hidden h-12 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 text-sm font-semibold text-ink-2 shadow-card transition hover:text-ink md:flex md:w-[min(34rem,40vw)] lg:mx-auto"
               aria-label="Cari atau buka (Ctrl K)"
             >
               <Search className="size-5 shrink-0" />
-              <span className="truncate max-md:hidden">Cari tugas, catatan, atau halaman</span>
-              <kbd className="ml-auto flex items-center gap-1.5 text-[12px] font-bold text-ink max-md:hidden"><span className="rounded-md px-1.5 py-0.5 ring-1 ring-line-strong">Ctrl</span>K</kbd>
+              <span className="truncate">Cari tugas, catatan, atau halaman</span>
+              <kbd className="ml-auto flex items-center gap-1.5 text-[12px] font-bold text-ink"><span className="rounded-md px-1.5 py-0.5 ring-1 ring-line-strong">Ctrl</span>K</kbd>
             </button>
             <div className="flex items-center gap-3 md:max-lg:ml-auto">
-              <NotificationBell />
-              <Popover.Root open={quick} onOpenChange={setQuick}>
-                <Popover.Trigger aria-label="Tambah catatan" title="Tambah" className="hidden size-11 place-items-center rounded-full bg-action text-on-action transition hover:bg-action-hover active:scale-[0.95] md:grid">
-                  <Plus className="size-5" strokeWidth={2.4} />
-                </Popover.Trigger>
-                <Popover.Portal>
-                  <Popover.Content align="end" sideOffset={10} collisionPadding={16} className="pop z-50 w-[min(36rem,calc(100vw-2rem))] rounded-3xl bg-surface p-4 shadow-float">
-                    <QuickActionsPanel onPick={() => setQuick(false)} />
-                  </Popover.Content>
-                </Popover.Portal>
-              </Popover.Root>
+              <div className="flex items-center gap-1 rounded-full bg-surface p-1 shadow-card">
+                <button type="button" onClick={() => setPalette(true)} aria-label="Cari" className="grid size-10 place-items-center rounded-full text-ink transition hover:bg-surface-2 md:hidden">
+                  <Search className="size-5" />
+                </button>
+                <NotificationBell />
+                <Popover.Root open={quick} onOpenChange={setQuick}>
+                  <Popover.Trigger className="hidden h-10 items-center gap-1.5 rounded-full bg-action pr-4 pl-3 text-sm font-bold text-on-action transition hover:bg-action-hover active:scale-[0.97] md:inline-flex">
+                    <Plus className="size-[18px]" strokeWidth={2.6} />
+                    Tambah
+                  </Popover.Trigger>
+                  <Popover.Portal>
+                    <Popover.Content align="end" sideOffset={10} collisionPadding={16} className="pop z-50 w-[min(36rem,calc(100vw-2rem))] rounded-3xl bg-surface p-4 shadow-float">
+                      <QuickActionsPanel onPick={() => setQuick(false)} />
+                    </Popover.Content>
+                  </Popover.Portal>
+                </Popover.Root>
+              </div>
               <div className="hidden lg:block">
                 <ProfileMenu />
               </div>
@@ -135,7 +141,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </main>
         </div>
       </div>
-      <MobileDock onAdd={() => setQuickSheet(true)} onMenu={() => setMenu(true)} />
+      <MobileDock onAdd={() => setQuickSheet(true)} onMenu={() => setMenu(true)} adding={quickSheet} />
       <Sheet open={quickSheet} onOpenChange={setQuickSheet} title="Tambah catatan" description="Pilih yang ingin dicatat">
         <QuickActionsPanel onPick={() => setQuickSheet(false)} />
       </Sheet>

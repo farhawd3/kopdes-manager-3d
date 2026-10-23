@@ -35,7 +35,7 @@ export function StatTile({
       aria-pressed={onClick ? active : undefined}
       data-tone={tone}
       className={cn(
-        'relative flex min-h-28 flex-col items-start gap-1 overflow-hidden rounded-[var(--radius-card)] bg-tone p-4 text-left text-tone-ink transition duration-300',
+        'relative flex min-h-24 flex-col md:min-h-28 items-start gap-1 overflow-hidden rounded-[var(--radius-card)] bg-tone p-4 text-left text-tone-ink transition duration-300',
         onClick && 'hover:-translate-y-0.5 hover:shadow-card aria-pressed:ring-2 aria-pressed:ring-tone-bar',
         className,
       )}
