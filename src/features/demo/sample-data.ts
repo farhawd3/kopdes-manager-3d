@@ -151,10 +151,10 @@ export function dataContoh(hariIni: string): ItemContoh[] {
 
   // ---- Proyek, milestone, sprint
   const PROYEK: [string, string, string, string][] = [
-    ['Pembukaan gerai baru', 'GRI', 'aktif', '#2F5BEA'],
-    ['Penataan gudang & logistik', 'GDG', 'aktif', '#F59E0B'],
-    ['Layanan anggota digital', 'AGT', 'aktif', '#10B981'],
-    ['Legalitas & perizinan', 'LGL', 'rencana', '#8B5CF6'],
+    ['Pembukaan gerai baru', 'GRI', 'aktif', '#e8577a'],
+    ['Penataan gudang & logistik', 'GDG', 'aktif', '#e8822f'],
+    ['Layanan anggota digital', 'AGT', 'aktif', '#4a86dc'],
+    ['Legalitas & perizinan', 'LGL', 'rencana', '#2fa874'],
   ];
   const proyek = PROYEK.map(([title, code, status, color], i) =>
     tambah('workstreams', {
@@ -505,6 +505,19 @@ export function dataContoh(hariIni: string): ItemContoh[] {
               { title: 'Kerjakan', done: status === 'selesai' },
               { title: 'Laporkan', done: false },
             ]
+          : [],
+      // Rekan yang ikut memantau dan komentar contoh, agar kartu menampilkan tumpukan avatar seperti di aplikasi nyata.
+      followers: i % 2 === 0 ? staf.filter((_, k) => k !== s).slice(i % 5, i % 5 + 1 + (i % 4)).map((x) => x.nama) : [],
+      activities:
+        i % 3 === 1
+          ? ['Sudah saya cek, lanjut besok.', 'Perlu tanda tangan ketua dulu.'].map((text, k) => ({
+              id: `komentar-${i}-${k}`,
+              user: staf[(s + k + 1) % staf.length].nama,
+              role: 'staf',
+              text,
+              created_at: `${tgl(-1)}T0${8 + k}:00:00+07:00`,
+              type: 'comment' as const,
+            }))
           : [],
     });
 

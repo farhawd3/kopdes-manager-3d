@@ -57,7 +57,7 @@ export function ProjectCard({ project, ws, index = 0 }: { project: Item; ws: Wor
           <span className="flex justify-between text-xs font-bold">
             Progres <span className="tabular">{progress}%</span>
           </span>
-          <SegmentBar value={progress} segments={10} label={`Progres ${String(project.data.title)}`} />
+          <SegmentBar value={progress} segments={10} label={`Progres ${String(project.data.title)}`} onTone />
         </span>
         <span className="relative text-xs font-semibold">
           {done}/{live.length} tugas selesai · {openIssues ? `${openIssues} kendala` : 'Terkendali'}

@@ -1,8 +1,9 @@
 'use client';
 import { useState } from 'react';
-import { CalendarDays, ListChecks, LockKeyhole, Package, Sprout, Wallet } from 'lucide-react';
+import { CalendarDays, ListChecks, LockKeyhole, Package, Wallet } from 'lucide-react';
 import { api, resetAuthNavigation } from '@/lib/client';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
 import { Field, Input } from '@/components/ui/field';
 import { Wave } from '@/components/ui/wave';
 import { useTheme } from '@/lib/theme';
@@ -23,9 +24,7 @@ export default function PinPage() {
     <main className="grid min-h-dvh bg-canvas lg:grid-cols-[1fr_1.1fr]">
       <section className="flex items-center justify-center p-6">
         <div className="w-full max-w-sm">
-          <span className="grid size-14 place-items-center rounded-2xl bg-action text-on-action">
-            <Sprout className="size-7" strokeWidth={2.2} />
-          </span>
+          <Logo />
           <h1 className="mt-6 text-3xl font-extrabold tracking-tight">Masuk ruang kerja</h1>
           <p className="mt-2 text-ink-3">Ruang kerja manajer koperasi. Masukkan PIN untuk melanjutkan.</p>
           <form

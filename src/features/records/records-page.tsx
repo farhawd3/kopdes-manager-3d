@@ -55,7 +55,7 @@ export function RecordsPage({ page, extraTabs = {}, subtitle }: { page: PageId; 
   const view = entity ? ENTITY_VIEWS[entity] : undefined;
   const blocked = entity ? entityReady(entity, caps) : '';
   return (
-    <>
+    <div className="flex flex-col gap-5">
       <PageHeader
         title={info.label}
         subtitle={subtitle ?? (entity ? catalog[entity].description : undefined)}
@@ -94,6 +94,6 @@ export function RecordsPage({ page, extraTabs = {}, subtitle }: { page: PageId; 
           loadingMore={fetching === entity}
         />
       ) : null}
-    </>
+    </div>
   );
 }

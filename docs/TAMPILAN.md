@@ -18,6 +18,7 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Permukaan | `canvas`, `surface`, `surface-2`, `surface-3`, `line`, `line-strong` | latar, kartu, garis |
 | Teks | `ink`, `ink-2`, `ink-3` | utama, kedua, keterangan (kontras ≥ 4.5:1) |
 | Aksi | `action`, `action-hover`, `on-action` | tombol utama biru tua |
+| Logo | `brand`, `on-brand` | hanya tanda Kopdes (ubin koral), tidak untuk tombol |
 | Sorotan | `accent`, `accent-ink`, `accent-strong` | menu aktif, tab, hari terpilih, fokus; 5 pilihan pengguna |
 | Status | `plan`, `doing`, `done`, `late`, `warn` (+ `-ink`) | rencana, dikerjakan, selesai, terlambat, perhatian |
 | Nada kartu | `tone`, `tone-ink`, `tone-bar`, `tone-line` | dipasang lewat `data-tone="rose\|peach\|sky\|lavender\|mint\|lemon\|slate"` |
@@ -37,13 +38,16 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Ubin angka | `components/ui/stat.tsx` | Ringkasan pastel; catatan kecil menjelaskan arti angka |
 | Kartu tugas | `features/tasks/task-card.tsx` | Label proyek, centang, progres bersegmen, avatar, tenggat |
 | Hiasan | `components/ui/wave.tsx` | Satu-satunya hiasan kartu: lengkung tipis, sangat halus |
+| Logo | `components/ui/logo.tsx`, `app/icon.svg` | Ubin koral dengan atap gerai dan centang; dipakai di sidebar dan halaman PIN |
+| Kepala halaman | `components/layout/page-header.tsx` | Bilah putih: judul dan ringkasan di kiri, aksi di kanan. Beranda memakai bilah tanggal (bulan, hari ini, tim) |
 
 ## Kerangka
 
 - Laptop (≥ 1024 px): sidebar 264 px dengan grup Kerja, Catatan, Usaha, Koperasi, lalu proyek aktif dan profil.
 - Tablet (768–1023 px): rel ikon 84 px dengan label kecil.
 - HP (< 768 px): bilah atas ringkas + navigasi bawah melayang. Item aktif mengembang menjadi kapsul pastel berlabel yang meluncur; tombol tambah bulat di tengah membuka menu tambah cepat.
-- Bilah atas: cari (Ctrl K), lonceng pengingat, tombol Tambah.
+- Bilah atas: sapaan dan nama manajer di kiri, cari (Ctrl K) di tengah, lonceng, tombol Tambah, avatar. Di HP: avatar + sapaan, ikon cari, lonceng.
+- Menu aktif di sidebar: kapsul putih berbayang dengan ikon berwarna sorotan.
 
 ## Gerak
 

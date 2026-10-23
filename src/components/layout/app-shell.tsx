@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { Popover } from 'radix-ui';
 import { Toaster } from 'sonner';
 import { LazyMotion } from 'motion/react';
-import { Plus, Search, Sprout } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { ConfirmProvider } from '@/components/ui/confirm';
 import { Sheet } from '@/components/ui/sheet';
 import { PageIcon } from '@/components/ui/icon';
@@ -18,6 +18,7 @@ import { ProfileMenu } from './profile-menu';
 import { NAV_FOOTER, NAV_GROUPS, PAGES } from './nav';
 import { NotificationBell } from '@/features/notifications/notification-bell';
 import { ShortcutList } from './shortcuts';
+import { Greeting } from './greeting';
 
 const CommandPalette = dynamic(() => import('./command-palette').then((module) => module.CommandPalette), { ssr: false });
 
@@ -98,20 +99,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </Suspense>
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 flex items-center gap-3 bg-canvas/85 px-4 py-3 backdrop-blur-md md:px-8 md:py-5">
-            <Link href="/home" className="grid size-11 place-items-center rounded-2xl bg-action text-on-action md:hidden" aria-label="Beranda">
-              <Sprout className="size-6" strokeWidth={2.2} />
-            </Link>
+            <div className="md:hidden">
+              <ProfileMenu />
+            </div>
+            <Greeting className="flex min-w-0 max-md:flex-1 md:max-lg:hidden" />
             <button
               type="button"
               onClick={() => setPalette(true)}
-              className="flex h-11 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 text-sm text-ink-3 shadow-card transition hover:text-ink-2 max-md:w-11 max-md:justify-center max-md:px-0 md:w-[min(28rem,45vw)]"
+              className="flex h-11 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 text-sm text-ink-3 shadow-card transition hover:text-ink-2 max-md:w-11 max-md:shrink-0 max-md:justify-center max-md:px-0 md:w-[min(30rem,42vw)] lg:mx-auto"
               aria-label="Cari atau buka (Ctrl K)"
             >
               <Search className="size-5 shrink-0" />
               <span className="truncate max-md:hidden">Cari tugas, catatan, atau halaman</span>
               <kbd className="ml-auto rounded-md bg-surface-3 px-1.5 py-0.5 text-[11px] font-bold max-md:hidden">Ctrl K</kbd>
             </button>
-            <div className="ml-auto flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 md:max-lg:ml-auto">
               <NotificationBell />
               <Popover.Root open={quick} onOpenChange={setQuick}>
                 <Popover.Trigger className="hidden h-11 items-center gap-2 rounded-2xl bg-action px-4 text-sm font-bold text-on-action shadow-card transition hover:bg-action-hover active:scale-[0.97] md:inline-flex">
@@ -124,7 +126,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   </Popover.Content>
                 </Popover.Portal>
               </Popover.Root>
-              <div className="md:hidden">
+              <div className="hidden lg:block">
                 <ProfileMenu />
               </div>
             </div>

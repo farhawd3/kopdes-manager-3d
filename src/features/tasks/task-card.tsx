@@ -1,7 +1,7 @@
 'use client';
 import { DropdownMenu } from 'radix-ui';
 import * as motion from 'motion/react-m';
-import { CalendarClock, CalendarPlus, Clock, Ellipsis, ListChecks, Repeat, XCircle } from 'lucide-react';
+import { CalendarClock, CalendarPlus, Clock, EllipsisVertical, ListChecks, MessageCircle, Repeat, XCircle } from 'lucide-react';
 import type { Item } from '@/features/records/schemas';
 import type { Workspace } from '@/features/workspace/use-workspace';
 import { Wave } from '@/components/ui/wave';
@@ -56,6 +56,8 @@ export function TaskCard({
   const due = dueText(task);
   const progress = taskProgress(task.data as unknown as Task);
   const priority = String(task.data.priority || 'normal');
+  const people = [String(task.data.assignee || ''), ...((task.data.followers as string[]) || [])].filter((name, index, all) => name && all.indexOf(name) === index);
+  const comments = ((task.data.activities as { type?: string }[]) || []).filter((entry) => entry.type === 'comment').length;
   return (
     <article
       data-tone={projectTone(project)}
@@ -74,69 +76,75 @@ export function TaskCard({
     >
       <Wave />
       <div className="relative flex items-center gap-1.5">
-        <span className="max-w-[60%] truncate rounded-full border border-tone-line px-2.5 py-0.5 text-[11px] font-semibold">
+        <span className="max-w-[58%] truncate rounded-full border border-tone-bar/45 bg-surface/35 px-2.5 py-0.5 text-[11px] font-semibold text-tone-ink">
           #{project ? String(project.data.title) : 'tanpa proyek'}
         </span>
         {['tinggi', 'mendesak'].includes(priority) && (
-          <span className="rounded-full bg-surface/75 px-2 py-0.5 text-[11px] font-bold text-late-ink">{priority === 'mendesak' ? 'Mendesak' : 'Tinggi'}</span>
+          <span className="rounded-full border border-late-ink/35 bg-surface/35 px-2.5 py-0.5 text-[11px] font-semibold text-late-ink">#{priority === 'mendesak' ? 'mendesak' : 'tinggi'}</span>
         )}
         {Boolean(task.data.recurrence) && task.data.recurrence !== 'tidak' && <Repeat className="size-3.5 opacity-70" aria-label="Berulang" />}
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger
-            className="ml-auto grid size-8 place-items-center rounded-lg opacity-70 transition hover:bg-surface/60 hover:opacity-100"
-            aria-label={`Aksi untuk ${String(task.data.title)}`}
-            onClick={(event) => event.stopPropagation()}
-            onPointerDown={(event) => event.stopPropagation()}
-          >
-            <Ellipsis className="size-4" />
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content align="end" sideOffset={6} className="pop z-50 w-52 rounded-2xl bg-surface p-1.5 shadow-float" onClick={(event) => event.stopPropagation()}>
-              <DropdownMenu.Item className={ITEM} onSelect={() => void postponeTask(task, 1, refresh)}>
-                <CalendarClock />
-                Tunda 1 hari
-              </DropdownMenu.Item>
-              <DropdownMenu.Item className={ITEM} onSelect={() => void postponeTask(task, 7, refresh)}>
-                <CalendarPlus />
-                Tunda 1 minggu
-              </DropdownMenu.Item>
-              <DropdownMenu.Separator className="my-1 h-px bg-line" />
-              <DropdownMenu.Item className={cn(ITEM, 'data-[highlighted]:bg-late data-[highlighted]:text-late-ink')} onSelect={() => void cancelTask(task, refresh)}>
-                <XCircle />
-                Batalkan tugas
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+        <span className="ml-auto flex items-center gap-0.5">
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger
+              className="grid size-8 place-items-center rounded-lg text-ink transition hover:bg-surface/60"
+              aria-label={`Aksi untuk ${String(task.data.title)}`}
+              onClick={(event) => event.stopPropagation()}
+              onPointerDown={(event) => event.stopPropagation()}
+            >
+              <EllipsisVertical className="size-4" />
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content align="end" sideOffset={6} className="pop z-50 w-52 rounded-2xl bg-surface p-1.5 shadow-float" onClick={(event) => event.stopPropagation()}>
+                <DropdownMenu.Item className={ITEM} onSelect={() => void postponeTask(task, 1, refresh)}>
+                  <CalendarClock />
+                  Tunda 1 hari
+                </DropdownMenu.Item>
+                <DropdownMenu.Item className={ITEM} onSelect={() => void postponeTask(task, 7, refresh)}>
+                  <CalendarPlus />
+                  Tunda 1 minggu
+                </DropdownMenu.Item>
+                <DropdownMenu.Separator className="my-1 h-px bg-line" />
+                <DropdownMenu.Item className={cn(ITEM, 'data-[highlighted]:bg-late data-[highlighted]:text-late-ink')} onSelect={() => void cancelTask(task, refresh)}>
+                  <XCircle />
+                  Batalkan tugas
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
+          <Check checked={done} onChange={() => void toggleTaskDone(task, refresh)} label={`${done ? 'Buka lagi' : 'Tandai selesai'}: ${String(task.data.title)}`} className="ml-1.5" />
+        </span>
       </div>
-      <div className="relative flex items-start gap-3">
-        <Check checked={done} onChange={() => void toggleTaskDone(task, refresh)} label={`${done ? 'Buka lagi' : 'Tandai selesai'}: ${String(task.data.title)}`} className="mt-0.5" />
-        <button
-          type="button"
-          onClick={onOpen}
-          onPointerDown={(event) => draggable && event.stopPropagation()}
-          className={cn('text-left text-[15.5px] leading-snug font-bold text-ink outline-none', done && 'text-ink-3 line-through')}
-        >
-          {String(task.data.title)}
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={onOpen}
+        onPointerDown={(event) => draggable && event.stopPropagation()}
+        className={cn('relative line-clamp-2 text-left text-[15.5px] leading-snug font-bold text-ink outline-none', done && 'text-ink-3 line-through')}
+      >
+        {String(task.data.title)}
+      </button>
       {subtasks.length > 0 && (
         <div className="relative flex flex-col gap-1.5">
-          <span className="flex justify-between text-[11px] font-bold opacity-80">
-            Progres <span className="tabular">{progress}%</span>
+          <span className="flex justify-between text-[12px] font-semibold text-ink-3">
+            Progres <span className="tabular font-bold text-ink">{progress}%</span>
           </span>
-          <SegmentBar value={progress} segments={Math.min(10, Math.max(4, subtasks.length))} label="Progres subtugas" />
+          <SegmentBar value={progress} segments={8} label="Progres subtugas" onTone />
         </div>
       )}
-      <div className="relative flex items-center gap-3 text-[12px] font-semibold">
-        <AvatarStack names={[String(task.data.assignee || '')]} />
+      <div className="relative flex items-center gap-3 text-[12px] font-semibold text-ink-3">
+        <AvatarStack names={people} max={3} />
+        {comments > 0 && (
+          <span className="flex items-center gap-1" title={`${comments} komentar`}>
+            <MessageCircle className="size-3.5" />
+            <span className="tabular">{comments}</span>
+          </span>
+        )}
         {subtasks.length > 0 && (
-          <span className="flex items-center gap-1 opacity-80">
+          <span className="flex items-center gap-1" title="Subtugas selesai">
             <ListChecks className="size-3.5" />
             <span className="tabular">{subtasks.filter((s) => s.done).length}/{subtasks.length}</span>
           </span>
         )}
-        <span className={cn('ml-auto flex items-center gap-1', due.late ? 'rounded-full bg-surface/80 px-2 py-0.5 font-bold text-late-ink' : 'opacity-80')}>
+        <span className={cn('ml-auto flex items-center gap-1', due.late && 'font-bold text-late-ink')}>
           <Clock className="size-3.5" />
           {due.text}
         </span>

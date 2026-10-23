@@ -9,11 +9,14 @@ export function SegmentBar({
   segments = 8,
   label,
   className,
+  onTone,
 }: {
   value: number;
   segments?: number;
   label?: string;
   className?: string;
+  /** Di atas kartu pastel: ruas kosong putih seperti acuan. */
+  onTone?: boolean;
 }) {
   const filled = Math.round((Math.max(0, Math.min(100, value)) / 100) * segments);
   return (
@@ -30,7 +33,11 @@ export function SegmentBar({
           key={index}
           className={cn(
             'flex-1 rounded-full transition-colors duration-500',
-            index < filled ? 'bg-[var(--tone-bar,var(--accent-strong))]' : 'bg-[color-mix(in_srgb,var(--tone-bar,var(--ink-3))_22%,transparent)]',
+            index < filled
+              ? 'bg-[var(--tone-bar,var(--accent-strong))]'
+              : onTone
+                ? 'bg-surface/80'
+                : 'bg-[color-mix(in_srgb,var(--tone-bar,var(--ink-3))_22%,transparent)]',
           )}
         />
       ))}

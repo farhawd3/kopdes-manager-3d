@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence } from 'motion/react';
 import * as motion from 'motion/react-m';
 import { PartyPopper, Plus, Settings2, Trash2 } from 'lucide-react';
@@ -14,6 +14,7 @@ import { SegmentBar } from '@/components/ui/progress';
 import { Wave } from '@/components/ui/wave';
 import { api } from '@/lib/client';
 import { today } from '@/lib/date';
+import { useJakartaClock } from '@/lib/clock';
 import { cn } from '@/lib/utils';
 
 /** Rutinitas standar manajer gerai KDMP; dipakai saat daftar rutin masih kosong. */
@@ -52,19 +53,6 @@ export function routineStates(routines: Item[], checks: Item[], date: string, no
     }
     return { routine, done, state: 'later' };
   });
-}
-
-const jakartaTime = () =>
-  new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date());
-
-const subscribeClock = (callback: () => void) => {
-  const timer = window.setInterval(callback, 30_000);
-  return () => window.clearInterval(timer);
-};
-
-/** Jam WIB "HH:MM", diperbarui tiap 30 detik; kosong saat render di server. */
-export function useJakartaClock() {
-  return useSyncExternalStore(subscribeClock, jakartaTime, () => '');
 }
 
 /** Centang rutin hari ini; diambil langsung dari database agar HP dan laptop selalu sama. */

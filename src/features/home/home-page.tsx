@@ -15,7 +15,7 @@ import { countTaskStates } from '@/features/tasks/status-counts';
 import { MEETING_KINDS, meetingKindOf } from '@/features/agenda/meeting-kinds';
 import { isProjectHistory } from '@/features/projects/lifecycle';
 import { PageLoading } from '@/features/records/records-page';
-import { PageHeader } from '@/components/layout/page-header';
+import { AvatarStack } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/field';
 import { StatTile } from '@/components/ui/stat';
@@ -28,16 +28,14 @@ import { scopeProgress } from '@/lib/progress';
 import { projectTone } from '@/lib/tones';
 import { cn } from '@/lib/utils';
 import type { Task } from '@/features/records/schemas';
-import { RoutinesCard, routineStates, useJakartaClock, useRoutineChecks } from './routines';
+import { RoutinesCard, routineStates, useRoutineChecks } from './routines';
+import { useJakartaClock } from '@/lib/clock';
 import { DayTimeline } from './day-timeline';
 import { buildDailyReport, parseQuickAdd } from './quick-add';
 
 const DAY_SHORT = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-const greeting = (now: string) => {
-  if (!now) return 'Halo';
-  const hour = Number(now.slice(0, 2));
-  return hour < 11 ? 'Selamat pagi' : hour < 15 ? 'Selamat siang' : hour < 18 ? 'Selamat sore' : 'Selamat malam';
-};
+const monthName = (date: string) =>
+  new Intl.DateTimeFormat('id-ID', { month: 'long', timeZone: 'UTC' }).format(new Date(date + 'T12:00:00Z'));
 const longDate = (date: string) =>
   new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(date + 'T12:00:00Z'));
 
@@ -55,7 +53,8 @@ export function HomePage() {
   const router = useRouter();
   const tasks = useMemo(() => data['work-items'] || [], [data]);
   const meetings = useMemo(() => (data.meetings || []).filter((m) => m.data.status !== 'dibatalkan'), [data]);
-  const { manager, name: coop } = organizationInfo(data);
+  const { name: coop } = organizationInfo(data);
+  const team = (data.staff || []).filter((row) => row.data.status !== 'nonaktif').map((row) => String(row.data.title));
   const counts = countTaskStates(tasks, date);
   const deadlines = useMemo(
     () =>
@@ -70,6 +69,20 @@ export function HomePage() {
   const dayTasks = tasks.filter((task) => task.data.due_date === day && task.data.status !== 'dibatalkan');
   const dayMeetings = meetings.filter((m) => m.data.date === day);
   const late = counts.terlambat;
+  // Penanggung jawab tugas per keadaan, untuk tumpukan avatar di ubin ringkasan.
+  const peopleOf = (state: 'rencana' | 'proses' | 'selesai' | 'terlambat') => [
+    ...new Set(
+      tasks
+        .filter((t) =>
+          state === 'terlambat'
+            ? isActiveTask(t.data.status) && t.data.due_date && String(t.data.due_date) < date
+            : t.data.status === state,
+        )
+        .map((t) => String(t.data.assignee || ''))
+        .filter(Boolean),
+    ),
+  ];
+  const todayCount = tasks.filter((t) => t.data.due_date === date && isActiveTask(t.data.status)).length;
   const task = tasks.find((row) => row.id === openTask);
 
   if (error) return <ErrorState message={error} onRetry={() => void refresh()} />;
@@ -95,41 +108,59 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader
-        title={`${greeting(now)}${manager ? `, ${manager.split(' ')[0]}` : ''}`}
-        subtitle={
-          <>
-            {longDate(date)}
+      <section aria-label="Hari ini" className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-[var(--radius-card)] bg-surface px-5 py-4 shadow-card">
+        <div className="min-w-0 flex-1 md:flex-none">
+          <h1 className="text-[26px] leading-tight font-extrabold tracking-tight text-ink">{monthName(date)}</h1>
+          <p className="text-[13px] font-semibold text-ink-3">Hari ini {longDate(date)}</p>
+          {late > 0 && (
+            <Link href="/tasks?status=terlambat" className="text-[13px] font-bold text-late-ink md:hidden">{late} tugas terlambat</Link>
+          )}
+        </div>
+        <span className="hidden h-11 w-px bg-line md:block" aria-hidden="true" />
+        <div className="flex items-baseline gap-2 max-md:hidden">
+          <span className="text-[20px] font-extrabold">Kerja harian</span>
+          <span className="text-[13px] font-semibold text-ink-3">
+            {todayCount} tugas hari ini
             {late > 0 && (
               <>
                 {' · '}
-                <Link href="/tasks?status=terlambat" className="font-bold text-late-ink hover:underline">{late} tugas terlambat</Link>
+                <Link href="/tasks?status=terlambat" className="font-bold text-late-ink hover:underline">{late} terlambat</Link>
               </>
             )}
-          </>
-        }
-        actions={
+          </span>
+        </div>
+        {team.length > 0 && (
           <>
-            <Button onClick={() => void copyReport()}>
-              <ClipboardCopy />
-              <span className="max-sm:hidden">Salin laporan hari ini</span>
-            </Button>
-            <Button asChild>
-              <Link href="/world?lokasi=kantor"><Globe2 /><span className="max-sm:hidden">Masuk ke 3D</span></Link>
-            </Button>
+            <span className="hidden h-11 w-px bg-line xl:block" aria-hidden="true" />
+            <Link href="/team" className="hidden items-center xl:flex" aria-label={`Tim: ${team.length} orang`}>
+              <AvatarStack names={team} max={3} />
+            </Link>
           </>
-        }
-      />
+        )}
+        <div className="flex gap-2 md:ml-auto">
+          <Button onClick={() => void copyReport()} aria-label="Salin laporan hari ini">
+            <ClipboardCopy />
+            <span className="max-sm:hidden">Salin laporan</span>
+          </Button>
+          <Button asChild>
+            <Link href="/world?lokasi=kantor" aria-label="Masuk ke Dunia Koperasi 3D"><Globe2 /><span className="max-sm:hidden">Masuk ke 3D</span></Link>
+          </Button>
+        </div>
+      </section>
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <RoutinesCard routines={data.routines || []} checks={checks} setChecks={setChecks} reload={reload} refresh={refresh} ready={routinesReady} />
         <section aria-labelledby="overview-title" className="flex flex-col gap-3">
           <h2 id="overview-title" className="text-lg font-extrabold">Ringkasan tugas</h2>
           <div className="grid grid-cols-2 gap-3">
-            <StatTile label="Belum" value={counts.rencana} tone="lavender" icon={<CircleDashed />} note="Rencana" onClick={() => router.push('/tasks?status=rencana')} />
-            <StatTile label="Dikerjakan" value={counts.proses} tone="sky" icon={<LoaderCircle />} note="Sedang berjalan" onClick={() => router.push('/tasks?status=proses')} />
-            <StatTile label="Selesai" value={counts.selesai} tone="mint" icon={<CircleCheck />} note="30 hari terakhir" onClick={() => router.push('/tasks?status=selesai')} />
-            <StatTile label="Terlambat" value={late} tone="rose" icon={<AlarmClock />} note={late ? 'Perlu ditindak' : 'Tidak ada'} onClick={() => router.push('/tasks?status=terlambat')} />
+            <div className="flex flex-col gap-3">
+              <StatTile label="Dikerjakan" value={counts.proses} tone="lavender" icon={<LoaderCircle />} note="Sedang berjalan" people={peopleOf('proses')} className="min-h-40" onClick={() => router.push('/tasks?status=proses')} />
+              <StatTile label="Terlambat" value={late} tone="rose" icon={<AlarmClock />} note={late ? 'Perlu ditindak' : 'Tidak ada'} people={peopleOf('terlambat')} onClick={() => router.push('/tasks?status=terlambat')} />
+            </div>
+            <div className="flex flex-col gap-3 pt-7">
+              <StatTile label="Belum" value={counts.rencana} tone="sky" icon={<CircleDashed />} note="Rencana" people={peopleOf('rencana')} onClick={() => router.push('/tasks?status=rencana')} />
+              <StatTile label="Selesai" value={counts.selesai} tone="mint" icon={<CircleCheck />} note="30 hari terakhir" people={peopleOf('selesai')} className="min-h-36" onClick={() => router.push('/tasks?status=selesai')} />
+            </div>
           </div>
           <form
             className="relative"

@@ -22,7 +22,7 @@ export function ProfileMenu({ compact }: { compact?: boolean }) {
       <DropdownMenu.Trigger
         className={cn(
           'flex w-full items-center gap-3 rounded-2xl text-left transition hover:bg-surface-2',
-          compact ? 'bg-surface-2 p-2 max-lg:justify-center max-lg:bg-transparent' : 'p-0',
+          compact ? 'bg-surface p-2 shadow-card max-lg:justify-center max-lg:bg-transparent max-lg:shadow-none' : 'p-0',
         )}
         aria-label="Profil dan tampilan"
       >

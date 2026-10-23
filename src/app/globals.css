@@ -27,6 +27,10 @@
   --action-hover: #121b35;
   --on-action: #ffffff;
 
+  /* Warna logo; hanya untuk tanda Kopdes, bukan untuk tombol. */
+  --brand: #f25f6e;
+  --on-brand: #ffffff;
+
   /* Sorotan (kapsul navigasi, hari terpilih, fokus); dipilih pengguna dari lima nada. */
   --accent: #e7e2ff;
   --accent-ink: #5340c2;
@@ -68,6 +72,7 @@
   --action: #dfe5fb;
   --action-hover: #ffffff;
   --on-action: #121729;
+  --brand: #f36b79;
   --plan: #2a2650;
   --plan-ink: #c6bcff;
   --doing: #1c2d47;
@@ -119,6 +124,8 @@
   --color-action: var(--action);
   --color-action-hover: var(--action-hover);
   --color-on-action: var(--on-action);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-strong: var(--accent-strong);
@@ -138,7 +145,7 @@
   --color-tone-line: var(--tone-line);
   --shadow-card: var(--shadow-card);
   --shadow-float: var(--shadow-float);
-  --radius-card: 1.25rem;
+  --radius-card: 1rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
