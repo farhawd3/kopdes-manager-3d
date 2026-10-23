@@ -22,7 +22,10 @@ export function tumpukKardus(n = 3, warna: ColorRepresentation = KARDUS) {
     const k = kotak(0.62, 0.42, 0.52, warna, 0.05);
     k.position.set(((i * 37) % 7) * 0.012 - 0.03, i * 0.42, ((i * 53) % 5) * 0.012);
     k.rotation.y = ((i * 29) % 9) * 0.02 - 0.08;
-    g.add(k, di(kotak(0.64, 0.05, 0.12, 0xc58d55, 0.02), k.position.x, i * 0.42 + 0.42, k.position.z));
+    g.add(
+      k,
+      di(kotak(0.64, 0.05, 0.12, 0xc58d55, 0.02), k.position.x, i * 0.42 + 0.42, k.position.z),
+    );
   }
   return g;
 }
@@ -36,7 +39,12 @@ export function palet() {
 export function paletKarung(lapis = 2) {
   const g = palet();
   for (let l = 0; l < lapis; l++)
-    for (const [x, z] of [[-0.3, -0.25], [0.3, -0.25], [-0.3, 0.25], [0.3, 0.25]]) {
+    for (const [x, z] of [
+      [-0.3, -0.25],
+      [0.3, -0.25],
+      [-0.3, 0.25],
+      [0.3, 0.25],
+    ]) {
       const k = kotak(0.58, 0.26, 0.48, KARUNG, 0.12);
       k.position.set(x, 0.22 + l * 0.26, z);
       k.rotation.y = l % 2 ? 0.08 : -0.05;
@@ -53,16 +61,21 @@ export function rakBaja(isi = 1, w = 2.6) {
   const tinggi = 3;
   const g = new Group();
   // Tiang dan papan dibuat tebal-membulat agar tidak tampak sebagai garis patah dari jauh.
-  for (const x of [-w / 2, w / 2]) for (const z of [-0.45, 0.45]) g.add(di(kotak(0.3, tinggi, 0.3, TIANG, 0.14), x, 0, z));
+  for (const x of [-w / 2, w / 2])
+    for (const z of [-0.45, 0.45]) g.add(di(kotak(0.3, tinggi, 0.3, TIANG, 0.14), x, 0, z));
   const tingkat = [0.12, 1.1, 2.08];
   for (const y of [...tingkat, 2.9]) {
-    g.add(di(kotak(w + 0.3, 0.26, 0.24, BALOK, 0.11), 0, y, 0.45), di(kotak(w + 0.3, 0.26, 0.24, BALOK, 0.11), 0, y, -0.45));
+    g.add(
+      di(kotak(w + 0.3, 0.26, 0.24, BALOK, 0.11), 0, y, 0.45),
+      di(kotak(w + 0.3, 0.26, 0.24, BALOK, 0.11), 0, y, -0.45),
+    );
     g.add(di(kotak(w, 0.18, 0.92, WARNA.krem, 0.08), 0, y + 0.06, 0));
   }
   const slot = tingkat.length * 3;
   const terisi = Math.round(slot * isi);
   for (let i = 0; i < terisi; i++) {
-    const t = Math.floor(i / 3), kol = i % 3;
+    const t = Math.floor(i / 3),
+      kol = i % 3;
     const k = tumpukKardus(1 + ((i * 7) % 2), i % 4 === 3 ? 0xc9b48a : KARDUS);
     k.position.set(-w / 2 + 0.45 + kol * ((w - 0.9) / 2), tingkat[t] + 0.1, 0);
     k.scale.setScalar(0.9);
@@ -83,13 +96,21 @@ export function forklift() {
     di(kotak(0.12, 1.6, 0.12, WARNA.abu, 0.03), -0.3, 0.2, 0.75),
     di(kotak(0.12, 1.6, 0.12, WARNA.abu, 0.03), 0.3, 0.2, 0.75),
   );
-  for (const [x, z] of [[-0.52, 0.45], [0.52, 0.45], [-0.52, -0.45], [0.52, -0.45]]) {
+  for (const [x, z] of [
+    [-0.52, 0.45],
+    [0.52, 0.45],
+    [-0.52, -0.45],
+    [0.52, -0.45],
+  ]) {
     const r = silinder(0.24, 0.24, 0.2, WARNA.gelap);
     r.rotation.z = Math.PI / 2;
     r.position.set(x + (x > 0 ? 0.1 : -0.1), 0.24, z);
     g.add(r);
   }
-  const garpu = grup(di(kotak(0.12, 0.06, 0.9, WARNA.abu, 0.02), -0.25, 0, 0.5), di(kotak(0.12, 0.06, 0.9, WARNA.abu, 0.02), 0.25, 0, 0.5));
+  const garpu = grup(
+    di(kotak(0.12, 0.06, 0.9, WARNA.abu, 0.02), -0.25, 0, 0.5),
+    di(kotak(0.12, 0.06, 0.9, WARNA.abu, 0.02), 0.25, 0, 0.5),
+  );
   garpu.position.set(0, 0.3, 0.6);
   g.add(garpu);
   g.userData.garpu = garpu;
@@ -106,19 +127,27 @@ export function timbangan() {
 }
 
 export function apar() {
-  return grup(di(silinder(0.13, 0.13, 0.6, WARNA.merah), 0, 0, 0), di(bola(0.11, WARNA.merah), 0, 0.6, 0), di(kotak(0.18, 0.08, 0.08, WARNA.gelap, 0.02), 0.06, 0.66, 0));
+  return grup(
+    di(silinder(0.13, 0.13, 0.6, WARNA.merah), 0, 0, 0),
+    di(bola(0.11, WARNA.merah), 0, 0.6, 0),
+    di(kotak(0.18, 0.08, 0.08, WARNA.gelap, 0.02), 0.06, 0.66, 0),
+  );
 }
 
 /** Pintu gulung untuk dinding gudang; `warna` daun bergaris. */
 export function pintuGulung(w = 2.6, h = 2.8, warna: ColorRepresentation = WARNA.krem) {
   const g = grup(di(kotak(w + 0.4, h + 0.25, 0.3, WARNA.kayuGelap, 0.14), 0, 0, 0));
-  for (let i = 0; i < 7; i++) g.add(di(kotak(w, h / 7 - 0.02, 0.16, warna, 0.075), 0, 0.02 + (i * h) / 7, 0.16));
+  for (let i = 0; i < 7; i++)
+    g.add(di(kotak(w, h / 7 - 0.02, 0.16, warna, 0.075), 0, 0.02 + (i * h) / 7, 0.16));
   g.add(di(kotak(w + 0.4, 0.3, 0.3, WARNA.kayu, 0.12), 0, h, 0.08));
   return g;
 }
 
 /** Truk boks membulat; badan menghadap +x (melaju ke kanan), cocok untuk jalan sepanjang x. */
-export function truk(warnaKabin: ColorRepresentation = WARNA.merah, warnaBoks: ColorRepresentation = WARNA.putih) {
+export function truk(
+  warnaKabin: ColorRepresentation = WARNA.merah,
+  warnaBoks: ColorRepresentation = WARNA.putih,
+) {
   const g = new Group();
   g.add(
     di(kotak(4.2, 0.35, 1.6, WARNA.gelap, 0.1), 0, 0.35, 0),
@@ -127,12 +156,13 @@ export function truk(warnaKabin: ColorRepresentation = WARNA.merah, warnaBoks: C
     di(kotak(0.06, 0.6, 1.3, WARNA.biruKaca, 0.03, 0.25), 2.1, 1.25, 0),
     di(kotak(1.8, 0.22, 0.04, WARNA.sage, 0.02), -0.6, 1.4, 0.86),
   );
-  for (const x of [-1.4, 0.0, 1.45]) for (const z of [-0.8, 0.8]) {
-    const r = silinder(0.36, 0.36, 0.3, WARNA.gelap);
-    r.rotation.x = Math.PI / 2;
-    // silinder tumbuh ke +z setelah diputar: sisi kiri digeser selebar ban agar menempel badan
-    r.position.set(x, 0.36, z > 0 ? 0.65 : -0.95);
-    g.add(r, di(bola(0.12, WARNA.abu), x, 0.36, z + (z > 0 ? 0.02 : -0.02)));
-  }
+  for (const x of [-1.4, 0.0, 1.45])
+    for (const z of [-0.8, 0.8]) {
+      const r = silinder(0.36, 0.36, 0.3, WARNA.gelap);
+      r.rotation.x = Math.PI / 2;
+      // silinder tumbuh ke +z setelah diputar: sisi kiri digeser selebar ban agar menempel badan
+      r.position.set(x, 0.36, z > 0 ? 0.65 : -0.95);
+      g.add(r, di(bola(0.12, WARNA.abu), x, 0.36, z + (z > 0 ? 0.02 : -0.02)));
+    }
   return g;
 }

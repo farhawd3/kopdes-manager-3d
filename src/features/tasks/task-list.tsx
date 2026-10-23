@@ -17,7 +17,12 @@ const GROUPS = [
   { status: 'selesai', label: 'Selesai', tone: 'mint' },
   { status: 'dibatalkan', label: 'Dibatalkan', tone: 'slate' },
 ];
-const PRIORITY_TONE: Record<string, string> = { mendesak: 'text-late-ink', tinggi: 'text-late-ink', normal: 'text-ink-3', rendah: 'text-ink-3' };
+const PRIORITY_TONE: Record<string, string> = {
+  mendesak: 'text-late-ink',
+  tinggi: 'text-late-ink',
+  normal: 'text-ink-3',
+  rendah: 'text-ink-3',
+};
 
 /** Baris tugas: di HP geser kanan = selesai, geser kiri = tunda ke besok. */
 function SwipeRow({
@@ -46,11 +51,22 @@ function SwipeRow({
   const done = task.data.status === 'selesai';
   const priority = String(task.data.priority || 'normal');
   return (
-    <motion.li layout initial={false} exit={{ opacity: 0, height: 0 }} className="relative overflow-hidden rounded-2xl">
-      <motion.span style={{ opacity: doneOpacity }} className="absolute inset-0 flex items-center bg-done pl-5 text-sm font-bold text-done-ink">
+    <motion.li
+      layout
+      initial={false}
+      exit={{ opacity: 0, height: 0 }}
+      className="relative overflow-hidden rounded-2xl"
+    >
+      <motion.span
+        style={{ opacity: doneOpacity }}
+        className="absolute inset-0 flex items-center bg-done pl-5 text-sm font-bold text-done-ink"
+      >
         <CheckIcon className="mr-2 size-4" /> Selesai
       </motion.span>
-      <motion.span style={{ opacity: laterOpacity }} className="absolute inset-0 flex items-center justify-end bg-doing pr-5 text-sm font-bold text-doing-ink">
+      <motion.span
+        style={{ opacity: laterOpacity }}
+        className="absolute inset-0 flex items-center justify-end bg-doing pr-5 text-sm font-bold text-doing-ink"
+      >
         Besok <CalendarClock className="ml-2 size-4" />
       </motion.span>
       <motion.div
@@ -76,23 +92,68 @@ function SwipeRow({
         )}
       >
         {selecting ? (
-          <Check checked={selected} onChange={onSelect} label={`Pilih ${String(task.data.title)}`} size="sm" />
+          <Check
+            checked={selected}
+            onChange={onSelect}
+            label={`Pilih ${String(task.data.title)}`}
+            size="sm"
+          />
         ) : (
-          <Check checked={done} onChange={() => void toggleTaskDone(task, refresh)} label={`${done ? 'Buka lagi' : 'Tandai selesai'}: ${String(task.data.title)}`} />
+          <Check
+            checked={done}
+            onChange={() => void toggleTaskDone(task, refresh)}
+            label={`${done ? 'Buka lagi' : 'Tandai selesai'}: ${String(task.data.title)}`}
+          />
         )}
         <span className="h-9 w-1 shrink-0 rounded-full bg-tone-bar" aria-hidden="true" />
-        <button type="button" onClick={selecting ? onSelect : onOpen} className="min-w-0 flex-1 text-left">
-          <span className={cn('block truncate text-[15px] font-bold text-ink', done && 'text-ink-3 line-through')}>{String(task.data.title)}</span>
+        <button
+          type="button"
+          onClick={selecting ? onSelect : onOpen}
+          className="min-w-0 flex-1 text-left"
+        >
+          <span
+            className={cn(
+              'block truncate text-[15px] font-bold text-ink',
+              done && 'text-ink-3 line-through',
+            )}
+          >
+            {String(task.data.title)}
+          </span>
           <span className="flex items-center gap-2 text-xs text-ink-3">
-            <span className="truncate">{project ? String(project.data.title) : 'Tanpa proyek'}</span>
-            {subtasks.length > 0 && <span className="tabular shrink-0">· {subtasks.filter((s) => s.done).length}/{subtasks.length}</span>}
-            {Boolean(task.data.recurrence) && task.data.recurrence !== 'tidak' && <Repeat className="size-3 shrink-0" aria-label="Berulang" />}
-            <span className={cn('shrink-0 md:hidden', due.late && 'font-bold text-late-ink')}>· {due.text}</span>
+            <span className="truncate">
+              {project ? String(project.data.title) : 'Tanpa proyek'}
+            </span>
+            {subtasks.length > 0 && (
+              <span className="tabular shrink-0">
+                · {subtasks.filter((s) => s.done).length}/{subtasks.length}
+              </span>
+            )}
+            {Boolean(task.data.recurrence) && task.data.recurrence !== 'tidak' && (
+              <Repeat className="size-3 shrink-0" aria-label="Berulang" />
+            )}
+            <span className={cn('shrink-0 md:hidden', due.late && 'font-bold text-late-ink')}>
+              · {due.text}
+            </span>
           </span>
         </button>
-        {priority !== 'normal' && <Flag className={cn('hidden size-4 shrink-0 md:block', PRIORITY_TONE[priority])} aria-label={`Prioritas ${priority}`} />}
-        <span className={cn('hidden w-32 shrink-0 text-right text-[13px] font-semibold md:block', due.late ? 'text-late-ink' : 'text-ink-2')}>{due.text}</span>
-        <AvatarStack names={[String(task.data.assignee || '')]} className="hidden w-10 shrink-0 justify-end md:flex" />
+        {priority !== 'normal' && (
+          <Flag
+            className={cn('hidden size-4 shrink-0 md:block', PRIORITY_TONE[priority])}
+            aria-label={`Prioritas ${priority}`}
+          />
+        )}
+        <span
+          className={cn(
+            'hidden w-32 shrink-0 text-right text-[13px] font-semibold md:block',
+            due.late ? 'text-late-ink' : 'text-ink-2',
+          )}
+        >
+          {due.text}
+        </span>
+        <AvatarStack
+          names={[String(task.data.assignee || '')]}
+          className="hidden w-10 shrink-0 justify-end md:flex"
+        />
       </motion.div>
     </motion.li>
   );
@@ -115,15 +176,27 @@ export function TaskList({
   selected: Set<string>;
   onToggleSelect: (id: string) => void;
 }) {
-  const groups = GROUPS.map((group) => ({ ...group, rows: tasks.filter((task) => task.data.status === group.status) })).filter((group) => group.rows.length);
+  const groups = GROUPS.map((group) => ({
+    ...group,
+    rows: tasks.filter((task) => task.data.status === group.status),
+  })).filter((group) => group.rows.length);
   return (
     <div className="flex flex-col gap-5">
       {groups.map((group) => (
-        <section key={group.status} aria-label={group.label} className="overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-card">
-          <header data-tone={group.tone} className="flex items-center gap-2 border-b border-line px-4 py-3">
+        <section
+          key={group.status}
+          aria-label={group.label}
+          className="overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-card"
+        >
+          <header
+            data-tone={group.tone}
+            className="flex items-center gap-2 border-b border-line px-4 py-3"
+          >
             <span className="size-2.5 rounded-full bg-tone-bar" />
             <h2 className="text-[15px] font-extrabold">{group.label}</h2>
-            <span className="tabular rounded-full bg-surface-3 px-2 py-0.5 text-xs font-bold text-ink-2">{group.rows.length}</span>
+            <span className="tabular rounded-full bg-surface-3 px-2 py-0.5 text-xs font-bold text-ink-2">
+              {group.rows.length}
+            </span>
           </header>
           <ul className="flex flex-col divide-y divide-line/70">
             <AnimatePresence initial={false}>

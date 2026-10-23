@@ -36,7 +36,9 @@ export function SegmentBar({
             key={index}
             className={cn(
               'relative flex-1 overflow-hidden rounded-full',
-              onTone ? 'bg-surface/80' : 'bg-[color-mix(in_srgb,var(--tone-bar,var(--ink-3))_22%,transparent)]',
+              onTone
+                ? 'bg-surface/80'
+                : 'bg-[color-mix(in_srgb,var(--tone-bar,var(--ink-3))_22%,transparent)]',
             )}
           >
             <span
@@ -50,7 +52,15 @@ export function SegmentBar({
   );
 }
 
-export function Bar({ value, className, label }: { value: number; className?: string; label?: string }) {
+export function Bar({
+  value,
+  className,
+  label,
+}: {
+  value: number;
+  className?: string;
+  label?: string;
+}) {
   return (
     <div
       role="progressbar"

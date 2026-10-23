@@ -106,8 +106,8 @@ Semua di `src/features/world/`.
 | `world-page.tsx` | Halaman `/world`: memuat workspace lalu memanggil dashboard |
 | `world-link.tsx` | `worldHref()` dan `hasWorldPlace()` untuk tombol "Lihat di dunia" di web |
 | `tautan.ts` | Membaca parameter alamat menjadi lokasi dan objek terpilih |
-| `MonitoringDashboard.tsx` | Lokasi, KPI, panel detail, pelacak, daftar bertab, pencarian, keadaan data |
-| `MonitoringStage.tsx` | Jembatan React ke WebGL, lazy load, kontrol peta, label pilihan, fallback |
+| `monitoring-dashboard.tsx` | Lokasi, KPI, panel detail, pelacak, daftar bertab, pencarian, keadaan data |
+| `monitoring-stage.tsx` | Jembatan React ke WebGL, lazy load, kontrol peta, label pilihan, fallback |
 | `monitoring-scene.ts` | Kamera, cahaya, lokasi, figur berjalan, pin, raycast, geser/zoom, pembersihan |
 | `monitor-cards.tsx`, `gerai-cards.tsx`, `grafik-lokasi.tsx` | Kartu panel, kartu gerai, grafik ringkas |
 | `monitoring.css` | Gaya dunia (`mt-*`), terpisah dari web |

@@ -38,9 +38,30 @@ export function Pill({
 /** Status catatan apa pun → nada pill; status selesai/terlambat selalu berwarna sama di semua halaman. */
 export function statusTone(status: unknown): PillTone {
   const value = String(status || '');
-  if (['selesai', 'hadir', 'diterima', 'tersedia', 'aktif', 'siap buka', 'ditutup', 'baik'].includes(value)) return 'done';
-  if (['proses', 'dikirim', 'tiba', 'diperiksa', 'ditangani', 'diproses', 'dipesan', 'persiapan', 'siap uji', 'ditunjuk'].includes(value)) return 'doing';
-  if (['alpa', 'rusak', 'dibatalkan', 'terbuka', 'terlambat', 'belum ada', 'sakit'].includes(value)) return 'late';
-  if (['ditunda', 'izin', 'cuti', 'perlu perbaikan', 'draf', 'nonaktif'].includes(value)) return 'warn';
+  if (
+    ['selesai', 'hadir', 'diterima', 'tersedia', 'aktif', 'siap buka', 'ditutup', 'baik'].includes(
+      value,
+    )
+  )
+    return 'done';
+  if (
+    [
+      'proses',
+      'dikirim',
+      'tiba',
+      'diperiksa',
+      'ditangani',
+      'diproses',
+      'dipesan',
+      'persiapan',
+      'siap uji',
+      'ditunjuk',
+    ].includes(value)
+  )
+    return 'doing';
+  if (['alpa', 'rusak', 'dibatalkan', 'terbuka', 'terlambat', 'belum ada', 'sakit'].includes(value))
+    return 'late';
+  if (['ditunda', 'izin', 'cuti', 'perlu perbaikan', 'draf', 'nonaktif'].includes(value))
+    return 'warn';
   return 'plan';
 }

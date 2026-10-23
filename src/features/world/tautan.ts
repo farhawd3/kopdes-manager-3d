@@ -33,8 +33,10 @@ export function tujuanTautan(
     const item = model.inventory.items.find((i) => i.id === barang);
     if (!item) return null;
     const rak = String(item.data.rack || '');
-    if ((coldRackIds as readonly string[]).includes(rak)) return { lokasi: 'pendingin', pilih: `rak-${rak}` };
-    if ((rackIds as readonly string[]).includes(rak)) return { lokasi: 'gudang', pilih: `rak-${rak}` };
+    if ((coldRackIds as readonly string[]).includes(rak))
+      return { lokasi: 'pendingin', pilih: `rak-${rak}` };
+    if ((rackIds as readonly string[]).includes(rak))
+      return { lokasi: 'gudang', pilih: `rak-${rak}` };
     const g = gerai.find((i) => i.unit && i.unit.id === item.data.unit_id);
     return g ? { lokasi: 'gerai', pilih: `g:${g.id}` } : { lokasi: 'kantor', pilih: 'stok' };
   }
@@ -50,13 +52,19 @@ export function tujuanTautan(
   if (tugas) {
     const task = model.tasks.find((t) => t.id === tugas);
     if (!task) return { lokasi: 'kantor', pilih: 'kerja' };
-    return orang(plans.find((p) => sameName(task.data.assignee, p.name))) ?? { lokasi: 'kantor', pilih: 'kerja' };
+    return (
+      orang(plans.find((p) => sameName(task.data.assignee, p.name))) ?? {
+        lokasi: 'kantor',
+        pilih: 'kerja',
+      }
+    );
   }
   if (params.get('rapat')) return { lokasi: 'kantor', pilih: 'rapat' };
   const lokasi = params.get('lokasi') as LokasiMonitoring | null;
   if (lokasi && LOKASI.includes(lokasi)) {
     const pilih = params.get('pilih') || '';
-    if (lokasi === 'kantor' && pilih && !(pilih in BIDANG) && !pilih.startsWith('orang:')) return { lokasi, pilih: 'kerja' };
+    if (lokasi === 'kantor' && pilih && !(pilih in BIDANG) && !pilih.startsWith('orang:'))
+      return { lokasi, pilih: 'kerja' };
     return { lokasi, pilih };
   }
   return null;

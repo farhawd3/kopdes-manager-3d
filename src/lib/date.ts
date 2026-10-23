@@ -12,14 +12,22 @@ export function addDays(value: string, amount: number): string {
   return date.toISOString().slice(0, 10);
 }
 /** Rentang satu bulan kalender; `shift` -1 = bulan lalu. Akhir bulan berjalan dibatasi `until` (hari ini). */
-export function monthRange(value: string, shift = 0, until = value): { start: string; end: string; label: string } {
+export function monthRange(
+  value: string,
+  shift = 0,
+  until = value,
+): { start: string; end: string; label: string } {
   const first = new Date(value.slice(0, 7) + '-01T12:00:00Z');
   first.setUTCMonth(first.getUTCMonth() + shift);
   const start = first.toISOString().slice(0, 10);
   const last = new Date(first);
   last.setUTCMonth(last.getUTCMonth() + 1, 0);
   const end = last.toISOString().slice(0, 10);
-  const label = new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(first);
+  const label = new Intl.DateTimeFormat('id-ID', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(first);
   return { start, end: end > until ? until : end, label };
 }
 /** Tujuh tanggal Senin–Minggu dari pekan yang memuat `value` (pekan Indonesia dimulai Senin). */

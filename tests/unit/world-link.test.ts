@@ -3,11 +3,11 @@ import { getWorldModel } from '@/features/world/model/world-model';
 import { monitoringPlans } from '@/features/world/character-plan';
 import { infoGerai } from '@/features/world/gerai';
 import { tujuanTautan } from '@/features/world/tautan';
-import { dataContoh } from '@/features/demo/sample-data';
+import { sampleData } from '@/features/demo/sample-data';
 import type { Workspace } from '@/features/workspace/use-workspace';
 import { worldHref } from '@/features/world/world-link';
 
-const rows = dataContoh('2026-10-10');
+const rows = sampleData('2026-10-10');
 const data: Workspace = {};
 for (const r of rows) (data[r.entity] ??= []).push(r);
 const model = getWorldModel(data, new Date('2026-10-10T03:00:00Z'));
@@ -19,8 +19,14 @@ const buka = (url: string) =>
 describe('tautan web → dunia', () => {
   it('barang di rak gudang, rak pendingin, dan unit gerai', () => {
     const cari = (judul: string) => rows.find((r) => r.data.title === judul)!;
-    expect(buka(worldHref('inventory-items', cari('Minyak goreng 1 L').id))).toEqual({ lokasi: 'gudang', pilih: 'rak-A' });
-    expect(buka(worldHref('inventory-items', cari('Ikan nila beku').id))).toEqual({ lokasi: 'pendingin', pilih: 'rak-C1' });
+    expect(buka(worldHref('inventory-items', cari('Minyak goreng 1 L').id))).toEqual({
+      lokasi: 'gudang',
+      pilih: 'rak-A',
+    });
+    expect(buka(worldHref('inventory-items', cari('Ikan nila beku').id))).toEqual({
+      lokasi: 'pendingin',
+      pilih: 'rak-C1',
+    });
     expect(buka(worldHref('inventory-items', cari('Paracetamol 500 mg').id))?.lokasi).toBe('gerai');
   });
   it('unit gerai, staf, pengiriman, dan lokasi langsung', () => {
@@ -29,8 +35,14 @@ describe('tautan web → dunia', () => {
     const staf = plans.find((p) => !p.mascot)!;
     expect(buka(worldHref('staff', staf.id))?.pilih).toBe(`orang:${staf.id}`);
     const kirim = model.trucks.find((t) => t.place === 'dok')!;
-    expect(buka(worldHref('deliveries', kirim.delivery.id))).toEqual({ lokasi: 'gudang', pilih: `kirim-${kirim.delivery.id}` });
-    expect(buka('/world?lokasi=pendingin&pilih=rak-C2')).toEqual({ lokasi: 'pendingin', pilih: 'rak-C2' });
+    expect(buka(worldHref('deliveries', kirim.delivery.id))).toEqual({
+      lokasi: 'gudang',
+      pilih: `kirim-${kirim.delivery.id}`,
+    });
+    expect(buka('/world?lokasi=pendingin&pilih=rak-C2')).toEqual({
+      lokasi: 'pendingin',
+      pilih: 'rak-C2',
+    });
     expect(buka('/world?barang=tidak-ada')).toBeNull();
   });
 });

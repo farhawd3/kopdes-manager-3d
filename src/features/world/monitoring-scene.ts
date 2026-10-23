@@ -99,14 +99,23 @@ export type MonitoringScene = ReturnType<typeof buatMonitoring>;
  * Persegi layar (px) dari kotak batas dunia: delapan sudut diproyeksikan, diambil batas luarnya.
  * Dipakai bingkai siku pilihan agar ukurannya mengikuti objek yang diklik.
  */
-export function persegiLayar(kotak: Box3, camera: OrthographicCamera, lebar: number, tinggi: number) {
+export function persegiLayar(
+  kotak: Box3,
+  camera: OrthographicCamera,
+  lebar: number,
+  tinggi: number,
+) {
   const v = new Vector3();
   let x0 = Infinity,
     y0 = Infinity,
     x1 = -Infinity,
     y1 = -Infinity;
   for (let i = 0; i < 8; i++) {
-    v.set(i & 1 ? kotak.max.x : kotak.min.x, i & 2 ? kotak.max.y : kotak.min.y, i & 4 ? kotak.max.z : kotak.min.z).project(camera);
+    v.set(
+      i & 1 ? kotak.max.x : kotak.min.x,
+      i & 2 ? kotak.max.y : kotak.min.y,
+      i & 4 ? kotak.max.z : kotak.min.z,
+    ).project(camera);
     const x = ((v.x + 1) / 2) * lebar,
       y = ((1 - v.y) / 2) * tinggi;
     x0 = Math.min(x0, x);
@@ -120,7 +129,10 @@ export function persegiLayar(kotak: Box3, camera: OrthographicCamera, lebar: num
 /** Delta waktu menjaga kamera halus pada berbagai kecepatan layar, berhenti saat tiba. */
 export function ikutiKarakter(target: Vector3, posisi: Vector3, dt: number, reduce = false) {
   const tujuan = new Vector3(posisi.x, 0.8, posisi.z);
-  if (reduce || target.distanceTo(tujuan) < 0.015) { target.copy(tujuan); return false; }
+  if (reduce || target.distanceTo(tujuan) < 0.015) {
+    target.copy(tujuan);
+    return false;
+  }
   target.lerp(tujuan, 1 - Math.exp(-dt * 7));
   return true;
 }
@@ -129,7 +141,12 @@ export function ikutiKarakter(target: Vector3, posisi: Vector3, dt: number, redu
  * Jalur figur: keluar lewat titik `via` tempat lama (dibalik) → dalam pintu → lorong → pintu
  * ruang tujuan → `via` tempat baru → tempat. Semua titik dipilih di area bebas perabot.
  */
-export function jalur(dari: Vector3, lama: { area: Bidang; slot: Slot } | null, ke: Bidang, slot: Slot) {
+export function jalur(
+  dari: Vector3,
+  lama: { area: Bidang; slot: Slot } | null,
+  ke: Bidang,
+  slot: Slot,
+) {
   const t: { x: number; z: number }[] = [];
   if (lama) t.push(...[...lama.slot.via].reverse(), dalamRuang(lama.area));
   if (lama?.area !== ke) {
@@ -212,7 +229,11 @@ export function buatMonitoring(
     markRuang?: SVGSVGElement | null;
   },
 ) {
-  const renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+  const renderer = new WebGLRenderer({
+    antialias: true,
+    alpha: true,
+    powerPreference: 'low-power',
+  });
   renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio || 1));
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.shadowMap.enabled = true;
@@ -228,7 +249,14 @@ export function buatMonitoring(
   light.shadow.mapSize.set(1024, 1024);
   light.shadow.radius = 4;
   light.shadow.blurSamples = 4;
-  Object.assign(light.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 80 });
+  Object.assign(light.shadow.camera, {
+    left: -26,
+    right: 26,
+    top: 26,
+    bottom: -26,
+    near: 1,
+    far: 80,
+  });
   light.shadow.normalBias = 0.04;
   scene.add(light);
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0.1, 160);
@@ -240,7 +268,8 @@ export function buatMonitoring(
   kantor.root.add(figurGroup);
   const figur = new Map<string, Figur>();
   let gudang: (Lokasi & { key: string }) | null = null;
-  let gerai: (Lokasi & { key: string; slots: Record<GeraiId, Slot[]>; info: GeraiInfo[] }) | null = null;
+  let gerai: (Lokasi & { key: string; slots: Record<GeraiId, Slot[]>; info: GeraiInfo[] }) | null =
+    null;
   const figurGerai = new Map<string, { plan: CharacterPlan; o: Orang }>();
   let rencana: CharacterPlan[] = [];
   let lokasi: LokasiMonitoring = 'kantor';
@@ -278,7 +307,12 @@ export function buatMonitoring(
   function anchor(key: string) {
     if (key.startsWith('orang:')) {
       const id = key.slice(6);
-      const o = lokasi === 'kantor' ? figur.get(id)?.o : lokasi === 'gerai' ? figurGerai.get(id)?.o : undefined;
+      const o =
+        lokasi === 'kantor'
+          ? figur.get(id)?.o
+          : lokasi === 'gerai'
+            ? figurGerai.get(id)?.o
+            : undefined;
       return o ? o.akar.position.clone().setY(1.4) : null;
     }
     if (lokasi === 'kantor' && key in BIDANG) {
@@ -296,7 +330,8 @@ export function buatMonitoring(
   let masukan: LogistikInput | null = null;
   /** Nama singkat objek di bawah kursor; nama hanya muncul saat diarahkan, bukan papan tetap. */
   function nama(key: string) {
-    if (key.startsWith('orang:')) return (figur.get(key.slice(6)) ?? figurGerai.get(key.slice(6)))?.plan.name ?? '';
+    if (key.startsWith('orang:'))
+      return (figur.get(key.slice(6)) ?? figurGerai.get(key.slice(6)))?.plan.name ?? '';
     if (key.startsWith('g:')) {
       const g = gerai?.info.find((i) => i.id === key.slice(2));
       return g ? `${g.nama}${g.buka ? '' : ' · belum dibuka'}` : '';
@@ -344,7 +379,12 @@ export function buatMonitoring(
   function kotakPilihan(key: string): Box3 | null {
     if (key.startsWith('orang:')) {
       const id = key.slice(6);
-      const o = lokasi === 'kantor' ? figur.get(id)?.o : lokasi === 'gerai' ? figurGerai.get(id)?.o : undefined;
+      const o =
+        lokasi === 'kantor'
+          ? figur.get(id)?.o
+          : lokasi === 'gerai'
+            ? figurGerai.get(id)?.o
+            : undefined;
       return o ? kotakPilih.setFromObject(o.akar) : null;
     }
     const mesh = aktif.areas.get(key);
@@ -398,12 +438,22 @@ export function buatMonitoring(
           proyeksi.set(x, y, z).project(camera);
           return [((proyeksi.x + 1) / 2) * w, ((1 - proyeksi.y) / 2) * h];
         });
-        const t = (a: number[], b: number[], k: number) => `${(a[0] + (b[0] - a[0]) * k).toFixed(1)},${(a[1] + (b[1] - a[1]) * k).toFixed(1)}`;
-        svg.querySelector('polygon')?.setAttribute('points', p.map((q) => q.map((v) => v.toFixed(1)).join(',')).join(' '));
-        svg.querySelector('path')?.setAttribute(
-          'd',
-          p.map((q, i) => `M${t(q, p[(i + 3) % 4], 0.16)}L${q[0].toFixed(1)},${q[1].toFixed(1)}L${t(q, p[(i + 1) % 4], 0.16)}`).join(''),
-        );
+        const t = (a: number[], b: number[], k: number) =>
+          `${(a[0] + (b[0] - a[0]) * k).toFixed(1)},${(a[1] + (b[1] - a[1]) * k).toFixed(1)}`;
+        svg
+          .querySelector('polygon')
+          ?.setAttribute('points', p.map((q) => q.map((v) => v.toFixed(1)).join(',')).join(' '));
+        svg
+          .querySelector('path')
+          ?.setAttribute(
+            'd',
+            p
+              .map(
+                (q, i) =>
+                  `M${t(q, p[(i + 3) % 4], 0.16)}L${q[0].toFixed(1)},${q[1].toFixed(1)}L${t(q, p[(i + 1) % 4], 0.16)}`,
+              )
+              .join(''),
+          );
       }
     }
     const mark = opsi.mark;
@@ -415,7 +465,10 @@ export function buatMonitoring(
         mark.style.width = `${Math.round(bw)}px`;
         mark.style.height = `${Math.round(bh)}px`;
         mark.style.transform = `translate(${Math.round((r.x0 + r.x1) / 2 - bw / 2)}px, ${Math.round((r.y0 + r.y1) / 2 - bh / 2)}px)`;
-        mark.style.setProperty('--siku', `${Math.round(Math.max(10, Math.min(24, Math.min(bw, bh) * 0.24)))}px`);
+        mark.style.setProperty(
+          '--siku',
+          `${Math.round(Math.max(10, Math.min(24, Math.min(bw, bh) * 0.24)))}px`,
+        );
         mark.dataset.jenis = orang ? 'orang' : 'objek';
       }
     }
@@ -451,7 +504,11 @@ export function buatMonitoring(
   }
 
   function arahkan() {
-    camera.position.set(target.x + JARAK * Math.cos(sudut), target.y + TINGGI, target.z + JARAK * Math.sin(sudut));
+    camera.position.set(
+      target.x + JARAK * Math.cos(sudut),
+      target.y + TINGGI,
+      target.z + JARAK * Math.sin(sudut),
+    );
     camera.lookAt(target);
     camera.updateMatrixWorld();
   }
@@ -629,7 +686,8 @@ export function buatMonitoring(
           gudang = { ...ruangLogistik(input, next === 'pendingin'), key };
         }
       }
-      const baru = next === 'pulau' ? pulau : next === 'kantor' ? kantor : next === 'gerai' ? gerai! : gudang!;
+      const baru =
+        next === 'pulau' ? pulau : next === 'kantor' ? kantor : next === 'gerai' ? gerai! : gudang!;
       if (baru !== aktif || next !== lokasi) {
         // Figur yang sedang berjalan langsung tiba bila kantor ditinggalkan.
         for (const f of figur.values()) {
@@ -692,7 +750,9 @@ export function buatMonitoring(
           // Figur yang masih berjalan menyelesaikan rute lamanya dulu, lalu berangkat lagi.
           const ujung = f.path.at(-1) ?? f.o.akar.position;
           if (!f.path.length) f.tunda = urut++ * GILIRAN;
-          f.path = reduce ? [] : [...f.path, ...jalur(ujung, { area: f.area, slot: f.slot }, plan.area, slot)];
+          f.path = reduce
+            ? []
+            : [...f.path, ...jalur(ujung, { area: f.area, slot: f.slot }, plan.area, slot)];
         }
         f.plan = plan;
         f.area = plan.area;
@@ -702,11 +762,17 @@ export function buatMonitoring(
       invalidate();
     },
     select(key: string) {
-      if (key !== selected && key.startsWith('orang:')) { zoom = 1.9; resize(); }
+      if (key !== selected && key.startsWith('orang:')) {
+        zoom = 1.9;
+        resize();
+      }
       selected = key;
       follow = key.startsWith('orang:');
       for (const [id, mesh] of aktif.areas) {
-        const pilihan = key.startsWith('orang:') ? (figur.get(key.slice(6))?.area ?? figurGerai.get(key.slice(6))?.plan.area.replace('gerai:', 'g:')) : '';
+        const pilihan = key.startsWith('orang:')
+          ? (figur.get(key.slice(6))?.area ??
+            figurGerai.get(key.slice(6))?.plan.area.replace('gerai:', 'g:'))
+          : '';
         const on = id === key || pilihan === id;
         mesh.material.emissive.set(on ? 0x2f4d8a : 0);
         mesh.material.emissiveIntensity = on ? 0.14 : 0;

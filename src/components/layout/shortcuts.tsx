@@ -18,7 +18,10 @@ export function ShortcutList() {
           <dt className="text-sm font-semibold text-ink-2">{label}</dt>
           <dd className="flex gap-1">
             {keys.map((key) => (
-              <kbd key={key} className="rounded-lg bg-surface-3 px-2 py-1 text-xs font-bold text-ink-2">
+              <kbd
+                key={key}
+                className="rounded-lg bg-surface-3 px-2 py-1 text-xs font-bold text-ink-2"
+              >
                 {key}
               </kbd>
             ))}

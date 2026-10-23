@@ -1,10 +1,11 @@
 'use client';
-import { MonitoringDashboard } from './MonitoringDashboard';
+import { MonitoringDashboard } from './monitoring-dashboard';
 import { useWorkspace } from '@/features/workspace/use-workspace';
 
 /** Dunia Koperasi 3D: layar penuh, membaca data yang sama dengan halaman web. */
 export function WorldPage() {
-  const { data, loading, error, refresh, more, loadMore, fetching, operations, logistics } = useWorkspace('world');
+  const { data, loading, error, refresh, more, loadMore, fetching, operations, logistics } =
+    useWorkspace('world');
   return (
     <MonitoringDashboard
       data={data}

@@ -1,7 +1,8 @@
 // Unit KDMP yang punya bangunan di dunia: dipakai untuk mencocokkan catatan Gerai dengan
 // bangunannya (world-model.ts). Letak di peta ada di kit/peta.ts.
 
-export type BuildingStyle = 'gudang' | 'pendingin' | 'kantor' | 'loket' | 'toko' | 'apotek' | 'klinik';
+export type BuildingStyle =
+  'gudang' | 'pendingin' | 'kantor' | 'loket' | 'toko' | 'apotek' | 'klinik';
 export type DistrictBuilding = {
   id: string;
   name: string;
@@ -20,8 +21,18 @@ export const lots: Lot[] = [
     id: 'logistik',
     name: 'Logistik & cold storage',
     buildings: [
-      { id: 'gudang', name: 'Gudang logistik', kinds: ['logistik', 'gudang', 'distribusi'], style: 'gudang' },
-      { id: 'cold-storage', name: 'Cold storage', kinds: ['cold storage', 'pendingin', 'cold'], style: 'pendingin' },
+      {
+        id: 'gudang',
+        name: 'Gudang logistik',
+        kinds: ['logistik', 'gudang', 'distribusi'],
+        style: 'gudang',
+      },
+      {
+        id: 'cold-storage',
+        name: 'Cold storage',
+        kinds: ['cold storage', 'pendingin', 'cold'],
+        style: 'pendingin',
+      },
     ],
   },
   {
@@ -29,7 +40,12 @@ export const lots: Lot[] = [
     name: 'Administrasi',
     buildings: [
       { id: 'kantor', name: 'Kantor koperasi', kinds: [], style: 'kantor' },
-      { id: 'simpan-pinjam', name: 'Simpan pinjam', kinds: ['simpan pinjam', 'usp', 'keuangan'], style: 'loket' },
+      {
+        id: 'simpan-pinjam',
+        name: 'Simpan pinjam',
+        kinds: ['simpan pinjam', 'usp', 'keuangan'],
+        style: 'loket',
+      },
     ],
   },
   {
@@ -44,9 +60,19 @@ export const lots: Lot[] = [
     id: 'niaga',
     name: 'Gerai niaga',
     buildings: [
-      { id: 'sembako', name: 'Gerai sembako', kinds: ['sembako', 'toko', 'kelontong'], style: 'toko' },
+      {
+        id: 'sembako',
+        name: 'Gerai sembako',
+        kinds: ['sembako', 'toko', 'kelontong'],
+        style: 'toko',
+      },
       // Gerai tambahan (unit di luar jenis tetap) diisi berurutan dari data Gerai.
-      ...[1, 2, 3].map((n): DistrictBuilding => ({ id: `gerai-${n}`, name: `Gerai ${n}`, kinds: [], style: 'toko' })),
+      ...[1, 2, 3].map((n): DistrictBuilding => ({
+        id: `gerai-${n}`,
+        name: `Gerai ${n}`,
+        kinds: [],
+        style: 'toko',
+      })),
     ],
   },
 ];

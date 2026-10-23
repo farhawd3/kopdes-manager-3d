@@ -3,7 +3,20 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { prefillFromQuery } from './related';
 
 const UUID = /^[a-f\d-]{36}$/i;
-const TRANSIENT = ['new', 'baru', 'record', 'task', 'edit', 'ubah', 'direction', 'arah', 'item', 'barang', 'assignee', 'penanggung'];
+const TRANSIENT = [
+  'new',
+  'baru',
+  'record',
+  'task',
+  'edit',
+  'ubah',
+  'direction',
+  'arah',
+  'item',
+  'barang',
+  'assignee',
+  'penanggung',
+];
 
 /**
  * Parameter tautan halaman: catatan yang dibuka (?record), formulir baru (?new=1 + fill.*),
@@ -27,19 +40,25 @@ export function useRecordParams() {
   })();
   const clear = () => {
     const next = new URLSearchParams(params.toString());
-    for (const key of [...next.keys()]) if (TRANSIENT.includes(key) || key.startsWith('fill.') || key.startsWith('isi.')) next.delete(key);
+    for (const key of [...next.keys()])
+      if (TRANSIENT.includes(key) || key.startsWith('fill.') || key.startsWith('isi.'))
+        next.delete(key);
     router.replace(`${pathname}${next.size ? `?${next}` : ''}`, { scroll: false });
   };
   const setParam = (key: string, value: string | null) => {
-      const next = new URLSearchParams(params.toString());
-      if (value === null) next.delete(key);
-      else next.set(key, value);
-      router.replace(`${pathname}${next.size ? `?${next}` : ''}`, { scroll: false });
+    const next = new URLSearchParams(params.toString());
+    if (value === null) next.delete(key);
+    else next.set(key, value);
+    router.replace(`${pathname}${next.size ? `?${next}` : ''}`, { scroll: false });
   };
   return {
     params,
     record: record && UUID.test(record) ? record : null,
-    isNew: params.get('new') === '1' || params.get('baru') === '1' || Boolean(params.get('penanggung')) || Boolean(params.get('barang')),
+    isNew:
+      params.get('new') === '1' ||
+      params.get('baru') === '1' ||
+      Boolean(params.get('penanggung')) ||
+      Boolean(params.get('barang')),
     edit: params.get('edit') === '1' || params.get('ubah') === '1',
     prefill,
     clear,

@@ -36,7 +36,8 @@ export function StatTile({
       data-tone={tone}
       className={cn(
         'relative flex min-h-24 flex-col md:min-h-28 items-start gap-1 overflow-hidden rounded-[var(--radius-card)] bg-tone p-4 text-left text-tone-ink transition duration-300',
-        onClick && 'hover:-translate-y-0.5 hover:shadow-card aria-pressed:ring-2 aria-pressed:ring-tone-bar',
+        onClick &&
+          'hover:-translate-y-0.5 hover:shadow-card aria-pressed:ring-2 aria-pressed:ring-tone-bar',
         className,
       )}
     >
@@ -45,8 +46,12 @@ export function StatTile({
         {icon}
         {label}
       </span>
-      {people && people.length > 0 && <AvatarStack names={people} max={3} className="relative mt-2" />}
-      <span className="tabular relative mt-auto text-[26px] leading-tight font-extrabold tracking-tight text-ink">{value}</span>
+      {people && people.length > 0 && (
+        <AvatarStack names={people} max={3} className="relative mt-2" />
+      )}
+      <span className="tabular relative mt-auto text-[26px] leading-tight font-extrabold tracking-tight text-ink">
+        {value}
+      </span>
       {note && <span className="relative text-xs font-semibold opacity-80">{note}</span>}
     </Tag>
   );

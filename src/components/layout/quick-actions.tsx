@@ -30,18 +30,47 @@ export const QUICK_ACTIONS: { group: string; items: Action[] }[] = [
       { label: 'Tugas', href: '/tasks?new=1', icon: ListPlus, tone: 'lavender', key: '1' },
       { label: 'Agenda', href: '/agenda?new=1', icon: CalendarPlus, tone: 'sky', key: '2' },
       { label: 'Kegiatan', href: '/notes?new=1', icon: NotebookPen, tone: 'mint', key: '3' },
-      { label: 'Laporan kerja', href: '/notes?tab=reports&new=1', icon: FilePlus2, tone: 'peach', key: '4' },
-      { label: 'Risiko', href: '/projects?tab=risks&new=1', icon: ShieldAlert, tone: 'rose', key: '5' },
+      {
+        label: 'Laporan kerja',
+        href: '/notes?tab=reports&new=1',
+        icon: FilePlus2,
+        tone: 'peach',
+        key: '4',
+      },
+      {
+        label: 'Risiko',
+        href: '/projects?tab=risks&new=1',
+        icon: ShieldAlert,
+        tone: 'rose',
+        key: '5',
+      },
     ],
   },
   {
     group: 'Buku koperasi',
     items: [
-      { label: 'Kas masuk', href: '/cash?new=1&direction=masuk', icon: ArrowDownLeft, tone: 'mint', key: '6' },
-      { label: 'Kas keluar', href: '/cash?new=1&direction=keluar', icon: ArrowUpRight, tone: 'rose', key: '7' },
+      {
+        label: 'Kas masuk',
+        href: '/cash?new=1&direction=masuk',
+        icon: ArrowDownLeft,
+        tone: 'mint',
+        key: '6',
+      },
+      {
+        label: 'Kas keluar',
+        href: '/cash?new=1&direction=keluar',
+        icon: ArrowUpRight,
+        tone: 'rose',
+        key: '7',
+      },
       { label: 'Anggota', href: '/members?new=1', icon: UserPlus, tone: 'sky', key: '8' },
       { label: 'Barang', href: '/goods?new=1', icon: PackagePlus, tone: 'peach', key: '9' },
-      { label: 'Stok opname', href: '/goods?tab=counts&new=1', icon: ClipboardCheck, tone: 'lemon' },
+      {
+        label: 'Stok opname',
+        href: '/goods?tab=counts&new=1',
+        icon: ClipboardCheck,
+        tone: 'lemon',
+      },
     ],
   },
   {
@@ -59,7 +88,9 @@ export function QuickActionsPanel({ onPick }: { onPick: () => void }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.ctrlKey || event.metaKey || event.altKey) return;
-      const action = QUICK_ACTIONS.flatMap((group) => group.items).find((item) => item.key === event.key);
+      const action = QUICK_ACTIONS.flatMap((group) => group.items).find(
+        (item) => item.key === event.key,
+      );
       if (!action) return;
       event.preventDefault();
       onPick();
@@ -72,7 +103,9 @@ export function QuickActionsPanel({ onPick }: { onPick: () => void }) {
     <div className="flex flex-col gap-4">
       {QUICK_ACTIONS.map((group) => (
         <section key={group.group}>
-          <h3 className="mb-2 text-xs font-bold tracking-wide text-ink-3 uppercase">{group.group}</h3>
+          <h3 className="mb-2 text-xs font-bold tracking-wide text-ink-3 uppercase">
+            {group.group}
+          </h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
             {group.items.map((item) => (
               <Link

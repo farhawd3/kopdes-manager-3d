@@ -42,7 +42,7 @@ Seluruh data kerja hidup di **Dunia Koperasi**: diorama kantor 3D yang membaca c
 
 ## Evidence on Hand
 
-- Data contoh mode demo: 191 catatan (`src/features/demo/data-contoh.ts`), id berawalan `c0de0000`, berlabel contoh.
+- Data contoh mode demo: 191 catatan (`src/features/demo/sample-data.ts`), id berawalan `c0de0000`, berlabel contoh.
 - Tangkapan layar Dunia 3D di `docs/gambar/`.
 - Tidak ada testimoni, angka pengguna, atau mitra resmi; jangan dikarang.
 

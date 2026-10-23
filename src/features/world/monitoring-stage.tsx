@@ -20,7 +20,16 @@ type Props = {
 };
 
 /** Jembatan React ↔ adegan WebGL: lazy load, fallback, kontrol peta, dan label pilihan. */
-export function MonitoringStage({ lokasi, input, plans, selected, tag, suasana, pins, onPick }: Props) {
+export function MonitoringStage({
+  lokasi,
+  input,
+  plans,
+  selected,
+  tag,
+  suasana,
+  pins,
+  onPick,
+}: Props) {
   const host = useRef<HTMLDivElement>(null);
   const label = useRef<HTMLDivElement>(null);
   const hover = useRef<HTMLDivElement>(null);
@@ -123,20 +132,45 @@ export function MonitoringStage({ lokasi, input, plans, selected, tag, suasana, 
         </div>
       )}
       <div className="mt-card mt-map-tools" role="group" aria-label="Kontrol tampilan">
-        <button type="button" aria-label="Perbesar" title="Perbesar" onClick={() => scene.current?.zoom(0.2)}>
+        <button
+          type="button"
+          aria-label="Perbesar"
+          title="Perbesar"
+          onClick={() => scene.current?.zoom(0.2)}
+        >
           <Plus size={18} />
         </button>
-        <button type="button" aria-label="Perkecil" title="Perkecil" onClick={() => scene.current?.zoom(-0.2)}>
+        <button
+          type="button"
+          aria-label="Perkecil"
+          title="Perkecil"
+          onClick={() => scene.current?.zoom(-0.2)}
+        >
           <Minus size={18} />
         </button>
         <hr />
-        <button type="button" aria-label="Putar ke kiri" title="Putar ke kiri" onClick={() => scene.current?.putar(-1)}>
+        <button
+          type="button"
+          aria-label="Putar ke kiri"
+          title="Putar ke kiri"
+          onClick={() => scene.current?.putar(-1)}
+        >
           <RotateCcw size={16} />
         </button>
-        <button type="button" aria-label="Putar ke kanan" title="Putar ke kanan" onClick={() => scene.current?.putar(1)}>
+        <button
+          type="button"
+          aria-label="Putar ke kanan"
+          title="Putar ke kanan"
+          onClick={() => scene.current?.putar(1)}
+        >
           <RotateCw size={16} />
         </button>
-        <button type="button" aria-label="Kembali ke tampilan awal" title="Tampilan awal" onClick={() => scene.current?.home()}>
+        <button
+          type="button"
+          aria-label="Kembali ke tampilan awal"
+          title="Tampilan awal"
+          onClick={() => scene.current?.home()}
+        >
           <Home size={16} />
         </button>
       </div>

@@ -1,7 +1,13 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 
-type DragState = { id: string; ghost: HTMLElement; offsetX: number; offsetY: number; over: string | null };
+type DragState = {
+  id: string;
+  ghost: HTMLElement;
+  offsetX: number;
+  offsetY: number;
+  over: string | null;
+};
 
 /**
  * Seret-lepas kartu antar kolom untuk mouse, sentuh, dan pena. Di layar sentuh kartu harus
@@ -11,7 +17,14 @@ export function useBoardDrag(onDrop: (id: string, column: string) => void) {
   const [dragging, setDragging] = useState<string | null>(null);
   const [over, setOver] = useState<string | null>(null);
   const state = useRef<DragState | null>(null);
-  const pending = useRef<{ id: string; card: HTMLElement; x: number; y: number; touch: boolean; timer: number } | null>(null);
+  const pending = useRef<{
+    id: string;
+    card: HTMLElement;
+    x: number;
+    y: number;
+    touch: boolean;
+    timer: number;
+  } | null>(null);
   const drop = useRef(onDrop);
   useEffect(() => {
     drop.current = onDrop;
@@ -36,7 +49,13 @@ export function useBoardDrag(onDrop: (id: string, column: string) => void) {
       });
       document.body.appendChild(ghost);
       document.body.style.cursor = 'grabbing';
-      state.current = { id: start.id, ghost, offsetX: x - rect.left, offsetY: y - rect.top, over: null };
+      state.current = {
+        id: start.id,
+        ghost,
+        offsetX: x - rect.left,
+        offsetY: y - rect.top,
+        over: null,
+      };
       setDragging(start.id);
       navigator.vibrate?.(8);
     };
@@ -58,14 +77,18 @@ export function useBoardDrag(onDrop: (id: string, column: string) => void) {
       const drag = state.current!;
       drag.ghost.style.left = `${event.clientX - drag.offsetX}px`;
       drag.ghost.style.top = `${event.clientY - drag.offsetY}px`;
-      const target = (document.elementFromPoint(event.clientX, event.clientY) as HTMLElement | null)?.closest<HTMLElement>('[data-drop]');
+      const target = (
+        document.elementFromPoint(event.clientX, event.clientY) as HTMLElement | null
+      )?.closest<HTMLElement>('[data-drop]');
       const column = target?.dataset.drop ?? null;
       if (column !== drag.over) {
         drag.over = column;
         setOver(column);
       }
       // Gulir otomatis saat kartu dibawa ke tepi papan atau layar.
-      const board = target?.closest<HTMLElement>('[data-board]') ?? document.querySelector<HTMLElement>('[data-board]');
+      const board =
+        target?.closest<HTMLElement>('[data-board]') ??
+        document.querySelector<HTMLElement>('[data-board]');
       if (board) {
         const box = board.getBoundingClientRect();
         if (event.clientX < box.left + 48) board.scrollLeft -= 14;
@@ -115,7 +138,11 @@ export function useBoardDrag(onDrop: (id: string, column: string) => void) {
   }, []);
 
   const handle = (id: string) => (event: React.PointerEvent<HTMLElement>) => {
-    if (event.button > 0 || (event.target as HTMLElement).closest('button, a, input, select, textarea')) return;
+    if (
+      event.button > 0 ||
+      (event.target as HTMLElement).closest('button, a, input, select, textarea')
+    )
+      return;
     const card = event.currentTarget;
     const touch = event.pointerType !== 'mouse';
     pending.current = {
@@ -130,7 +157,9 @@ export function useBoardDrag(onDrop: (id: string, column: string) => void) {
             // Tahan selesai: perlakukan seperti mouse yang sudah bergerak, lalu mulai seret di posisi jari.
             pending.current.touch = false;
             pending.current.x = event.clientX - 10;
-            window.dispatchEvent(new PointerEvent('pointermove', { clientX: event.clientX, clientY: event.clientY }));
+            window.dispatchEvent(
+              new PointerEvent('pointermove', { clientX: event.clientX, clientY: event.clientY }),
+            );
           }, 320)
         : 0,
     };

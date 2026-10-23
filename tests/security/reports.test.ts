@@ -3,13 +3,13 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 vi.mock('@/lib/server/auth', () => ({ requireSession: async () => {} }));
 import { POST, PATCH, GET, DELETE } from '@/app/api/reports/route';
 import { randomUUID } from 'node:crypto';
-import { aturUlangDemo, demoDb } from '@/lib/server/demo-db';
+import { resetDemo, demoDb } from '@/lib/server/demo-db';
 
 beforeEach(() => {
   vi.stubEnv('NEXT_PUBLIC_MODE_DEMO', '1');
   vi.stubEnv('VERCEL', '');
   vi.stubEnv('HUB_APP_ORIGIN', 'http://localhost:3000');
-  aturUlangDemo();
+  resetDemo();
 });
 
 it('laporan lebih dari 100 dapat dipaginasi tanpa baris ganda dan offset buruk ditolak', async () => {
@@ -31,7 +31,7 @@ it('ID laporan yang tidak sah tidak dapat dihapus', async () => {
   expect((await DELETE(request({ id: 'bukan-uuid' }, 'DELETE'))).status).toBe(400);
 });
 afterEach(() => {
-  aturUlangDemo();
+  resetDemo();
   vi.unstubAllEnvs();
 });
 const request = (body: unknown, method = 'POST') =>

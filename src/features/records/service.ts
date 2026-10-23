@@ -197,9 +197,9 @@ export async function save(entity: Entity, input: unknown, id?: string) {
             : 'Nomor atau kode sudah dipakai. Gunakan kode berbeda.'
         : error.message?.includes('Savings balance would be negative')
           ? 'Penarikan melebihi saldo simpanan anggota untuk jenis ini.'
-        : error.code === '23514'
-          ? 'Data belum dapat disimpan. Periksa isian dan pastikan migrasi pencatatan sudah terpasang.'
-          : 'Penyimpanan gagal. Muat ulang dan coba lagi.',
+          : error.code === '23514'
+            ? 'Data belum dapat disimpan. Periksa isian dan pastikan migrasi pencatatan sudah terpasang.'
+            : 'Penyimpanan gagal. Muat ulang dan coba lagi.',
     );
   return record as Item;
 }

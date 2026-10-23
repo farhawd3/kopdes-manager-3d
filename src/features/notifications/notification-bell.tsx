@@ -8,11 +8,23 @@ import { addDays, today } from '@/lib/date';
 import { usePreference } from '@/lib/use-preference';
 import { loadCapabilities, type Workspace } from '@/features/workspace/use-workspace';
 import type { Entity, Item } from '@/features/records/schemas';
-import { administrationEntities, logisticsEntities, operationEntities } from '@/features/records/constants';
+import {
+  administrationEntities,
+  logisticsEntities,
+  operationEntities,
+} from '@/features/records/constants';
 import { getFollowUps, recordHref, type FollowUp } from './follow-ups';
 import { cn } from '@/lib/utils';
 
-const ENTITIES: Entity[] = ['work-items', 'meetings', 'documents', 'issues', 'risks', 'inventory-items', 'stock-counts'];
+const ENTITIES: Entity[] = [
+  'work-items',
+  'meetings',
+  'documents',
+  'issues',
+  'risks',
+  'inventory-items',
+  'stock-counts',
+];
 
 async function loadReminders(): Promise<FollowUp[]> {
   const capabilities = await loadCapabilities();
@@ -23,12 +35,22 @@ async function loadReminders(): Promise<FollowUp[]> {
       (capabilities.administration || !administrationEntities.includes(entity)),
   );
   const pages = await Promise.all(
-    allowed.map(async (entity) => [entity, (await api<{ items: Item[] }>(`${entity}?limit=100&scope=current`)).items] as const),
+    allowed.map(
+      async (entity) =>
+        [
+          entity,
+          (await api<{ items: Item[] }>(`${entity}?limit=100&scope=current`)).items,
+        ] as const,
+    ),
   );
   const data: Workspace = Object.fromEntries(pages);
   const date = today();
   const tomorrow = (data['work-items'] || [])
-    .filter((row) => !['selesai', 'dibatalkan'].includes(String(row.data.status)) && row.data.due_date === addDays(date, 1))
+    .filter(
+      (row) =>
+        !['selesai', 'dibatalkan'].includes(String(row.data.status)) &&
+        row.data.due_date === addDays(date, 1),
+    )
     .map((row) => ({
       id: `work-items:${row.id}:besok`,
       title: String(row.data.title),
@@ -79,7 +101,10 @@ export function NotificationBell() {
       >
         <Bell className="size-5" />
         {unseen > 0 && (
-          <span className="absolute top-2 right-2.5 size-2.5 rounded-full bg-brand ring-2 ring-surface" aria-hidden="true" />
+          <span
+            className="absolute top-2 right-2.5 size-2.5 rounded-full bg-brand ring-2 ring-surface"
+            aria-hidden="true"
+          />
         )}
       </Popover.Trigger>
       <Popover.Portal>
@@ -93,11 +118,15 @@ export function NotificationBell() {
           <div className="max-h-[60vh] overflow-y-auto">
             {error && <p className="m-2 rounded-2xl bg-late p-3 text-sm text-late-ink">{error}</p>}
             {!error && !groups.length && (
-              <p className="m-2 rounded-2xl bg-surface-2 p-4 text-sm text-ink-3">Tidak ada pengingat. Semua tenggat dan stok aman.</p>
+              <p className="m-2 rounded-2xl bg-surface-2 p-4 text-sm text-ink-3">
+                Tidak ada pengingat. Semua tenggat dan stok aman.
+              </p>
             )}
             {groups.map((group) => (
               <section key={group.label} className="py-1">
-                <h3 className="px-3 py-1.5 text-xs font-bold text-ink-3 uppercase">{group.label}</h3>
+                <h3 className="px-3 py-1.5 text-xs font-bold text-ink-3 uppercase">
+                  {group.label}
+                </h3>
                 {group.rows.map((item) => (
                   <Link
                     key={item.id}
@@ -105,11 +134,22 @@ export function NotificationBell() {
                     onClick={() => setOpen(false)}
                     className="flex gap-3 rounded-2xl px-3 py-2.5 transition hover:bg-surface-2"
                   >
-                    <span className={cn('mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl', item.urgent ? 'bg-late text-late-ink' : 'bg-warn text-warn-ink')}>
-                      {item.urgent ? <CircleAlert className="size-4" /> : <Clock className="size-4" />}
+                    <span
+                      className={cn(
+                        'mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl',
+                        item.urgent ? 'bg-late text-late-ink' : 'bg-warn text-warn-ink',
+                      )}
+                    >
+                      {item.urgent ? (
+                        <CircleAlert className="size-4" />
+                      ) : (
+                        <Clock className="size-4" />
+                      )}
                     </span>
                     <span className="min-w-0">
-                      <span className="block truncate text-sm font-semibold text-ink">{item.title}</span>
+                      <span className="block truncate text-sm font-semibold text-ink">
+                        {item.title}
+                      </span>
                       <span className="block text-xs text-ink-3">
                         {item.kind} · {item.reason}
                       </span>

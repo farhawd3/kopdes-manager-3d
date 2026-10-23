@@ -12,8 +12,10 @@ export function stockState(row: Item): 'habis' | 'menipis' | 'aman' {
   return 'aman';
 }
 
-export const riskScore = (row: Item) => Number(row.data.probability || 3) * Number(row.data.impact || 3);
-export const riskLevel = (score: number) => (score >= 15 ? 'Kritis' : score >= 8 ? 'Waspada' : 'Terkendali');
+export const riskScore = (row: Item) =>
+  Number(row.data.probability || 3) * Number(row.data.impact || 3);
+export const riskLevel = (score: number) =>
+  score >= 15 ? 'Kritis' : score >= 8 ? 'Waspada' : 'Terkendali';
 
 /**
  * Warna pastel kartu menurut arti datanya (proyek, arah kas, kondisi stok, jenis agenda),
@@ -38,25 +40,51 @@ export function cardTone(entity: Entity, row: Item, ws: Workspace): Tone {
     case 'stock-counts':
       return Number(d.counted_quantity) === Number(d.book_quantity) ? 'mint' : 'peach';
     case 'meetings':
-      return ({ rapat: 'lavender', kunjungan: 'sky', acara: 'peach', lainnya: 'mint' } as const)[meetingKindOf(row)];
+      return ({ rapat: 'lavender', kunjungan: 'sky', acara: 'peach', lainnya: 'mint' } as const)[
+        meetingKindOf(row)
+      ];
     case 'risks': {
       const score = riskScore(row);
-      return d.status === 'ditutup' ? 'slate' : score >= 15 ? 'rose' : score >= 8 ? 'peach' : 'mint';
+      return d.status === 'ditutup'
+        ? 'slate'
+        : score >= 15
+          ? 'rose'
+          : score >= 8
+            ? 'peach'
+            : 'mint';
     }
     case 'issues':
       return d.status === 'ditutup' ? 'slate' : d.status === 'ditangani' ? 'sky' : 'rose';
     case 'documents':
       return d.status === 'tersedia' ? 'mint' : d.status === 'diproses' ? 'sky' : 'rose';
     case 'units':
-      return d.status === 'aktif' ? 'mint' : d.status === 'siap buka' ? 'sky' : d.status === 'rencana' ? 'slate' : 'peach';
+      return d.status === 'aktif'
+        ? 'mint'
+        : d.status === 'siap buka'
+          ? 'sky'
+          : d.status === 'rencana'
+            ? 'slate'
+            : 'peach';
     case 'members':
       return d.status === 'nonaktif' ? 'slate' : 'sky';
     case 'staff':
     case 'attendance':
     case 'trainings':
-      return personTone(String(entity === 'staff' ? d.title : ws.staff?.find((s) => s.id === d.staff_id)?.data.title || d.title));
+      return personTone(
+        String(
+          entity === 'staff'
+            ? d.title
+            : ws.staff?.find((s) => s.id === d.staff_id)?.data.title || d.title,
+        ),
+      );
     case 'deliveries':
-      return d.status === 'selesai' ? 'mint' : d.status === 'dibatalkan' ? 'slate' : d.direction === 'keluar' ? 'peach' : 'sky';
+      return d.status === 'selesai'
+        ? 'mint'
+        : d.status === 'dibatalkan'
+          ? 'slate'
+          : d.direction === 'keluar'
+            ? 'peach'
+            : 'sky';
     case 'stock-movements':
       return String(d.kind).includes('kurang') || d.kind === 'keluar' ? 'peach' : 'mint';
     case 'purchase-orders':

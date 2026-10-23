@@ -210,7 +210,11 @@ describe('Migrasi PostgreSQL nyata di mesin lokal', () => {
     ).rejects.toThrow('Missing related record');
     await expect(
       database.query("insert into public.hub_records(entity,data) values('work-items',$1)", [
-        JSON.stringify({ title: 'Tugas dokumen', due_date: '2026-10-01', document_id: randomUUID() }),
+        JSON.stringify({
+          title: 'Tugas dokumen',
+          due_date: '2026-10-01',
+          document_id: randomUUID(),
+        }),
       ]),
     ).rejects.toThrow('Missing related record');
   });

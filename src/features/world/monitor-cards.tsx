@@ -3,7 +3,16 @@
 // #546FFF, ikon biru kilap. Komponen generik; isi datanya disusun MonitoringDashboard.
 import Link from 'next/link';
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
-import { ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Plus, X, type LucideIcon } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  X,
+  type LucideIcon,
+} from 'lucide-react';
 import type { Nada } from './monitor-data';
 import { Ikon3D, ThumbBarang, type Ikon3DKind, type ThumbKind } from '@/features/world/icon-3d';
 
@@ -12,7 +21,15 @@ export function Pill({ nada, children }: { nada: Nada; children: ReactNode }) {
 }
 
 /** Ubin putih-biru muda berisi ikon biru kilap. */
-export function IconTile({ icon, size = 30, nada }: { icon: Ikon3DKind; size?: number; nada?: Nada }) {
+export function IconTile({
+  icon,
+  size = 30,
+  nada,
+}: {
+  icon: Ikon3DKind;
+  size?: number;
+  nada?: Nada;
+}) {
   return (
     <span className={`mt-tile${nada ? ` is-${nada}` : ''}`} aria-hidden="true">
       <Ikon3D kind={icon} size={size} />
@@ -129,7 +146,12 @@ export function PanelHead({
           </Link>
         )}
         {onClose && (
-          <button type="button" className="mt-icon-btn" onClick={onClose} aria-label="Tutup pilihan">
+          <button
+            type="button"
+            className="mt-icon-btn"
+            onClick={onClose}
+            aria-label="Tutup pilihan"
+          >
             <X size={16} />
           </button>
         )}
@@ -217,7 +239,10 @@ export function Rows({ rows, empty }: { rows: RowView[]; empty: string }) {
             {r.pill && <Pill nada={r.nada || 'abu'}>{r.pill}</Pill>}
             {r.bar !== undefined && (
               <span className="mt-row-bar">
-                <span className={`mt-bar is-${r.nada === 'kuning' || r.nada === 'merah' ? r.nada : 'hijau'}`} aria-hidden="true">
+                <span
+                  className={`mt-bar is-${r.nada === 'kuning' || r.nada === 'merah' ? r.nada : 'hijau'}`}
+                  aria-hidden="true"
+                >
                   <i style={{ width: `${Math.round(r.bar * 100)}%` }} />
                 </span>
                 {r.barText && <small>{r.barText}</small>}
@@ -258,7 +283,11 @@ export function Stepper({ steps, label }: { steps: Step[]; label: string }) {
       {steps.map((s) => {
         const Icon = s.state === 'done' ? Check : s.icon;
         return (
-          <li key={s.key} className={`is-${s.state}`} aria-current={s.state === 'now' ? 'step' : undefined}>
+          <li
+            key={s.key}
+            className={`is-${s.state}`}
+            aria-current={s.state === 'now' ? 'step' : undefined}
+          >
             <span className="mt-step-dot" aria-hidden="true">
               <Icon size={s.state === 'now' ? 16 : 14} strokeWidth={2.4} />
             </span>
@@ -271,17 +300,37 @@ export function Stepper({ steps, label }: { steps: Step[]; label: string }) {
   );
 }
 
-export function Pager({ index, total, onMove, label }: { index: number; total: number; onMove: (d: number) => void; label: string }) {
+export function Pager({
+  index,
+  total,
+  onMove,
+  label,
+}: {
+  index: number;
+  total: number;
+  onMove: (d: number) => void;
+  label: string;
+}) {
   if (total < 2) return null;
   return (
     <span className="mt-pager">
-      <button type="button" className="mt-icon-btn is-small" aria-label={`${label} sebelumnya`} onClick={() => onMove(-1)}>
+      <button
+        type="button"
+        className="mt-icon-btn is-small"
+        aria-label={`${label} sebelumnya`}
+        onClick={() => onMove(-1)}
+      >
         <ChevronLeft size={15} />
       </button>
       <small aria-live="polite">
         {index + 1}/{total}
       </small>
-      <button type="button" className="mt-icon-btn is-small" aria-label={`${label} berikutnya`} onClick={() => onMove(1)}>
+      <button
+        type="button"
+        className="mt-icon-btn is-small"
+        aria-label={`${label} berikutnya`}
+        onClick={() => onMove(1)}
+      >
         <ChevronRight size={15} />
       </button>
     </span>
@@ -289,7 +338,17 @@ export function Pager({ index, total, onMove, label }: { index: number; total: n
 }
 
 export type Tab = { id: string; label: string; count: string; rows: RowView[]; empty: string };
-export function TabsCard({ icon, title, tabs, label }: { icon: Ikon3DKind; title: string; tabs: Tab[]; label: string }) {
+export function TabsCard({
+  icon,
+  title,
+  tabs,
+  label,
+}: {
+  icon: Ikon3DKind;
+  title: string;
+  tabs: Tab[];
+  label: string;
+}) {
   const [current, setCurrent] = useState(tabs[0]?.id);
   const tab = tabs.find((t) => t.id === current) || tabs[0];
   const id = useId();
@@ -324,7 +383,15 @@ export function TabsCard({ icon, title, tabs, label }: { icon: Ikon3DKind; title
 
 export type LokasiOpsi = { id: string; kode: string; label: string; sub: string };
 /** Pemilih lokasi ala "WH-01 Riverside Hub": lencana kode, nama, ringkasan, daftar pilihan. */
-export function LokasiPicker({ value, options, onChange }: { value: string; options: LokasiOpsi[]; onChange: (id: string) => void }) {
+export function LokasiPicker({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: LokasiOpsi[];
+  onChange: (id: string) => void;
+}) {
   const { open, setOpen, root, trigger } = usePopover();
   const now = options.find((o) => o.id === value) || options[0];
   const list = useId();
@@ -348,7 +415,12 @@ export function LokasiPicker({ value, options, onChange }: { value: string; opti
         <ChevronDown size={16} aria-hidden="true" />
       </button>
       {open && (
-        <ul id={list} role="listbox" aria-label="Pilih lokasi" className="mt-card mt-pop mt-lokasi-list">
+        <ul
+          id={list}
+          role="listbox"
+          aria-label="Pilih lokasi"
+          className="mt-card mt-pop mt-lokasi-list"
+        >
           {options.map((o) => (
             <li key={o.id} role="option" aria-selected={o.id === value}>
               <button
@@ -380,7 +452,17 @@ const URUT: SheetState[] = ['intip', 'setengah', 'penuh'];
  * Lembar bawah untuk ponsel: pegangan diketuk berganti intip → setengah → penuh, atau diseret
  * naik/turun. Di layar lebar komponen ini hanya pembungkus tanpa gaya (lihat monitoring.css).
  */
-export function Sheet({ state, onState, label, children }: { state: SheetState; onState: (s: SheetState) => void; label: string; children: ReactNode }) {
+export function Sheet({
+  state,
+  onState,
+  label,
+  children,
+}: {
+  state: SheetState;
+  onState: (s: SheetState) => void;
+  label: string;
+  children: ReactNode;
+}) {
   const awal = useRef<number | null>(null);
   const geser = (dy: number) => {
     const i = URUT.indexOf(state);

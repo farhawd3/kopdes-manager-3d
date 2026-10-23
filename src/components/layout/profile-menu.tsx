@@ -22,7 +22,9 @@ export function ProfileMenu({ compact }: { compact?: boolean }) {
       <DropdownMenu.Trigger
         className={cn(
           'flex w-full items-center gap-3 rounded-2xl text-left transition hover:bg-surface-2',
-          compact ? 'bg-surface p-2 shadow-card max-lg:justify-center max-lg:bg-transparent max-lg:shadow-none' : 'p-0',
+          compact
+            ? 'bg-surface p-2 shadow-card max-lg:justify-center max-lg:bg-transparent max-lg:shadow-none'
+            : 'p-0',
         )}
         aria-label="Profil dan tampilan"
       >
@@ -52,7 +54,11 @@ export function ProfileMenu({ compact }: { compact?: boolean }) {
               <p className="truncate text-xs text-ink-3">{organization || 'Manajer koperasi'}</p>
             </div>
           </div>
-          <div className="mt-2 grid grid-cols-2 gap-1 rounded-2xl bg-surface-2 p-1" role="group" aria-label="Tema">
+          <div
+            className="mt-2 grid grid-cols-2 gap-1 rounded-2xl bg-surface-2 p-1"
+            role="group"
+            aria-label="Tema"
+          >
             {(['light', 'dark'] as const).map((value) => (
               <button
                 key={value}
@@ -66,7 +72,11 @@ export function ProfileMenu({ compact }: { compact?: boolean }) {
               </button>
             ))}
           </div>
-          <div className="flex items-center justify-between px-2 py-3" role="group" aria-label="Warna sorotan">
+          <div
+            className="flex items-center justify-between px-2 py-3"
+            role="group"
+            aria-label="Warna sorotan"
+          >
             {ACCENTS.map((option) => (
               <button
                 key={option.id}

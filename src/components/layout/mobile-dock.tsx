@@ -16,20 +16,44 @@ const CAPSULE = { type: 'spring', stiffness: 460, damping: 36 } as const;
  * yang meluncur saat pindah tab; tombol tambah koral (warna logo) di tengah. Bilah minggir saat
  * menggulir ke bawah supaya tidak menutupi isi halaman.
  */
-export function MobileDock({ onAdd, onMenu, adding }: { onAdd: () => void; onMenu: () => void; adding?: boolean }) {
+export function MobileDock({
+  onAdd,
+  onMenu,
+  adding,
+}: {
+  onAdd: () => void;
+  onMenu: () => void;
+  adding?: boolean;
+}) {
   const pathname = usePathname();
   const hidden = useHideOnScroll();
   const active = activePage(pathname);
   const inDock = active && DOCK.includes(active);
   const items = DOCK.map((id) => ({ id, label: PAGES[id].label, icon: PAGES[id].icon }));
-  const renderItem = (id: string, label: string, icon: React.ReactNode, isActive: boolean, href?: string) => {
+  const renderItem = (
+    id: string,
+    label: string,
+    icon: React.ReactNode,
+    isActive: boolean,
+    href?: string,
+  ) => {
     const content = (
       <>
-        {isActive && <motion.span layoutId="dock-capsule" transition={CAPSULE} className="absolute inset-0 rounded-[18px] bg-accent" />}
+        {isActive && (
+          <motion.span
+            layoutId="dock-capsule"
+            transition={CAPSULE}
+            className="absolute inset-0 rounded-[18px] bg-accent"
+          />
+        )}
         <span className="relative flex items-center gap-1.5">
           {icon}
           {isActive && (
-            <motion.span initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className="text-[13px] font-bold">
+            <motion.span
+              initial={{ opacity: 0, x: -4 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-[13px] font-bold"
+            >
               {label}
             </motion.span>
           )}
@@ -41,7 +65,13 @@ export function MobileDock({ onAdd, onMenu, adding }: { onAdd: () => void; onMen
       isActive ? 'text-accent-ink' : 'text-ink-3',
     );
     return href ? (
-      <Link key={id} href={href} aria-current={isActive ? 'page' : undefined} aria-label={label} className={className}>
+      <Link
+        key={id}
+        href={href}
+        aria-current={isActive ? 'page' : undefined}
+        aria-label={label}
+        className={className}
+      >
         {content}
       </Link>
     ) : (
@@ -56,7 +86,17 @@ export function MobileDock({ onAdd, onMenu, adding }: { onAdd: () => void; onMen
       data-hidden={hidden || undefined}
       className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 mx-auto flex h-[68px] max-w-[26rem] items-center justify-between rounded-[26px] bg-surface/95 px-2 shadow-float ring-1 ring-line/70 backdrop-blur-md dark:bg-surface-2/95 dark:ring-line-strong transition-transform duration-300 ease-[var(--ease-out)] data-[hidden]:translate-y-[calc(100%+2rem)] md:hidden"
     >
-      {items.slice(0, 2).map((item) => renderItem(item.id, item.label, <PageIcon name={item.icon} className="size-[22px]" />, active === item.id, `/${item.id}`))}
+      {items
+        .slice(0, 2)
+        .map((item) =>
+          renderItem(
+            item.id,
+            item.label,
+            <PageIcon name={item.icon} className="size-[22px]" />,
+            active === item.id,
+            `/${item.id}`,
+          ),
+        )}
       <button
         type="button"
         onClick={onAdd}
@@ -64,10 +104,28 @@ export function MobileDock({ onAdd, onMenu, adding }: { onAdd: () => void; onMen
         aria-expanded={adding}
         className="grid size-[52px] shrink-0 place-items-center rounded-[18px] bg-brand text-on-brand shadow-[0_10px_22px_-8px_var(--brand)] transition active:scale-95"
       >
-        <Plus className={cn('size-6 transition-transform duration-300', adding && 'rotate-45')} strokeWidth={2.6} />
+        <Plus
+          className={cn('size-6 transition-transform duration-300', adding && 'rotate-45')}
+          strokeWidth={2.6}
+        />
       </button>
-      {items.slice(2).map((item) => renderItem(item.id, item.label, <PageIcon name={item.icon} className="size-[22px]" />, active === item.id, `/${item.id}`))}
-      {renderItem('menu', 'Menu', <LayoutGrid className="size-[22px]" />, Boolean(active && !inDock))}
+      {items
+        .slice(2)
+        .map((item) =>
+          renderItem(
+            item.id,
+            item.label,
+            <PageIcon name={item.icon} className="size-[22px]" />,
+            active === item.id,
+            `/${item.id}`,
+          ),
+        )}
+      {renderItem(
+        'menu',
+        'Menu',
+        <LayoutGrid className="size-[22px]" />,
+        Boolean(active && !inDock),
+      )}
     </nav>
   );
 }

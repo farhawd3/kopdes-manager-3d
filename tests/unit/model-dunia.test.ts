@@ -177,7 +177,9 @@ describe('truk dari pengiriman', () => {
     ]);
   });
   it('kelebihan truk tidak digambar melebihi jumlah dok dan antrean', () => {
-    const many = Array.from({ length: 9 }, (_, i) => delivery(`t${i}`, 'tiba', { dock: `D${i % 4 + 1}` }));
+    const many = Array.from({ length: 9 }, (_, i) =>
+      delivery(`t${i}`, 'tiba', { dock: `D${(i % 4) + 1}` }),
+    );
     expect(placeTrucks(many).filter((spot) => spot.place === 'dok')).toHaveLength(4);
     expect(placeTrucks(many).filter((spot) => spot.place === 'antre')).toHaveLength(3);
   });
@@ -402,4 +404,3 @@ describe('balasan sapaan staf', () => {
     expect(taskReply([open], 'Anita', '2026-10-06')).toBe('beres');
   });
 });
-

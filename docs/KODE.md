@@ -10,6 +10,18 @@
 | Dunia 3D | Three.js, model dibangun dari kode |
 | Tes | Vitest, PGlite untuk tes database |
 
+## Satu gaya kode
+
+Semua kode baru mengikuti aturan ini; `npm run cek` memeriksanya.
+
+- **Format:** Prettier (`.prettierrc.json`: kutip tunggal, koma akhir, lebar 100). `npm run format` merapikan, `npm run format:check` memeriksa (juga di CI).
+- **Nama:** kode, berkas, dan folder dalam bahasa Inggris; berkas `kebab-case`. Teks di layar, komentar, dan pesan commit dalam bahasa Indonesia.
+- **Komponen:** `export function NamaKomponen()` (bukan `const X = () =>`), satu komponen utama per berkas, props diketik langsung di parameter. `export default` hanya untuk berkas rute di `src/app`.
+- **Gaya tampilan:** kelas Tailwind dengan token dari `globals.css`; tidak ada berkas CSS per komponen. Gabung kelas lewat `cn()`.
+- **State:** state lokal React; data lewat `useWorkspace`; pilihan pengguna lewat `usePreference`; nilai dari luar React lewat `useSyncExternalStore`, bukan `setState` di dalam efek.
+- **Interaksi:** Radix untuk laci, menu, dan dialog; Motion untuk animasi; `sonner` untuk toast dengan Urungkan.
+- **Pengecualian yang belum dirapikan:** `src/features/world` masih memakai nama bahasa Indonesia dan `monitoring.css` sendiri.
+
 ## Struktur folder
 
 ```

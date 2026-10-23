@@ -8,7 +8,12 @@ import { rupiah } from '@/lib/ledger';
 /** Satu baris "Label: nilai" di bagian Detail. */
 export type DetailRow = { field: string; label: string; value: string };
 /** Kelompok catatan terkait per jenis, mis. "Pengiriman (2)". */
-export type RelatedGroup = { entity: Entity; title: string; direction: 'refers' | 'referenced' | 'name'; rows: Item[] };
+export type RelatedGroup = {
+  entity: Entity;
+  title: string;
+  direction: 'refers' | 'referenced' | 'name';
+  rows: Item[];
+};
 /** Saran aksi lanjutan; tidak menulis data, hanya membuka form terisi atau halaman. */
 export type Suggestion = { id: string; label: string; reason: string; href: string };
 
@@ -18,9 +23,12 @@ export const MONEY_FIELDS = ['amount', 'price', 'budget', 'value', 'total'];
 
 export const entityTitle = (entity: Entity) => catalog[entity]?.title ?? entity;
 export const fieldLabel = (entity: Entity, field: string) =>
-  labels[`${entity}.${field}`] || labels[field] || field.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+  labels[`${entity}.${field}`] ||
+  labels[field] ||
+  field.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
 const titleOf = (row?: Item) => String(row?.data.title ?? '—');
-const find = (ws: Workspace, entity: Entity, id: unknown) => (id ? (ws[entity] || []).find((row) => row.id === id) : undefined);
+const find = (ws: Workspace, entity: Entity, id: unknown) =>
+  id ? (ws[entity] || []).find((row) => row.id === id) : undefined;
 
 /** Nilai siap baca: rujukan → judul catatan, tanggal, rupiah, pilihan berlabel. */
 export function displayValue(entity: Entity, field: string, value: unknown, ws: Workspace): string {
@@ -29,8 +37,10 @@ export function displayValue(entity: Entity, field: string, value: unknown, ws: 
   if (target) return titleOf(find(ws, target, value)) || 'Catatan tidak dimuat';
   if (typeof value === 'boolean') return value ? 'Ya' : 'Tidak';
   if (Array.isArray(value)) {
-    if (field === 'subtasks') return `${value.filter((s) => (s as { done?: boolean }).done).length}/${value.length} selesai`;
-    if (field === 'dependencies') return value.map((id) => titleOf(find(ws, 'work-items', id))).join(', ');
+    if (field === 'subtasks')
+      return `${value.filter((s) => (s as { done?: boolean }).done).length}/${value.length} selesai`;
+    if (field === 'dependencies')
+      return value.map((id) => titleOf(find(ws, 'work-items', id))).join(', ');
     return value.length ? String(value.length) : '';
   }
   if (typeof value === 'object') return '';
@@ -48,7 +58,11 @@ export function detailRows(entity: Entity, row: Item, ws: Workspace): DetailRow[
   const fields = catalog[entity]?.fields ?? Object.keys(row.data);
   return fields
     .filter((field) => field !== 'title' && field !== 'activities')
-    .map((field) => ({ field, label: fieldLabel(entity, field), value: displayValue(entity, field, row.data[field], ws) }))
+    .map((field) => ({
+      field,
+      label: fieldLabel(entity, field),
+      value: displayValue(entity, field, row.data[field], ws),
+    }))
     .filter((detail) => detail.value);
 }
 
@@ -61,15 +75,25 @@ export function detailRows(entity: Entity, row: Item, ws: Workspace): DetailRow[
 export function relatedGroups(entity: Entity, row: Item, ws: Workspace): RelatedGroup[] {
   const groups: RelatedGroup[] = [];
   const add = (group: RelatedGroup) => {
-    const existing = groups.find((g) => g.entity === group.entity && g.direction === group.direction);
-    const rows = group.rows.filter((r) => r.id !== row.id && !(existing?.rows || []).some((x) => x.id === r.id));
+    const existing = groups.find(
+      (g) => g.entity === group.entity && g.direction === group.direction,
+    );
+    const rows = group.rows.filter(
+      (r) => r.id !== row.id && !(existing?.rows || []).some((x) => x.id === r.id),
+    );
     if (!rows.length) return;
     if (existing) existing.rows.push(...rows);
     else groups.push({ ...group, rows });
   };
   for (const [field, target] of Object.entries(references)) {
     const found = find(ws, target, row.data[field]);
-    if (found) add({ entity: target, title: labels[field] || entityTitle(target), direction: 'refers', rows: [found] });
+    if (found)
+      add({
+        entity: target,
+        title: labels[field] || entityTitle(target),
+        direction: 'refers',
+        rows: [found],
+      });
   }
   if (Array.isArray(row.data.dependencies))
     add({
@@ -78,27 +102,57 @@ export function relatedGroups(entity: Entity, row: Item, ws: Workspace): Related
       direction: 'refers',
       rows: row.data.dependencies.map((id) => find(ws, 'work-items', id)).filter(Boolean) as Item[],
     });
-  const pointing = Object.entries(references).filter(([, target]) => target === entity).map(([field]) => field);
+  const pointing = Object.entries(references)
+    .filter(([, target]) => target === entity)
+    .map(([field]) => field);
   for (const other of Object.keys(ws) as Entity[]) {
     const rows = (ws[other] || []).filter(
       (r) =>
         pointing.some((field) => r.data[field] === row.id) ||
-        (entity === 'work-items' && Array.isArray(r.data.dependencies) && r.data.dependencies.includes(row.id)),
+        (entity === 'work-items' &&
+          Array.isArray(r.data.dependencies) &&
+          r.data.dependencies.includes(row.id)),
     );
-    if (rows.length) add({ entity: other, title: entityTitle(other), direction: 'referenced', rows });
+    if (rows.length)
+      add({ entity: other, title: entityTitle(other), direction: 'referenced', rows });
   }
   // Hubungan lewat nama: staf ↔ tugas/rapat/kegiatan; penanggung jawab ↔ staf.
   const name = String(row.data.title || '');
   if (entity === 'staff' && name) {
-    add({ entity: 'work-items', title: 'Tugas', direction: 'name', rows: (ws['work-items'] || []).filter((t) => sameName(t.data.assignee, name)) });
-    add({ entity: 'meetings', title: 'Rapat diikuti', direction: 'name', rows: (ws.meetings || []).filter((m) => listedIn(m.data.participants, name)) });
-    add({ entity: 'units', title: 'Penanggung jawab gerai', direction: 'name', rows: (ws.units || []).filter((u) => sameName(u.data.assignee, name)) });
+    add({
+      entity: 'work-items',
+      title: 'Tugas',
+      direction: 'name',
+      rows: (ws['work-items'] || []).filter((t) => sameName(t.data.assignee, name)),
+    });
+    add({
+      entity: 'meetings',
+      title: 'Rapat diikuti',
+      direction: 'name',
+      rows: (ws.meetings || []).filter((m) => listedIn(m.data.participants, name)),
+    });
+    add({
+      entity: 'units',
+      title: 'Penanggung jawab gerai',
+      direction: 'name',
+      rows: (ws.units || []).filter((u) => sameName(u.data.assignee, name)),
+    });
   }
   const assignee = String(row.data.assignee || '');
   if (entity !== 'staff' && assignee)
-    add({ entity: 'staff', title: 'Penanggung jawab', direction: 'name', rows: (ws.staff || []).filter((s) => sameName(assignee, String(s.data.title))) });
+    add({
+      entity: 'staff',
+      title: 'Penanggung jawab',
+      direction: 'name',
+      rows: (ws.staff || []).filter((s) => sameName(assignee, String(s.data.title))),
+    });
   if (entity === 'meetings')
-    add({ entity: 'staff', title: 'Peserta', direction: 'name', rows: (ws.staff || []).filter((s) => listedIn(row.data.participants, String(s.data.title))) });
+    add({
+      entity: 'staff',
+      title: 'Peserta',
+      direction: 'name',
+      rows: (ws.staff || []).filter((s) => listedIn(row.data.participants, String(s.data.title))),
+    });
   return groups;
 }
 
@@ -112,7 +166,11 @@ const query = (values: Record<string, string>) =>
 export function suggestions(entity: Entity, row: Item, ws: Workspace): Suggestion[] {
   const d = row.data;
   const out: Suggestion[] = [];
-  if (entity === 'deliveries' && d.direction !== 'keluar' && ['diperiksa', 'selesai'].includes(String(d.status))) {
+  if (
+    entity === 'deliveries' &&
+    d.direction !== 'keluar' &&
+    ['diperiksa', 'selesai'].includes(String(d.status))
+  ) {
     if (!(ws['stock-movements'] || []).some((m) => m.data.delivery_id === row.id))
       out.push({
         id: 'stock-in',
@@ -121,11 +179,25 @@ export function suggestions(entity: Entity, row: Item, ws: Workspace): Suggestio
         href: `/goods?${query({ tab: 'movements', new: '1', 'fill.delivery_id': row.id, 'fill.kind': 'masuk', 'fill.title': `Terima ${titleOf(row)}` })}`,
       });
   }
-  if (entity === 'cash-entries' && d.direction === 'keluar' && !d.item_id && /beli|belanja|stok/i.test(`${d.category} ${d.title}`))
-    out.push({ id: 'link-item', label: 'Kaitkan barang', reason: 'Pengeluaran belanja ini belum terhubung ke barang.', href: `/cash?${query({ record: row.id, edit: '1' })}` });
+  if (
+    entity === 'cash-entries' &&
+    d.direction === 'keluar' &&
+    !d.item_id &&
+    /beli|belanja|stok/i.test(`${d.category} ${d.title}`)
+  )
+    out.push({
+      id: 'link-item',
+      label: 'Kaitkan barang',
+      reason: 'Pengeluaran belanja ini belum terhubung ke barang.',
+      href: `/cash?${query({ record: row.id, edit: '1' })}`,
+    });
   if (entity === 'meetings') {
     const decisions = (ws.decisions || []).filter((k) => k.data.meeting_id === row.id);
-    const existing = new Set((ws['work-items'] || []).filter((t) => t.data.meeting_id === row.id).map((t) => String(t.data.title)));
+    const existing = new Set(
+      (ws['work-items'] || [])
+        .filter((t) => t.data.meeting_id === row.id)
+        .map((t) => String(t.data.title)),
+    );
     for (const decision of decisions.slice(0, 3)) {
       const title = `Tindak lanjut: ${titleOf(decision)}`;
       if (!existing.has(title))
@@ -158,7 +230,11 @@ export function suggestions(entity: Entity, row: Item, ws: Workspace): Suggestio
       href: `/goods?${query({ tab: 'deliveries', new: '1', 'fill.title': `Kiriman ${titleOf(row)}`, 'fill.items': titleOf(row) })}`,
     });
   }
-  if (entity === 'risks' && d.status === 'terbuka' && !(ws['work-items'] || []).some((t) => String(t.data.title).includes(titleOf(row))))
+  if (
+    entity === 'risks' &&
+    d.status === 'terbuka' &&
+    !(ws['work-items'] || []).some((t) => String(t.data.title).includes(titleOf(row)))
+  )
     out.push({
       id: 'mitigation',
       label: 'Buat tugas mitigasi',
@@ -185,19 +261,31 @@ export function summaryChips(entity: Entity, row: Item, ws: Workspace): string[]
   const d = row.data;
   switch (entity) {
     case 'staff':
-      return pick(v('role'), v('section'), d.workplace ? `Di ${v('workplace')}` : false, d.unit_id ? v('unit_id') : false);
+      return pick(
+        v('role'),
+        v('section'),
+        d.workplace ? `Di ${v('workplace')}` : false,
+        d.unit_id ? v('unit_id') : false,
+      );
     case 'trainings':
       return pick(v('staff_id'), v('date'), d.required ? 'Wajib' : 'Opsional');
     case 'interactions':
       return pick(v('stakeholder_id'), v('date'));
     case 'risks':
-      return pick(`Skor ${Number(d.probability || 0) * Number(d.impact || 0)}`, d.review_date ? `Tinjau ${v('review_date')}` : false);
+      return pick(
+        `Skor ${Number(d.probability || 0) * Number(d.impact || 0)}`,
+        d.review_date ? `Tinjau ${v('review_date')}` : false,
+      );
     case 'issues':
       return pick(d.due_date ? `Tenggat ${v('due_date')}` : false, v('assignee'));
     case 'decisions':
       return pick(v('date'), d.meeting_id ? `Rapat ${v('meeting_id')}` : false);
     case 'milestones':
-      return pick(v('workstream_id'), d.due_date ? `Tenggat ${v('due_date')}` : false, d.actual_date ? `Tercapai ${v('actual_date')}` : false);
+      return pick(
+        v('workstream_id'),
+        d.due_date ? `Tenggat ${v('due_date')}` : false,
+        d.actual_date ? `Tercapai ${v('actual_date')}` : false,
+      );
     case 'checklist':
       return pick(v('dimension'), v('unit_id'), d.required ? 'Wajib' : false);
     case 'documents':
@@ -209,15 +297,33 @@ export function summaryChips(entity: Entity, row: Item, ws: Workspace): string[]
     case 'assets':
       return pick(v('category'), v('unit_id'), Number(d.value) > 0 && v('value'), v('assignee'));
     case 'attendance':
-      return pick(v('date'), v('shift'), d.check_in_time ? `Datang ${v('check_in_time')}` : false, d.check_out_time ? `Pulang ${v('check_out_time')}` : false);
+      return pick(
+        v('date'),
+        v('shift'),
+        d.check_in_time ? `Datang ${v('check_in_time')}` : false,
+        d.check_out_time ? `Pulang ${v('check_out_time')}` : false,
+      );
     case 'purchase-orders':
-      return pick(v('stakeholder_id'), Number(d.total) > 0 && v('total'), d.expected_date ? `Tiba ${v('expected_date')}` : false);
+      return pick(
+        v('stakeholder_id'),
+        Number(d.total) > 0 && v('total'),
+        d.expected_date ? `Tiba ${v('expected_date')}` : false,
+      );
     case 'sales':
       return pick(v('date'), `Omzet ${v('amount')}`, `${Number(d.transactions || 0)} transaksi`);
     case 'savings':
-      return pick(v('date'), `${d.direction === 'tarik' ? 'Tarik' : 'Setor'} ${v('amount')}`, `Simpanan ${String(d.kind)}`);
+      return pick(
+        v('date'),
+        `${d.direction === 'tarik' ? 'Tarik' : 'Setor'} ${v('amount')}`,
+        `Simpanan ${String(d.kind)}`,
+      );
     case 'deliveries':
-      return pick(v('direction'), v('stakeholder_id'), d.planned_date ? `Rencana ${v('planned_date')}` : false, v('unit_id'));
+      return pick(
+        v('direction'),
+        v('stakeholder_id'),
+        d.planned_date ? `Rencana ${v('planned_date')}` : false,
+        v('unit_id'),
+      );
     case 'stock-movements':
       return pick(v('item_id'), v('kind'), `${Number(d.quantity || 0)} unit`, v('date'));
     case 'journal':

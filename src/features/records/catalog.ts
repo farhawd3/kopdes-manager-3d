@@ -158,7 +158,8 @@ export const catalog: Record<Entity, { title: string; description: string; field
   },
   meetings: {
     title: 'Agenda & notulen',
-    description: 'Rapat, kunjungan, dan acara beserta tautan rapat online, notulen, dan tindak lanjut.',
+    description:
+      'Rapat, kunjungan, dan acara beserta tautan rapat online, notulen, dan tindak lanjut.',
     fields: [
       'title',
       'jenis',
@@ -260,16 +261,36 @@ export const catalog: Record<Entity, { title: string; description: string; field
   assets: {
     title: 'Inventaris aset',
     description: 'Daftar aset koperasi: lokasi, nilai perolehan, kondisi, dan pemegang.',
-    fields: ['title', 'code', 'category', 'condition', 'unit_id', 'acquired_date', 'value', 'assignee', 'notes'],
+    fields: [
+      'title',
+      'code',
+      'category',
+      'condition',
+      'unit_id',
+      'acquired_date',
+      'value',
+      'assignee',
+      'notes',
+    ],
   },
   attendance: {
     title: 'Jadwal & absensi',
     description: 'Jadwal kerja dan kehadiran petugas per hari. Satu catatan per petugas per hari.',
-    fields: ['staff_id', 'date', 'status', 'shift', 'check_in_time', 'check_out_time', 'unit_id', 'notes'],
+    fields: [
+      'staff_id',
+      'date',
+      'status',
+      'shift',
+      'check_in_time',
+      'check_out_time',
+      'unit_id',
+      'notes',
+    ],
   },
   'purchase-orders': {
     title: 'Pembelian',
-    description: 'Pesanan ke pemasok. Barang yang tiba dicatat sebagai pengiriman masuk yang menaut pembelian ini.',
+    description:
+      'Pesanan ke pemasok. Barang yang tiba dicatat sebagai pengiriman masuk yang menaut pembelian ini.',
     fields: [
       'title',
       'stakeholder_id',
@@ -286,12 +307,14 @@ export const catalog: Record<Entity, { title: string; description: string; field
   },
   sales: {
     title: 'Penjualan harian',
-    description: 'Rekap omzet dan jumlah transaksi per gerai per hari. Bukan laba; uang yang disetor tetap dicatat di buku kas.',
+    description:
+      'Rekap omzet dan jumlah transaksi per gerai per hari. Bukan laba; uang yang disetor tetap dicatat di buku kas.',
     fields: ['unit_id', 'date', 'amount', 'transactions', 'notes'],
   },
   savings: {
     title: 'Simpanan anggota',
-    description: 'Setoran dan penarikan simpanan pokok, wajib, dan sukarela per anggota. Penarikan tidak boleh melebihi setoran.',
+    description:
+      'Setoran dan penarikan simpanan pokok, wajib, dan sukarela per anggota. Penarikan tidak boleh melebihi setoran.',
     fields: ['member_id', 'date', 'kind', 'direction', 'amount', 'reference_number', 'notes'],
   },
   routines: {
@@ -480,7 +503,16 @@ export const options: Record<string, string[]> = {
   'stock-movements.kind': ['masuk', 'keluar', 'koreksi tambah', 'koreksi kurang'],
   'assets.category': ['bangunan', 'kendaraan', 'peralatan', 'elektronik', 'furnitur', 'lainnya'],
   'assets.condition': ['baik', 'perlu perbaikan', 'rusak', 'dihapuskan'],
-  'attendance.status': ['terjadwal', 'hadir', 'terlambat', 'izin', 'sakit', 'cuti', 'alpa', 'libur'],
+  'attendance.status': [
+    'terjadwal',
+    'hadir',
+    'terlambat',
+    'izin',
+    'sakit',
+    'cuti',
+    'alpa',
+    'libur',
+  ],
   'purchase-orders.status': ['draf', 'dipesan', 'diterima', 'dibatalkan'],
   'savings.kind': ['pokok', 'wajib', 'sukarela'],
   'savings.direction': ['setor', 'tarik'],

@@ -1,9 +1,22 @@
 // Tulisan cat lantai: kode rak/dok dan nama ruang dicat tipis di lantai, menggantikan papan nama
 // melayang agar layar tidak ramai. Tekstur dari kanvas; tanpa kanvas (tes) tulisan dilewati.
-import { CanvasTexture, Group, Mesh, MeshStandardMaterial, PlaneGeometry, SRGBColorSpace } from 'three';
+import {
+  CanvasTexture,
+  Group,
+  Mesh,
+  MeshStandardMaterial,
+  PlaneGeometry,
+  SRGBColorSpace,
+} from 'three';
 
 /** Plane datar di lantai berisi teks; tidak ikut raycast agar klik tetap mengenai ruang/rak. */
-export function tulisanLantai(teks: string, lebar: number, tinggi: number, warna: string, opacity = 0.5) {
+export function tulisanLantai(
+  teks: string,
+  lebar: number,
+  tinggi: number,
+  warna: string,
+  opacity = 0.5,
+) {
   if (typeof document === 'undefined' || /jsdom/i.test(navigator.userAgent)) return null;
   const c = document.createElement('canvas');
   const skala = 96;
@@ -25,7 +38,13 @@ export function tulisanLantai(teks: string, lebar: number, tinggi: number, warna
   map.anisotropy = 4;
   const m = new Mesh(
     new PlaneGeometry(lebar, tinggi),
-    new MeshStandardMaterial({ map, transparent: true, opacity, depthWrite: false, roughness: 0.9 }),
+    new MeshStandardMaterial({
+      map,
+      transparent: true,
+      opacity,
+      depthWrite: false,
+      roughness: 0.9,
+    }),
   );
   m.rotation.x = -Math.PI / 2;
   m.renderOrder = 1;

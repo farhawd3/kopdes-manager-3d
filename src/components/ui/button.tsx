@@ -48,7 +48,13 @@ export function Button({
       </Slot.Root>
     );
   return (
-    <button type={type} className={classes} disabled={disabled || busy} aria-busy={busy || undefined} {...props}>
+    <button
+      type={type}
+      className={classes}
+      disabled={disabled || busy}
+      aria-busy={busy || undefined}
+      {...props}
+    >
       {busy && <Loader2 className="animate-spin" aria-hidden="true" />}
       {children}
     </button>

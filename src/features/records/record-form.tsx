@@ -28,15 +28,56 @@ type Values = Record<string, unknown>;
 
 /** Kolom yang ditampilkan dulu; sisanya ada di "Rincian lainnya" agar formulir pendek. */
 const PRIMARY: Partial<Record<Entity, string[]>> = {
-  'work-items': ['title', 'description', 'workstream_id', 'assignee', 'due_date', 'priority', 'status', 'subtasks'],
+  'work-items': [
+    'title',
+    'description',
+    'workstream_id',
+    'assignee',
+    'due_date',
+    'priority',
+    'status',
+    'subtasks',
+  ],
   members: ['title', 'member_number', 'date', 'contact', 'address', 'status'],
   'cash-entries': ['title', 'date', 'direction', 'amount', 'category', 'account'],
-  'inventory-items': ['title', 'sku', 'price', 'measurement', 'book_quantity', 'minimum_quantity', 'unit_id'],
+  'inventory-items': [
+    'title',
+    'sku',
+    'price',
+    'measurement',
+    'book_quantity',
+    'minimum_quantity',
+    'unit_id',
+  ],
   staff: ['title', 'role', 'unit_id', 'status', 'section', 'workplace', 'work_hours'],
-  deliveries: ['title', 'direction', 'status', 'stakeholder_id', 'unit_id', 'planned_date', 'arrival_time', 'items'],
-  workstreams: ['title', 'code', 'description', 'assignee', 'status', 'priority', 'start_date', 'target_date', 'color'],
+  deliveries: [
+    'title',
+    'direction',
+    'status',
+    'stakeholder_id',
+    'unit_id',
+    'planned_date',
+    'arrival_time',
+    'items',
+  ],
+  workstreams: [
+    'title',
+    'code',
+    'description',
+    'assignee',
+    'status',
+    'priority',
+    'start_date',
+    'target_date',
+    'color',
+  ],
 };
-const STAKEHOLDER_PRESETS = ['Agrinas', 'PIC lapangan / Babinsa', 'Pengurus dan pengawas koperasi', 'Pemerintah desa'];
+const STAKEHOLDER_PRESETS = [
+  'Agrinas',
+  'PIC lapangan / Babinsa',
+  'Pengurus dan pengawas koperasi',
+  'Pemerintah desa',
+];
 const SCORE_LABELS: Record<string, string[]> = {
   probability: ['Sangat jarang', 'Jarang', 'Kadang', 'Sering', 'Hampir pasti'],
   impact: ['Sangat ringan', 'Ringan', 'Sedang', 'Berat', 'Fatal'],
@@ -78,7 +119,8 @@ function finalize(entity: Entity, values: Values, workspace: Workspace, original
       data.recurrence_time = '09:00';
       data.recurrence_end_date = '';
     }
-    data.completed_at = data.status === 'selesai' ? String(original?.data.completed_at || '') || today() : '';
+    data.completed_at =
+      data.status === 'selesai' ? String(original?.data.completed_at || '') || today() : '';
   }
   const title = autoTitle(entity, data, workspace);
   if (title) data.title = title;
@@ -157,7 +199,15 @@ export function RecordFormSheet({
     });
 
   const close = async () => {
-    if (dirty && !(await confirm({ title: 'Tutup tanpa menyimpan?', description: 'Perubahan belum disimpan ke database.', confirmLabel: 'Tutup', danger: true })))
+    if (
+      dirty &&
+      !(await confirm({
+        title: 'Tutup tanpa menyimpan?',
+        description: 'Perubahan belum disimpan ke database.',
+        confirmLabel: 'Tutup',
+        danger: true,
+      }))
+    )
       return;
     try {
       sessionStorage.removeItem(key);
@@ -224,7 +274,13 @@ export function RecordFormSheet({
           <Button variant="ghost" onClick={() => void close()}>
             Batal
           </Button>
-          <Button variant="primary" type="submit" form={formId} busy={busy} className="ml-auto min-w-36">
+          <Button
+            variant="primary"
+            type="submit"
+            form={formId}
+            busy={busy}
+            className="ml-auto min-w-36"
+          >
             {item ? 'Simpan perubahan' : 'Simpan'}
           </Button>
         </>
@@ -233,10 +289,26 @@ export function RecordFormSheet({
       {draft && JSON.stringify(draft) !== JSON.stringify(values) && (
         <div className="mb-4 flex flex-wrap items-center gap-2 rounded-2xl bg-warn p-3 text-sm font-semibold text-warn-ink">
           <span className="flex-1">Ada isian yang belum disimpan dari sebelumnya.</span>
-          <Button size="sm" variant="secondary" onClick={() => { setValues({ ...start, ...draft }); setDraft(null); }}>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => {
+              setValues({ ...start, ...draft });
+              setDraft(null);
+            }}
+          >
             Lanjutkan draf
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => { try { sessionStorage.removeItem(key); } catch {} setDraft(null); }}>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              try {
+                sessionStorage.removeItem(key);
+              } catch {}
+              setDraft(null);
+            }}
+          >
             Abaikan
           </Button>
         </div>
@@ -252,9 +324,13 @@ export function RecordFormSheet({
               className="flex w-full items-center justify-between px-4 py-3 text-sm font-bold text-ink-2"
             >
               Rincian lainnya
-              <ChevronDown className={cn('size-4 transition-transform', showMore && 'rotate-180')} />
+              <ChevronDown
+                className={cn('size-4 transition-transform', showMore && 'rotate-180')}
+              />
             </button>
-            {showMore && <div className="flex flex-col gap-4 px-4 pb-4">{more.map(renderField)}</div>}
+            {showMore && (
+              <div className="flex flex-col gap-4 px-4 pb-4">{more.map(renderField)}</div>
+            )}
           </div>
         )}
       </form>
@@ -287,23 +363,45 @@ function FieldControl({
   const value = values[field];
   const text = value === undefined || value === null ? '' : String(value);
   const common = { 'aria-invalid': Boolean(error) || undefined };
-  const recurrenceOff = entity === 'work-items' && ['recurrence_time', 'recurrence_end_date'].includes(field) && values.recurrence === 'tidak';
+  const recurrenceOff =
+    entity === 'work-items' &&
+    ['recurrence_time', 'recurrence_end_date'].includes(field) &&
+    values.recurrence === 'tidak';
 
-  if (kind === 'subtasks') return <SubtaskEditor value={(value as { title: string; done: boolean }[]) || []} onChange={(next) => set(field, next)} error={error} />;
+  if (kind === 'subtasks')
+    return (
+      <SubtaskEditor
+        value={(value as { title: string; done: boolean }[]) || []}
+        onChange={(next) => set(field, next)}
+        error={error}
+      />
+    );
   if (kind === 'dependencies') {
     const selected = (value as string[]) || [];
-    const tasks = (workspace['work-items'] || []).filter((row) => row.id !== item?.id && row.data.status !== 'dibatalkan');
+    const tasks = (workspace['work-items'] || []).filter(
+      (row) => row.id !== item?.id && row.data.status !== 'dibatalkan',
+    );
     return (
       <Field label={label} error={error} hint="Tugas yang harus selesai lebih dulu.">
         <div className="max-h-44 overflow-y-auto rounded-xl border border-line p-1">
           {!tasks.length && <p className="p-2 text-sm text-ink-3">Belum ada tugas lain.</p>}
           {tasks.map((task) => (
-            <span key={task.id} className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm hover:bg-surface-2">
+            <span
+              key={task.id}
+              className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm hover:bg-surface-2"
+            >
               <Check
                 size="sm"
                 checked={selected.includes(task.id)}
                 label={String(task.data.title)}
-                onChange={() => set(field, selected.includes(task.id) ? selected.filter((id) => id !== task.id) : [...selected, task.id])}
+                onChange={() =>
+                  set(
+                    field,
+                    selected.includes(task.id)
+                      ? selected.filter((id) => id !== task.id)
+                      : [...selected, task.id],
+                  )
+                }
               />
               {String(task.data.title)}
             </span>
@@ -323,7 +421,17 @@ function FieldControl({
     const manager = organizationInfo(workspace).manager;
     const people = assigneeOptions(workspace.staff || [], manager, text);
     return (
-      <Field label={label} error={error} hint={!(workspace.staff || []).length ? <Link className="font-semibold text-accent-ink underline" href="/team?new=1">Tambah anggota Tim</Link> : undefined}>
+      <Field
+        label={label}
+        error={error}
+        hint={
+          !(workspace.staff || []).length ? (
+            <Link className="font-semibold text-accent-ink underline" href="/team?new=1">
+              Tambah anggota Tim
+            </Link>
+          ) : undefined
+        }
+      >
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={label}>
           {[{ name: '', role: '' }, ...people].map((person) => {
             const active = text.toLowerCase() === person.name.toLowerCase();
@@ -336,14 +444,18 @@ function FieldControl({
                 onClick={() => set(field, person.name)}
                 className={cn(
                   'flex h-11 items-center gap-2 rounded-full border pr-3.5 pl-1.5 text-sm font-semibold transition',
-                  active ? 'border-transparent bg-accent text-accent-ink' : 'border-line bg-surface text-ink-2 hover:border-line-strong',
+                  active
+                    ? 'border-transparent bg-accent text-accent-ink'
+                    : 'border-line bg-surface text-ink-2 hover:border-line-strong',
                   !person.name && 'pl-3.5',
                 )}
               >
                 {person.name && <Avatar name={person.name} className="size-8 ring-0" />}
                 <span className="flex flex-col items-start leading-tight">
                   {person.name || 'Belum ada'}
-                  {person.role && <span className="text-[11px] font-medium opacity-70">{person.role}</span>}
+                  {person.role && (
+                    <span className="text-[11px] font-medium opacity-70">{person.role}</span>
+                  )}
                 </span>
               </button>
             );
@@ -373,13 +485,31 @@ function FieldControl({
         </div>
       </Field>
     );
-  if (kind === 'ref') return <RefField entity={entity} field={field} label={label} value={text} values={values} set={set} error={error} required={required} workspace={workspace} refresh={refresh} />;
+  if (kind === 'ref')
+    return (
+      <RefField
+        entity={entity}
+        field={field}
+        label={label}
+        value={text}
+        values={values}
+        set={set}
+        error={error}
+        required={required}
+        workspace={workspace}
+        refresh={refresh}
+      />
+    );
   if (kind === 'choice' || kind === 'score') {
     const choices = kind === 'score' ? ['1', '2', '3', '4', '5'] : choicesFor(entity, field);
     if (choices.length <= 5 && kind !== 'score')
       return (
         <Field label={label} error={error} required={required}>
-          <div className="flex flex-wrap gap-1.5 rounded-2xl bg-surface-2 p-1" role="radiogroup" aria-label={label}>
+          <div
+            className="flex flex-wrap gap-1.5 rounded-2xl bg-surface-2 p-1"
+            role="radiogroup"
+            aria-label={label}
+          >
             {choices.map((choice) => (
               <button
                 key={choice}
@@ -400,7 +530,9 @@ function FieldControl({
         <Select value={text} onChange={(event) => set(field, event.target.value)} {...common}>
           {choices.map((choice) => (
             <option key={choice} value={choice}>
-              {kind === 'score' ? `${choice} · ${SCORE_LABELS[field]?.[Number(choice) - 1] || ''}` : formatChoiceLabel(choice, `${entity}.${field}`)}
+              {kind === 'score'
+                ? `${choice} · ${SCORE_LABELS[field]?.[Number(choice) - 1] || ''}`
+                : formatChoiceLabel(choice, `${entity}.${field}`)}
             </option>
           ))}
         </Select>
@@ -413,7 +545,12 @@ function FieldControl({
         <Input value={text} onChange={(event) => set(field, event.target.value)} {...common} />
         <span className="flex flex-wrap gap-1.5">
           {STAKEHOLDER_PRESETS.map((preset) => (
-            <button key={preset} type="button" onClick={() => set(field, preset)} className="rounded-full bg-surface-3 px-3 py-1.5 text-xs font-semibold text-ink-2 hover:bg-accent hover:text-accent-ink">
+            <button
+              key={preset}
+              type="button"
+              onClick={() => set(field, preset)}
+              className="rounded-full bg-surface-3 px-3 py-1.5 text-xs font-semibold text-ink-2 hover:bg-accent hover:text-accent-ink"
+            >
               {preset}
             </button>
           ))}
@@ -423,30 +560,67 @@ function FieldControl({
   if (kind === 'longtext')
     return (
       <Field label={label} error={error} required={required}>
-        <Textarea value={text} onChange={(event) => set(field, event.target.value)} rows={field === 'minutes' || field === 'notes' ? 4 : 3} {...common} />
+        <Textarea
+          value={text}
+          onChange={(event) => set(field, event.target.value)}
+          rows={field === 'minutes' || field === 'notes' ? 4 : 3}
+          {...common}
+        />
       </Field>
     );
   if (kind === 'money')
     return (
-      <Field label={label} error={error} required={required} hint={Number(text) > 0 ? rupiah(Number(text)) : undefined}>
+      <Field
+        label={label}
+        error={error}
+        required={required}
+        hint={Number(text) > 0 ? rupiah(Number(text)) : undefined}
+      >
         <span className="relative block">
-          <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-sm font-semibold text-ink-3">Rp</span>
-          <Input inputMode="numeric" className="tabular pl-10" value={text === '0' ? '' : text} placeholder="0" onChange={(event) => set(field, event.target.value.replace(/\D/g, ''))} {...common} />
+          <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-sm font-semibold text-ink-3">
+            Rp
+          </span>
+          <Input
+            inputMode="numeric"
+            className="tabular pl-10"
+            value={text === '0' ? '' : text}
+            placeholder="0"
+            onChange={(event) => set(field, event.target.value.replace(/\D/g, ''))}
+            {...common}
+          />
         </span>
       </Field>
     );
   const readOnly = entity === 'stock-counts' && field === 'book_quantity';
   return (
-    <Field label={label} error={error} required={required && !recurrenceOff} hint={readOnly ? 'Diambil dari stok buku barang terpilih.' : recurrenceOff ? 'Aktif bila tugas berulang.' : undefined}>
+    <Field
+      label={label}
+      error={error}
+      required={required && !recurrenceOff}
+      hint={
+        readOnly
+          ? 'Diambil dari stok buku barang terpilih.'
+          : recurrenceOff
+            ? 'Aktif bila tugas berulang.'
+            : undefined
+      }
+    >
       <Input
-        type={kind === 'date' ? 'date' : kind === 'time' ? 'time' : kind === 'link' ? 'url' : 'text'}
+        type={
+          kind === 'date' ? 'date' : kind === 'time' ? 'time' : kind === 'link' ? 'url' : 'text'
+        }
         inputMode={kind === 'integer' ? 'numeric' : undefined}
         value={text}
         readOnly={readOnly}
         disabled={recurrenceOff}
         maxLength={field === 'title' ? 200 : undefined}
         placeholder={kind === 'link' ? 'https://' : undefined}
-        onChange={(event) => set(field, kind === 'integer' ? event.target.value.replace(/\D/g, '') : event.target.value)}
+        onChange={(event) =>
+          set(
+            field,
+            kind === 'integer' ? event.target.value.replace(/\D/g, '') : event.target.value,
+          )
+        }
         {...common}
       />
     </Field>
@@ -454,11 +628,24 @@ function FieldControl({
 }
 
 const INLINE_DEFAULTS: Partial<Record<Entity, (title: string, values: Values) => Values>> = {
-  workstreams: (title) => ({ title, code: title.replace(/[^A-Za-z0-9]/g, '').slice(0, 6).toUpperCase().padEnd(2, 'X'), status: 'aktif', priority: 'normal' }),
+  workstreams: (title) => ({
+    title,
+    code: title
+      .replace(/[^A-Za-z0-9]/g, '')
+      .slice(0, 6)
+      .toUpperCase()
+      .padEnd(2, 'X'),
+    status: 'aktif',
+    priority: 'normal',
+  }),
   stakeholders: (title) => ({ title, influence: 3, interest: 3 }),
   meetings: (title) => ({ title, date: today(), time: '09:00', duration: 60 }),
   documents: (title) => ({ title, status: 'tersedia', number: '-' }),
-  milestones: (title, values) => ({ title, workstream_id: values.workstream_id || '', due_date: today() }),
+  milestones: (title, values) => ({
+    title,
+    workstream_id: values.workstream_id || '',
+    due_date: today(),
+  }),
 };
 
 function RefField({
@@ -489,34 +676,60 @@ function RefField({
   const [title, setTitle] = useState('');
   const [busy, setBusy] = useState(false);
   let rows = workspace[target] || [];
-  if (target === 'workstreams') rows = rows.filter((row) => !isProjectHistory(row) || row.id === value);
-  if (field === 'milestone_id') rows = rows.filter((row) => row.data.workstream_id === values.workstream_id);
+  if (target === 'workstreams')
+    rows = rows.filter((row) => !isProjectHistory(row) || row.id === value);
+  if (field === 'milestone_id')
+    rows = rows.filter((row) => row.data.workstream_id === values.workstream_id);
   const disabled = field === 'milestone_id' && !values.workstream_id;
-  const empty = target === 'workstreams' && entity === 'work-items' ? 'Tugas mandiri (tanpa proyek)' : 'Tidak ada';
+  const empty =
+    target === 'workstreams' && entity === 'work-items'
+      ? 'Tugas mandiri (tanpa proyek)'
+      : 'Tidak ada';
   const create = INLINE_DEFAULTS[target];
   return (
-    <Field label={label} error={error} required={required} hint={disabled ? 'Pilih proyek dulu.' : undefined}>
+    <Field
+      label={label}
+      error={error}
+      required={required}
+      hint={disabled ? 'Pilih proyek dulu.' : undefined}
+    >
       <span className="flex gap-2">
         <span className="min-w-0 flex-1">
-        <Select value={value} disabled={disabled} onChange={(event) => set(field, event.target.value)} aria-invalid={Boolean(error) || undefined}>
-          <option value="">{required ? 'Pilih…' : empty}</option>
-          {rows.map((row) => (
-            <option key={row.id} value={row.id}>
-              {String(row.data.title)}
-              {target === 'workstreams' && isProjectHistory(row) ? ' (riwayat)' : ''}
-            </option>
-          ))}
-        </Select>
+          <Select
+            value={value}
+            disabled={disabled}
+            onChange={(event) => set(field, event.target.value)}
+            aria-invalid={Boolean(error) || undefined}
+          >
+            <option value="">{required ? 'Pilih…' : empty}</option>
+            {rows.map((row) => (
+              <option key={row.id} value={row.id}>
+                {String(row.data.title)}
+                {target === 'workstreams' && isProjectHistory(row) ? ' (riwayat)' : ''}
+              </option>
+            ))}
+          </Select>
         </span>
         {create && !disabled && (
-          <Button size="icon" variant="secondary" aria-label={`Buat ${label.toLowerCase()} baru`} onClick={() => setCreating((open) => !open)} className="size-11">
+          <Button
+            size="icon"
+            variant="secondary"
+            aria-label={`Buat ${label.toLowerCase()} baru`}
+            onClick={() => setCreating((open) => !open)}
+            className="size-11"
+          >
             {creating ? <X /> : <Plus />}
           </Button>
         )}
       </span>
       {creating && create && (
         <span className="flex gap-2 rounded-2xl bg-surface-2 p-2">
-          <Input autoFocus value={title} placeholder={`Nama ${label.toLowerCase()} baru`} onChange={(event) => setTitle(event.target.value)} />
+          <Input
+            autoFocus
+            value={title}
+            placeholder={`Nama ${label.toLowerCase()} baru`}
+            onChange={(event) => setTitle(event.target.value)}
+          />
           <Button
             variant="primary"
             busy={busy}
@@ -545,8 +758,15 @@ function RefField({
   );
 }
 
-
-function SubtaskEditor({ value, onChange, error }: { value: { title: string; done: boolean }[]; onChange: (next: { title: string; done: boolean }[]) => void; error?: string }) {
+function SubtaskEditor({
+  value,
+  onChange,
+  error,
+}: {
+  value: { title: string; done: boolean }[];
+  onChange: (next: { title: string; done: boolean }[]) => void;
+  error?: string;
+}) {
   const [text, setText] = useState('');
   const add = () => {
     if (!text.trim()) return;
@@ -557,10 +777,27 @@ function SubtaskEditor({ value, onChange, error }: { value: { title: string; don
     <Field label="Subtugas" error={error}>
       <div className="flex flex-col gap-1">
         {value.map((subtask, index) => (
-          <span key={index} className="group flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-surface-2">
-            <Check size="sm" checked={subtask.done} label={subtask.title} onChange={() => onChange(value.map((s, i) => (i === index ? { ...s, done: !s.done } : s)))} />
-            <span className={cn('flex-1 text-sm', subtask.done && 'text-ink-3 line-through')}>{subtask.title}</span>
-            <button type="button" aria-label={`Hapus ${subtask.title}`} onClick={() => onChange(value.filter((_, i) => i !== index))} className="grid size-8 place-items-center rounded-lg text-ink-3 opacity-0 transition group-hover:opacity-100 hover:bg-late hover:text-late-ink focus:opacity-100 max-md:opacity-100">
+          <span
+            key={index}
+            className="group flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-surface-2"
+          >
+            <Check
+              size="sm"
+              checked={subtask.done}
+              label={subtask.title}
+              onChange={() =>
+                onChange(value.map((s, i) => (i === index ? { ...s, done: !s.done } : s)))
+              }
+            />
+            <span className={cn('flex-1 text-sm', subtask.done && 'text-ink-3 line-through')}>
+              {subtask.title}
+            </span>
+            <button
+              type="button"
+              aria-label={`Hapus ${subtask.title}`}
+              onClick={() => onChange(value.filter((_, i) => i !== index))}
+              className="grid size-8 place-items-center rounded-lg text-ink-3 opacity-0 transition group-hover:opacity-100 hover:bg-late hover:text-late-ink focus:opacity-100 max-md:opacity-100"
+            >
               <Trash2 className="size-4" />
             </button>
           </span>

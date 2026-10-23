@@ -53,7 +53,12 @@ export const PAGES: Record<PageId, PageInfo> = {
       { id: 'reports', label: 'Laporan kerja' },
     ],
   },
-  documents: { id: 'documents', label: 'Dokumen', icon: 'file-text', tabs: [{ id: 'documents', label: 'Dokumen', entity: 'documents' }] },
+  documents: {
+    id: 'documents',
+    label: 'Dokumen',
+    icon: 'file-text',
+    tabs: [{ id: 'documents', label: 'Dokumen', entity: 'documents' }],
+  },
   contacts: {
     id: 'contacts',
     label: 'Kontak',
@@ -85,7 +90,12 @@ export const PAGES: Record<PageId, PageInfo> = {
       { id: 'purchases', label: 'Pembelian', entity: 'purchase-orders' },
     ],
   },
-  assets: { id: 'assets', label: 'Aset', icon: 'armchair', tabs: [{ id: 'assets', label: 'Aset', entity: 'assets' }] },
+  assets: {
+    id: 'assets',
+    label: 'Aset',
+    icon: 'armchair',
+    tabs: [{ id: 'assets', label: 'Aset', entity: 'assets' }],
+  },
   members: {
     id: 'members',
     label: 'Anggota',
@@ -95,7 +105,12 @@ export const PAGES: Record<PageId, PageInfo> = {
       { id: 'savings', label: 'Simpanan', entity: 'savings' },
     ],
   },
-  cash: { id: 'cash', label: 'Kas', icon: 'wallet', tabs: [{ id: 'cash', label: 'Buku kas', entity: 'cash-entries' }] },
+  cash: {
+    id: 'cash',
+    label: 'Kas',
+    icon: 'wallet',
+    tabs: [{ id: 'cash', label: 'Buku kas', entity: 'cash-entries' }],
+  },
   team: {
     id: 'team',
     label: 'Tim',
@@ -128,7 +143,8 @@ export function entityHome(entity: Entity): { page: PageId; tab?: string } {
   if (entity === 'workstreams' || entity === 'milestones') return { page: 'projects' };
   if (entity === 'organization') return { page: 'settings' };
   for (const page of Object.values(PAGES))
-    for (const tab of page.tabs || []) if (tab.entity === entity) return { page: page.id, tab: tab.id };
+    for (const tab of page.tabs || [])
+      if (tab.entity === entity) return { page: page.id, tab: tab.id };
   return { page: 'home' };
 }
 

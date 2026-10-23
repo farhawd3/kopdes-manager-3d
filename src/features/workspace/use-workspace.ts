@@ -1,7 +1,12 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Entity, Item } from '../records/schemas';
-import { administrationEntities, logisticsEntities, operationEntities, routineEntities } from '../records/constants';
+import {
+  administrationEntities,
+  logisticsEntities,
+  operationEntities,
+  routineEntities,
+} from '../records/constants';
 import { api } from '@/lib/client';
 import { pageEntities } from './scope';
 import type { ListQuery } from '../records/query';
@@ -29,7 +34,12 @@ function cacheWorkspace(key: string, entry: WorkspaceCacheEntry) {
   }
 }
 
-type Capabilities = { operations: boolean; logistics?: boolean; administration?: boolean; routines?: boolean };
+type Capabilities = {
+  operations: boolean;
+  logistics?: boolean;
+  administration?: boolean;
+  routines?: boolean;
+};
 // Kemampuan server hanya berubah setelah migrasi, jadi cukup diminta sekali per sesi browser; gagal tidak di-cache.
 let capabilitiesRequest: Promise<Capabilities> | null = null;
 export function loadCapabilities() {
@@ -117,7 +127,9 @@ export function useWorkspace(
           .filter((entity) => capabilities.operations || !operationEntities.includes(entity))
           // Migrasi 8 belum terpasang: jangan meminta domain yang belum ada.
           .filter((entity) => capabilities.logistics || !logisticsEntities.includes(entity))
-          .filter((entity) => capabilities.administration || !administrationEntities.includes(entity))
+          .filter(
+            (entity) => capabilities.administration || !administrationEntities.includes(entity),
+          )
           .filter((entity) => capabilities.routines || !routineEntities.includes(entity))
           .map(async (entity) => {
             let page = await api<Page>(pathFor(entity));
@@ -127,7 +139,9 @@ export function useWorkspace(
               let offset = 0;
               while (page.hasMore && current === generation.current) {
                 if (page.nextOffset <= offset || page.nextOffset > 10000)
-                  throw new Error('Catatan dunia belum dapat dimuat lengkap. Buka halaman operasional atau coba lagi.');
+                  throw new Error(
+                    'Catatan dunia belum dapat dimuat lengkap. Buka halaman operasional atau coba lagi.',
+                  );
                 offset = page.nextOffset;
                 page = await api<Page>(pathFor(entity, offset));
                 for (const row of page.items) rows.set(row.id, row);
@@ -207,7 +221,14 @@ export function useWorkspace(
       else delete nextMore[entity];
       setData(next);
       setMore(nextMore);
-      cacheWorkspace(cacheKey, { data: next, more: nextMore, operations, logistics, administration, routines });
+      cacheWorkspace(cacheKey, {
+        data: next,
+        more: nextMore,
+        operations,
+        logistics,
+        administration,
+        routines,
+      });
       window.dispatchEvent(new CustomEvent('hub-workspace', { detail: next }));
     } catch (e) {
       if (current === generation.current) setError((e as Error).message);
@@ -236,5 +257,17 @@ export function useWorkspace(
       requestRef.current++;
     };
   }, [refresh, cacheKey]);
-  return { data, loading, error, refresh, operations, logistics, administration, routines, more, loadMore, fetching };
+  return {
+    data,
+    loading,
+    error,
+    refresh,
+    operations,
+    logistics,
+    administration,
+    routines,
+    more,
+    loadMore,
+    fetching,
+  };
 }

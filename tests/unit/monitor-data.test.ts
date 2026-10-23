@@ -12,7 +12,12 @@ import {
 } from '@/features/world/monitor-data';
 import type { Item } from '@/features/records/schemas';
 
-const row = (id: string, data: Item['data']): Item => ({ id, data, created_at: '2026-10-01', updated_at: 'u' });
+const row = (id: string, data: Item['data']): Item => ({
+  id,
+  data,
+  created_at: '2026-10-01',
+  updated_at: 'u',
+});
 // 10:00 WIB
 const now = new Date('2026-10-09T03:00:00Z');
 const date = '2026-10-09';
@@ -29,13 +34,21 @@ const data = {
     row('t1', { title: 'Cek stok', status: 'proses', assignee: 'Budi', due_date: '2026-10-01' }),
     row('t2', { title: 'Susun rak', status: 'rencana', assignee: 'Citra', due_date: '2026-10-20' }),
   ],
-  meetings: [row('m1', { title: 'Briefing', date, time: '09:30', duration: 60, participants: 'Ani, Sari' })],
+  meetings: [
+    row('m1', { title: 'Briefing', date, time: '09:30', duration: 60, participants: 'Ani, Sari' }),
+  ],
   journal: [
     row('j1', { title: 'Senam', date, work_item_id: 't2' }),
     row('j2', { title: 'Kerja bakti', date }),
   ],
   deliveries: [
-    row('d1', { title: 'Beras', status: 'tiba', dock: 'D2', driver_name: 'Agus', license_plate: '' }),
+    row('d1', {
+      title: 'Beras',
+      status: 'tiba',
+      dock: 'D2',
+      driver_name: 'Agus',
+      license_plate: '',
+    }),
     row('d2', { title: 'Selesai', status: 'selesai' }),
   ],
 };

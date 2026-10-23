@@ -9,10 +9,24 @@ export const BIDANG = {
   manajer: { nama: 'Ruang manajer', x: 0, z: -5.25, hx: 5, warna: '#e9dcc8', href: '/documents' },
   gym: { nama: 'Gym & kegiatan', x: 10, z: -5.25, hx: 5, warna: '#cde6d9', href: '/notes' },
   // Baris bawah: stok di sudut kiri bawah dekat pintu gudang.
-  stok: { nama: 'Stok & barang', x: -25 + 20 / 3, z: 5.25, hx: 20 / 3, warna: '#efe0c7', href: '/goods' },
+  stok: {
+    nama: 'Stok & barang',
+    x: -25 + 20 / 3,
+    z: 5.25,
+    hx: 20 / 3,
+    warna: '#efe0c7',
+    href: '/goods',
+  },
   rapat: { nama: 'Rapat', x: -5, z: 5.25, hx: 20 / 3, warna: '#d6d1ef', href: '/agenda' },
   // Ruang kerja paling lebar: enam meja dan papan kanban.
-  kerja: { nama: 'Ruang kerja', x: 15 - 20 / 3, z: 5.25, hx: 20 / 3, warna: '#c9d6ef', href: '/tasks' },
+  kerja: {
+    nama: 'Ruang kerja',
+    x: 15 - 20 / 3,
+    z: 5.25,
+    hx: 20 / 3,
+    warna: '#c9d6ef',
+    href: '/tasks',
+  },
   // Sayap terpisah di ujung kanan lorong (x 15…25), selebar dua baris.
   istirahat: { nama: 'Ngopi & istirahat', x: 20, z: 0, hx: 5, warna: '#f1dcc4', href: '/team' },
 } as const;

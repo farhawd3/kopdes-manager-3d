@@ -13,7 +13,10 @@ import { ENTITY_VIEWS } from './entity-views';
 import { useRecordParams } from './use-record-params';
 
 /** Status modul yang butuh migrasi: jelaskan alasan dan migrasinya, bukan daftar kosong. */
-export function entityReady(entity: Entity, caps: { operations: boolean; logistics: boolean; administration: boolean }) {
+export function entityReady(
+  entity: Entity,
+  caps: { operations: boolean; logistics: boolean; administration: boolean },
+) {
   if (operationEntities.includes(entity) && !caps.operations)
     return 'Pencatatan belum diaktifkan. Database perlu diperbarui dengan migrasi pencatatan sebelum data bisa disimpan.';
   if (logisticsEntities.includes(entity) && !caps.logistics)
@@ -28,10 +31,14 @@ export function PageLoading() {
     <div className="flex flex-col gap-5" aria-busy="true" aria-label="Memuat">
       <Skeleton className="h-10 w-56" />
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-28" />)}
+        {Array.from({ length: 4 }, (_, i) => (
+          <Skeleton key={i} className="h-28" />
+        ))}
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-40" />)}
+        {Array.from({ length: 6 }, (_, i) => (
+          <Skeleton key={i} className="h-40" />
+        ))}
       </div>
     </div>
   );
@@ -41,7 +48,15 @@ export function PageLoading() {
  * Halaman pencatatan bertab (Dokumen, Kontak, Gerai, Barang, Aset, Anggota, Kas, Tim, Agenda, Catatan).
  * Tab dipilih lewat ?tab=; tautan lama ?bagian=<jenis catatan> tetap memilih tab yang sesuai.
  */
-export function RecordsPage({ page, extraTabs = {}, subtitle }: { page: PageId; extraTabs?: Record<string, ReactNode>; subtitle?: ReactNode }) {
+export function RecordsPage({
+  page,
+  extraTabs = {},
+  subtitle,
+}: {
+  page: PageId;
+  extraTabs?: Record<string, ReactNode>;
+  subtitle?: ReactNode;
+}) {
   const info = PAGES[page];
   const tabs = info.tabs || [];
   const { params, setParam } = useRecordParams();
@@ -50,7 +65,11 @@ export function RecordsPage({ page, extraTabs = {}, subtitle }: { page: PageId; 
   const current = tabs.find((tab) => tab.id === requested) || tabs[0];
   const workspace = useWorkspace(page);
   const { data, loading, error, refresh, more, loadMore, fetching } = workspace;
-  const caps = { operations: workspace.operations, logistics: workspace.logistics, administration: workspace.administration };
+  const caps = {
+    operations: workspace.operations,
+    logistics: workspace.logistics,
+    administration: workspace.administration,
+  };
   const entity = current?.entity;
   const view = entity ? ENTITY_VIEWS[entity] : undefined;
   const blocked = entity ? entityReady(entity, caps) : '';
@@ -63,7 +82,11 @@ export function RecordsPage({ page, extraTabs = {}, subtitle }: { page: PageId; 
           tabs.length > 1 ? (
             <Tabs
               label={`Bagian ${info.label}`}
-              items={tabs.map((tab) => ({ id: tab.id, label: tab.label, count: tab.entity && !loading ? (data[tab.entity] || []).length : undefined }))}
+              items={tabs.map((tab) => ({
+                id: tab.id,
+                label: tab.label,
+                count: tab.entity && !loading ? (data[tab.entity] || []).length : undefined,
+              }))}
               value={current.id}
               onChange={(id) => setParam('tab', id === tabs[0].id ? null : id)}
             />

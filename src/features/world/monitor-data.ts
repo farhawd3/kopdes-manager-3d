@@ -20,7 +20,13 @@ export type Nada = 'biru' | 'hijau' | 'kuning' | 'merah' | 'abu';
 export type Cuaca = 'cerah' | 'berawan' | 'hujan';
 export type Suasana = { cuaca: Cuaca; fase: 'pagi' | 'siang' | 'senja' | 'malam' };
 export function suasanaJam(now: Date, cuaca: Cuaca): Suasana {
-  const h = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', hourCycle: 'h23' }).format(now));
+  const h = Number(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Jakarta',
+      hour: '2-digit',
+      hourCycle: 'h23',
+    }).format(now),
+  );
   return { cuaca, fase: h < 5 || h >= 19 ? 'malam' : h < 10 ? 'pagi' : h < 16 ? 'siang' : 'senja' };
 }
 export type Baris = {
@@ -142,7 +148,10 @@ function stafRuang(id: Bidang, ctx: Konteks): Baris[] {
 }
 
 /** Tugas terbuka: terlambat lebih dulu, lalu tenggat terdekat; bisa disaring per anggota. */
-export function taskRows(ctx: Konteks, filter: { lateOnly?: boolean; person?: string } = {}): Baris[] {
+export function taskRows(
+  ctx: Konteks,
+  filter: { lateOnly?: boolean; person?: string } = {},
+): Baris[] {
   const { model, date } = ctx;
   const tasks = filter.person ? staffTasks(model.tasks, filter.person) : model.tasks;
   return tasks
@@ -159,7 +168,9 @@ export function taskRows(ctx: Konteks, filter: { lateOnly?: boolean; person?: st
 function manajerRows(ctx: Konteks): Baris[] {
   return [
     ...[...ctx.documents]
-      .sort((a, b) => String(a.data.expires_date || '9999').localeCompare(String(b.data.expires_date || '9999')))
+      .sort((a, b) =>
+        String(a.data.expires_date || '9999').localeCompare(String(b.data.expires_date || '9999')),
+      )
       .map((doc) => documentRow(doc, ctx.date)),
     ...(ctx.risks || [])
       .filter((r) => r.data.status !== 'ditutup')
@@ -215,16 +226,14 @@ export function roomRows(
   if (id === 'manajer') return manajerRows(ctx);
   if (id === 'rapat')
     return [
-      ...meetingTimeline(model.meetings, now).map(
-        (step): Baris => ({
-          key: `meeting-${step.row.id}`,
-          entity: 'meetings',
-          item: step.row,
-          note: `${step.time}–${step.end} WIB`,
-          pill: { selesai: 'Selesai', berlangsung: 'Berlangsung', nanti: 'Mendatang' }[step.state],
-          nada: ({ selesai: 'abu', berlangsung: 'hijau', nanti: 'biru' } as const)[step.state],
-        }),
-      ),
+      ...meetingTimeline(model.meetings, now).map((step): Baris => ({
+        key: `meeting-${step.row.id}`,
+        entity: 'meetings',
+        item: step.row,
+        note: `${step.time}–${step.end} WIB`,
+        pill: { selesai: 'Selesai', berlangsung: 'Berlangsung', nanti: 'Mendatang' }[step.state],
+        nada: ({ selesai: 'abu', berlangsung: 'hijau', nanti: 'biru' } as const)[step.state],
+      })),
       ...[...(ctx.decisions || [])]
         .sort((a, b) => String(b.data.date || '').localeCompare(String(a.data.date || '')))
         .slice(0, 5)
@@ -244,7 +253,9 @@ export function roomRows(
         key: `journal-${row.id}`,
         entity: 'journal',
         item: row,
-        note: task ? `Tugas: ${String(task.data.title)}` : String(row.data.notes || 'Jurnal hari ini').slice(0, 80),
+        note: task
+          ? `Tugas: ${String(task.data.title)}`
+          : String(row.data.notes || 'Jurnal hari ini').slice(0, 80),
         pill: 'Hari ini',
         nada: 'kuning',
       };
@@ -265,13 +276,20 @@ export function roomStats(id: Bidang, ctx: Konteks): Statistik[] {
   if (id === 'kerja') {
     const busy = model.tasks.filter((t) => t.data.status === 'proses').length;
     return [
-      { label: 'Dikerjakan', value: `${busy} / ${model.tasks.length}`, bar: persen(busy, model.tasks.length) },
+      {
+        label: 'Dikerjakan',
+        value: `${busy} / ${model.tasks.length}`,
+        bar: persen(busy, model.tasks.length),
+      },
       { label: 'Lewat tenggat', value: String(model.tasks.filter((t) => isLate(t, date)).length) },
     ];
   }
   if (id === 'istirahat')
     return [
-      { label: 'Tanpa tugas/kegiatan', value: String(ctx.plans.filter((p) => p.action === 'rest').length) },
+      {
+        label: 'Tanpa tugas/kegiatan',
+        value: String(ctx.plans.filter((p) => p.action === 'rest').length),
+      },
       { label: 'Tim tercatat', value: String(model.staff.length) },
     ];
   if (id === 'rapat') {
@@ -285,8 +303,14 @@ export function roomStats(id: Bidang, ctx: Konteks): Statistik[] {
   if (id === 'manajer') {
     const docs = ctx.documents.map((d) => documentRow(d, date));
     return [
-      { label: 'Dokumen perlu diperbarui', value: String(docs.filter((r) => r.nada === 'merah' || r.nada === 'kuning').length) },
-      { label: 'Risiko terbuka', value: String((ctx.risks || []).filter((r) => r.data.status === 'terbuka').length) },
+      {
+        label: 'Dokumen perlu diperbarui',
+        value: String(docs.filter((r) => r.nada === 'merah' || r.nada === 'kuning').length),
+      },
+      {
+        label: 'Risiko terbuka',
+        value: String((ctx.risks || []).filter((r) => r.data.status === 'terbuka').length),
+      },
     ];
   }
   if (id === 'gym')
@@ -296,8 +320,14 @@ export function roomStats(id: Bidang, ctx: Konteks): Statistik[] {
     ];
   if (id === 'karyawan')
     return [
-      { label: 'Melayani gerai', value: String(ctx.plans.filter((p) => p.action === 'serve').length) },
-      { label: 'Di ruang karyawan', value: String(ctx.plans.filter((p) => p.area === 'karyawan').length) },
+      {
+        label: 'Melayani gerai',
+        value: String(ctx.plans.filter((p) => p.action === 'serve').length),
+      },
+      {
+        label: 'Di ruang karyawan',
+        value: String(ctx.plans.filter((p) => p.area === 'karyawan').length),
+      },
     ];
   if (id === 'stok') {
     if (ctx.operations === false)
@@ -382,13 +412,21 @@ export function searchRecords(ctx: Konteks, query: string): HasilCari[] {
     ['documents', 'Dokumen', ctx.documents],
     ['journal', 'Kegiatan', model.activities],
     ['members', 'Anggota', ctx.members || []],
-    ...(ctx.operations === false ? [] : [['inventory-items', 'Barang', model.inventory.items] as [Entity, string, Item[]]]),
-    ...(ctx.logistics === false ? [] : [['deliveries', 'Pengiriman', model.deliveries] as [Entity, string, Item[]]]),
+    ...(ctx.operations === false
+      ? []
+      : [['inventory-items', 'Barang', model.inventory.items] as [Entity, string, Item[]]]),
+    ...(ctx.logistics === false
+      ? []
+      : [['deliveries', 'Pengiriman', model.deliveries] as [Entity, string, Item[]]]),
   ];
   const hasil: HasilCari[] = [];
   for (const [entity, kind, rows] of sources)
     for (const item of rows)
-      if (String(item.data.title || '').toLocaleLowerCase('id').includes(q))
+      if (
+        String(item.data.title || '')
+          .toLocaleLowerCase('id')
+          .includes(q)
+      )
         hasil.push({ key: `${entity}-${item.id}`, entity, item, kind });
   return hasil.slice(0, 8);
 }

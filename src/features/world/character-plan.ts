@@ -52,13 +52,17 @@ export const isOffice = (area: Area): area is Bidang => !area.startsWith('gerai:
 export function monitoringPlans(model: WorldModel): CharacterPlan[] {
   const gerai = infoGerai(model);
   const meetingOf = (name: string) =>
-    model.currentMeeting && listedIn(model.currentMeeting.data.participants, name) ? model.currentMeeting : undefined;
+    model.currentMeeting && listedIn(model.currentMeeting.data.participants, name)
+      ? model.currentMeeting
+      : undefined;
   const plans = model.staff
     .filter((s) => s.data.status !== 'nonaktif')
     .map((staff): CharacterPlan => {
       const name = String(staff.data.title);
       const manajer = sameName(name, model.manager);
-      const task = model.tasks.find((t) => t.data.status === 'proses' && sameName(t.data.assignee, name));
+      const task = model.tasks.find(
+        (t) => t.data.status === 'proses' && sameName(t.data.assignee, name),
+      );
       const activity = model.activities.find((a) =>
         model.tasks.some((t) => t.id === a.data.work_item_id && sameName(t.data.assignee, name)),
       );

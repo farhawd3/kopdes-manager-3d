@@ -65,15 +65,16 @@ export function rupaDariStaf(data: Record<string, unknown>, manajer = false): Ru
                 ? 'pendek'
                 : 'jabrik';
   const seksi = String(data.section || '');
-  const seragam: Seragam = manajer || data.position === 'pengurus'
-    ? 'jas'
-    : seksi === 'gudang & logistik' || data.workplace === 'gudang'
-      ? 'rompi'
-      : seksi === 'usaha & gerai' || seksi === 'layanan anggota'
-        ? 'celemek'
-        : seksi === 'administrasi & keuangan'
-          ? 'kartu'
-          : 'polos';
+  const seragam: Seragam =
+    manajer || data.position === 'pengurus'
+      ? 'jas'
+      : seksi === 'gudang & logistik' || data.workplace === 'gudang'
+        ? 'rompi'
+        : seksi === 'usaha & gerai' || seksi === 'layanan anggota'
+          ? 'celemek'
+          : seksi === 'administrasi & keuangan'
+            ? 'kartu'
+            : 'polos';
   return {
     baju: BAJU[String(data.outfit || '')] ?? (manajer ? BAJU.merah : BAJU.biru),
     rambut,
@@ -107,7 +108,16 @@ function satukan(g: Group) {
   return mesh;
 }
 
-function bulat(r: number, c: ColorRepresentation, x: number, y: number, z: number, sx = 1, sy = 1, sz = 1) {
+function bulat(
+  r: number,
+  c: ColorRepresentation,
+  x: number,
+  y: number,
+  z: number,
+  sx = 1,
+  sy = 1,
+  sz = 1,
+) {
   const m = bola(r, c);
   m.position.set(x, y, z);
   m.scale.set(sx, sy, sz);
@@ -143,8 +153,14 @@ function rambut(g: Group, gaya: GayaRambut, kulit: number) {
   if (gaya === 'jabrik') {
     // Jambul runcing membulat seperti karakter referensi.
     const arah: [number, number, number][] = [
-      [0, 0.42, 0.1], [0.2, 0.38, 0.12], [-0.2, 0.38, 0.12], [0.33, 0.25, 0.05],
-      [-0.33, 0.25, 0.05], [0.12, 0.42, -0.18], [-0.14, 0.4, -0.2], [0, 0.3, -0.36],
+      [0, 0.42, 0.1],
+      [0.2, 0.38, 0.12],
+      [-0.2, 0.38, 0.12],
+      [0.33, 0.25, 0.05],
+      [-0.33, 0.25, 0.05],
+      [0.12, 0.42, -0.18],
+      [-0.14, 0.4, -0.2],
+      [0, 0.3, -0.36],
     ];
     for (const [x, y, z] of arah) {
       const k = kapsul(0.085, 0.16, RAMBUT);
@@ -152,7 +168,10 @@ function rambut(g: Group, gaya: GayaRambut, kulit: number) {
       k.rotation.set(-z * 1.6 + 0.2, 0, -x * 2.2);
       g.add(k);
     }
-    g.add(bulat(0.12, RAMBUT, 0.16, 0.24, 0.3, 1.2, 0.7, 0.8), bulat(0.12, RAMBUT, -0.14, 0.26, 0.3, 1.2, 0.7, 0.8));
+    g.add(
+      bulat(0.12, RAMBUT, 0.16, 0.24, 0.3, 1.2, 0.7, 0.8),
+      bulat(0.12, RAMBUT, -0.14, 0.26, 0.3, 1.2, 0.7, 0.8),
+    );
   } else if (gaya === 'pendek') {
     g.add(bulat(0.2, RAMBUT, 0.08, 0.25, 0.25, 1.6, 0.55, 0.8));
   } else if (gaya === 'panjang') {
@@ -161,7 +180,15 @@ function rambut(g: Group, gaya: GayaRambut, kulit: number) {
   } else if (gaya === 'ikal') {
     for (let i = 0; i < 9; i++) {
       const a = (i / 9) * Math.PI * 2;
-      g.add(bulat(0.13, RAMBUT, Math.cos(a) * 0.3, 0.3 + Math.sin(a * 2) * 0.04, Math.sin(a) * 0.3 - 0.03));
+      g.add(
+        bulat(
+          0.13,
+          RAMBUT,
+          Math.cos(a) * 0.3,
+          0.3 + Math.sin(a * 2) * 0.04,
+          Math.sin(a) * 0.3 - 0.03,
+        ),
+      );
     }
   } else if (gaya === 'peci') {
     g.add(di(silinder(0.33, 0.35, 0.22, 0x2b2d3a, 24), 0, 0.3, -0.02));
@@ -199,9 +226,13 @@ export function buatKarakter(r: RupaKarakter): Orang {
     tubuh.add(di(kotak(0.4, 0.5, 0.04, 0xf3eee6, 0.03), 0, -0.05, 0.21));
     tubuh.add(di(kotak(0.18, 0.1, 0.03, 0xe2d6c2, 0.02), 0, 0.12, 0.23));
   } else if (r.seragam === 'kartu') {
-    tubuh.add(di(kotak(0.14, 0.18, 0.03, 0xffffff, 0.02), 0.12, 0.22, 0.22), di(kotak(0.1, 0.03, 0.03, 0x7f9fe0, 0.01), 0.12, 0.36, 0.23));
+    tubuh.add(
+      di(kotak(0.14, 0.18, 0.03, 0xffffff, 0.02), 0.12, 0.22, 0.22),
+      di(kotak(0.1, 0.03, 0.03, 0x7f9fe0, 0.01), 0.12, 0.36, 0.23),
+    );
   } else if (r.seragam === 'jas') {
-    for (const s of [-1, 1]) tubuh.add(di(kotak(0.2, 0.46, 0.04, 0x4e5a7a, 0.04), s * 0.17, 0.12, 0.2));
+    for (const s of [-1, 1])
+      tubuh.add(di(kotak(0.2, 0.46, 0.04, 0x4e5a7a, 0.04), s * 0.17, 0.12, 0.2));
     tubuh.add(di(kotak(0.08, 0.3, 0.03, 0xd9737a, 0.02), 0, 0.26, 0.22));
   }
   // Kepala besar ala chibi.

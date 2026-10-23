@@ -1,6 +1,6 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
-import { dataContoh } from '@/features/demo/sample-data';
+import { sampleData } from '@/features/demo/sample-data';
 import { references } from '@/features/records/catalog';
 import { today } from '@/lib/date';
 
@@ -10,28 +10,31 @@ import { today } from '@/lib/date';
  * Data hidup di memori proses: bertahan selama `npm run dev` berjalan, kembali ke data contoh
  * saat server dimulai ulang.
  */
-type Baris = Record<string, unknown> & { id: string };
-type Galat = { code: string; message: string };
-type Hasil = { data: unknown; error: Galat | null; count?: number };
+type Row = Record<string, unknown> & { id: string };
+type DbError = { code: string; message: string };
+type Result = { data: unknown; error: DbError | null; count?: number };
 
-type Toko = Record<string, Baris[]>;
-const wadah = globalThis as typeof globalThis & { __kopdesDemo?: Toko };
-function toko(): Toko {
-  wadah.__kopdesDemo ??= {
-    hub_records: dataContoh(today()).map((r) => ({ ...r }) as Baris),
+type Store = Record<string, Row[]>;
+const holder = globalThis as typeof globalThis & { __kopdesDemo?: Store };
+function store(): Store {
+  holder.__kopdesDemo ??= {
+    hub_records: sampleData(today()).map((r) => ({ ...r }) as Row),
   };
-  return wadah.__kopdesDemo;
+  return holder.__kopdesDemo;
 }
 /** Hanya untuk tes: kembalikan data contoh awal. */
-export function aturUlangDemo() {
-  delete wadah.__kopdesDemo;
+export function resetDemo() {
+  delete holder.__kopdesDemo;
 }
 
-const salin = <T>(v: T): T => structuredClone(v);
-const galat = (code: string, message: string): Hasil => ({ data: null, error: { code, message } });
+const clone = <T>(v: T): T => structuredClone(v);
+const failure = (code: string, message: string): Result => ({
+  data: null,
+  error: { code, message },
+});
 
 /** Nilai kolom, termasuk `data->>field` (teks, null bila tidak ada) seperti PostgREST. */
-function nilai(row: Baris, path: string): string | null {
+function columnValue(row: Row, path: string): string | null {
   if (path.startsWith('data->>')) {
     const v = (row.data as Record<string, unknown> | undefined)?.[path.slice(7)];
     if (v === undefined || v === null) return null;
@@ -41,17 +44,17 @@ function nilai(row: Baris, path: string): string | null {
   return v === undefined || v === null ? null : String(v);
 }
 
-type Saring = (row: Baris) => boolean;
-function operasi(path: string, op: string, arg: unknown): Saring {
+type Filter = (row: Row) => boolean;
+function operatorFilter(path: string, op: string, arg: unknown): Filter {
   return (row) => {
-    const v = nilai(row, path);
+    const v = columnValue(row, path);
     if (op === 'in') {
-      const daftar = Array.isArray(arg)
+      const values = Array.isArray(arg)
         ? arg.map(String)
         : String(arg)
             .replace(/^\(|\)$/g, '')
             .split(',');
-      return v !== null && daftar.includes(v);
+      return v !== null && values.includes(v);
     }
     if (v === null) return false;
     const a = String(arg);
@@ -62,56 +65,61 @@ function operasi(path: string, op: string, arg: unknown): Saring {
     if (op === 'lte') return v <= a;
     if (op === 'ilike') {
       // % = apa saja, _ = satu karakter, \x = karakter x apa adanya.
-      const lolos = (c: string) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      let pola = '';
+      const escape = (c: string) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      let pattern = '';
       for (let i = 0; i < a.length; i++) {
         const c = a[i];
-        if (c === '\\' && i + 1 < a.length) pola += lolos(a[++i]);
-        else pola += c === '%' ? '.*' : c === '_' ? '.' : lolos(c);
+        if (c === '\\' && i + 1 < a.length) pattern += escape(a[++i]);
+        else pattern += c === '%' ? '.*' : c === '_' ? '.' : escape(c);
       }
-      return new RegExp(`^${pola}$`, 'is').test(v);
+      return new RegExp(`^${pattern}$`, 'is').test(v);
     }
     return false;
   };
 }
 /** `a.in.(x,y),b.gte.2026-01-01` → gabungan OR. Koma di dalam kurung tidak memisah. */
-function atau(teks: string): Saring {
-  const bagian: string[] = [];
-  let dalam = 0,
-    awal = 0;
-  for (let i = 0; i < teks.length; i++) {
-    if (teks[i] === '(') dalam++;
-    else if (teks[i] === ')') dalam--;
-    else if (teks[i] === ',' && !dalam) {
-      bagian.push(teks.slice(awal, i));
-      awal = i + 1;
+function orFilter(text: string): Filter {
+  const parts: string[] = [];
+  let depth = 0,
+    from = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '(') depth++;
+    else if (text[i] === ')') depth--;
+    else if (text[i] === ',' && !depth) {
+      parts.push(text.slice(from, i));
+      from = i + 1;
     }
   }
-  bagian.push(teks.slice(awal));
-  const saring = bagian.map((b) => {
+  parts.push(text.slice(from));
+  const filters = parts.map((b) => {
     const m = /^(.+?)\.(eq|gt|gte|lt|lte|in|ilike)\.(.*)$/.exec(b.trim());
     if (!m) throw new Error(`Filter demo tidak dikenal: ${b}`);
-    return operasi(m[1], m[2], m[3]);
+    return operatorFilter(m[1], m[2], m[3]);
   });
-  return (row) => saring.some((s) => s(row));
+  return (row) => filters.some((s) => s(row));
 }
 
 /** Pemeriksaan unik pada hub_records, setara indeks unik di migrasi. */
-function bentrok(rows: Baris[], baru: Baris): boolean {
-  const d = baru.data as Record<string, unknown>;
+function conflicts(rows: Row[], incoming: Row): boolean {
+  const d = incoming.data as Record<string, unknown>;
   return rows.some((r) => {
-    if (r.id === baru.id) return false;
+    if (r.id === incoming.id) return false;
     const rd = r.data as Record<string, unknown>;
-    if (baru.entity === 'organization' && r.entity === 'organization') return true;
-    if (baru.entity === 'workstreams' && r.entity === 'workstreams' && rd.code === d.code)
+    if (incoming.entity === 'organization' && r.entity === 'organization') return true;
+    if (incoming.entity === 'workstreams' && r.entity === 'workstreams' && rd.code === d.code)
       return true;
-    if (baru.entity === 'routine-checks' && r.entity === 'routine-checks' && rd.routine_id === d.routine_id && rd.date === d.date)
+    if (
+      incoming.entity === 'routine-checks' &&
+      r.entity === 'routine-checks' &&
+      rd.routine_id === d.routine_id &&
+      rd.date === d.date
+    )
       return true;
     return false;
   });
 }
 /** Pemicu hapus: catatan yang masih dirujuk tidak boleh dihapus. */
-function masihDirujuk(rows: Baris[], id: string): boolean {
+function isReferenced(rows: Row[], id: string): boolean {
   return rows.some((r) => {
     const d = r.data as Record<string, unknown>;
     if (Object.keys(references).some((f) => d[f] === id)) return true;
@@ -119,160 +127,160 @@ function masihDirujuk(rows: Baris[], id: string): boolean {
   });
 }
 
-class Kueri implements PromiseLike<Hasil> {
-  private saring: Saring[] = [];
-  private urutan: [string, boolean][] = [];
-  private batas?: [number, number];
-  private aksi: 'select' | 'insert' | 'update' | 'delete' = 'select';
-  private muatan?: Record<string, unknown>;
-  private satu?: 'single' | 'maybe';
-  private hitung = false;
-  constructor(private tabel: string) {}
+class Query implements PromiseLike<Result> {
+  private filters: Filter[] = [];
+  private orders: [string, boolean][] = [];
+  private bounds?: [number, number];
+  private action: 'select' | 'insert' | 'update' | 'delete' = 'select';
+  private payload?: Record<string, unknown>;
+  private singleMode?: 'single' | 'maybe';
+  private withCount = false;
+  constructor(private table: string) {}
   select(_columns?: string, options?: { count?: 'exact' }) {
-    this.hitung = options?.count === 'exact';
+    this.withCount = options?.count === 'exact';
     return this;
   }
   insert(v: Record<string, unknown>) {
-    this.aksi = 'insert';
-    this.muatan = v;
+    this.action = 'insert';
+    this.payload = v;
     return this;
   }
   update(v: Record<string, unknown>) {
-    this.aksi = 'update';
-    this.muatan = v;
+    this.action = 'update';
+    this.payload = v;
     return this;
   }
   delete() {
-    this.aksi = 'delete';
+    this.action = 'delete';
     return this;
   }
   eq(p: string, v: unknown) {
-    return this.tambah(operasi(p, 'eq', v));
+    return this.addFilter(operatorFilter(p, 'eq', v));
   }
   gt(p: string, v: unknown) {
-    return this.tambah(operasi(p, 'gt', v));
+    return this.addFilter(operatorFilter(p, 'gt', v));
   }
   gte(p: string, v: unknown) {
-    return this.tambah(operasi(p, 'gte', v));
+    return this.addFilter(operatorFilter(p, 'gte', v));
   }
   lte(p: string, v: unknown) {
-    return this.tambah(operasi(p, 'lte', v));
+    return this.addFilter(operatorFilter(p, 'lte', v));
   }
   in(p: string, v: unknown[]) {
-    return this.tambah(operasi(p, 'in', v));
+    return this.addFilter(operatorFilter(p, 'in', v));
   }
   ilike(p: string, v: string) {
-    return this.tambah(operasi(p, 'ilike', v));
+    return this.addFilter(operatorFilter(p, 'ilike', v));
   }
-  or(teks: string) {
-    return this.tambah(atau(teks));
+  or(text: string) {
+    return this.addFilter(orFilter(text));
   }
-  order(p: string, opsi?: { ascending?: boolean }) {
-    this.urutan.push([p, opsi?.ascending !== false]);
+  order(p: string, options?: { ascending?: boolean }) {
+    this.orders.push([p, options?.ascending !== false]);
     return this;
   }
   range(a: number, b: number) {
-    this.batas = [a, b];
+    this.bounds = [a, b];
     return this;
   }
   limit(n: number) {
-    this.batas = [0, n - 1];
+    this.bounds = [0, n - 1];
     return this;
   }
   single() {
-    this.satu = 'single';
+    this.singleMode = 'single';
     return this;
   }
   maybeSingle() {
-    this.satu = 'maybe';
+    this.singleMode = 'maybe';
     return this;
   }
-  private tambah(s: Saring) {
-    this.saring.push(s);
+  private addFilter(s: Filter) {
+    this.filters.push(s);
     return this;
   }
-  then<A = Hasil, B = never>(
-    ok?: ((v: Hasil) => A | PromiseLike<A>) | null,
-    gagal?: ((e: unknown) => B | PromiseLike<B>) | null,
+  then<A = Result, B = never>(
+    ok?: ((v: Result) => A | PromiseLike<A>) | null,
+    onRejected?: ((e: unknown) => B | PromiseLike<B>) | null,
   ): PromiseLike<A | B> {
     return Promise.resolve()
-      .then(() => this.jalankan())
-      .then(ok, gagal);
+      .then(() => this.run())
+      .then(ok, onRejected);
   }
-  private jalankan(): Hasil {
-    const rows = (toko()[this.tabel] ??= []);
-    const cocok = () => rows.filter((r) => this.saring.every((s) => s(r)));
-    let hasil: Baris[];
+  private run(): Result {
+    const rows = (store()[this.table] ??= []);
+    const matching = () => rows.filter((r) => this.filters.every((s) => s(r)));
+    let result: Row[];
     let count = 0;
-    if (this.aksi === 'insert') {
-      const waktu = new Date().toISOString();
-      const baru = {
+    if (this.action === 'insert') {
+      const now = new Date().toISOString();
+      const incoming = {
         id: randomUUID(),
-        created_at: waktu,
-        updated_at: waktu,
-        ...this.muatan,
-      } as Baris;
-      if (this.tabel === 'hub_records' && bentrok(rows, baru))
-        return galat('23505', 'duplicate key value');
-      rows.push(baru);
-      hasil = [baru];
-    } else if (this.aksi === 'update') {
-      hasil = cocok();
-      for (const r of hasil) {
-        if (this.tabel === 'hub_records' && bentrok(rows, { ...r, ...this.muatan } as Baris))
-          return galat('23505', 'duplicate key value');
-        Object.assign(r, salin(this.muatan), { updated_at: new Date().toISOString() });
+        created_at: now,
+        updated_at: now,
+        ...this.payload,
+      } as Row;
+      if (this.table === 'hub_records' && conflicts(rows, incoming))
+        return failure('23505', 'duplicate key value');
+      rows.push(incoming);
+      result = [incoming];
+    } else if (this.action === 'update') {
+      result = matching();
+      for (const r of result) {
+        if (this.table === 'hub_records' && conflicts(rows, { ...r, ...this.payload } as Row))
+          return failure('23505', 'duplicate key value');
+        Object.assign(r, clone(this.payload), { updated_at: new Date().toISOString() });
       }
-    } else if (this.aksi === 'delete') {
-      hasil = cocok();
-      for (const r of hasil) {
-        if (this.tabel === 'hub_records' && masihDirujuk(rows, r.id))
-          return galat('P0001', 'Record is still referenced');
+    } else if (this.action === 'delete') {
+      result = matching();
+      for (const r of result) {
+        if (this.table === 'hub_records' && isReferenced(rows, r.id))
+          return failure('P0001', 'Record is still referenced');
       }
-      toko()[this.tabel] = rows.filter((r) => !hasil.includes(r));
+      store()[this.table] = rows.filter((r) => !result.includes(r));
     } else {
-      hasil = cocok();
-      count = hasil.length;
-      for (const [p, naik] of [...this.urutan].reverse())
-        hasil.sort((a, b) => {
-          const x = nilai(a, p) ?? '',
-            y = nilai(b, p) ?? '';
-          return x === y ? 0 : (x < y ? -1 : 1) * (naik ? 1 : -1);
+      result = matching();
+      count = result.length;
+      for (const [p, ascending] of [...this.orders].reverse())
+        result.sort((a, b) => {
+          const x = columnValue(a, p) ?? '',
+            y = columnValue(b, p) ?? '';
+          return x === y ? 0 : (x < y ? -1 : 1) * (ascending ? 1 : -1);
         });
-      if (this.batas) hasil = hasil.slice(this.batas[0], this.batas[1] + 1);
+      if (this.bounds) result = result.slice(this.bounds[0], this.bounds[1] + 1);
     }
-    if (this.satu) {
-      if (hasil.length > 1 || (this.satu === 'single' && !hasil.length))
-        return galat('PGRST116', 'JSON object requested, multiple (or no) rows returned');
-      return { data: hasil[0] ? salin(hasil[0]) : null, error: null };
+    if (this.singleMode) {
+      if (result.length > 1 || (this.singleMode === 'single' && !result.length))
+        return failure('PGRST116', 'JSON object requested, multiple (or no) rows returned');
+      return { data: result[0] ? clone(result[0]) : null, error: null };
     }
-    return { data: salin(hasil), error: null, ...(this.hitung ? { count } : {}) };
+    return { data: clone(result), error: null, ...(this.withCount ? { count } : {}) };
   }
 }
 
-function simpanTugas(args: Record<string, unknown>): Hasil {
-  const rows = toko().hub_records;
-  const waktu = new Date().toISOString();
-  let rekam: Baris;
+function saveWorkItem(args: Record<string, unknown>): Result {
+  const rows = store().hub_records;
+  const now = new Date().toISOString();
+  let record: Row;
   let previousStatus: unknown;
   if (args.record_id) {
-    const ada = rows.find((r) => r.id === args.record_id && r.entity === 'work-items');
-    if (!ada) return galat('P0001', 'Missing record');
-    previousStatus = (ada.data as Record<string, unknown>).status;
-    Object.assign(ada, { data: salin(args.payload), updated_at: waktu });
-    rekam = ada;
+    const existing = rows.find((r) => r.id === args.record_id && r.entity === 'work-items');
+    if (!existing) return failure('P0001', 'Missing record');
+    previousStatus = (existing.data as Record<string, unknown>).status;
+    Object.assign(existing, { data: clone(args.payload), updated_at: now });
+    record = existing;
   } else {
-    rekam = {
+    record = {
       id: randomUUID(),
       entity: 'work-items',
-      data: salin(args.payload),
-      created_at: waktu,
-      updated_at: waktu,
+      data: clone(args.payload),
+      created_at: now,
+      updated_at: now,
     };
-    rows.push(rekam);
+    rows.push(record);
   }
   const payload = args.payload as Record<string, unknown>;
-  const recurrenceKey = `${rekam.id}:${payload.due_date}`;
+  const recurrenceKey = `${record.id}:${payload.due_date}`;
   if (
     payload.status === 'selesai' &&
     previousStatus !== 'selesai' &&
@@ -282,53 +290,62 @@ function simpanTugas(args: Record<string, unknown>): Hasil {
     rows.push({
       id: randomUUID(),
       entity: 'work-items',
-      data: salin(args.next_payload),
+      data: clone(args.next_payload),
       recurrence_key: recurrenceKey,
-      created_at: waktu,
-      updated_at: waktu,
+      created_at: now,
+      updated_at: now,
     });
-  return { data: salin(rekam), error: null };
+  return { data: clone(record), error: null };
 }
 
-function mutasiStok(p: Record<string, unknown>): Hasil {
-  const rows = toko().hub_records;
-  const jumlah = Number(p.quantity);
-  const arah = { masuk: 1, 'koreksi tambah': 1, keluar: -1, 'koreksi kurang': -1 }[String(p.kind)];
-  if (!arah || !Number.isInteger(jumlah) || jumlah <= 0)
-    return galat('P0001', 'Invalid amount or quantity');
-  const barang = rows.find((r) => r.entity === 'inventory-items' && r.id === p.item_id);
-  if (!barang) return galat('P0001', 'Missing related record');
-  const d = barang.data as Record<string, unknown>;
-  const sebelum = Number(d.book_quantity),
-    sesudah = sebelum + arah * jumlah;
-  if (sesudah < 0) return galat('P0001', 'Stock would be negative');
-  d.book_quantity = sesudah;
-  const waktu = new Date().toISOString();
+function postStockMovement(p: Record<string, unknown>): Result {
+  const rows = store().hub_records;
+  const quantity = Number(p.quantity);
+  const direction = { masuk: 1, 'koreksi tambah': 1, keluar: -1, 'koreksi kurang': -1 }[
+    String(p.kind)
+  ];
+  if (!direction || !Number.isInteger(quantity) || quantity <= 0)
+    return failure('P0001', 'Invalid amount or quantity');
+  const item = rows.find((r) => r.entity === 'inventory-items' && r.id === p.item_id);
+  if (!item) return failure('P0001', 'Missing related record');
+  const d = item.data as Record<string, unknown>;
+  const before = Number(d.book_quantity),
+    after = before + direction * quantity;
+  if (after < 0) return failure('P0001', 'Stock would be negative');
+  d.book_quantity = after;
+  const now = new Date().toISOString();
   const id = randomUUID();
   rows.push({
     id,
     entity: 'stock-movements',
-    data: { ...salin(p), book_before: sebelum, book_after: sesudah },
-    created_at: waktu,
-    updated_at: waktu,
+    data: { ...clone(p), book_before: before, book_after: after },
+    created_at: now,
+    updated_at: now,
   });
   return { data: id, error: null };
 }
 
-const klien = {
-  from: (tabel: string) => new Kueri(tabel),
-  rpc: async (nama: string, args: Record<string, unknown> = {}): Promise<Hasil> => {
-    if (['hub_operations_ready', 'hub_logistics_ready', 'hub_administration_ready', 'hub_routines_ready'].includes(nama))
+const client = {
+  from: (table: string) => new Query(table),
+  rpc: async (name: string, args: Record<string, unknown> = {}): Promise<Result> => {
+    if (
+      [
+        'hub_operations_ready',
+        'hub_logistics_ready',
+        'hub_administration_ready',
+        'hub_routines_ready',
+      ].includes(name)
+    )
       return { data: true, error: null };
-    if (nama === 'save_work_item') return simpanTugas(args);
-    if (nama === 'hub_post_stock_movement')
-      return mutasiStok(args.p_data as Record<string, unknown>);
+    if (name === 'save_work_item') return saveWorkItem(args);
+    if (name === 'hub_post_stock_movement')
+      return postStockMovement(args.p_data as Record<string, unknown>);
     // PIN, sesi, dan pemulihan cadangan tidak berlaku di mode demo.
-    return galat('P0001', `Fungsi ${nama} tidak tersedia di mode demo.`);
+    return failure('P0001', `Fungsi ${name} tidak tersedia di mode demo.`);
   },
 };
 
 /** Klien demo berbentuk sama dengan klien Supabase untuk bagian yang dipakai aplikasi. */
 export function demoDb() {
-  return klien;
+  return client;
 }

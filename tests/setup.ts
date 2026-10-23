@@ -49,4 +49,3 @@ vi.mock('next/font/google', () => ({
     variable: '--font-pixel',
   }),
 }));
-

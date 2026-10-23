@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { parseQuickAdd, minutesBetween, buildDailyReport, addMinutes, countdownText } from '@/features/home/quick-add';
+import {
+  parseQuickAdd,
+  minutesBetween,
+  buildDailyReport,
+  addMinutes,
+  countdownText,
+} from '@/features/home/quick-add';
 import { weekDays } from '@/lib/date';
 
 // 19 Oktober 2026 jatuh pada hari Senin.
@@ -74,13 +80,27 @@ describe('buildDailyReport', () => {
         { title: 'Setor kas', time: '15:00', done: false },
       ],
       tasks: [
-        { title: 'Pasang rak', status: 'selesai', due: '2026-10-18', completedAt: '2026-10-19', assignee: 'Ayu' },
-        { title: 'Selesai kemarin', status: 'selesai', due: '2026-10-17', completedAt: '2026-10-18' },
+        {
+          title: 'Pasang rak',
+          status: 'selesai',
+          due: '2026-10-18',
+          completedAt: '2026-10-19',
+          assignee: 'Ayu',
+        },
+        {
+          title: 'Selesai kemarin',
+          status: 'selesai',
+          due: '2026-10-17',
+          completedAt: '2026-10-18',
+        },
         { title: 'Cek timbangan', status: 'proses', due: '2026-10-19' },
         { title: 'Kirim undangan', status: 'rencana', due: '2026-10-14', assignee: 'Sinta' },
         { title: 'Dibatalkan', status: 'dibatalkan', due: '2026-10-10' },
       ],
-      meetings: [{ title: 'Rapat pengurus', time: '10:00', kind: 'Rapat' }, { title: 'Ke gudang pemasok', time: '13:00', kind: 'Kunjungan' }],
+      meetings: [
+        { title: 'Rapat pengurus', time: '10:00', kind: 'Rapat' },
+        { title: 'Ke gudang pemasok', time: '13:00', kind: 'Kunjungan' },
+      ],
       activities: [{ title: 'Survei lokasi' }],
     });
     expect(teks).toContain('Senin, 19 Oktober 2026 · KDMP Contoh');
@@ -90,7 +110,9 @@ describe('buildDailyReport', () => {
     expect(teks).toContain('Tugas selesai hari ini (1)\n- Pasang rak (Ayu)');
     expect(teks).toContain('Jatuh tempo hari ini (1)\n- Cek timbangan');
     expect(teks).toContain('Terlambat (1)\n- Kirim undangan (Sinta), tenggat 2026-10-14');
-    expect(teks).toContain('Agenda hari ini\n- 10.00 Rapat pengurus\n- 13.00 Ke gudang pemasok (kunjungan)');
+    expect(teks).toContain(
+      'Agenda hari ini\n- 10.00 Rapat pengurus\n- 13.00 Ke gudang pemasok (kunjungan)',
+    );
     expect(teks).toContain('- Survei lokasi');
     expect(teks).not.toContain('Selesai kemarin');
     expect(teks).not.toContain('Dibatalkan');

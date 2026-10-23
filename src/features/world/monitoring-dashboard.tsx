@@ -90,7 +90,7 @@ import { Sheet } from '@/components/ui/sheet';
 import { QuickActionsPanel } from '@/components/layout/quick-actions';
 import './monitoring.css';
 
-const Stage = dynamic(() => import('./MonitoringStage').then((m) => m.MonitoringStage), {
+const Stage = dynamic(() => import('./monitoring-stage').then((m) => m.MonitoringStage), {
   ssr: false,
   loading: () => <div className="mt-stage mt-fallback">Menyiapkan kantor…</div>,
 });
@@ -327,14 +327,18 @@ export function MonitoringDashboard({
   };
   const deliveries = shipping ? activeDeliveries(model.deliveries) : [];
   // Domain web lain yang ikut tampil di dunia: sprint, milestone, mitra, pelatihan, mutasi stok.
-  const sprintAktif = (unavailable ? [] : data.sprints || []).filter((sp) => sp.data.status === 'aktif');
+  const sprintAktif = (unavailable ? [] : data.sprints || []).filter(
+    (sp) => sp.data.status === 'aktif',
+  );
   const milestoneDekat = (unavailable ? [] : data.milestones || [])
     .filter((m) => !m.data.actual_date && m.data.due_date)
     .sort((a, b) => String(a.data.due_date).localeCompare(String(b.data.due_date)))
     .slice(0, 3);
   const mitra = (unavailable ? [] : data.stakeholders || [])
     .slice()
-    .sort((a, b) => String(b.data.last_contact || '').localeCompare(String(a.data.last_contact || '')));
+    .sort((a, b) =>
+      String(b.data.last_contact || '').localeCompare(String(a.data.last_contact || '')),
+    );
   const pelatihan = unavailable ? [] : model.trainings;
   const mutasi = (unavailable ? [] : data['stock-movements'] || [])
     .slice()
@@ -828,42 +832,48 @@ export function MonitoringDashboard({
         {(room === 'kas' || room === 'stok') && operations === false && (
           <p className="mt-note is-warn">{empty[room]}</p>
         )}
-        {!unavailable && room === 'kerja' && (sprintAktif.length > 0 || milestoneDekat.length > 0) && (
-          <>
-            <Section title="Sprint & milestone" meta="tenggat" />
-            <Rows
-              rows={[
-                ...sprintAktif.map((sp) => {
-                  const tugas = (data['work-items'] || []).filter((t) => t.data.sprint_id === sp.id);
-                  const selesai = tugas.filter((t) => t.data.status === 'selesai').length;
-                  return {
-                    key: sp.id,
-                    title: String(sp.data.title),
-                    sub: `${String(sp.data.goal || 'Sprint aktif')}${sp.data.end_date ? ` · sampai ${formatDate(String(sp.data.end_date))}` : ''}`,
-                    ikon: 'bendera' as const,
-                    bar: tugas.length ? selesai / tugas.length : 0,
-                    barText: `${selesai}/${tugas.length}`,
-                    nada: 'biru' as const,
-                    href: '/tasks',
-                  };
-                }),
-                ...milestoneDekat.map((m) => {
-                  const sisa = Math.round((Date.parse(String(m.data.due_date)) - Date.parse(date)) / 86400000);
-                  return {
-                    key: m.id,
-                    title: String(m.data.title),
-                    sub: `Tenggat ${formatDate(String(m.data.due_date))}`,
-                    ikon: 'bendera' as const,
-                    pill: sisa < 0 ? 'Lewat' : sisa === 0 ? 'Hari ini' : `${sisa} hari lagi`,
-                    nada: (sisa < 0 ? 'merah' : sisa <= 3 ? 'kuning' : 'biru') as Nada,
-                    href: recordHref('milestones', m),
-                  };
-                }),
-              ]}
-              empty=""
-            />
-          </>
-        )}
+        {!unavailable &&
+          room === 'kerja' &&
+          (sprintAktif.length > 0 || milestoneDekat.length > 0) && (
+            <>
+              <Section title="Sprint & milestone" meta="tenggat" />
+              <Rows
+                rows={[
+                  ...sprintAktif.map((sp) => {
+                    const tugas = (data['work-items'] || []).filter(
+                      (t) => t.data.sprint_id === sp.id,
+                    );
+                    const selesai = tugas.filter((t) => t.data.status === 'selesai').length;
+                    return {
+                      key: sp.id,
+                      title: String(sp.data.title),
+                      sub: `${String(sp.data.goal || 'Sprint aktif')}${sp.data.end_date ? ` · sampai ${formatDate(String(sp.data.end_date))}` : ''}`,
+                      ikon: 'bendera' as const,
+                      bar: tugas.length ? selesai / tugas.length : 0,
+                      barText: `${selesai}/${tugas.length}`,
+                      nada: 'biru' as const,
+                      href: '/tasks',
+                    };
+                  }),
+                  ...milestoneDekat.map((m) => {
+                    const sisa = Math.round(
+                      (Date.parse(String(m.data.due_date)) - Date.parse(date)) / 86400000,
+                    );
+                    return {
+                      key: m.id,
+                      title: String(m.data.title),
+                      sub: `Tenggat ${formatDate(String(m.data.due_date))}`,
+                      ikon: 'bendera' as const,
+                      pill: sisa < 0 ? 'Lewat' : sisa === 0 ? 'Hari ini' : `${sisa} hari lagi`,
+                      nada: (sisa < 0 ? 'merah' : sisa <= 3 ? 'kuning' : 'biru') as Nada,
+                      href: recordHref('milestones', m),
+                    };
+                  }),
+                ]}
+                empty=""
+              />
+            </>
+          )}
         {!unavailable && room === 'manajer' && mitra.length > 0 && (
           <>
             <Section title="Mitra" meta="kontak terakhir" />
@@ -895,7 +905,10 @@ export function MonitoringDashboard({
               rows={pelatihan.map((t) => ({
                 key: t.id,
                 title: String(t.data.title),
-                sub: String((data.staff || []).find((st) => st.id === t.data.staff_id)?.data.title || 'Peserta belum diisi'),
+                sub: String(
+                  (data.staff || []).find((st) => st.id === t.data.staff_id)?.data.title ||
+                    'Peserta belum diisi',
+                ),
                 ikon: 'dumbel' as const,
                 pill: t.data.status === 'selesai' ? 'Selesai' : 'Berlangsung',
                 nada: (t.data.status === 'selesai' ? 'hijau' : 'biru') as Nada,
@@ -1040,8 +1053,12 @@ export function MonitoringDashboard({
               {(() => {
                 const ids = new Set(items.map((i) => i.id));
                 const riwayat = [
-                  ...(data['stock-movements'] || []).filter((m) => ids.has(String(m.data.item_id))).map((m) => ({ row: m, jenis: 'mutasi' as const })),
-                  ...(data['stock-counts'] || []).filter((c) => ids.has(String(c.data.item_id))).map((c) => ({ row: c, jenis: 'opname' as const })),
+                  ...(data['stock-movements'] || [])
+                    .filter((m) => ids.has(String(m.data.item_id)))
+                    .map((m) => ({ row: m, jenis: 'mutasi' as const })),
+                  ...(data['stock-counts'] || [])
+                    .filter((c) => ids.has(String(c.data.item_id)))
+                    .map((c) => ({ row: c, jenis: 'opname' as const })),
                 ]
                   .sort((a, b) => String(b.row.data.date).localeCompare(String(a.row.data.date)))
                   .slice(0, 5);
@@ -1049,7 +1066,10 @@ export function MonitoringDashboard({
                 return (
                   <>
                     <Section title="Riwayat stok" meta="mutasi & opname" />
-                    <Rows rows={riwayat.map(({ row, jenis }) => riwayatStok(row, jenis))} empty="" />
+                    <Rows
+                      rows={riwayat.map(({ row, jenis }) => riwayatStok(row, jenis))}
+                      empty=""
+                    />
                   </>
                 );
               })()}
@@ -1633,7 +1653,12 @@ export function MonitoringDashboard({
           </div>
         )}
       </section>
-      <Sheet open={aksiOpen} onOpenChange={setAksiOpen} title="Tambah catatan" description="Pilih yang ingin dicatat">
+      <Sheet
+        open={aksiOpen}
+        onOpenChange={setAksiOpen}
+        title="Tambah catatan"
+        description="Pilih yang ingin dicatat"
+      >
         <QuickActionsPanel onPick={() => setAksiOpen(false)} />
       </Sheet>
       <nav className="mt-dock mt-card" aria-label="Panel dunia" ref={dock}>
@@ -1702,7 +1727,17 @@ export function MonitoringDashboard({
               ))}
             </div>
             {panel === 'ringkasan' && (
-              <GrafikRingkasan grafik={grafikLokasi({ lokasi, data, model, hari: date, stock, shipping, unavailable })} />
+              <GrafikRingkasan
+                grafik={grafikLokasi({
+                  lokasi,
+                  data,
+                  model,
+                  hari: date,
+                  stock,
+                  shipping,
+                  unavailable,
+                })}
+              />
             )}
           </div>
           <div hidden={panel !== 'agenda'}>{tracker}</div>

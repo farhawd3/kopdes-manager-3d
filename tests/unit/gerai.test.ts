@@ -6,7 +6,12 @@ import { ruangGerai } from '@/features/world/gerai-room';
 import { monitoringPlans } from '@/features/world/character-plan';
 import type { Item } from '@/features/records/schemas';
 
-const row = (id: string, data: Item['data']): Item => ({ id, data, created_at: '2026-10-01', updated_at: 'u' });
+const row = (id: string, data: Item['data']): Item => ({
+  id,
+  data,
+  created_at: '2026-10-01',
+  updated_at: 'u',
+});
 const now = new Date('2026-10-09T03:00:00Z');
 const model = getWorldModel(
   {
@@ -44,13 +49,17 @@ it('staf unit yang buka melayani gerai; unit terkunci tidak memindahkan staf; ma
 it('kawasan gerai: sepuluh ruang, pintu ke kantor/gudang/cold storage, ruang terkunci transparan bergembok', () => {
   const info = infoGerai(model);
   const { root, areas, slots } = ruangGerai(info);
-  expect([...areas.keys()].filter((k) => k.startsWith('g:'))).toEqual(GERAI_IDS.map((id) => `g:${id}`));
+  expect([...areas.keys()].filter((k) => k.startsWith('g:'))).toEqual(
+    GERAI_IDS.map((id) => `g:${id}`),
+  );
   expect(['pintu-kantor', 'pintu-gudang', 'pintu-pendingin'].every((k) => areas.has(k))).toBe(true);
   expect(areas.get('g:klinik')!.material.transparent).toBe(true);
   expect(areas.get('g:sembako')!.material.transparent).toBe(false);
   const locked = info.filter((g) => !g.buka).length;
   // Satu mesh ruang per gerai ditambah satu gembok per gerai yang belum buka.
-  const geraiMesh = root.children.filter((c) => c instanceof Mesh && String(c.userData.bidang).startsWith('g:'));
+  const geraiMesh = root.children.filter(
+    (c) => c instanceof Mesh && String(c.userData.bidang).startsWith('g:'),
+  );
   expect(geraiMesh.length).toBe(GERAI_IDS.length + locked);
   expect(slots.sembako).toHaveLength(3);
 });

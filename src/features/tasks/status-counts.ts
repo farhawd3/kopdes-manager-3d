@@ -10,7 +10,8 @@ export function countTaskStates(rows: Item[], date = today()): Record<TaskTile, 
     rencana: rows.filter((row) => row.data.status === 'rencana').length,
     proses: rows.filter((row) => row.data.status === 'proses').length,
     terlambat: rows.filter(
-      (row) => open(row.data.status) && Boolean(row.data.due_date) && String(row.data.due_date) < date,
+      (row) =>
+        open(row.data.status) && Boolean(row.data.due_date) && String(row.data.due_date) < date,
     ).length,
     selesai: rows.filter((row) => row.data.status === 'selesai').length,
   };

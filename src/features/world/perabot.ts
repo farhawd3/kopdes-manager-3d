@@ -10,11 +10,16 @@ function grup(...anak: Parameters<Group['add']>) {
 }
 
 export function meja(w = 1.8, d = 0.9, warna: ColorRepresentation = WARNA.kayu) {
-  const kaki = (x: number, z: number) => di(kotak(0.18, 0.74, 0.18, WARNA.kayuGelap, 0.08), x, 0, z);
-  const lx = w / 2 - 0.12, lz = d / 2 - 0.12;
+  const kaki = (x: number, z: number) =>
+    di(kotak(0.18, 0.74, 0.18, WARNA.kayuGelap, 0.08), x, 0, z);
+  const lx = w / 2 - 0.12,
+    lz = d / 2 - 0.12;
   return grup(
     di(kotak(w, 0.18, d, warna, 0.09), 0, 0.68, 0),
-    kaki(-lx, -lz), kaki(lx, -lz), kaki(-lx, lz), kaki(lx, lz),
+    kaki(-lx, -lz),
+    kaki(lx, -lz),
+    kaki(-lx, lz),
+    kaki(lx, lz),
     di(kotak(0.5, 0.36, d - 0.2, WARNA.krem, 0.05), lx - 0.3, 0.38, 0),
   );
 }
@@ -61,13 +66,23 @@ export function rakTerbuka(w = 1.4, h = 2, isi = 1, warnaRangka: ColorRepresenta
     if (i === tingkat - 1) continue;
     const jumlah = Math.round(5 * isi);
     for (let j = 0; j < jumlah; j++)
-      g.add(di(kotak(0.16, 0.4, 0.38, palet[(i * 2 + j) % palet.length], 0.03), -w / 2 + 0.22 + j * 0.22, y + 0.07, 0));
+      g.add(
+        di(
+          kotak(0.16, 0.4, 0.38, palet[(i * 2 + j) % palet.length], 0.03),
+          -w / 2 + 0.22 + j * 0.22,
+          y + 0.07,
+          0,
+        ),
+      );
   }
   return g;
 }
 
 export function tanaman(skala = 1) {
-  const g = grup(di(silinder(0.24, 0.18, 0.4, WARNA.pot), 0, 0, 0), di(silinder(0.22, 0.22, 0.04, 0x6b4a3a), 0, 0.38, 0));
+  const g = grup(
+    di(silinder(0.24, 0.18, 0.4, WARNA.pot), 0, 0, 0),
+    di(silinder(0.22, 0.22, 0.04, 0x6b4a3a), 0, 0.38, 0),
+  );
   for (let i = 0; i < 6; i++) {
     const daun = kapsul(0.07, 0.42 + (i % 3) * 0.12, WARNA.daun);
     daun.position.set(0, 0.4, 0);
@@ -166,7 +181,10 @@ export function sepedaStatis() {
 export function rakDumbel() {
   const g = grup(di(kotak(1.4, 0.7, 0.5, WARNA.abu, 0.06), 0, 0, 0));
   [WARNA.merah, WARNA.kuning, WARNA.sage, WARNA.lavender].forEach((w, i) => {
-    g.add(di(kotak(0.24, 0.16, 0.16, w, 0.07), -0.48 + i * 0.32, 0.7, -0.08), di(kotak(0.24, 0.16, 0.16, w, 0.07), -0.48 + i * 0.32, 0.7, 0.12));
+    g.add(
+      di(kotak(0.24, 0.16, 0.16, w, 0.07), -0.48 + i * 0.32, 0.7, -0.08),
+      di(kotak(0.24, 0.16, 0.16, w, 0.07), -0.48 + i * 0.32, 0.7, 0.12),
+    );
   });
   return g;
 }

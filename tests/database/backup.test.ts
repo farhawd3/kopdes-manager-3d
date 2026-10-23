@@ -5,7 +5,13 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { afterAll, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 
 let database: PGlite;
-const mocks = vi.hoisted(() => ({ session: vi.fn(), rpc: vi.fn(), range: vi.fn(), cap: 1000, count: null as number | null }));
+const mocks = vi.hoisted(() => ({
+  session: vi.fn(),
+  rpc: vi.fn(),
+  range: vi.fn(),
+  cap: 1000,
+  count: null as number | null,
+}));
 vi.mock('@/lib/server/auth', () => ({ requireSession: mocks.session }));
 vi.mock('@/lib/server/db', () => ({
   db: () => ({
@@ -23,11 +29,13 @@ vi.mock('@/lib/server/db', () => ({
                 )
               ).rows.map((result) => result.row),
               error: null,
-              count: mocks.count ?? (
-                await database.query<{ count: number }>(
-                  `select count(*)::integer as count from public.${table}`,
-                )
-              ).rows[0].count,
+              count:
+                mocks.count ??
+                (
+                  await database.query<{ count: number }>(
+                    `select count(*)::integer as count from public.${table}`,
+                  )
+                ).rows[0].count,
             };
           },
         }),

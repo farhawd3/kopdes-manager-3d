@@ -4,7 +4,12 @@ import type { WorldModel } from '@/features/world/model/world-model';
 import type { Item } from '@/features/records/schemas';
 
 const row = (id: string, data: Record<string, unknown>) => ({ id, data }) as unknown as Item;
-const model = { inventory: { racks: { A: [], B: [], C: [], D: [], E: [], F: [] }, coldRacks: { C1: [], C2: [], C3: [] } } } as unknown as WorldModel;
+const model = {
+  inventory: {
+    racks: { A: [], B: [], C: [], D: [], E: [], F: [] },
+    coldRacks: { C1: [], C2: [], C3: [] },
+  },
+} as unknown as WorldModel;
 const dasar = { model, hari: '2026-10-15', stock: true, shipping: true, unavailable: false };
 
 it('tugas terbuka dipisah: lewat tenggat, dikerjakan, rencana', () => {

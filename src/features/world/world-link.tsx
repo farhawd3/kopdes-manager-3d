@@ -10,4 +10,5 @@ const PARAM: Partial<Record<Entity, string>> = {
   meetings: 'rapat',
 };
 export const hasWorldPlace = (entity: Entity) => entity in PARAM;
-export const worldHref = (entity: Entity, id: string) => `/world?${PARAM[entity] ?? 'lokasi'}=${encodeURIComponent(id)}`;
+export const worldHref = (entity: Entity, id: string) =>
+  `/world?${PARAM[entity] ?? 'lokasi'}=${encodeURIComponent(id)}`;

@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { db } from '@/lib/server/db';
 import { COOKIE, digest, hashPin, verifyPin, requireSession } from '@/lib/server/auth';
 import { sameOrigin, failure, readJson } from '@/lib/server/http';
-import { modeDemo } from '@/lib/demo';
+import { isDemoMode } from '@/lib/demo';
 const pin = z.string().regex(/^\d{6,12}$/, 'PIN harus 6–12 digit.');
 const input = z.discriminatedUnion('action', [
   z.object({ action: z.literal('login'), pin }).strict(),
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     sameOrigin(request);
     const body = input.parse(await readJson(request));
     // Mode demo: PIN apa pun membuka ruang kerja, tidak ada sesi yang disimpan.
-    if (modeDemo()) return NextResponse.json({ success: true });
+    if (isDemoMode()) return NextResponse.json({ success: true });
     const client = db();
     if (body.action === 'logout') {
       const token = (await cookies()).get(COOKIE)?.value;

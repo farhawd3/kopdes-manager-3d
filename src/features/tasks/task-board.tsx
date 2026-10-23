@@ -42,7 +42,8 @@ export function TaskBoard({
   const [showCancelled, setShowCancelled] = useState(false);
   const move = (id: string, status: string) => {
     const task = tasks.find((row) => row.id === id);
-    if (task && task.data.status !== status) void setTaskStatus(task, status as TaskStatus, refresh, user);
+    if (task && task.data.status !== status)
+      void setTaskStatus(task, status as TaskStatus, refresh, user);
   };
   const { dragging, over, handle } = useBoardDrag(move);
   const columns = COLUMNS.filter((column) => column.status !== 'dibatalkan' || showCancelled);
@@ -65,14 +66,27 @@ export function TaskBoard({
                 over === column.status && dragging && 'border-accent-strong bg-accent/40',
               )}
             >
-              <header data-tone={column.tone} className="flex items-center gap-2.5 border-b border-line px-1 pt-1 pb-3">
-                <span className="grid size-5 place-items-center rounded-full bg-tone text-tone-bar" aria-hidden="true">
+              <header
+                data-tone={column.tone}
+                className="flex items-center gap-2.5 border-b border-line px-1 pt-1 pb-3"
+              >
+                <span
+                  className="grid size-5 place-items-center rounded-full bg-tone text-tone-bar"
+                  aria-hidden="true"
+                >
                   <ChevronRight className="size-3.5" strokeWidth={2.6} />
                 </span>
                 <h2 className="flex-1 text-[17px] font-extrabold">{column.label}</h2>
-                <span className="tabular rounded-full bg-surface-3 px-2 py-0.5 text-xs font-bold text-ink-2">{items.length}</span>
+                <span className="tabular rounded-full bg-surface-3 px-2 py-0.5 text-xs font-bold text-ink-2">
+                  {items.length}
+                </span>
                 {column.status !== 'dibatalkan' && (
-                  <Button size="icon-sm" variant="ghost" aria-label={`Tambah tugas ke ${column.label}`} onClick={() => onAdd(column.status)}>
+                  <Button
+                    size="icon-sm"
+                    variant="ghost"
+                    aria-label={`Tambah tugas ke ${column.label}`}
+                    onClick={() => onAdd(column.status)}
+                  >
                     <Plus />
                   </Button>
                 )}
@@ -89,13 +103,24 @@ export function TaskBoard({
                       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                       onPointerDown={handle(task.id)}
                       onKeyDown={(event) => {
-                        if (!event.shiftKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+                        if (!event.shiftKey || !['ArrowLeft', 'ArrowRight'].includes(event.key))
+                          return;
                         event.preventDefault();
-                        const next = ORDER[ORDER.indexOf(task.data.status as TaskStatus) + (event.key === 'ArrowRight' ? 1 : -1)];
+                        const next =
+                          ORDER[
+                            ORDER.indexOf(task.data.status as TaskStatus) +
+                              (event.key === 'ArrowRight' ? 1 : -1)
+                          ];
                         if (next) move(task.id, next);
                       }}
                     >
-                      <TaskCard task={task} ws={ws} refresh={refresh} onOpen={() => onOpen(task.id)} draggable />
+                      <TaskCard
+                        task={task}
+                        ws={ws}
+                        refresh={refresh}
+                        onOpen={() => onOpen(task.id)}
+                        draggable
+                      />
                     </motion.div>
                   ))}
                 </AnimatePresence>
@@ -109,8 +134,14 @@ export function TaskBoard({
           );
         })}
       </div>
-      <button type="button" onClick={() => setShowCancelled((v) => !v)} className="self-start text-sm font-semibold text-ink-3 hover:text-ink">
-        {showCancelled ? 'Sembunyikan tugas dibatalkan' : `Tampilkan tugas dibatalkan (${tasks.filter((t) => t.data.status === 'dibatalkan').length})`}
+      <button
+        type="button"
+        onClick={() => setShowCancelled((v) => !v)}
+        className="self-start text-sm font-semibold text-ink-3 hover:text-ink"
+      >
+        {showCancelled
+          ? 'Sembunyikan tugas dibatalkan'
+          : `Tampilkan tugas dibatalkan (${tasks.filter((t) => t.data.status === 'dibatalkan').length})`}
       </button>
     </div>
   );

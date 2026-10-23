@@ -4,7 +4,11 @@
  */
 
 export function makeTaskCode(title: string, uniqueId: string, prefix = 'TGS'): string {
-  const cleanId = uniqueId.replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || '0001';
+  const cleanId =
+    uniqueId
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .slice(0, 4)
+      .toUpperCase() || '0001';
   return `${prefix}-${cleanId}`;
 }
 
@@ -33,6 +37,10 @@ export function formatDisplayCode(
     return trimmed;
   }
 
-  const cleanId = fallbackId.replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || '0001';
+  const cleanId =
+    fallbackId
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .slice(0, 4)
+      .toUpperCase() || '0001';
   return `${prefix}-${cleanId}`;
 }

@@ -2,7 +2,12 @@
 import { useSyncExternalStore } from 'react';
 
 const jakartaTime = () =>
-  new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date());
+  new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Jakarta',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(new Date());
 
 const subscribeClock = (callback: () => void) => {
   const timer = window.setInterval(callback, 30_000);
@@ -18,5 +23,11 @@ export function useJakartaClock() {
 export function greeting(now: string) {
   if (!now) return 'Halo';
   const hour = Number(now.slice(0, 2));
-  return hour < 11 ? 'Selamat pagi' : hour < 15 ? 'Selamat siang' : hour < 18 ? 'Selamat sore' : 'Selamat malam';
+  return hour < 11
+    ? 'Selamat pagi'
+    : hour < 15
+      ? 'Selamat siang'
+      : hour < 18
+        ? 'Selamat sore'
+        : 'Selamat malam';
 }

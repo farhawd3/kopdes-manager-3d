@@ -5,12 +5,7 @@ import { tanaman } from './perabot';
 import { jendelaSuasana } from './suasana';
 import { cat } from './tulisan';
 import { apar, forklift, palet, pintuGulung, rakBaja, truk, tumpukKardus } from './logistik';
-import {
-  coldRackIds,
-  isBelowMinimum,
-  rackIds,
-  type WorldModel,
-} from './model/world-model';
+import { coldRackIds, isBelowMinimum, rackIds, type WorldModel } from './model/world-model';
 
 type Area = Mesh<BufferGeometry, MeshStandardMaterial>;
 export type LogistikInput = { model: WorldModel; stock: boolean; deliveries: boolean };
@@ -34,8 +29,14 @@ function pintuDenganKardus(warna: number, x: number, z: number, samping: boolean
   if (samping) d.rotation.y = Math.PI / 2;
   g.add(di(d, x, 0, z));
   const [a, b] = samping
-    ? [[x + 0.8, z - 1.9], [x + 0.8, z + 1.9]]
-    : [[x - 1.9, z + 0.8], [x + 1.9, z + 0.8]];
+    ? [
+        [x + 0.8, z - 1.9],
+        [x + 0.8, z + 1.9],
+      ]
+    : [
+        [x - 1.9, z + 0.8],
+        [x + 1.9, z + 0.8],
+      ];
   g.add(di(tumpukKardus(2), a[0], 0.05, a[1]), di(tumpukKardus(1), b[0], 0.05, b[1]));
   return g;
 }
@@ -54,7 +55,16 @@ function paletKardus(n = 2) {
 }
 
 /** Cangkang ruang: alas kayu, lantai, dinding belakang dan kiri biru lembut bertepi terang. */
-function cangkang(g: Group, w: number, d: number, lantai: number, dinding: number, atas: number, tinggi: number, dalam = d) {
+function cangkang(
+  g: Group,
+  w: number,
+  d: number,
+  lantai: number,
+  dinding: number,
+  atas: number,
+  tinggi: number,
+  dalam = d,
+) {
   const zKiri = -d / 2 + dalam / 2;
   g.add(
     di(kotak(w + 1, 0.55, d + 1, ALAS_KAYU, 0.3), 0, -0.6, 0),
@@ -81,7 +91,10 @@ export function ruangLogistik({ model, stock, deliveries }: LogistikInput, cold:
     // Panel pendingin dinding dan peti beku.
     for (const x of [-7, 0, 7]) shell.add(di(kotak(2.4, 0.7, 0.32, 0xffffff, 0.1), x, 2.7, -8.7));
     for (const x of [-9, -5.5])
-      shell.add(di(kotak(2.4, 0.95, 1.2, 0xf7fbfd, 0.16), x, 0, 5.2), di(kotak(2.4, 0.1, 1.2, 0x9ccbe6, 0.05), x, 0.95, 5.2));
+      shell.add(
+        di(kotak(2.4, 0.95, 1.2, 0xf7fbfd, 0.16), x, 0, 5.2),
+        di(kotak(2.4, 0.1, 1.2, 0x9ccbe6, 0.05), x, 0.95, 5.2),
+      );
     shell.add(di(apar(), -12.6, 0, 6.5), di(tanaman(1.3), 12, 0, 7.6));
     root.add(gabung(shell));
     coldRackIds.forEach((id, i) => {
@@ -98,10 +111,20 @@ export function ruangLogistik({ model, stock, deliveries }: LogistikInput, cold:
     root.add(gabung(p));
     // Kode rak dicat halus di lantai depan rak.
     root.add(
-      cat([
-        ...coldRackIds.map((id, i): [string, number, number, number, number, string] => [id, -7 + i * 7, -4.3, 1.8, 1.0, '#5f8fb3']),
-        ['GUDANG', -11.2, 1, 2.6, 0.55, '#5f8fb3', Math.PI / 2],
-      ], 0.1),
+      cat(
+        [
+          ...coldRackIds.map((id, i): [string, number, number, number, number, string] => [
+            id,
+            -7 + i * 7,
+            -4.3,
+            1.8,
+            1.0,
+            '#5f8fb3',
+          ]),
+          ['GUDANG', -11.2, 1, 2.6, 0.55, '#5f8fb3', Math.PI / 2],
+        ],
+        0.1,
+      ),
     );
     return { root, areas };
   }
@@ -114,14 +137,21 @@ export function ruangLogistik({ model, stock, deliveries }: LogistikInput, cold:
   // Dinding depan rendah dan rangka dok: isi gudang tetap terlihat dari kamera.
   shell.add(di(kotak(38.6, 0.9, 0.34, KREM, 0.14), 0, 0, 0));
   for (const x of DOK_X) {
-    shell.add(di(kotak(0.3, 3.4, 0.4, KREM, 0.1), x - 1.7, 0, 0), di(kotak(0.3, 3.4, 0.4, KREM, 0.1), x + 1.7, 0, 0));
+    shell.add(
+      di(kotak(0.3, 3.4, 0.4, KREM, 0.1), x - 1.7, 0, 0),
+      di(kotak(0.3, 3.4, 0.4, KREM, 0.1), x + 1.7, 0, 0),
+    );
     shell.add(di(kotak(3.7, 0.5, 0.46, DINDING_ATAS, 0.14), x, 3.2, 0));
   }
   for (const x of [-12, -4, 4]) root.add(di(jendelaSuasana(3.4, 1.4), x, 2.6, -13.98));
   // Halaman: garis jalur, pagar, dan pepohonan tepi.
-  for (let x = -16; x <= 16; x += 3) shell.add(di(kotak(1.4, 0.04, 0.3, 0xf7f7fa, 0.02), x, 0.03, 9.6));
+  for (let x = -16; x <= 16; x += 3)
+    shell.add(di(kotak(1.4, 0.04, 0.3, 0xf7f7fa, 0.02), x, 0.03, 9.6));
   for (let x = -19; x <= 19; x += 2) shell.add(di(kotak(0.28, 0.9, 0.28, KREM, 0.13), x, 0, 14.2));
-  shell.add(di(kotak(38.2, 0.24, 0.28, KREM, 0.12), 0, 0.7, 14.2), di(kotak(38.2, 0.24, 0.28, 0xb7d9c4, 0.12), 0, 0.36, 14.2));
+  shell.add(
+    di(kotak(38.2, 0.24, 0.28, KREM, 0.12), 0, 0.7, 14.2),
+    di(kotak(38.2, 0.24, 0.28, 0xb7d9c4, 0.12), 0, 0.36, 14.2),
+  );
   for (const x of [-17.5, -8, 8, 17.5]) shell.add(di(tanaman(2.1), x, 0, 12.8));
   shell.add(di(apar(), -18.4, 0, -1.2));
   root.add(gabung(shell));
@@ -137,7 +167,8 @@ export function ruangLogistik({ model, stock, deliveries }: LogistikInput, cold:
   DOK_X.forEach((x, i) => {
     const g = new Group();
     g.add(di(kotak(3.2, 0.04, 6.8, 0xe6e9f2, 0.02), x, 0.04, 4.0));
-    for (const s of [-1, 1]) g.add(di(kotak(0.22, 0.06, 6.8, 0xf2c75c, 0.03), x + s * 1.6, 0.04, 4.0));
+    for (const s of [-1, 1])
+      g.add(di(kotak(0.22, 0.06, 6.8, 0xf2c75c, 0.03), x + s * 1.6, 0.04, 4.0));
     g.add(di(kotak(3.4, 0.06, 0.22, 0xf2c75c, 0.03), x, 0.04, 7.4));
     tambah(root, areas, `dok-D${i + 1}`, g);
   });
@@ -148,16 +179,40 @@ export function ruangLogistik({ model, stock, deliveries }: LogistikInput, cold:
   const f = forklift();
   f.rotation.y = 0.5;
   alat.add(di(f, 13, 0, -7.5));
-  for (const [x, z] of [[-8, 1.6], [0, 1.6], [8, 1.6], [16.5, -10.5], [10, -3]]) alat.add(di(paletKardus(2), x, 0, z));
+  for (const [x, z] of [
+    [-8, 1.6],
+    [0, 1.6],
+    [8, 1.6],
+    [16.5, -10.5],
+    [10, -3],
+  ])
+    alat.add(di(paletKardus(2), x, 0, z));
   root.add(gabung(alat));
   // Kode rak, dok, dan arah pintu dicat halus di lantai (tanpa papan nama).
   root.add(
-    cat([
-      ...rackIds.map((id, i): [string, number, number, number, number, string] => [id, -12 + (i % 3) * 8, (i < 3 ? -10.6 : -5.6) + 1.35, 1.4, 1.1, '#9a7146']),
-      ...DOK_X.map((x, i): [string, number, number, number, number, string] => [`D${i + 1}`, x, 6.5, 1.8, 1.0, '#8590ad']),
-      ['KANTOR', -17.1, -7, 2.6, 0.55, '#9a7146', Math.PI / 2],
-      ['COLD STORAGE', 14, -12.2, 3.4, 0.5, '#9a7146'],
-    ], 0.12),
+    cat(
+      [
+        ...rackIds.map((id, i): [string, number, number, number, number, string] => [
+          id,
+          -12 + (i % 3) * 8,
+          (i < 3 ? -10.6 : -5.6) + 1.35,
+          1.4,
+          1.1,
+          '#9a7146',
+        ]),
+        ...DOK_X.map((x, i): [string, number, number, number, number, string] => [
+          `D${i + 1}`,
+          x,
+          6.5,
+          1.8,
+          1.0,
+          '#8590ad',
+        ]),
+        ['KANTOR', -17.1, -7, 2.6, 0.55, '#9a7146', Math.PI / 2],
+        ['COLD STORAGE', 14, -12.2, 3.4, 0.5, '#9a7146'],
+      ],
+      0.12,
+    ),
   );
   if (deliveries)
     for (const spot of model.trucks) {

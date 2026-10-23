@@ -17,7 +17,15 @@ export function Avatar({ name, className }: { name: string; className?: string }
 }
 
 /** Tumpukan avatar seperti kartu TaskTrack; nama lebih dari `max` dirangkum "+N". */
-export function AvatarStack({ names, max = 3, className }: { names: string[]; max?: number; className?: string }) {
+export function AvatarStack({
+  names,
+  max = 3,
+  className,
+}: {
+  names: string[];
+  max?: number;
+  className?: string;
+}) {
   const people = names.filter(Boolean);
   if (!people.length) return null;
   return (

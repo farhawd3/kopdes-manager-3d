@@ -10,7 +10,9 @@ export function Input({ className, ...props }: ComponentProps<'input'>) {
 }
 
 export function Textarea({ className, ...props }: ComponentProps<'textarea'>) {
-  return <textarea className={cn(CONTROL, 'min-h-24 py-2.5 leading-relaxed', className)} {...props} />;
+  return (
+    <textarea className={cn(CONTROL, 'min-h-24 py-2.5 leading-relaxed', className)} {...props} />
+  );
 }
 
 export function Select({ className, children, ...props }: ComponentProps<'select'>) {
@@ -19,7 +21,10 @@ export function Select({ className, children, ...props }: ComponentProps<'select
       <select className={cn(CONTROL, 'h-11 appearance-none pr-10', className)} {...props}>
         {children}
       </select>
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-3" aria-hidden="true" />
+      <ChevronDown
+        className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-3"
+        aria-hidden="true"
+      />
     </span>
   );
 }

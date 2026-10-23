@@ -16,6 +16,7 @@ export function assigneeOptions(staff: Item[], manager: string, current: string)
     if (!name || person.data.status === 'nonaktif' || exists(name)) continue;
     options.push({ name, role: String(person.data.role || '') || 'Tim' });
   }
-  if (current.trim() && !exists(current)) options.push({ name: current.trim(), role: 'Tidak ada di Tim' });
+  if (current.trim() && !exists(current))
+    options.push({ name: current.trim(), role: 'Tidak ada di Tim' });
   return options;
 }

@@ -1,7 +1,16 @@
 'use client';
 import { DropdownMenu } from 'radix-ui';
 import * as motion from 'motion/react-m';
-import { CalendarClock, CalendarPlus, Clock, EllipsisVertical, ListChecks, MessageCircle, Repeat, XCircle } from 'lucide-react';
+import {
+  CalendarClock,
+  CalendarPlus,
+  Clock,
+  EllipsisVertical,
+  ListChecks,
+  MessageCircle,
+  Repeat,
+  XCircle,
+} from 'lucide-react';
 import type { Item } from '@/features/records/schemas';
 import type { Workspace } from '@/features/workspace/use-workspace';
 import { Wave } from '@/components/ui/wave';
@@ -20,9 +29,11 @@ import type { Task } from '@/features/records/schemas';
 export function dueText(task: Item, date = today()): { text: string; late: boolean } {
   const due = String(task.data.due_date || '');
   if (!due) return { text: 'Tanpa tenggat', late: false };
-  if (task.data.status === 'selesai') return { text: `Selesai ${formatDate(String(task.data.completed_at || due))}`, late: false };
+  if (task.data.status === 'selesai')
+    return { text: `Selesai ${formatDate(String(task.data.completed_at || due))}`, late: false };
   const diff = daysBetween(date, due);
-  if (diff < 0 && !isClosedTask(task.data.status)) return { text: `Terlambat ${-diff} hari`, late: true };
+  if (diff < 0 && !isClosedTask(task.data.status))
+    return { text: `Terlambat ${-diff} hari`, late: true };
   if (diff === 0) return { text: 'Hari ini', late: false };
   if (diff === 1) return { text: 'Besok', late: false };
   if (diff <= 7) return { text: `${diff} hari lagi`, late: false };
@@ -56,9 +67,16 @@ export function TaskCard({
   const due = dueText(task);
   const progress = taskProgress(task.data as unknown as Task);
   const priority = String(task.data.priority || 'normal');
-  const people = [String(task.data.assignee || ''), ...((task.data.followers as string[]) || [])].filter((name, index, all) => name && all.indexOf(name) === index);
-  const note = String(task.data.description || '').split(/\r?\n/)[0].trim();
-  const comments = ((task.data.activities as { type?: string }[]) || []).filter((entry) => entry.type === 'comment').length;
+  const people = [
+    String(task.data.assignee || ''),
+    ...((task.data.followers as string[]) || []),
+  ].filter((name, index, all) => name && all.indexOf(name) === index);
+  const note = String(task.data.description || '')
+    .split(/\r?\n/)[0]
+    .trim();
+  const comments = ((task.data.activities as { type?: string }[]) || []).filter(
+    (entry) => entry.type === 'comment',
+  ).length;
   return (
     <article
       data-tone={projectTone(project)}
@@ -81,9 +99,13 @@ export function TaskCard({
           #{project ? String(project.data.title) : 'tanpa proyek'}
         </span>
         {['tinggi', 'mendesak'].includes(priority) && (
-          <span className="rounded-full border border-[color-mix(in_srgb,var(--tone-bar)_45%,transparent)] bg-surface/40 text-[color-mix(in_srgb,var(--tone-bar)_70%,var(--tone-ink))] px-2.5 py-0.5 text-[11px] font-semibold">#{priority === 'mendesak' ? 'mendesak' : 'tinggi'}</span>
+          <span className="rounded-full border border-[color-mix(in_srgb,var(--tone-bar)_45%,transparent)] bg-surface/40 text-[color-mix(in_srgb,var(--tone-bar)_70%,var(--tone-ink))] px-2.5 py-0.5 text-[11px] font-semibold">
+            #{priority === 'mendesak' ? 'mendesak' : 'tinggi'}
+          </span>
         )}
-        {Boolean(task.data.recurrence) && task.data.recurrence !== 'tidak' && <Repeat className="size-3.5 opacity-70" aria-label="Berulang" />}
+        {Boolean(task.data.recurrence) && task.data.recurrence !== 'tidak' && (
+          <Repeat className="size-3.5 opacity-70" aria-label="Berulang" />
+        )}
         <span className="ml-auto flex items-center gap-0.5">
           <DropdownMenu.Root>
             <DropdownMenu.Trigger
@@ -95,31 +117,56 @@ export function TaskCard({
               <EllipsisVertical className="size-4" />
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content align="end" sideOffset={6} className="pop z-50 w-52 rounded-2xl bg-surface p-1.5 shadow-float" onClick={(event) => event.stopPropagation()}>
-                <DropdownMenu.Item className={ITEM} onSelect={() => void postponeTask(task, 1, refresh)}>
+              <DropdownMenu.Content
+                align="end"
+                sideOffset={6}
+                className="pop z-50 w-52 rounded-2xl bg-surface p-1.5 shadow-float"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <DropdownMenu.Item
+                  className={ITEM}
+                  onSelect={() => void postponeTask(task, 1, refresh)}
+                >
                   <CalendarClock />
                   Tunda 1 hari
                 </DropdownMenu.Item>
-                <DropdownMenu.Item className={ITEM} onSelect={() => void postponeTask(task, 7, refresh)}>
+                <DropdownMenu.Item
+                  className={ITEM}
+                  onSelect={() => void postponeTask(task, 7, refresh)}
+                >
                   <CalendarPlus />
                   Tunda 1 minggu
                 </DropdownMenu.Item>
                 <DropdownMenu.Separator className="my-1 h-px bg-line" />
-                <DropdownMenu.Item className={cn(ITEM, 'data-[highlighted]:bg-late data-[highlighted]:text-late-ink')} onSelect={() => void cancelTask(task, refresh)}>
+                <DropdownMenu.Item
+                  className={cn(
+                    ITEM,
+                    'data-[highlighted]:bg-late data-[highlighted]:text-late-ink',
+                  )}
+                  onSelect={() => void cancelTask(task, refresh)}
+                >
                   <XCircle />
                   Batalkan tugas
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
-          <Check checked={done} onChange={() => void toggleTaskDone(task, refresh)} label={`${done ? 'Buka lagi' : 'Tandai selesai'}: ${String(task.data.title)}`} className="ml-1.5" />
+          <Check
+            checked={done}
+            onChange={() => void toggleTaskDone(task, refresh)}
+            label={`${done ? 'Buka lagi' : 'Tandai selesai'}: ${String(task.data.title)}`}
+            className="ml-1.5"
+          />
         </span>
       </div>
       <button
         type="button"
         onClick={onOpen}
         onPointerDown={(event) => draggable && event.stopPropagation()}
-        className={cn('relative line-clamp-2 text-left text-[15.5px] leading-snug font-bold text-ink outline-none', done && 'text-ink-3 line-through')}
+        className={cn(
+          'relative line-clamp-2 text-left text-[15.5px] leading-snug font-bold text-ink outline-none',
+          done && 'text-ink-3 line-through',
+        )}
       >
         {String(task.data.title)}
       </button>
@@ -147,10 +194,14 @@ export function TaskCard({
         {subtasks.length > 0 && (
           <span className="flex items-center gap-1" title="Subtugas selesai">
             <ListChecks className="size-3.5" />
-            <span className="tabular">{subtasks.filter((s) => s.done).length}/{subtasks.length}</span>
+            <span className="tabular">
+              {subtasks.filter((s) => s.done).length}/{subtasks.length}
+            </span>
           </span>
         )}
-        <span className={cn('ml-auto flex items-center gap-1', due.late && 'font-bold text-late-ink')}>
+        <span
+          className={cn('ml-auto flex items-center gap-1', due.late && 'font-bold text-late-ink')}
+        >
           <Clock className="size-3.5" />
           {due.text}
         </span>
@@ -160,7 +211,17 @@ export function TaskCard({
 }
 
 /** Versi baris untuk daftar padat (Daftar, Beranda di HP). */
-export function TaskRow({ task, ws, onOpen, refresh }: { task: Item; ws: Workspace; onOpen: () => void; refresh: () => Promise<void> | void }) {
+export function TaskRow({
+  task,
+  ws,
+  onOpen,
+  refresh,
+}: {
+  task: Item;
+  ws: Workspace;
+  onOpen: () => void;
+  refresh: () => Promise<void> | void;
+}) {
   const project = ws.workstreams?.find((row) => row.id === task.data.workstream_id);
   const done = task.data.status === 'selesai';
   const due = dueText(task);
@@ -176,16 +237,38 @@ export function TaskRow({ task, ws, onOpen, refresh }: { task: Item; ws: Workspa
       }}
       className="flex items-center gap-3 rounded-2xl bg-surface px-3 py-2.5 outline-none transition hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent-strong"
     >
-      <Check checked={done} onChange={() => void toggleTaskDone(task, refresh)} label={`${done ? 'Buka lagi' : 'Tandai selesai'}: ${String(task.data.title)}`} />
+      <Check
+        checked={done}
+        onChange={() => void toggleTaskDone(task, refresh)}
+        label={`${done ? 'Buka lagi' : 'Tandai selesai'}: ${String(task.data.title)}`}
+      />
       <span className="h-8 w-1 shrink-0 rounded-full bg-tone-bar" aria-hidden="true" />
       <button type="button" onClick={onOpen} className="min-w-0 flex-1 text-left">
-        <span className={cn('block truncate text-[14.5px] font-bold text-ink', done && 'text-ink-3 line-through')}>{String(task.data.title)}</span>
+        <span
+          className={cn(
+            'block truncate text-[14.5px] font-bold text-ink',
+            done && 'text-ink-3 line-through',
+          )}
+        >
+          {String(task.data.title)}
+        </span>
         <span className="flex items-center gap-2 text-xs text-ink-3">
           <span className="truncate">{project ? String(project.data.title) : 'Tanpa proyek'}</span>
-          {subtasks.length > 0 && <span className="tabular">· {subtasks.filter((s) => s.done).length}/{subtasks.length} subtugas</span>}
+          {subtasks.length > 0 && (
+            <span className="tabular">
+              · {subtasks.filter((s) => s.done).length}/{subtasks.length} subtugas
+            </span>
+          )}
         </span>
       </button>
-      <span className={cn('hidden shrink-0 text-xs font-bold sm:block', due.late ? 'text-late-ink' : 'text-ink-3')}>{due.text}</span>
+      <span
+        className={cn(
+          'hidden shrink-0 text-xs font-bold sm:block',
+          due.late ? 'text-late-ink' : 'text-ink-3',
+        )}
+      >
+        {due.text}
+      </span>
       <AvatarStack names={[String(task.data.assignee || '')]} className="hidden shrink-0 sm:flex" />
     </motion.div>
   );

@@ -20,9 +20,31 @@ export type FieldKind =
   | 'subtasks'
   | 'dependencies';
 
-const LONG = ['description', 'notes', 'agenda', 'minutes', 'mitigation', 'items', 'reason', 'evidence', 'follow_up', 'physical', 'equipment', 'sop', 'goal', 'participants'];
+const LONG = [
+  'description',
+  'notes',
+  'agenda',
+  'minutes',
+  'mitigation',
+  'items',
+  'reason',
+  'evidence',
+  'follow_up',
+  'physical',
+  'equipment',
+  'sop',
+  'goal',
+  'participants',
+];
 const TIMES = ['time', 'recurrence_time', 'arrival_time', 'check_in_time', 'check_out_time'];
-const INTEGERS = ['quantity', 'book_quantity', 'minimum_quantity', 'counted_quantity', 'transactions', 'duration'];
+const INTEGERS = [
+  'quantity',
+  'book_quantity',
+  'minimum_quantity',
+  'counted_quantity',
+  'transactions',
+  'duration',
+];
 const SCORES = ['probability', 'impact', 'influence', 'interest'];
 
 /** Jenis isian ditentukan dari nama kolom dan katalog, agar formulir semua catatan seragam. */
@@ -44,4 +66,5 @@ export function fieldKind(entity: Entity, field: string): FieldKind {
   return 'text';
 }
 
-export const choicesFor = (entity: Entity, field: string) => options[`${entity}.${field}`] ?? options[field] ?? [];
+export const choicesFor = (entity: Entity, field: string) =>
+  options[`${entity}.${field}`] ?? options[field] ?? [];

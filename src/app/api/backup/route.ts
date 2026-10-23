@@ -49,7 +49,8 @@ async function backupRows(table: 'hub_records' | 'manager_reports') {
       .select('*', { count: 'exact' })
       .order('id')
       .range(rows.length, rows.length + 499);
-    if (error || !data || typeof count !== 'number') throw new Error('Cadangan gagal dimuat. Coba lagi.');
+    if (error || !data || typeof count !== 'number')
+      throw new Error('Cadangan gagal dimuat. Coba lagi.');
     if (count > 5000) throw new Error('Cadangan melebihi batas 5.000 catatan per jenis tabel.');
     if (expectedCount !== null && expectedCount !== count)
       throw new Error('Data berubah saat membuat cadangan. Coba lagi setelah penyimpanan selesai.');

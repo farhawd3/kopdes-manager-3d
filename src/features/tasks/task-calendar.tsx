@@ -12,7 +12,9 @@ import { TaskRow } from './task-card';
 
 const DAYS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 const monthLabel = (month: string) =>
-  new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(month + '-15T12:00:00Z'));
+  new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+    new Date(month + '-15T12:00:00Z'),
+  );
 function shiftMonth(month: string, delta: number) {
   const date = new Date(month + '-15T12:00:00Z');
   date.setUTCMonth(date.getUTCMonth() + delta);
@@ -37,28 +39,72 @@ export function TaskCalendar({
   const [month, setMonth] = useState(today().slice(0, 7));
   const [selected, setSelected] = useState(today());
   const first = weekDays(month + '-01')[0];
-  const daysInMonth = new Date(Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0)).getUTCDate();
+  const daysInMonth = new Date(
+    Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0),
+  ).getUTCDate();
   const offset = weekDays(month + '-01').indexOf(month + '-01');
-  const cells = mode === 'month' ? Array.from({ length: Math.ceil((offset + daysInMonth) / 7) * 7 }, (_, i) => addDays(first, i)) : weekDays(selected);
-  const onDay = (date: string) => tasks.filter((task) => task.data.due_date === date && task.data.status !== 'dibatalkan');
+  const cells =
+    mode === 'month'
+      ? Array.from({ length: Math.ceil((offset + daysInMonth) / 7) * 7 }, (_, i) =>
+          addDays(first, i),
+        )
+      : weekDays(selected);
+  const onDay = (date: string) =>
+    tasks.filter((task) => task.data.due_date === date && task.data.status !== 'dibatalkan');
   const dayTasks = onDay(selected);
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="mr-auto text-xl font-extrabold capitalize">{mode === 'month' ? monthLabel(month) : `Pekan ${formatDate(cells[0])} – ${formatDate(cells[6])}`}</h2>
-        <Tabs label="Rentang kalender" items={[{ id: 'month', label: 'Bulan' }, { id: 'week', label: 'Pekan' }]} value={mode} onChange={(id) => setMode(id as 'month' | 'week')} />
-        <Button size="icon" variant="secondary" aria-label="Sebelumnya" onClick={() => (mode === 'month' ? setMonth(shiftMonth(month, -1)) : setSelected(addDays(selected, -7)))}>
+        <h2 className="mr-auto text-xl font-extrabold capitalize">
+          {mode === 'month'
+            ? monthLabel(month)
+            : `Pekan ${formatDate(cells[0])} – ${formatDate(cells[6])}`}
+        </h2>
+        <Tabs
+          label="Rentang kalender"
+          items={[
+            { id: 'month', label: 'Bulan' },
+            { id: 'week', label: 'Pekan' },
+          ]}
+          value={mode}
+          onChange={(id) => setMode(id as 'month' | 'week')}
+        />
+        <Button
+          size="icon"
+          variant="secondary"
+          aria-label="Sebelumnya"
+          onClick={() =>
+            mode === 'month' ? setMonth(shiftMonth(month, -1)) : setSelected(addDays(selected, -7))
+          }
+        >
           <ChevronLeft />
         </Button>
-        <Button variant="secondary" onClick={() => { setMonth(today().slice(0, 7)); setSelected(today()); }}>Hari ini</Button>
-        <Button size="icon" variant="secondary" aria-label="Berikutnya" onClick={() => (mode === 'month' ? setMonth(shiftMonth(month, 1)) : setSelected(addDays(selected, 7)))}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setMonth(today().slice(0, 7));
+            setSelected(today());
+          }}
+        >
+          Hari ini
+        </Button>
+        <Button
+          size="icon"
+          variant="secondary"
+          aria-label="Berikutnya"
+          onClick={() =>
+            mode === 'month' ? setMonth(shiftMonth(month, 1)) : setSelected(addDays(selected, 7))
+          }
+        >
           <ChevronRight />
         </Button>
       </div>
       <div className="overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-card">
         <div className="grid grid-cols-7 border-b border-line text-center text-xs font-bold text-ink-3">
           {DAYS.map((day) => (
-            <span key={day} className="py-2.5">{day}</span>
+            <span key={day} className="py-2.5">
+              {day}
+            </span>
           ))}
         </div>
         <div className="grid grid-cols-7">
@@ -78,22 +124,44 @@ export function TaskCalendar({
                   outside && 'bg-surface-2/60 text-ink-3',
                 )}
               >
-                <span className={cn('tabular grid size-7 place-items-center rounded-full text-sm font-bold', date === today() && 'bg-action text-on-action')}>{Number(date.slice(8))}</span>
+                <span
+                  className={cn(
+                    'tabular grid size-7 place-items-center rounded-full text-sm font-bold',
+                    date === today() && 'bg-action text-on-action',
+                  )}
+                >
+                  {Number(date.slice(8))}
+                </span>
                 <span className="hidden flex-col gap-1 md:flex">
                   {items.slice(0, mode === 'month' ? 3 : 8).map((task) => (
                     <span
                       key={task.id}
-                      data-tone={projectTone(ws.workstreams?.find((p) => p.id === task.data.workstream_id))}
-                      className={cn('truncate rounded-lg bg-tone px-1.5 py-0.5 text-[11px] font-semibold text-tone-ink', task.data.status === 'selesai' && 'line-through opacity-60')}
+                      data-tone={projectTone(
+                        ws.workstreams?.find((p) => p.id === task.data.workstream_id),
+                      )}
+                      className={cn(
+                        'truncate rounded-lg bg-tone px-1.5 py-0.5 text-[11px] font-semibold text-tone-ink',
+                        task.data.status === 'selesai' && 'line-through opacity-60',
+                      )}
                     >
                       {String(task.data.title)}
                     </span>
                   ))}
-                  {items.length > (mode === 'month' ? 3 : 8) && <span className="px-1 text-[11px] font-bold text-ink-3">+{items.length - (mode === 'month' ? 3 : 8)} lainnya</span>}
+                  {items.length > (mode === 'month' ? 3 : 8) && (
+                    <span className="px-1 text-[11px] font-bold text-ink-3">
+                      +{items.length - (mode === 'month' ? 3 : 8)} lainnya
+                    </span>
+                  )}
                 </span>
                 <span className="flex gap-0.5 md:hidden">
                   {items.slice(0, 4).map((task) => (
-                    <span key={task.id} data-tone={projectTone(ws.workstreams?.find((p) => p.id === task.data.workstream_id))} className="size-1.5 rounded-full bg-tone-bar" />
+                    <span
+                      key={task.id}
+                      data-tone={projectTone(
+                        ws.workstreams?.find((p) => p.id === task.data.workstream_id),
+                      )}
+                      className="size-1.5 rounded-full bg-tone-bar"
+                    />
                   ))}
                 </span>
               </button>
@@ -110,7 +178,15 @@ export function TaskCalendar({
           </Button>
         </div>
         {dayTasks.length ? (
-          dayTasks.map((task) => <TaskRow key={task.id} task={task} ws={ws} refresh={refresh} onOpen={() => onOpen(task.id)} />)
+          dayTasks.map((task) => (
+            <TaskRow
+              key={task.id}
+              task={task}
+              ws={ws}
+              refresh={refresh}
+              onOpen={() => onOpen(task.id)}
+            />
+          ))
         ) : (
           <p className="text-sm text-ink-3">Tidak ada tugas bertenggat di tanggal ini.</p>
         )}

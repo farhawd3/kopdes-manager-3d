@@ -17,7 +17,10 @@ export type GeraiId =
   | 'gerai-3';
 
 /** Ruang 8 × 7; kolom x −16…16, baris belakang z −5, depan z 5, lorong z −1,5…1,5. */
-export const GERAI: Record<GeraiId, { x: number; z: number; nama: string; warna: string; kode: string }> = {
+export const GERAI: Record<
+  GeraiId,
+  { x: number; z: number; nama: string; warna: string; kode: string }
+> = {
   kantor: { x: -16, z: -5, nama: 'Kantor koperasi', warna: '#d6d1ef', kode: 'KANTOR' },
   'simpan-pinjam': { x: -8, z: -5, nama: 'Simpan pinjam', warna: '#cfe0f4', kode: 'SIMPAN PINJAM' },
   klinik: { x: 0, z: -5, nama: 'Klinik desa', warna: '#d7ecdf', kode: 'KLINIK' },
@@ -46,9 +49,16 @@ export type GeraiInfo = {
 export function infoGerai(model: WorldModel): GeraiInfo[] {
   return GERAI_IDS.map((id): GeraiInfo => {
     if (id === 'kantor') return { id, nama: GERAI.kantor.nama, buka: true, status: 'aktif' };
-    const unit = id === 'logistik' ? model.warehouseUnit : model.plots.find((p) => p.id === id)?.unit;
+    const unit =
+      id === 'logistik' ? model.warehouseUnit : model.plots.find((p) => p.id === id)?.unit;
     const status = unit ? String(unit.data.status || 'rencana') : 'belum tercatat';
-    return { id, nama: unit ? String(unit.data.title) : GERAI[id].nama, unit, buka: status === 'aktif', status };
+    return {
+      id,
+      nama: unit ? String(unit.data.title) : GERAI[id].nama,
+      unit,
+      buka: status === 'aktif',
+      status,
+    };
   });
 }
 

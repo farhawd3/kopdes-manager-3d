@@ -115,13 +115,25 @@ export type TruckSpot = { delivery: Item; place: 'dok' | 'antre'; index: number 
  * tiba/diperiksa (di dok). Dok mengikuti catatan; penghuni tetap mendapat prioritas.
  * Kelebihan truk tidak digambar agar tidak menumpuk; daftar tetap menampilkannya.
  */
-export function placeTrucks(deliveries: Item[], docks = 4, queue = 3, previous: TruckSpot[] = []): TruckSpot[] {
+export function placeTrucks(
+  deliveries: Item[],
+  docks = 4,
+  queue = 3,
+  previous: TruckSpot[] = [],
+): TruckSpot[] {
   const incoming = deliveries
     .filter((row) => row.data.direction !== 'keluar')
     .sort((a, b) => a.created_at.localeCompare(b.created_at) || a.id.localeCompare(b.id));
-  const occupants = new Map(previous.filter((s) => s.place === 'dok').map((s) => [s.delivery.id, s.index]));
-  const atDock = incoming.filter((row) => ['tiba', 'diperiksa'].includes(String(row.data.status)))
-    .sort((a, b) => Number(occupants.get(b.id) === requestedDock(b)) - Number(occupants.get(a.id) === requestedDock(a)));
+  const occupants = new Map(
+    previous.filter((s) => s.place === 'dok').map((s) => [s.delivery.id, s.index]),
+  );
+  const atDock = incoming
+    .filter((row) => ['tiba', 'diperiksa'].includes(String(row.data.status)))
+    .sort(
+      (a, b) =>
+        Number(occupants.get(b.id) === requestedDock(b)) -
+        Number(occupants.get(a.id) === requestedDock(a)),
+    );
   const used = new Set<number>();
   const spots: TruckSpot[] = [];
   for (const delivery of atDock) {
@@ -131,7 +143,11 @@ export function placeTrucks(deliveries: Item[], docks = 4, queue = 3, previous: 
     spots.push({ delivery, place: 'dok', index });
   }
   incoming
-    .filter((row) => ['dikirim', 'tiba', 'diperiksa'].includes(String(row.data.status)) && !spots.some((s) => s.delivery.id === row.id))
+    .filter(
+      (row) =>
+        ['dikirim', 'tiba', 'diperiksa'].includes(String(row.data.status)) &&
+        !spots.some((s) => s.delivery.id === row.id),
+    )
     .slice(0, queue)
     .forEach((delivery, index) => spots.push({ delivery, place: 'antre', index }));
   return spots;
@@ -144,8 +160,11 @@ export function requestedDock(delivery: Item): number | null {
 export function truckWaitingNote(delivery: Item, spots: TruckSpot[]) {
   const dock = requestedDock(delivery);
   if (dock === null) return 'Dok belum ditentukan';
-  if (spots.some((s) => s.place === 'dok' && s.index === dock && s.delivery.id !== delivery.id)) return `Dok D${dock + 1} penuh`;
-  return delivery.data.status === 'dikirim' ? `Menunggu status tiba · D${dock + 1}` : `Menunggu masuk D${dock + 1}`;
+  if (spots.some((s) => s.place === 'dok' && s.index === dock && s.delivery.id !== delivery.id))
+    return `Dok D${dock + 1} penuh`;
+  return delivery.data.status === 'dikirim'
+    ? `Menunggu status tiba · D${dock + 1}`
+    : `Menunggu masuk D${dock + 1}`;
 }
 
 export const rackIds = ['A', 'B', 'C', 'D', 'E', 'F'] as const;

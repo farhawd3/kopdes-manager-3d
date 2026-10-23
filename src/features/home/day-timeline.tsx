@@ -37,15 +37,23 @@ export function DayTimeline({
   onOpenTask: (id: string) => void;
   onOpenMeeting: (id: string) => void;
 }) {
-  const timed = meetings.filter((m) => /^\d{2}:\d{2}$/.test(String(m.data.time))).sort((a, b) => String(a.data.time).localeCompare(String(b.data.time)));
+  const timed = meetings
+    .filter((m) => /^\d{2}:\d{2}$/.test(String(m.data.time)))
+    .sort((a, b) => String(a.data.time).localeCompare(String(b.data.time)));
   const startHour = Math.min(7, ...timed.map((m) => Math.floor(minutes(String(m.data.time)) / 60)));
-  const endHour = Math.max(18, ...timed.map((m) => Math.ceil(minutes(addMinutes(String(m.data.time), Number(m.data.duration || 60))) / 60)));
+  const endHour = Math.max(
+    18,
+    ...timed.map((m) =>
+      Math.ceil(minutes(addMinutes(String(m.data.time), Number(m.data.duration || 60))) / 60),
+    ),
+  );
   const hours = Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i);
   const isToday = date === today();
   const nowTop = now ? ((minutes(now) - startHour * 60) / 60) * HOUR : -1;
   const scroller = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (isToday && nowTop > 0) scroller.current?.scrollTo({ top: Math.max(0, nowTop - HOUR * 1.5), behavior: 'smooth' });
+    if (isToday && nowTop > 0)
+      scroller.current?.scrollTo({ top: Math.max(0, nowTop - HOUR * 1.5), behavior: 'smooth' });
   }, [isToday, nowTop]);
   // Rapat yang bertumpuk dibagi ke beberapa lajur agar tidak saling menutupi.
   const lanes: string[] = [];
@@ -61,26 +69,46 @@ export function DayTimeline({
   return (
     <div className="flex flex-col gap-3">
       <div className="rounded-2xl bg-surface-2 p-2">
-        <p className="px-2 pt-1 pb-2 text-xs font-bold text-ink-3">Tugas bertenggat hari ini ({tasks.length})</p>
+        <p className="px-2 pt-1 pb-2 text-xs font-bold text-ink-3">
+          Tugas bertenggat hari ini ({tasks.length})
+        </p>
         {tasks.length ? (
           <div className="flex flex-col gap-1.5">
             {tasks.map((task) => (
-              <TaskRow key={task.id} task={task} ws={ws} onOpen={() => onOpenTask(task.id)} refresh={refresh} />
+              <TaskRow
+                key={task.id}
+                task={task}
+                ws={ws}
+                onOpen={() => onOpenTask(task.id)}
+                refresh={refresh}
+              />
             ))}
           </div>
         ) : (
           <p className="px-2 pb-2 text-sm text-ink-3">Tidak ada tugas bertenggat di hari ini.</p>
         )}
       </div>
-      <div ref={scroller} className="relative max-h-[30rem] overflow-y-auto rounded-2xl" aria-label="Jadwal per jam">
+      <div
+        ref={scroller}
+        className="relative max-h-[30rem] overflow-y-auto rounded-2xl"
+        aria-label="Jadwal per jam"
+      >
         <div className="relative" style={{ height: hours.length * HOUR }}>
           {hours.map((hour, index) => (
-            <div key={hour} className="absolute inset-x-0 flex gap-3 border-t border-line" style={{ top: index * HOUR }}>
-              <span className="tabular -mt-2.5 w-12 shrink-0 bg-surface pr-1 text-right text-xs font-semibold text-ink-3">{String(hour).padStart(2, '0')}.00</span>
+            <div
+              key={hour}
+              className="absolute inset-x-0 flex gap-3 border-t border-line"
+              style={{ top: index * HOUR }}
+            >
+              <span className="tabular -mt-2.5 w-12 shrink-0 bg-surface pr-1 text-right text-xs font-semibold text-ink-3">
+                {String(hour).padStart(2, '0')}.00
+              </span>
             </div>
           ))}
           {!timed.length && (
-            <p className="absolute top-6 right-4 left-16 rounded-2xl bg-surface-2 p-4 text-sm text-ink-3">Tidak ada rapat atau kunjungan terjadwal di hari ini.</p>
+            <p className="absolute top-6 right-4 left-16 rounded-2xl bg-surface-2 p-4 text-sm text-ink-3">
+              Tidak ada rapat atau kunjungan terjadwal di hari ini.
+            </p>
           )}
           {placed.map(({ meeting, start, end, lane }) => {
             const kind = meetingKindOf(meeting);
@@ -93,24 +121,45 @@ export function DayTimeline({
               <div
                 key={meeting.id}
                 data-tone={TONE[kind]}
-                className={cn('absolute overflow-hidden rounded-2xl bg-tone p-3 text-tone-ink shadow-sm transition hover:shadow-card', past && 'opacity-60')}
-                style={{ top: top + 2, height, left: `calc(4rem + (100% - 4rem) * ${lane / laneCount})`, width: `calc((100% - 4rem) / ${laneCount} - 6px)` }}
+                className={cn(
+                  'absolute overflow-hidden rounded-2xl bg-tone p-3 text-tone-ink shadow-sm transition hover:shadow-card',
+                  past && 'opacity-60',
+                )}
+                style={{
+                  top: top + 2,
+                  height,
+                  left: `calc(4rem + (100% - 4rem) * ${lane / laneCount})`,
+                  width: `calc((100% - 4rem) / ${laneCount} - 6px)`,
+                }}
               >
-                <button type="button" onClick={() => onOpenMeeting(meeting.id)} className="block w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => onOpenMeeting(meeting.id)}
+                  className="block w-full text-left"
+                >
                   <span className="flex items-center gap-1.5 text-[11px] font-bold">
                     <Icon className="size-3.5" />
                     {start.replace(':', '.')}–{end.replace(':', '.')} · {MEETING_KINDS[kind].label}
                   </span>
-                  <span className="block truncate text-sm font-bold text-ink">{String(meeting.data.title)}</span>
+                  <span className="block truncate text-sm font-bold text-ink">
+                    {String(meeting.data.title)}
+                  </span>
                   {height > 70 && (
                     <span className="mt-0.5 flex items-center gap-1 truncate text-xs font-semibold">
                       <MapPin className="size-3" />
-                      {meeting.data.mode === 'online' ? 'Rapat online' : String(meeting.data.location || 'Tatap muka')}
+                      {meeting.data.mode === 'online'
+                        ? 'Rapat online'
+                        : String(meeting.data.location || 'Tatap muka')}
                     </span>
                   )}
                 </button>
                 {join && !past && height > 90 && (
-                  <a href={join} target="_blank" rel="noreferrer" className="mt-1.5 inline-flex h-7 items-center gap-1 rounded-lg bg-surface/80 px-2 text-xs font-bold">
+                  <a
+                    href={join}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-1.5 inline-flex h-7 items-center gap-1 rounded-lg bg-surface/80 px-2 text-xs font-bold"
+                  >
                     <Video className="size-3.5" />
                     Gabung
                   </a>
@@ -119,7 +168,11 @@ export function DayTimeline({
             );
           })}
           {isToday && nowTop >= 0 && nowTop <= hours.length * HOUR && (
-            <div className="pointer-events-none absolute right-0 left-12 flex items-center" style={{ top: nowTop }} aria-label={`Sekarang ${now}`}>
+            <div
+              className="pointer-events-none absolute right-0 left-12 flex items-center"
+              style={{ top: nowTop }}
+              aria-label={`Sekarang ${now}`}
+            >
               <span className="size-2.5 rounded-full bg-late-ink" />
               <span className="h-0.5 flex-1 bg-late-ink" />
             </div>

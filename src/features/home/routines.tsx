@@ -30,16 +30,33 @@ const DAY_LABELS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 const LEGACY_KEY = 'kdmp_manager_routine_config';
 
 /** Hari ISO 1 (Senin) … 7 (Minggu) untuk tanggal YYYY-MM-DD. */
-export const isoWeekday = (date: string) => ((new Date(date + 'T12:00:00Z').getUTCDay() + 6) % 7) + 1;
+export const isoWeekday = (date: string) =>
+  ((new Date(date + 'T12:00:00Z').getUTCDay() + 6) % 7) + 1;
 
-export type RoutineState = { routine: Item; done: boolean; state: 'done' | 'next' | 'missed' | 'later' };
+export type RoutineState = {
+  routine: Item;
+  done: boolean;
+  state: 'done' | 'next' | 'missed' | 'later';
+};
 
 /** Rutin yang berlaku pada tanggal itu, diurutkan jam, dengan keadaan selesai/berikutnya/terlewat. */
-export function routineStates(routines: Item[], checks: Item[], date: string, now: string): RoutineState[] {
+export function routineStates(
+  routines: Item[],
+  checks: Item[],
+  date: string,
+  now: string,
+): RoutineState[] {
   const weekday = isoWeekday(date);
-  const doneIds = new Set(checks.filter((check) => check.data.date === date).map((check) => String(check.data.routine_id)));
+  const doneIds = new Set(
+    checks
+      .filter((check) => check.data.date === date)
+      .map((check) => String(check.data.routine_id)),
+  );
   const list = routines
-    .filter((routine) => routine.data.active !== false && ((routine.data.days as number[]) || []).includes(weekday))
+    .filter(
+      (routine) =>
+        routine.data.active !== false && ((routine.data.days as number[]) || []).includes(weekday),
+    )
     .sort((a, b) => String(a.data.time).localeCompare(String(b.data.time)));
   const isToday = date === today();
   let nextFound = false;
@@ -60,7 +77,9 @@ export function useRoutineChecks(ready: boolean) {
   const [checks, setChecks] = useState<Item[]>([]);
   const date = today();
   const fetchChecks = () =>
-    api<{ items: Item[] }>(`routine-checks?from=${date}&to=${date}&limit=100`, undefined, 'GET', { bypassCache: true }).then((page) => page.items);
+    api<{ items: Item[] }>(`routine-checks?from=${date}&to=${date}&limit=100`, undefined, 'GET', {
+      bypassCache: true,
+    }).then((page) => page.items);
   useEffect(() => {
     if (!ready) return;
     let live = true;
@@ -90,9 +109,16 @@ function Confetti() {
         <motion.span
           key={i}
           className="absolute top-1/3 left-1/2 size-2 rounded-[3px]"
-          style={{ background: ['var(--accent-strong)', '#e8577a', '#2fa874', '#e8822f', '#4a86dc'][i % 5] }}
+          style={{
+            background: ['var(--accent-strong)', '#e8577a', '#2fa874', '#e8822f', '#4a86dc'][i % 5],
+          }}
           initial={{ x: 0, y: 0, opacity: 1, rotate: 0 }}
-          animate={{ x: Math.cos(i * 1.7) * (80 + (i % 5) * 28), y: Math.sin(i * 1.7) * 70 + 90, opacity: 0, rotate: 260 + i * 25 }}
+          animate={{
+            x: Math.cos(i * 1.7) * (80 + (i % 5) * 28),
+            y: Math.sin(i * 1.7) * 70 + 90,
+            opacity: 0,
+            rotate: 260 + i * 25,
+          }}
           transition={{ duration: 1.3, ease: [0.2, 0.7, 0.3, 1] }}
         />
       ))}
@@ -119,11 +145,16 @@ export function RoutinesCard({
   const date = today();
   const [managing, setManaging] = useState(false);
   const [party, setParty] = useState(0);
-  const states = useMemo(() => routineStates(routines, checks, date, now), [routines, checks, date, now]);
+  const states = useMemo(
+    () => routineStates(routines, checks, date, now),
+    [routines, checks, date, now],
+  );
   const done = states.filter((item) => item.done).length;
 
   const toggle = async (item: RoutineState) => {
-    const existing = checks.find((check) => check.data.routine_id === item.routine.id && check.data.date === date);
+    const existing = checks.find(
+      (check) => check.data.routine_id === item.routine.id && check.data.date === date,
+    );
     // Perayaan hanya saat centang terakhir membuat semua rutin beres.
     if (!existing && done + 1 === states.length) setParty((n) => n + 1);
     if (existing) {
@@ -136,10 +167,17 @@ export function RoutinesCard({
       }
       return;
     }
-    const optimistic: Item = { id: `tmp-${item.routine.id}`, created_at: '', updated_at: '', data: { routine_id: item.routine.id, date } };
+    const optimistic: Item = {
+      id: `tmp-${item.routine.id}`,
+      created_at: '',
+      updated_at: '',
+      data: { routine_id: item.routine.id, date },
+    };
     setChecks((current) => [...current, optimistic]);
     try {
-      const saved = await api<Item>('routine-checks', { data: { routine_id: item.routine.id, date } });
+      const saved = await api<Item>('routine-checks', {
+        data: { routine_id: item.routine.id, date },
+      });
       setChecks((current) => current.map((check) => (check.id === optimistic.id ? saved : check)));
       if (done + 1 === states.length) toast.success('Rutin hari ini beres semua.');
     } catch {
@@ -149,28 +187,51 @@ export function RoutinesCard({
   };
 
   return (
-    <section aria-labelledby="routines-title" data-tone="lavender" className="relative flex flex-col overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-card">
+    <section
+      aria-labelledby="routines-title"
+      data-tone="lavender"
+      className="relative flex flex-col overflow-hidden rounded-[var(--radius-card)] bg-surface shadow-card"
+    >
       <header className="relative flex items-start gap-3 overflow-hidden bg-tone px-5 pt-5 pb-4 text-tone-ink">
         <Wave />
         <div className="relative flex-1">
-          <h2 id="routines-title" className="text-lg font-extrabold text-ink">Rutin hari ini</h2>
-          <p className="text-sm font-semibold">{states.length ? `${done} dari ${states.length} selesai` : 'Belum ada rutin untuk hari ini'}</p>
+          <h2 id="routines-title" className="text-lg font-extrabold text-ink">
+            Rutin hari ini
+          </h2>
+          <p className="text-sm font-semibold">
+            {states.length
+              ? `${done} dari ${states.length} selesai`
+              : 'Belum ada rutin untuk hari ini'}
+          </p>
         </div>
         {ready && (
-          <Button size="sm" variant="secondary" className="relative bg-surface/80" onClick={() => setManaging(true)}>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="relative bg-surface/80"
+            onClick={() => setManaging(true)}
+          >
             <Settings2 />
             Atur
           </Button>
         )}
         {states.length > 0 && (
-          <SegmentBar value={(done / states.length) * 100} segments={states.length} className="absolute inset-x-5 bottom-0 h-1" label="Progres rutin" />
+          <SegmentBar
+            value={(done / states.length) * 100}
+            segments={states.length}
+            className="absolute inset-x-5 bottom-0 h-1"
+            label="Progres rutin"
+          />
         )}
       </header>
       <div className="relative p-3">
         {party > 0 && <Confetti key={party} />}
         {!ready ? (
           <div className="p-2">
-            <Notice>Rutin harian kini tersimpan di database agar sama di HP dan laptop. Jalankan migrasi 11 (20261023000011_rutin_harian.sql) untuk mengaktifkannya.</Notice>
+            <Notice>
+              Rutin harian kini tersimpan di database agar sama di HP dan laptop. Jalankan migrasi
+              11 (20261023000011_rutin_harian.sql) untuk mengaktifkannya.
+            </Notice>
           </div>
         ) : !routines.length ? (
           <EmptyRoutines refresh={refresh} />
@@ -187,11 +248,37 @@ export function RoutinesCard({
                     item.state === 'missed' && 'bg-warn/60',
                   )}
                 >
-                  <span className={cn('tabular w-12 shrink-0 text-sm font-bold', item.done ? 'text-ink-3' : 'text-ink-2')}>{String(item.routine.data.time).replace(':', '.')}</span>
-                  <Check checked={item.done} onChange={() => void toggle(item)} label={String(item.routine.data.title)} />
-                  <span className={cn('min-w-0 flex-1 text-[14.5px] font-semibold', item.done ? 'text-ink-3 line-through' : 'text-ink')}>{String(item.routine.data.title)}</span>
-                  {item.state === 'next' && <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold text-accent-ink">Berikutnya</span>}
-                  {item.state === 'missed' && <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold text-warn-ink">Terlewat</span>}
+                  <span
+                    className={cn(
+                      'tabular w-12 shrink-0 text-sm font-bold',
+                      item.done ? 'text-ink-3' : 'text-ink-2',
+                    )}
+                  >
+                    {String(item.routine.data.time).replace(':', '.')}
+                  </span>
+                  <Check
+                    checked={item.done}
+                    onChange={() => void toggle(item)}
+                    label={String(item.routine.data.title)}
+                  />
+                  <span
+                    className={cn(
+                      'min-w-0 flex-1 text-[14.5px] font-semibold',
+                      item.done ? 'text-ink-3 line-through' : 'text-ink',
+                    )}
+                  >
+                    {String(item.routine.data.title)}
+                  </span>
+                  {item.state === 'next' && (
+                    <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold text-accent-ink">
+                      Berikutnya
+                    </span>
+                  )}
+                  {item.state === 'missed' && (
+                    <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold text-warn-ink">
+                      Terlewat
+                    </span>
+                  )}
                 </motion.li>
               ))}
             </AnimatePresence>
@@ -204,22 +291,33 @@ export function RoutinesCard({
           </ol>
         )}
       </div>
-      <RoutineManager open={managing} onClose={() => setManaging(false)} routines={routines} refresh={refresh} />
+      <RoutineManager
+        open={managing}
+        onClose={() => setManaging(false)}
+        routines={routines}
+        refresh={refresh}
+      />
     </section>
   );
 }
 
 function legacyRoutines(): { time: string; title: string }[] {
   try {
-    const parsed = JSON.parse(localStorage.getItem(LEGACY_KEY) || '[]') as { time?: string; title?: string }[];
-    return parsed.filter((r) => r.title && /^\d{2}:\d{2}$/.test(String(r.time))).map((r) => ({ time: String(r.time), title: String(r.title) }));
+    const parsed = JSON.parse(localStorage.getItem(LEGACY_KEY) || '[]') as {
+      time?: string;
+      title?: string;
+    }[];
+    return parsed
+      .filter((r) => r.title && /^\d{2}:\d{2}$/.test(String(r.time)))
+      .map((r) => ({ time: String(r.time), title: String(r.title) }));
   } catch {
     return [];
   }
 }
 
 async function createRoutines(list: { time: string; title: string }[]) {
-  for (const routine of list) await api('routines', { data: { ...routine, days: [1, 2, 3, 4, 5, 6, 7], active: true } });
+  for (const routine of list)
+    await api('routines', { data: { ...routine, days: [1, 2, 3, 4, 5, 6, 7], active: true } });
 }
 
 function EmptyRoutines({ refresh }: { refresh: () => Promise<void> | void }) {
@@ -240,7 +338,9 @@ function EmptyRoutines({ refresh }: { refresh: () => Promise<void> | void }) {
   };
   return (
     <div className="flex flex-col items-start gap-3 p-3">
-      <p className="text-sm text-ink-2">Belum ada rutinitas. Mulai dari rutinitas standar manajer gerai, lalu sesuaikan.</p>
+      <p className="text-sm text-ink-2">
+        Belum ada rutinitas. Mulai dari rutinitas standar manajer gerai, lalu sesuaikan.
+      </p>
       <div className="flex flex-wrap gap-2">
         <Button variant="primary" busy={busy} onClick={() => void run(DEFAULT_ROUTINES)}>
           Pakai rutinitas standar
@@ -256,11 +356,23 @@ function EmptyRoutines({ refresh }: { refresh: () => Promise<void> | void }) {
 }
 
 /** Atur rutin: jam, judul, hari aktif. Menghapus = menonaktifkan agar riwayat centang tetap utuh. */
-function RoutineManager({ open, onClose, routines, refresh }: { open: boolean; onClose: () => void; routines: Item[]; refresh: () => Promise<void> | void }) {
+function RoutineManager({
+  open,
+  onClose,
+  routines,
+  refresh,
+}: {
+  open: boolean;
+  onClose: () => void;
+  routines: Item[];
+  refresh: () => Promise<void> | void;
+}) {
   const [time, setTime] = useState('08:00');
   const [title, setTitle] = useState('');
   const [busy, setBusy] = useState(false);
-  const active = routines.filter((routine) => routine.data.active !== false).sort((a, b) => String(a.data.time).localeCompare(String(b.data.time)));
+  const active = routines
+    .filter((routine) => routine.data.active !== false)
+    .sort((a, b) => String(a.data.time).localeCompare(String(b.data.time)));
   const update = async (routine: Item, changes: Record<string, unknown>) => {
     try {
       await api('routines', { id: routine.id, data: { ...routine.data, ...changes } });
@@ -270,7 +382,12 @@ function RoutineManager({ open, onClose, routines, refresh }: { open: boolean; o
     }
   };
   return (
-    <Sheet open={open} onOpenChange={(next) => !next && onClose()} title="Atur rutin harian" description="Rutin muncul di Beranda pada hari yang dipilih.">
+    <Sheet
+      open={open}
+      onOpenChange={(next) => !next && onClose()}
+      title="Atur rutin harian"
+      description="Rutin muncul di Beranda pada hari yang dipilih."
+    >
       <div className="flex flex-col gap-4">
         <form
           className="flex flex-wrap gap-2 rounded-2xl bg-surface-2 p-3"
@@ -289,8 +406,22 @@ function RoutineManager({ open, onClose, routines, refresh }: { open: boolean; o
             }
           }}
         >
-          <Input type="time" value={time} onChange={(event) => setTime(event.target.value)} className="w-32" aria-label="Jam" required />
-          <Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Nama rutin baru" maxLength={120} className="min-w-40 flex-1" aria-label="Nama rutin" />
+          <Input
+            type="time"
+            value={time}
+            onChange={(event) => setTime(event.target.value)}
+            className="w-32"
+            aria-label="Jam"
+            required
+          />
+          <Input
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            placeholder="Nama rutin baru"
+            maxLength={120}
+            className="min-w-40 flex-1"
+            aria-label="Nama rutin"
+          />
           <Button type="submit" variant="primary" busy={busy} disabled={!title.trim()}>
             <Plus />
             Tambah
@@ -300,11 +431,37 @@ function RoutineManager({ open, onClose, routines, refresh }: { open: boolean; o
           {active.map((routine) => {
             const days = (routine.data.days as number[]) || [];
             return (
-              <li key={routine.id} className="flex flex-col gap-2 rounded-2xl border border-line p-3">
+              <li
+                key={routine.id}
+                className="flex flex-col gap-2 rounded-2xl border border-line p-3"
+              >
                 <div className="flex items-center gap-2">
-                  <Input type="time" defaultValue={String(routine.data.time)} className="w-28" aria-label="Jam" onBlur={(event) => event.target.value !== routine.data.time && void update(routine, { time: event.target.value })} />
-                  <Input defaultValue={String(routine.data.title)} maxLength={120} aria-label="Nama rutin" onBlur={(event) => event.target.value.trim() && event.target.value !== routine.data.title && void update(routine, { title: event.target.value.trim() })} />
-                  <Button size="icon" variant="danger" aria-label={`Hapus ${String(routine.data.title)}`} onClick={() => void update(routine, { active: false })}>
+                  <Input
+                    type="time"
+                    defaultValue={String(routine.data.time)}
+                    className="w-28"
+                    aria-label="Jam"
+                    onBlur={(event) =>
+                      event.target.value !== routine.data.time &&
+                      void update(routine, { time: event.target.value })
+                    }
+                  />
+                  <Input
+                    defaultValue={String(routine.data.title)}
+                    maxLength={120}
+                    aria-label="Nama rutin"
+                    onBlur={(event) =>
+                      event.target.value.trim() &&
+                      event.target.value !== routine.data.title &&
+                      void update(routine, { title: event.target.value.trim() })
+                    }
+                  />
+                  <Button
+                    size="icon"
+                    variant="danger"
+                    aria-label={`Hapus ${String(routine.data.title)}`}
+                    onClick={() => void update(routine, { active: false })}
+                  >
                     <Trash2 />
                   </Button>
                 </div>
@@ -336,7 +493,9 @@ function RoutineManager({ open, onClose, routines, refresh }: { open: boolean; o
         <Button
           variant="ghost"
           onClick={async () => {
-            const missing = DEFAULT_ROUTINES.filter((d) => !active.some((r) => r.data.title === d.title));
+            const missing = DEFAULT_ROUTINES.filter(
+              (d) => !active.some((r) => r.data.title === d.title),
+            );
             if (!missing.length) return toast('Semua rutin standar sudah ada.');
             await createRoutines(missing);
             await refresh();

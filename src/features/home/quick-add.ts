@@ -21,7 +21,8 @@ function nextNamedDay(today: string, index: number): string {
 /** Tanggal dari "tgl/bln"; bila sudah lewat tahun ini, berarti tahun depan. */
 function dateFromNumbers(today: string, day: number, month: number): string | undefined {
   let year = Number(today.slice(0, 4));
-  const iso = (y: number) => `${y}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const iso = (y: number) =>
+    `${y}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   const valid = (value: string) => {
     const date = new Date(value + 'T12:00:00Z');
     return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
@@ -57,7 +58,9 @@ export function parseQuickAdd(
     return true;
   });
   take(/\s#([\p{L}\p{N}-]+)/u, ([, word]) => {
-    const project = context.projects.find((p) => p.title.toLowerCase().includes(word.toLowerCase()));
+    const project = context.projects.find((p) =>
+      p.title.toLowerCase().includes(word.toLowerCase()),
+    );
     if (project) draft.workstream_id = project.id;
     return Boolean(project);
   });
@@ -130,7 +133,9 @@ export function buildDailyReport(input: DailyReportInput): string {
     timeZone: 'UTC',
   }).format(new Date(input.date + 'T12:00:00Z'));
   const open = (status: string) => !['selesai', 'dibatalkan'].includes(status);
-  const doneToday = input.tasks.filter((t) => t.status === 'selesai' && t.completedAt === input.date);
+  const doneToday = input.tasks.filter(
+    (t) => t.status === 'selesai' && t.completedAt === input.date,
+  );
   const dueToday = input.tasks.filter((t) => open(t.status) && t.due === input.date);
   const late = input.tasks.filter((t) => open(t.status) && Boolean(t.due) && t.due < input.date);
   const who = (name?: string) => (name ? ` (${name})` : '');
@@ -145,17 +150,31 @@ export function buildDailyReport(input: DailyReportInput): string {
       input.routines.map((r) => `${r.done ? '✓' : '○'} ${dotted(r.time)} ${r.title}`),
     );
   }
-  section(`Tugas selesai hari ini (${doneToday.length})`, doneToday.map((t) => `- ${t.title}${who(t.assignee)}`));
-  section(`Jatuh tempo hari ini (${dueToday.length})`, dueToday.map((t) => `- ${t.title}${who(t.assignee)}`));
-  section(`Terlambat (${late.length})`, late.map((t) => `- ${t.title}${who(t.assignee)}, tenggat ${t.due}`));
+  section(
+    `Tugas selesai hari ini (${doneToday.length})`,
+    doneToday.map((t) => `- ${t.title}${who(t.assignee)}`),
+  );
+  section(
+    `Jatuh tempo hari ini (${dueToday.length})`,
+    dueToday.map((t) => `- ${t.title}${who(t.assignee)}`),
+  );
+  section(
+    `Terlambat (${late.length})`,
+    late.map((t) => `- ${t.title}${who(t.assignee)}, tenggat ${t.due}`),
+  );
   if (input.meetings)
     section(
       'Agenda hari ini',
       input.meetings.map(
-        (m) => `- ${m.time ? dotted(m.time) + ' ' : ''}${m.title}${m.kind && m.kind !== 'Rapat' ? ` (${m.kind.toLowerCase()})` : ''}`,
+        (m) =>
+          `- ${m.time ? dotted(m.time) + ' ' : ''}${m.title}${m.kind && m.kind !== 'Rapat' ? ` (${m.kind.toLowerCase()})` : ''}`,
       ),
     );
-  if (input.activities) section('Kegiatan tercatat', input.activities.map((a) => `- ${a.title}`));
+  if (input.activities)
+    section(
+      'Kegiatan tercatat',
+      input.activities.map((a) => `- ${a.title}`),
+    );
   if (lines.length === 2) lines.push('', 'Belum ada pekerjaan tercatat hari ini.');
   return lines.join('\n');
 }

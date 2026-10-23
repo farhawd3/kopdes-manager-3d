@@ -4,7 +4,12 @@ import { entityHome, recordLink } from '@/components/layout/nav';
 import { today } from '@/lib/date';
 import type { Item } from '@/features/records/schemas';
 
-const item = (id: string, data: Record<string, unknown>): Item => ({ id, created_at: '', updated_at: '', data });
+const item = (id: string, data: Record<string, unknown>): Item => ({
+  id,
+  created_at: '',
+  updated_at: '',
+  data,
+});
 
 describe('rutin harian', () => {
   it('hanya rutin aktif pada harinya; urut jam; selesai, terlewat, berikutnya', () => {

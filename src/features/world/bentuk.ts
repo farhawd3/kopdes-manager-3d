@@ -71,17 +71,31 @@ function jadi(g: BufferGeometry, warna: ColorRepresentation, pancar = 0) {
 }
 
 /** Kotak membulat; (x, y, z) = pusat alas, bukan pusat kotak, agar penempatan mudah dibaca. */
-export function kotak(w: number, h: number, d: number, warna: ColorRepresentation, r = 0.08, pancar = 0) {
+export function kotak(
+  w: number,
+  h: number,
+  d: number,
+  warna: ColorRepresentation,
+  r = 0.08,
+  pancar = 0,
+) {
   const radius = Math.min(r, w / 2, h / 2, d / 2);
   const g = simpan(`k${w}|${h}|${d}|${radius}`, () => {
-    const geo = radius > 0.001 ? new RoundedBoxGeometry(w, h, d, 2, radius) : new BoxGeometry(w, h, d);
+    const geo =
+      radius > 0.001 ? new RoundedBoxGeometry(w, h, d, 2, radius) : new BoxGeometry(w, h, d);
     geo.translate(0, h / 2, 0);
     return geo;
   });
   return jadi(g, warna, pancar);
 }
 
-export function silinder(rAtas: number, rBawah: number, h: number, warna: ColorRepresentation, segmen = 16) {
+export function silinder(
+  rAtas: number,
+  rBawah: number,
+  h: number,
+  warna: ColorRepresentation,
+  segmen = 16,
+) {
   const g = simpan(`s${rAtas}|${rBawah}|${h}|${segmen}`, () => {
     const geo = new CylinderGeometry(rAtas, rBawah, h, segmen);
     geo.translate(0, h / 2, 0);
@@ -91,7 +105,11 @@ export function silinder(rAtas: number, rBawah: number, h: number, warna: ColorR
 }
 
 export function bola(r: number, warna: ColorRepresentation, pancar = 0) {
-  return jadi(simpan(`b${r}`, () => new SphereGeometry(r, 16, 10)), warna, pancar);
+  return jadi(
+    simpan(`b${r}`, () => new SphereGeometry(r, 16, 10)),
+    warna,
+    pancar,
+  );
 }
 
 /** Kapsul berdiri; alas di y = 0. */
@@ -105,7 +123,12 @@ export function kapsul(r: number, panjang: number, warna: ColorRepresentation) {
 }
 
 /** Pasang posisi lalu kembalikan objek yang sama (penempatan satu baris). */
-export function di<T extends { position: { set: (x: number, y: number, z: number) => unknown } }>(o: T, x: number, y: number, z: number) {
+export function di<T extends { position: { set: (x: number, y: number, z: number) => unknown } }>(
+  o: T,
+  x: number,
+  y: number,
+  z: number,
+) {
   o.position.set(x, y, z);
   return o;
 }

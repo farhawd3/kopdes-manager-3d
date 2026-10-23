@@ -166,7 +166,7 @@ npm run dev:demo -- -p 3200
 
 - Menjalankan Next dengan `NEXT_PUBLIC_MODE_DEMO=1`.
 - Data contoh di memori. Tanpa Supabase, tanpa PIN. Folder build terpisah (`.next-demo`).
-- `modeDemo()` di `src/lib/demo.ts` mematikan demo bila `VERCEL=1`. Demo tidak pernah aktif di Vercel.
+- `isDemoMode()` di `src/lib/demo.ts` mematikan demo bila `VERCEL=1`. Demo tidak pernah aktif di Vercel.
 
 ## 11. Keamanan
 

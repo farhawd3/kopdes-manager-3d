@@ -1,14 +1,14 @@
 // @vitest-environment node
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { dataContoh } from '@/features/demo/sample-data';
-import { sqlHapusContoh, sqlSeedContoh } from '@/features/demo/sample-sql';
+import { sampleData } from '@/features/demo/sample-data';
+import { sampleDeleteSql, sampleSeedSql } from '@/features/demo/sample-sql';
 
 // Acuan tetap: tanggal hanya dipakai menghitung selisih hari, hasil SQL tidak bergantung hari ini.
 const ACUAN = '2026-01-01';
 const BERKAS = {
-  'supabase/seed/SEED_DATA_CONTOH.sql': sqlSeedContoh(dataContoh(ACUAN), ACUAN),
-  'supabase/seed/HAPUS_DATA_CONTOH.sql': sqlHapusContoh(),
+  'supabase/seed/SEED_DATA_CONTOH.sql': sampleSeedSql(sampleData(ACUAN), ACUAN),
+  'supabase/seed/HAPUS_DATA_CONTOH.sql': sampleDeleteSql(),
 };
 
 describe('berkas SQL data contoh', () => {
@@ -26,6 +26,6 @@ describe('berkas SQL data contoh', () => {
     const seed = BERKAS['supabase/seed/SEED_DATA_CONTOH.sql'];
     expect(seed).toContain('"date":"@d0"');
     expect(seed).not.toMatch(/"\d{4}-\d{2}-\d{2}"/);
-    expect(seed.match(/^ {2}\('c0de0000/gm)?.length).toBe(dataContoh(ACUAN).length);
+    expect(seed.match(/^ {2}\('c0de0000/gm)?.length).toBe(sampleData(ACUAN).length);
   });
 });
