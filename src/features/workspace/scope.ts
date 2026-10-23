@@ -1,0 +1,32 @@
+import type { Entity } from '../records/schemas';
+
+/**
+ * Jenis catatan yang dimuat tiap halaman. Profil koperasi dan proyek selalu ikut karena dipakai
+ * judul, warna kartu, dan pemilih proyek di semua halaman.
+ */
+const PAGE_ENTITIES: Record<string, Entity[]> = {
+  home: ['routines', 'work-items', 'meetings', 'journal', 'staff', 'milestones', 'documents', 'issues', 'risks', 'inventory-items', 'stock-counts'],
+  tasks: ['work-items', 'milestones', 'sprints', 'units', 'stakeholders', 'documents', 'meetings', 'issues', 'staff', 'journal', 'decisions'],
+  projects: ['work-items', 'milestones', 'checklist', 'documents', 'meetings', 'decisions', 'issues', 'risks', 'staff'],
+  agenda: ['meetings', 'decisions', 'work-items', 'journal', 'staff'],
+  notes: ['journal', 'work-items', 'stakeholders', 'units', 'meetings', 'staff'],
+  documents: ['documents', 'work-items', 'staff'],
+  contacts: ['stakeholders', 'interactions', 'deliveries', 'work-items', 'journal'],
+  store: ['units', 'checklist', 'sales', 'work-items', 'staff', 'inventory-items', 'deliveries', 'cash-entries', 'journal'],
+  goods: ['inventory-items', 'stock-counts', 'deliveries', 'stock-movements', 'purchase-orders', 'cash-entries', 'units', 'stakeholders', 'staff'],
+  assets: ['assets', 'units'],
+  members: ['members', 'savings', 'cash-entries'],
+  cash: ['cash-entries', 'members', 'inventory-items', 'units'],
+  team: ['staff', 'attendance', 'trainings', 'units', 'work-items', 'meetings', 'journal'],
+  settings: [],
+  help: [],
+  world: [
+    'units', 'work-items', 'meetings', 'journal', 'inventory-items', 'deliveries', 'staff', 'members', 'cash-entries',
+    'decisions', 'documents', 'risks', 'issues', 'checklist', 'trainings', 'milestones', 'sprints', 'stakeholders',
+    'interactions', 'stock-movements', 'stock-counts', 'sales', 'attendance',
+  ],
+};
+
+export function pageEntities(page: string): Entity[] {
+  return [...new Set<Entity>(['organization', 'workstreams', ...(PAGE_ENTITIES[page] || [])])];
+}

@@ -3,7 +3,7 @@ import { planProgress, taskProgress, readiness, isOverdue } from '@/lib/progress
 import { today, addDays, daysBetween, nextOccurrence } from '@/lib/date';
 import { schemas, date } from '@/features/records/schemas';
 import { buildPlan } from '../fixtures/legacy-plan';
-import { reportSnapshot } from '@/features/reports/report-snapshot';
+import { reportSnapshot } from '@/features/notes/report-snapshot';
 import { randomUUID } from 'node:crypto';
 describe('Rumus yang dipakai semua halaman', () => {
   it('mengeluarkan tugas dibatalkan dari penyebut', () =>

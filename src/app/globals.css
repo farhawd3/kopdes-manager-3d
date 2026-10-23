@@ -1,3 +1,221 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import '@fontsource-variable/urbanist';
+
+/*
+  Sistem tampilan Kopdes. Semua warna mentah hanya di blok token ini; komponen memakai kelas
+  Tailwind yang dipetakan dari token (bg-surface, text-ink-2, bg-tone, …). Mengganti tampilan
+  cukup dengan menyunting token. Tanpa gradasi (arahan pemilik 23 Okt 2026).
+*/
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+  --font-sans: 'Urbanist Variable', 'Urbanist', ui-sans-serif, system-ui, sans-serif;
+
+  --canvas: #f3f4f8;
+  --surface: #ffffff;
+  --surface-2: #f7f8fb;
+  --surface-3: #eef0f5;
+  --line: #e6e8ef;
+  --line-strong: #d4d8e3;
+  --ink: #1a1f33;
+  --ink-2: #4f566e;
+  --ink-3: #676d86;
+
+  /* Aksi utama: biru tua, netral di antara kartu pastel. */
+  --action: #1e2a4a;
+  --action-hover: #121b35;
+  --on-action: #ffffff;
+
+  /* Sorotan (kapsul navigasi, hari terpilih, fokus); dipilih pengguna dari lima nada. */
+  --accent: #e7e2ff;
+  --accent-ink: #5340c2;
+  --accent-strong: #7a66e8;
+
+  --plan: #ebe8ff;
+  --plan-ink: #4a3bb8;
+  --doing: #ddecff;
+  --doing-ink: #1d5795;
+  --done: #d9f3e6;
+  --done-ink: #13704a;
+  --late: #ffe1e6;
+  --late-ink: #b0213d;
+  --warn: #fff0cc;
+  --warn-ink: #855700;
+
+  --shadow-card: 0 1px 2px rgb(26 31 51 / 0.04), 0 10px 28px -16px rgb(26 31 51 / 0.18);
+  --shadow-float: 0 24px 56px -20px rgb(26 31 51 / 0.32);
+  --scrim: rgb(14 17 30 / 0.32);
+  color-scheme: light;
+}
+
+[data-accent='lavender'] { --accent: #e7e2ff; --accent-ink: #5340c2; --accent-strong: #7a66e8; }
+[data-accent='sky'] { --accent: #dbecff; --accent-ink: #1c5a9e; --accent-strong: #4f8fe0; }
+[data-accent='mint'] { --accent: #d6f3e4; --accent-ink: #136c47; --accent-strong: #36b37e; }
+[data-accent='peach'] { --accent: #ffe6d1; --accent-ink: #9a4a0c; --accent-strong: #ef8a3c; }
+[data-accent='rose'] { --accent: #ffe0e7; --accent-ink: #a8244a; --accent-strong: #ec6a8a; }
+
+[data-theme='dark'] {
+  --canvas: #0e111b;
+  --surface: #161a28;
+  --surface-2: #1b2031;
+  --surface-3: #242a3e;
+  --line: #2a3047;
+  --line-strong: #3a4160;
+  --ink: #eceef6;
+  --ink-2: #b1b7ce;
+  --ink-3: #9198b3;
+  --action: #dfe5fb;
+  --action-hover: #ffffff;
+  --on-action: #121729;
+  --plan: #2a2650;
+  --plan-ink: #c6bcff;
+  --doing: #1c2d47;
+  --doing-ink: #a4cdfa;
+  --done: #173728;
+  --done-ink: #8fe0b9;
+  --late: #3d1d27;
+  --late-ink: #ffadbc;
+  --warn: #3a2e14;
+  --warn-ink: #f2c66a;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -16px rgb(0 0 0 / 0.7);
+  --shadow-float: 0 24px 56px -20px rgb(0 0 0 / 0.8);
+  --scrim: rgb(0 0 0 / 0.55);
+  color-scheme: dark;
+}
+[data-theme='dark'][data-accent='lavender'] { --accent: #2c2753; --accent-ink: #cbc2ff; --accent-strong: #9a8bff; }
+[data-theme='dark'][data-accent='sky'] { --accent: #1b2e4a; --accent-ink: #a8d0fb; --accent-strong: #6aa8f0; }
+[data-theme='dark'][data-accent='mint'] { --accent: #173a2b; --accent-ink: #94e3be; --accent-strong: #4cc890; }
+[data-theme='dark'][data-accent='peach'] { --accent: #3d2a19; --accent-ink: #ffc796; --accent-strong: #f59a55; }
+[data-theme='dark'][data-accent='rose'] { --accent: #3e1f2a; --accent-ink: #ffb3c5; --accent-strong: #f07d99; }
+
+/* Nada pastel per proyek: isi kartu, teks, dan batang progres. Dipasang lewat data-tone. */
+[data-tone='rose'] { --tone: #ffdde4; --tone-ink: #8f1d3d; --tone-bar: #e8577a; --tone-line: #f6b9c7; }
+[data-tone='peach'] { --tone: #ffe5cf; --tone-ink: #864109; --tone-bar: #e8822f; --tone-line: #f7c79f; }
+[data-tone='sky'] { --tone: #d9e9ff; --tone-ink: #1a4d8c; --tone-bar: #4a86dc; --tone-line: #b0cdf5; }
+[data-tone='lavender'] { --tone: #e6e0ff; --tone-ink: #45339f; --tone-bar: #7c67e3; --tone-line: #c9bdf8; }
+[data-tone='mint'] { --tone: #d5f2e3; --tone-ink: #115e3e; --tone-bar: #2fa874; --tone-line: #a9e2c5; }
+[data-tone='lemon'] { --tone: #fff1c2; --tone-ink: #6e5200; --tone-bar: #d9a514; --tone-line: #f1d987; }
+[data-tone='slate'] { --tone: #e8ebf2; --tone-ink: #39415a; --tone-bar: #7a839c; --tone-line: #cfd4e1; }
+[data-theme='dark'] [data-tone='rose'], [data-theme='dark'][data-tone='rose'] { --tone: #3b1f29; --tone-ink: #ffc0ce; --tone-bar: #f07a97; --tone-line: #5a2c3b; }
+[data-theme='dark'] [data-tone='peach'], [data-theme='dark'][data-tone='peach'] { --tone: #3a281a; --tone-ink: #ffcfa6; --tone-bar: #f39a52; --tone-line: #5a3d26; }
+[data-theme='dark'] [data-tone='sky'], [data-theme='dark'][data-tone='sky'] { --tone: #1a2b45; --tone-ink: #b5d5fb; --tone-bar: #6aa3ef; --tone-line: #29446b; }
+[data-theme='dark'] [data-tone='lavender'], [data-theme='dark'][data-tone='lavender'] { --tone: #2a2550; --tone-ink: #d0c7ff; --tone-bar: #9583f5; --tone-line: #403874; }
+[data-theme='dark'] [data-tone='mint'], [data-theme='dark'][data-tone='mint'] { --tone: #16362a; --tone-ink: #9de6c2; --tone-bar: #43c48b; --tone-line: #23523f; }
+[data-theme='dark'] [data-tone='lemon'], [data-theme='dark'][data-tone='lemon'] { --tone: #362d12; --tone-ink: #f4d77c; --tone-bar: #e4b52d; --tone-line: #54461c; }
+[data-theme='dark'] [data-tone='slate'], [data-theme='dark'][data-tone='slate'] { --tone: #232838; --tone-ink: #c9cfe0; --tone-bar: #8e97b2; --tone-line: #353c52; }
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-on-action: var(--on-action);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-strong: var(--accent-strong);
+  --color-plan: var(--plan);
+  --color-plan-ink: var(--plan-ink);
+  --color-doing: var(--doing);
+  --color-doing-ink: var(--doing-ink);
+  --color-done: var(--done);
+  --color-done-ink: var(--done-ink);
+  --color-late: var(--late);
+  --color-late-ink: var(--late-ink);
+  --color-warn: var(--warn);
+  --color-warn-ink: var(--warn-ink);
+  --color-tone: var(--tone);
+  --color-tone-ink: var(--tone-ink);
+  --color-tone-bar: var(--tone-bar);
+  --color-tone-line: var(--tone-line);
+  --shadow-card: var(--shadow-card);
+  --shadow-float: var(--shadow-float);
+  --radius-card: 1.25rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-canvas font-sans text-[15px] leading-normal text-ink antialiased;
+    font-feature-settings: 'ss01';
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 2px;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ink-3);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    body {
+      background: #fff;
+    }
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Gerak lapisan (laci, lembar bawah, dialog). Radix memberi data-state open/closed. */
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes fade-out { to { opacity: 0; } }
+@keyframes slide-in-right { from { transform: translateX(104%); } }
+@keyframes slide-out-right { to { transform: translateX(104%); } }
+@keyframes slide-in-up { from { transform: translateY(100%); } }
+@keyframes slide-out-down { to { transform: translateY(100%); } }
+@keyframes pop-in { from { opacity: 0; transform: translateY(8px) scale(0.97); } }
+@keyframes pop-out { to { opacity: 0; transform: translateY(6px) scale(0.98); } }
+
+.overlay[data-state='open'] { animation: fade-in 0.3s var(--ease-out); }
+.overlay[data-state='closed'] { animation: fade-out 0.2s ease-in forwards; }
+.sheet[data-state='open'] { animation: slide-in-up 0.45s var(--ease-out); }
+.sheet[data-state='closed'] { animation: slide-out-down 0.25s ease-in forwards; }
+@media (min-width: 768px) {
+  .sheet[data-state='open'] { animation-name: slide-in-right; }
+  .sheet[data-state='closed'] { animation-name: slide-out-right; }
+}
+.pop[data-state='open'] { animation: pop-in 0.3s var(--ease-out); }
+.pop[data-state='closed'] { animation: pop-out 0.15s ease-in forwards; }

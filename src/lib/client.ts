@@ -29,10 +29,6 @@ export async function api<T>(
   method = body === undefined ? 'GET' : 'POST',
   options?: { bypassCache?: boolean; ttlMs?: number },
 ): Promise<T> {
-  // Fixture popup tidak boleh membaca atau mengubah database operasional.
-  if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined' && window.location.pathname === '/dev/popup') {
-    throw new Error('Mode pemeriksaan popup: permintaan database diblokir.');
-  }
   const isRead = body === undefined && method === 'GET';
   const cacheKey = `${path}`;
 
@@ -86,12 +82,12 @@ export async function api<T>(
 }
 
 // Muat ulang penuh setelah perubahan sesi agar cache halaman privat ikut dibuang.
-export function resetAuthNavigation(path: '/pin' | '/beranda') {
+export function resetAuthNavigation(path: '/pin' | '/home') {
   invalidateCache();
   if (path === '/pin') {
     try {
       Object.keys(sessionStorage)
-        .filter((key) => key.startsWith('hub-draft:'))
+        .filter((key) => key.startsWith('kopdes-draft:'))
         .forEach((key) => sessionStorage.removeItem(key));
     } catch {
       /* Storage may be disabled. */

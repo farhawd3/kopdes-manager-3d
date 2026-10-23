@@ -9,10 +9,10 @@ import {
   worldPreferencesSchema,
   zoneSummaries,
   weekCounts,
-} from '@/features/dunia-3d/model/world-model';
+} from '@/features/world/model/world-model';
 import type { Item } from '@/features/records/schemas';
-import { planManager, planStaff } from '@/features/dunia-3d/model/schedule';
-import { allBuildings } from '@/features/dunia-3d/model/district';
+import { planManager, planStaff } from '@/features/world/model/schedule';
+import { allBuildings } from '@/features/world/model/district';
 const row = (
   id: string,
   data: Record<string, unknown>,
@@ -382,7 +382,7 @@ describe('skema rupa Tim', () => {
 
 describe('balasan sapaan staf', () => {
   it('balasan: terlambat bila ada tugas lewat tenggat, proses bila ada tugas terbuka, selain itu beres', async () => {
-    const { taskReply } = await import('@/features/dunia-3d/model/schedule');
+    const { taskReply } = await import('@/features/world/model/schedule');
     const late = row('t1', {
       title: 'Kas',
       status: 'proses',

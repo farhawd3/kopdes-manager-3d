@@ -1,12 +1,12 @@
 import { expect, it } from 'vitest';
 import { Box3, Mesh, OrthographicCamera, Vector3 } from 'three';
-import { SLOT, dalamRuang, pintuRuang, ruangMonitoring } from '@/features/dunia-3d/monitoring-room';
-import { ruangLogistik } from '@/features/dunia-3d/warehouse-room';
-import { ikutiKarakter, jalur, maju, persegiLayar } from '@/features/dunia-3d/monitoring-scene';
-import { ruangPulau } from '@/features/dunia-3d/pulau';
-import { suasanaJam } from '@/features/dunia-3d/monitor-data';
-import { BIDANG, type Bidang } from '@/features/dunia-3d/bidang';
-import { getWorldModel } from '@/features/dunia-3d/model/world-model';
+import { SLOT, dalamRuang, pintuRuang, ruangMonitoring } from '@/features/world/monitoring-room';
+import { ruangLogistik } from '@/features/world/warehouse-room';
+import { ikutiKarakter, jalur, maju, persegiLayar } from '@/features/world/monitoring-scene';
+import { ruangPulau } from '@/features/world/pulau';
+import { suasanaJam } from '@/features/world/monitor-data';
+import { BIDANG, type Bidang } from '@/features/world/bidang';
+import { getWorldModel } from '@/features/world/model/world-model';
 import type { Item } from '@/features/records/schemas';
 
 const row = (id: string, data: Item['data']): Item => ({

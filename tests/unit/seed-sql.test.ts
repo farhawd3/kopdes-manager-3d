@@ -1,8 +1,8 @@
 // @vitest-environment node
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { dataContoh } from '@/features/demo/data-contoh';
-import { sqlHapusContoh, sqlSeedContoh } from '@/features/demo/sql-contoh';
+import { dataContoh } from '@/features/demo/sample-data';
+import { sqlHapusContoh, sqlSeedContoh } from '@/features/demo/sample-sql';
 
 // Acuan tetap: tanggal hanya dipakai menghitung selisih hari, hasil SQL tidak bergantung hari ini.
 const ACUAN = '2026-01-01';

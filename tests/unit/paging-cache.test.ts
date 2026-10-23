@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { afterEach, expect, it, vi } from 'vitest';
 import { listQuerySchema } from '@/features/records/query';
-import { pageEntities } from '@/features/workspace/workspace-scope';
+import { pageEntities } from '@/features/workspace/scope';
 import { api, invalidateCache } from '@/lib/client';
 
 afterEach(() => {
@@ -10,7 +10,7 @@ afterEach(() => {
 });
 
 it('halaman tugas meminta domain terkait saja dan membatasi ukuran halaman', () => {
-  const entities = pageEntities('tugas');
+  const entities = pageEntities('tasks');
   expect(entities).toContain('work-items');
   expect(entities).not.toContain('cash-entries');
   expect(listQuerySchema.parse({}).limit).toBe(50);

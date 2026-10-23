@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AWALAN_ID_CONTOH, dataContoh } from '@/features/demo/data-contoh';
+import { AWALAN_ID_CONTOH, dataContoh } from '@/features/demo/sample-data';
 import { schemas, type Entity } from '@/features/records/schemas';
 import { references } from '@/features/records/catalog';
 

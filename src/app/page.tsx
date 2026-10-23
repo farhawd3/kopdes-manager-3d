@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
-export default function Home() {
-  redirect('/beranda');
+
+export default function Root() {
+  redirect('/home');
 }

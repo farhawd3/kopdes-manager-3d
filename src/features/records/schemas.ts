@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { administrationEntities, jenisAgenda, logisticsEntities, operationEntities, routineEntities, statuses } from './constants';
 const text = z.string().trim().max(5000).default('');
 const title = z.string().trim().min(1, 'Wajib diisi').max(200);
 export const date = z
@@ -41,9 +42,6 @@ const money = z.preprocess(
   (value) => (typeof value === 'string' && value.trim() !== '' ? Number(value) : value),
   z.number().int().min(1).max(1_000_000_000_000),
 );
-export const statuses = ['rencana', 'proses', 'selesai', 'dibatalkan'] as const;
-// Jenis agenda (keputusan pemilik 20 Okt 2026): rapat, kunjungan ke pemasok/sales/mitra, acara, atau lainnya.
-export const jenisAgenda = ['rapat', 'kunjungan', 'acara', 'lainnya'] as const;
 const status = z.enum(statuses).default('rencana');
 const poac = z.enum(['planning', 'organizing', 'actuating', 'controlling']).default('planning');
 export const schemas = {
@@ -480,17 +478,18 @@ export const schemas = {
       notes: text,
     })
     .strict(),
+  // Migrasi 11: rutin harian. Hari 1 = Senin … 7 = Minggu; rutin yang dihapus dinonaktifkan agar riwayat centang tetap ada.
+  routines: z
+    .object({
+      title: z.string().trim().min(1, 'Wajib diisi').max(120),
+      time: z.string().regex(timeRegex, 'Format jam JJ:MM (contoh 07:30)').default('08:00'),
+      days: z.array(z.number().int().min(1).max(7)).min(1, 'Pilih minimal satu hari').default([1, 2, 3, 4, 5, 6, 7]),
+      active: z.boolean().default(true),
+    })
+    .strict(),
+  'routine-checks': z.object({ routine_id: z.string().uuid(), date }).strict(),
 };
-export const operationEntities: Entity[] = [
-  'members',
-  'cash-entries',
-  'inventory-items',
-  'stock-counts',
-];
-/** Aktif setelah migrasi 8 (pengiriman dan mutasi stok) terpasang. */
-export const logisticsEntities: Entity[] = ['deliveries', 'stock-movements'];
-/** Aktif setelah migrasi 10 (administrasi usaha) terpasang. */
-export const administrationEntities: Entity[] = ['assets', 'attendance', 'purchase-orders', 'sales', 'savings'];
+export { statuses, jenisAgenda, operationEntities, logisticsEntities, administrationEntities, routineEntities };
 export type Entity = keyof typeof schemas;
 export type Item = {
   id: string;

@@ -1,6 +1,6 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
-import { dataContoh } from '@/features/demo/data-contoh';
+import { dataContoh } from '@/features/demo/sample-data';
 import { references } from '@/features/records/catalog';
 import { today } from '@/lib/date';
 
@@ -104,6 +104,8 @@ function bentrok(rows: Baris[], baru: Baris): boolean {
     const rd = r.data as Record<string, unknown>;
     if (baru.entity === 'organization' && r.entity === 'organization') return true;
     if (baru.entity === 'workstreams' && r.entity === 'workstreams' && rd.code === d.code)
+      return true;
+    if (baru.entity === 'routine-checks' && r.entity === 'routine-checks' && rd.routine_id === d.routine_id && rd.date === d.date)
       return true;
     return false;
   });
@@ -316,7 +318,7 @@ function mutasiStok(p: Record<string, unknown>): Hasil {
 const klien = {
   from: (tabel: string) => new Kueri(tabel),
   rpc: async (nama: string, args: Record<string, unknown> = {}): Promise<Hasil> => {
-    if (['hub_operations_ready', 'hub_logistics_ready', 'hub_administration_ready'].includes(nama))
+    if (['hub_operations_ready', 'hub_logistics_ready', 'hub_administration_ready', 'hub_routines_ready'].includes(nama))
       return { data: true, error: null };
     if (nama === 'save_work_item') return simpanTugas(args);
     if (nama === 'hub_post_stock_movement')

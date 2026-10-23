@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
-import { getWorldModel } from '@/features/dunia-3d/model/world-model';
-import { monitoringPlans } from '@/features/dunia-3d/character-plan';
+import { getWorldModel } from '@/features/world/model/world-model';
+import { monitoringPlans } from '@/features/world/character-plan';
 import type { Item } from '@/features/records/schemas';
 
 const row = (id: string, data: Item['data']): Item => ({ id, data, created_at: '', updated_at: '' });

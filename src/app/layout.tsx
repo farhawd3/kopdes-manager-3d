@@ -1,22 +1,24 @@
-import type { Metadata } from 'next';
-import '@fontsource-variable/figtree';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import '../styles/token.css';
-import '../styles/dasar.css';
-import '../styles/komponen.css';
-import '../styles/kerangka.css';
-import '../styles/halaman.css';
+import { themeBootScript } from '@/lib/theme';
+
 export const metadata: Metadata = {
-  title: 'Dunia Koperasi · Ruang kerja',
-  description: 'Ruang kerja pribadi manajer koperasi: rencana, koordinasi, kesiapan, dan laporan.',
+  title: { default: 'Kopdes Manager', template: '%s · Kopdes Manager' },
+  description: 'Ruang kerja manajer koperasi: tugas, proyek, agenda, dan pencatatan usaha.',
 };
-// Dibaca sebelum render agar tema dan aksen tidak berkedip. Nilai tak dikenal jatuh ke bawaan.
-const skripTampilan = `(function(){try{var a=localStorage.getItem('hub-aksen')||'ungu';if(['ungu','biru','hijau','oranye','magenta'].indexOf(a)<0)a='ungu';document.documentElement.setAttribute('data-aksen',a);var t=localStorage.getItem('hub-theme')==='dark'?'dark':'light';document.documentElement.classList.toggle('dark',t==='dark');document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;}catch(e){document.documentElement.setAttribute('data-aksen','ungu');}})();`;
-export default function Layout({ children }: { children: React.ReactNode }) {
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f3f4f8' },
+    { media: '(prefers-color-scheme: dark)', color: '#0e111b' },
+  ],
+  viewportFit: 'cover',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id" data-theme="light" data-accent="lavender" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: skripTampilan }} />
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
       </head>
       <body>{children}</body>
     </html>

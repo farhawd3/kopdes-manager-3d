@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
-import { grafikLokasi } from '@/features/dunia-3d/grafik-lokasi';
-import type { WorldModel } from '@/features/dunia-3d/model/world-model';
+import { grafikLokasi } from '@/features/world/grafik-lokasi';
+import type { WorldModel } from '@/features/world/model/world-model';
 import type { Item } from '@/features/records/schemas';
 
 const row = (id: string, data: Record<string, unknown>) => ({ id, data }) as unknown as Item;

@@ -5,12 +5,13 @@ import { failure } from '@/lib/server/http';
 export async function GET() {
   try {
     await requireSession();
-    const [operations, logistics, administration] = await Promise.all([
+    const [operations, logistics, administration, routines] = await Promise.all([
       db().rpc('hub_operations_ready'),
       db().rpc('hub_logistics_ready'),
       db().rpc('hub_administration_ready'),
+      db().rpc('hub_routines_ready'),
     ]);
-    for (const { error } of [operations, logistics, administration])
+    for (const { error } of [operations, logistics, administration, routines])
       if (error && !['PGRST202', '42883'].includes(error.code))
         throw new Error('Status modul pencatatan belum dapat diperiksa. Coba lagi.');
     return NextResponse.json(
@@ -30,6 +31,8 @@ export async function GET() {
           logistics.data === true &&
           !administration.error &&
           administration.data === true,
+        // Rutin harian tersimpan di database: migrasi 11 (dipasang setelah migrasi 1–10).
+        routines: !routines.error && routines.data === true,
       },
       { headers: { 'Cache-Control': 'no-store' } },
     );

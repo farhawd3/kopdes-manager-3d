@@ -294,6 +294,16 @@ export const catalog: Record<Entity, { title: string; description: string; field
     description: 'Setoran dan penarikan simpanan pokok, wajib, dan sukarela per anggota. Penarikan tidak boleh melebihi setoran.',
     fields: ['member_id', 'date', 'kind', 'direction', 'amount', 'reference_number', 'notes'],
   },
+  routines: {
+    title: 'Rutin harian',
+    description: 'Kegiatan rutin manajer per hari, dicentang setiap hari.',
+    fields: ['title', 'time', 'days', 'active'],
+  },
+  'routine-checks': {
+    title: 'Centang rutin',
+    description: 'Riwayat rutin yang selesai per tanggal.',
+    fields: ['routine_id', 'date'],
+  },
   journal: {
     title: 'Kegiatan',
     description: 'Catatan apa yang terjadi: kunjungan, koordinasi, hasil lapangan.',
@@ -301,6 +311,9 @@ export const catalog: Record<Entity, { title: string; description: string; field
   },
 };
 export const labels: Record<string, string> = {
+  days: 'Hari aktif',
+  active: 'Aktif',
+  routine_id: 'Rutin',
   duration: 'Durasi (menit)',
   slot: 'Lahan di Dunia Koperasi',
   planned_date: 'Tanggal rencana',
@@ -447,6 +460,7 @@ export const references: Record<string, Entity> = {
   delivery_id: 'deliveries',
   stock_count_id: 'stock-counts',
   purchase_id: 'purchase-orders',
+  routine_id: 'routines',
 };
 export const options: Record<string, string[]> = {
   'members.status': ['aktif', 'nonaktif'],
