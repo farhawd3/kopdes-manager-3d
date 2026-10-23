@@ -264,6 +264,9 @@
   --color-late-ink: var(--late-ink);
   --color-warn: var(--warn);
   --color-warn-ink: var(--warn-ink);
+  --color-done-bar: var(--done-bar);
+  --color-warn-bar: var(--warn-bar);
+  --color-late-bar: var(--late-bar);
   --color-tone: var(--tone);
   --color-tone-ink: var(--tone-ink);
   --color-tone-bar: var(--tone-bar);

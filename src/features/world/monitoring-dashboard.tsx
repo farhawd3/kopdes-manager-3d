@@ -24,6 +24,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { today, formatDate } from '@/lib/date';
+import { cn } from '@/lib/utils';
 import { planProgress } from '@/lib/progress';
 import { isProjectHistory } from '@/features/projects/lifecycle';
 import {
@@ -65,8 +66,24 @@ import {
   type Ambience,
 } from './monitor-data';
 import {
+  ACTIONS,
+  BTN,
+  BTN_PRIMARY,
+  Bar,
+  CARD,
+  EMPTY,
+  HEAD_NOTE,
+  HEAD_TILE,
+  ICON_BTN,
   IconTile,
   KpiCard,
+  NOTE,
+  POP,
+  STAGE,
+  STATUS,
+  TRACKER_BODY,
+  TRACKER_HEAD,
+  TRACKER_TITLE,
   Links,
   SitePicker,
   PanelHead,
@@ -88,11 +105,40 @@ import { Icon3D, itemThumbKind, type Icon3DKind } from '@/features/world/icon-3d
 import { linkTarget } from './link-target';
 import { Sheet } from '@/components/ui/sheet';
 import { QuickActionsPanel } from '@/components/layout/quick-actions';
-import './monitoring.css';
+
+const ROOT =
+  'group/root fixed inset-0 z-30 overflow-hidden bg-canvas font-sans text-[13px] leading-[1.4] text-ink antialiased [--mt-gap:20px] [--mt-top:64px] max-xl:[--mt-gap:14px] max-md:[--mt-gap:12px] max-md:[--mt-top:56px] [&_:focus-visible]:outline-[3px] [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-accent-strong [&_:is(small,em)]:not-italic [:where(&)_button]:cursor-pointer [:where(&)_button]:touch-manipulation';
+const TOP_BAR =
+  'group/top absolute top-0 right-0 left-0 z-5 flex h-(--mt-top) items-center gap-3.5 border-b border-line bg-[color-mix(in_srgb,var(--surface)_90%,transparent)] px-(--mt-gap) max-xl:gap-2.5 max-md:gap-1.5 max-md:pr-[max(10px,env(safe-area-inset-right))] max-md:pl-[max(10px,env(safe-area-inset-left))]';
+/** Kotak cari; di ponsel tersembunyi sampai tombol cari dibuka, lalu menutupi bilah atas. */
+const SEARCH =
+  'relative ml-[18px] flex h-10 min-w-0 flex-[0_1_380px] items-center gap-2 rounded-[10px] border border-line bg-surface pr-2 pl-3 text-ink-3 focus-within:border-accent-strong focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent-strong)_14%,transparent)] max-xl:ml-1.5 max-xl:basis-[260px] max-md:hidden max-md:group-data-[search]/top:absolute max-md:group-data-[search]/top:inset-[8px_10px] max-md:group-data-[search]/top:z-2 max-md:group-data-[search]/top:m-0 max-md:group-data-[search]/top:flex max-md:group-data-[search]/top:h-auto';
+const POP_ITEM =
+  'flex min-h-11 items-center gap-2.5 rounded-[10px] border-0 bg-transparent px-2 text-left font-semibold hover:bg-accent hover:text-accent-strong [&_svg]:text-ink-3';
+// Peringatan berupa <p> tidak berjarak dalam (direset seperti paragraf lain di dunia); kotak
+// berisi tombol memakai ALERT_BOX.
+const ALERT = cn(
+  CARD,
+  'flex max-w-[720px] flex-wrap items-center gap-2 border-[color:color-mix(in_srgb,var(--warn-ink)_25%,transparent)] bg-warn',
+);
+const ALERT_BOX = cn(ALERT, 'px-3 py-2.5 max-md:mx-3');
+const SEGMENT =
+  'min-h-[34px] rounded-[8px] border-0 bg-transparent px-3 text-[12px] font-semibold text-ink-3 aria-pressed:bg-surface aria-pressed:text-ink aria-pressed:shadow-[0_1px_4px_color-mix(in_srgb,var(--ink)_12%,transparent)]';
+const MINI =
+  'flex min-w-0 flex-none items-center gap-3 rounded-[14px] border border-line bg-surface-2 px-3 py-2.5 hover:border-line-strong hover:bg-surface';
+const MINI_ART =
+  'grid size-14 shrink-0 place-items-center rounded-[12px] bg-surface max-xl:size-11';
+const MINI_TEXT = 'flex min-w-0 flex-1 flex-col items-start gap-[3px]';
+const MINI_STRONG = 'max-w-full truncate text-[13px]';
+const MINI_SMALL = 'max-w-full truncate text-[11px] text-ink-3';
 
 const Stage = dynamic(() => import('./monitoring-stage').then((m) => m.MonitoringStage), {
   ssr: false,
-  loading: () => <div className="mt-stage mt-fallback">Menyiapkan kantor…</div>,
+  loading: () => (
+    <div className={cn(STAGE, 'flex flex-col items-center justify-center gap-3 p-6 text-ink-3')}>
+      Menyiapkan kantor…
+    </div>
+  ),
 });
 
 const ROOM_3D: Record<OfficeRoom, Icon3DKind> = {
@@ -655,7 +701,7 @@ export function MonitoringDashboard({
           title={model.title}
           sub="Pilih bangunan untuk masuk ke ruangan"
         />
-        <div className="mt-status">
+        <div className={STATUS}>
           <Pill tone="biru">Pulau melayang</Pill>
           <span>4 lokasi terhubung</span>
         </div>
@@ -708,12 +754,12 @@ export function MonitoringDashboard({
             setSelected(isOffice(person.area) ? person.area : person.area.replace('gerai:', 'g:'))
           }
         />
-        <div className="mt-status">
+        <div className={STATUS}>
           <Pill tone={ACTION_TONE[person.action]}>{ACTION_LABEL[person.action]}</Pill>
           <span>Di {areaName(person.area)}</span>
         </div>
         {person.mascot && (
-          <p className="mt-note">
+          <p className={NOTE}>
             Figur manajer dari nama di Pengaturan; belum tercatat sebagai anggota Tim.
           </p>
         )}
@@ -770,7 +816,7 @@ export function MonitoringDashboard({
           sub={unavailable ? 'Data belum tersedia' : `${here} figur di ruangan`}
           href={zone.href}
         />
-        <div className="mt-status">
+        <div className={STATUS}>
           <Pill tone={!unavailable && here ? 'hijau' : 'abu'}>
             {unavailable ? 'Belum tersedia' : here ? 'Ada aktivitas' : 'Sepi'}
           </Pill>
@@ -780,29 +826,43 @@ export function MonitoringDashboard({
         </div>
         {!unavailable && <Stats items={roomStats(room, ctx).map(toStat)} />}
         {room === 'kerja' && (
-          <div className="mt-seg" role="group" aria-label="Saring tugas">
-            <button type="button" aria-pressed={!lateOnly} onClick={() => setLateOnly(false)}>
+          <div
+            className="mt-3 inline-flex gap-0.5 rounded-[10px] bg-surface-3 p-[3px]"
+            role="group"
+            aria-label="Saring tugas"
+          >
+            <button
+              type="button"
+              className={SEGMENT}
+              aria-pressed={!lateOnly}
+              onClick={() => setLateOnly(false)}
+            >
               Semua terbuka
             </button>
-            <button type="button" aria-pressed={lateOnly} onClick={() => setLateOnly(true)}>
+            <button
+              type="button"
+              className={SEGMENT}
+              aria-pressed={lateOnly}
+              onClick={() => setLateOnly(true)}
+            >
               Lewat tenggat
             </button>
           </div>
         )}
         {room === 'stok' && (
-          <div className="mt-actions">
-            <button type="button" className="mt-btn is-primary" onClick={() => go('gudang')}>
+          <div className={ACTIONS}>
+            <button type="button" className={BTN_PRIMARY} onClick={() => go('gudang')}>
               <Warehouse size={15} /> Masuk gudang
             </button>
-            <button type="button" className="mt-btn" onClick={() => go('pendingin')}>
+            <button type="button" className={BTN} onClick={() => go('pendingin')}>
               <Snowflake size={15} /> Cold storage
             </button>
           </div>
         )}
         {room === 'karyawan' && (
           <>
-            <div className="mt-actions">
-              <button type="button" className="mt-btn is-primary" onClick={() => go('gerai')}>
+            <div className={ACTIONS}>
+              <button type="button" className={BTN_PRIMARY} onClick={() => go('gerai')}>
                 <Store size={15} /> Naik ke gerai
               </button>
             </div>
@@ -830,7 +890,7 @@ export function MonitoringDashboard({
           </>
         )}
         {(room === 'kas' || room === 'stok') && operations === false && (
-          <p className="mt-note is-warn">{empty[room]}</p>
+          <p className={cn(NOTE, 'bg-warn text-warn-ink')}>{empty[room]}</p>
         )}
         {!unavailable &&
           room === 'kerja' &&
@@ -936,7 +996,7 @@ export function MonitoringDashboard({
           meta={room === 'stok' ? 'stok' : undefined}
         />
         {unavailable ? (
-          <p className="mt-empty">Data belum tersedia.</p>
+          <p className={EMPTY}>Data belum tersedia.</p>
         ) : (
           <Rows rows={view(rows)} empty={empty[room]} />
         )}
@@ -967,25 +1027,27 @@ export function MonitoringDashboard({
               .join(' · ')}
             href={recordHref('deliveries', delivery)}
           />
-          <div className="mt-status">
+          <div className={STATUS}>
             <Pill tone="biru">{DELIVERY_LABEL[String(delivery.data.status)] || 'Tercatat'}</Pill>
             <span>{spot ? truckNote(spot, model) : 'Belum di lokasi'}</span>
           </div>
           {stage >= 0 && (
-            <div className="mt-progress">
-              <span className="mt-bar is-biru" aria-hidden="true">
-                <i style={{ width: `${(stage / (deliverySteps.length - 1)) * 100}%` }} />
-              </span>
-              <small>
+            <div className="mt-3 flex items-center gap-2.5">
+              <Bar
+                className="flex-1"
+                tone="biru"
+                width={`${(stage / (deliverySteps.length - 1)) * 100}%`}
+              />
+              <small className="text-[11px] whitespace-nowrap text-ink-3">
                 Tahap {stage + 1} dari {deliverySteps.length}
               </small>
             </div>
           )}
-          <dl className="mt-kv">
+          <dl>
             {deliveryInfo(delivery).map(([k, v]) => (
-              <div key={k}>
-                <dt>{k}</dt>
-                <dd>{v}</dd>
+              <div key={k} className="flex justify-between gap-3 border-b border-line py-[9px]">
+                <dt className="text-ink-3">{k}</dt>
+                <dd className="text-right font-semibold">{v}</dd>
               </div>
             ))}
           </dl>
@@ -1008,7 +1070,7 @@ export function MonitoringDashboard({
             sub="Tidak ada truk tercatat di dok ini"
             href="/goods?tab=deliveries"
           />
-          <div className="mt-status">
+          <div className={STATUS}>
             <Pill tone="hijau">Tersedia</Pill>
             <span>{dock.waiting.length} truk menunggu dok ini</span>
           </div>
@@ -1037,7 +1099,7 @@ export function MonitoringDashboard({
           />
           {stock ? (
             <>
-              <div className="mt-status">
+              <div className={STATUS}>
                 <Pill tone={!items.length ? 'abu' : low ? 'kuning' : 'hijau'}>
                   {!items.length ? 'Kosong' : low ? `${low} di bawah minimum` : 'Stok aman'}
                 </Pill>
@@ -1082,7 +1144,7 @@ export function MonitoringDashboard({
               })()}
             </>
           ) : (
-            <p className="mt-empty">
+            <p className={EMPTY}>
               {unavailable ? 'Data belum tersedia.' : 'Pencatatan barang belum aktif di server.'}
             </p>
           )}
@@ -1118,37 +1180,37 @@ export function MonitoringDashboard({
       icon: Users,
     }));
     tracker = (
-      <section className="mt-card mt-tracker" aria-label="Agenda rapat hari ini">
-        <header>
-          <IconTile icon="kalender" size={24} />
-          <h2>Agenda rapat</h2>
-          <small>{formatDate(date)} · Ruang rapat</small>
+      <section aria-label="Agenda rapat hari ini">
+        <header className={TRACKER_HEAD}>
+          <IconTile icon="kalender" size={24} className={HEAD_TILE} />
+          <h2 className={TRACKER_TITLE}>Agenda rapat</h2>
+          <small className={HEAD_NOTE}>{formatDate(date)} · Ruang rapat</small>
         </header>
         {unavailable ? (
-          <p className="mt-empty">Data belum tersedia.</p>
+          <p className={EMPTY}>Data belum tersedia.</p>
         ) : !steps.length ? (
-          <p className="mt-empty">Belum ada rapat hari ini.</p>
+          <p className={EMPTY}>Belum ada rapat hari ini.</p>
         ) : (
-          <div className="mt-tracker-body">
+          <div className={TRACKER_BODY}>
             <Stepper steps={steps} label="Urutan rapat" />
             {focus && (
-              <Link className="mt-mini" href={recordHref('meetings', focus.row)}>
-                <span className="mt-mini-art" aria-hidden="true">
+              <Link className={MINI} href={recordHref('meetings', focus.row)}>
+                <span className={MINI_ART} aria-hidden="true">
                   <Icon3D kind="kalender" size={44} />
                 </span>
-                <span>
-                  <strong>{String(focus.row.data.title)}</strong>
-                  <small>
+                <span className={MINI_TEXT}>
+                  <strong className={MINI_STRONG}>{String(focus.row.data.title)}</strong>
+                  <small className={MINI_SMALL}>
                     {String(focus.row.data.location || focus.row.data.mode || 'Ruang rapat')}
                   </small>
                   <Pill tone={focus.state === 'berlangsung' ? 'hijau' : 'biru'}>
                     {focus.state === 'berlangsung' ? 'Berlangsung' : 'Berikutnya'}
                   </Pill>
-                  <small>
+                  <small className={MINI_SMALL}>
                     {focus.time}–{focus.end} WIB
                   </small>
                 </span>
-                <ChevronRight size={16} className="mt-mini-go" aria-hidden="true" />
+                <ChevronRight size={16} className="shrink-0 text-ink-3" aria-hidden="true" />
               </Link>
             )}
           </div>
@@ -1176,21 +1238,23 @@ export function MonitoringDashboard({
       return i < stage ? 'Selesai' : i === stage ? 'Sekarang' : 'Menunggu';
     };
     tracker = (
-      <section className="mt-card mt-tracker" aria-label="Pelacak pengiriman">
-        <header>
-          <IconTile icon="truk" size={24} />
-          <h2>Pelacak pengiriman</h2>
-          {d ? <small>{String(d.data.license_plate || d.data.title)}</small> : null}
+      <section aria-label="Pelacak pengiriman">
+        <header className={TRACKER_HEAD}>
+          <IconTile icon="truk" size={24} className={HEAD_TILE} />
+          <h2 className={TRACKER_TITLE}>Pelacak pengiriman</h2>
+          {d ? (
+            <small className={HEAD_NOTE}>{String(d.data.license_plate || d.data.title)}</small>
+          ) : null}
           <Pager index={index} total={deliveries.length} onMove={move} label="Pengiriman" />
         </header>
         {!shipping ? (
-          <p className="mt-empty">
+          <p className={EMPTY}>
             {unavailable ? 'Data belum tersedia.' : 'Pengiriman belum aktif di server.'}
           </p>
         ) : !d ? (
-          <p className="mt-empty">Tidak ada pengiriman aktif.</p>
+          <p className={EMPTY}>Tidak ada pengiriman aktif.</p>
         ) : (
-          <div className="mt-tracker-body">
+          <div className={TRACKER_BODY}>
             <Stepper
               label="Tahap pengiriman"
               steps={deliverySteps.map((s, i) => ({
@@ -1201,19 +1265,19 @@ export function MonitoringDashboard({
                 icon: icons[i],
               }))}
             />
-            <Link className="mt-mini" href={recordHref('deliveries', d)}>
-              <span className="mt-mini-art" aria-hidden="true">
+            <Link className={MINI} href={recordHref('deliveries', d)}>
+              <span className={MINI_ART} aria-hidden="true">
                 <Icon3D kind="truk" size={44} />
               </span>
-              <span>
-                <strong>{String(d.data.title)}</strong>
-                <small>
+              <span className={MINI_TEXT}>
+                <strong className={MINI_STRONG}>{String(d.data.title)}</strong>
+                <small className={MINI_SMALL}>
                   {String(d.data.driver_name || d.data.vehicle || 'Pengemudi belum diisi')}
                 </small>
                 <Pill tone={deliveryRow(d).tone}>{deliveryRow(d).pill}</Pill>
-                <small>{deliveryRow(d).note}</small>
+                <small className={MINI_SMALL}>{deliveryRow(d).note}</small>
               </span>
-              <ChevronRight size={16} className="mt-mini-go" aria-hidden="true" />
+              <ChevronRight size={16} className="shrink-0 text-ink-3" aria-hidden="true" />
             </Link>
           </div>
         )}
@@ -1430,7 +1494,7 @@ export function MonitoringDashboard({
       ]);
   return (
     <main
-      className="mt-root"
+      className={ROOT}
       data-lokasi={site}
       data-fase={ambience.phase}
       data-cuaca={ambience.weather}
@@ -1447,17 +1511,25 @@ export function MonitoringDashboard({
         pins={pins}
         onPick={choose}
       />
-      <header className="mt-top" data-search={searchOpen || undefined}>
-        <Link className="mt-brand" href="/home" aria-label="Kembali ke Beranda">
+      <header className={TOP_BAR} data-search={searchOpen || undefined}>
+        <Link
+          className="flex min-h-11 shrink-0 items-center gap-2"
+          href="/home"
+          aria-label="Kembali ke Beranda"
+        >
           <Icon3D kind="kotak" size={34} />
           <span>
-            <strong>Dunia Koperasi</strong>
+            <strong className="block text-[18px] font-extrabold tracking-[-0.4px] whitespace-nowrap max-lg:text-[16px] max-md:hidden">
+              Dunia Koperasi
+            </strong>
             {(DEMO || preview) && (
-              <small className="mt-demo">{DEMO ? 'Mode demo' : 'Pratinjau'}</small>
+              <small className="mt-px inline-block rounded-[6px] bg-warn px-[7px] py-px text-[10px] font-bold text-warn-ink max-md:hidden">
+                {DEMO ? 'Mode demo' : 'Pratinjau'}
+              </small>
             )}
           </span>
         </Link>
-        <div className="mt-search">
+        <div className={SEARCH}>
           <Search size={17} aria-hidden="true" />
           <input
             ref={searchInput}
@@ -1465,11 +1537,17 @@ export function MonitoringDashboard({
             placeholder="Cari tugas, rapat, barang, pengiriman…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            className="h-[38px] min-w-0 flex-1 border-0 bg-transparent text-ink outline-none"
           />
-          <kbd aria-hidden="true">/</kbd>
+          <kbd
+            aria-hidden="true"
+            className="grid h-[22px] min-w-[22px] place-items-center rounded-[6px] border border-line bg-surface-2 [font:600_11px/1_var(--font-sans)] text-ink-3 max-md:group-data-[search]/top:hidden"
+          >
+            /
+          </kbd>
           <button
             type="button"
-            className="mt-search-close"
+            className="hidden size-9 place-items-center rounded-[8px] border-0 bg-transparent text-ink-3 max-md:group-data-[search]/top:grid"
             aria-label="Tutup pencarian"
             onClick={() => {
               setSearchOpen(false);
@@ -1479,25 +1557,37 @@ export function MonitoringDashboard({
             <X size={16} />
           </button>
           {query.trim() && (
-            <ul className="mt-card mt-results" aria-label="Hasil pencarian">
+            <ul
+              className={cn(
+                CARD,
+                'absolute top-[calc(100%+6px)] right-0 left-0 z-8 max-h-[320px] overflow-auto',
+              )}
+              aria-label="Hasil pencarian"
+            >
               {results.length ? (
                 results.map((r) => (
                   <li key={r.key}>
-                    <Link href={recordHref(r.entity, r.item)}>
+                    <Link
+                      href={recordHref(r.entity, r.item)}
+                      className="flex min-h-11 items-center justify-between gap-2.5 rounded-[9px] px-2.5 py-2 text-ink hover:bg-accent"
+                    >
                       <strong>{String(r.item.data.title)}</strong>
-                      <small>{r.kind}</small>
+                      <small className="text-ink-3">{r.kind}</small>
                     </Link>
                   </li>
                 ))
               ) : (
-                <li className="mt-empty">Tidak ada catatan yang cocok.</li>
+                <li className={cn(EMPTY, 'px-1 py-3.5')}>Tidak ada catatan yang cocok.</li>
               )}
             </ul>
           )}
         </div>
         <button
           type="button"
-          className="mt-icon-btn mt-search-open"
+          className={cn(
+            ICON_BTN,
+            'hidden max-md:ml-auto max-md:inline-flex max-md:border-transparent',
+          )}
           aria-label="Buka pencarian"
           onClick={() => {
             setSearchOpen(true);
@@ -1518,30 +1608,53 @@ export function MonitoringDashboard({
         />
         <button
           type="button"
-          className="mt-icon-btn mt-add"
+          className={cn(
+            ICON_BTN,
+            'border-action bg-action text-on-action shadow-[0_6px_14px_color-mix(in_srgb,var(--accent-strong)_30%,transparent)] hover:bg-action-hover hover:text-on-action',
+          )}
           aria-label="Tambah catatan"
           title="Tambah tugas, rapat, kas, atau barang"
           onClick={() => setActionsOpen(true)}
         >
           <Plus size={18} />
         </button>
-        <span className="mt-live" title="Waktu Asia/Jakarta" suppressHydrationWarning>
-          <i aria-hidden="true" /> {clockTime(now)} <small>WIB</small>
+        <span
+          className="inline-flex h-8 items-center gap-1.5 rounded-[99px] bg-done px-[11px] font-bold whitespace-nowrap text-done-ink tabular-nums max-lg:hidden"
+          title="Waktu Asia/Jakarta"
+          suppressHydrationWarning
+        >
+          <i
+            aria-hidden="true"
+            className="size-[7px] rounded-[50%] bg-done-bar shadow-[0_0_0_3px_color-mix(in_srgb,var(--done-bar)_20%,transparent)]"
+          />{' '}
+          {clockTime(now)} <small className="font-semibold opacity-80 max-xl:hidden">WIB</small>
         </span>
-        <div className="mt-menu" ref={bellRoot}>
+        <div className="relative" ref={bellRoot}>
           <button
             ref={bellTrigger}
             type="button"
-            className="mt-icon-btn mt-bell"
+            className={cn(ICON_BTN, 'border-transparent')}
             aria-label={notif.length ? `Perlu perhatian: ${notif.length}` : 'Perlu perhatian'}
             aria-expanded={bellOpen}
             onClick={() => setBellOpen(!bellOpen)}
           >
             <Bell size={18} />
-            {notif.length > 0 && <b>{notif.length > 9 ? '9+' : notif.length}</b>}
+            {notif.length > 0 && (
+              <b className="absolute top-[3px] right-[2px] grid h-[17px] min-w-[17px] place-items-center rounded-[99px] border-2 border-surface bg-brand px-1 text-[9px] font-extrabold text-on-brand">
+                {notif.length > 9 ? '9+' : notif.length}
+              </b>
+            )}
           </button>
           {bellOpen && (
-            <div className="mt-card mt-pop mt-bell-pop" role="dialog" aria-label="Perlu perhatian">
+            <div
+              className={cn(
+                CARD,
+                POP,
+                'max-h-[min(70vh,460px)] w-[360px] overflow-auto px-3 py-2.5',
+              )}
+              role="dialog"
+              aria-label="Perlu perhatian"
+            >
               <Section
                 title="Perlu perhatian"
                 meta={`${lateTasks.length} tugas · ${openRisks.length} risiko · ${openIssues.length} isu`}
@@ -1557,34 +1670,41 @@ export function MonitoringDashboard({
             </div>
           )}
         </div>
-        <div className="mt-menu" ref={userRoot}>
+        <div className="relative" ref={userRoot}>
           <button
             ref={userTrigger}
             type="button"
-            className="mt-user"
+            className="flex min-h-11 items-center gap-2.5 rounded-[12px] border-0 bg-transparent py-0.5 pr-1 pl-0.5 text-left hover:bg-surface-2"
             aria-label={`Menu ${model.manager}`}
             aria-expanded={userOpen}
             onClick={() => setUserOpen(!userOpen)}
           >
-            <span className="mt-avatar" aria-hidden="true">
+            <span
+              className="grid size-[38px] shrink-0 place-items-center rounded-[50%] bg-accent font-extrabold text-accent-ink shadow-[0_0_0_2px_var(--surface)] max-md:size-[34px]"
+              aria-hidden="true"
+            >
               {model.manager.slice(0, 1).toUpperCase()}
             </span>
-            <span className="mt-user-text">
-              <strong>{model.manager}</strong>
-              <small>Manajer</small>
+            <span className="max-xl:hidden">
+              <strong className="block max-w-[150px] truncate text-[13px]">{model.manager}</strong>
+              <small className="block text-[11px] text-ink-3">Manajer</small>
             </span>
-            <ChevronDown size={16} aria-hidden="true" />
+            <ChevronDown size={16} aria-hidden="true" className="text-ink-3 max-xl:hidden" />
           </button>
           {userOpen && (
-            <div className="mt-card mt-pop mt-user-pop" role="dialog" aria-label="Menu pengguna">
-              <p className="mt-pop-title">
-                <strong>{model.manager}</strong>
-                <small>{model.title}</small>
+            <div
+              className={cn(CARD, POP, 'grid w-[270px] gap-1 p-2.5')}
+              role="dialog"
+              aria-label="Menu pengguna"
+            >
+              <p className="border-b border-line">
+                <strong className="block text-[14px]">{model.manager}</strong>
+                <small className="block text-[12px] text-ink-3">{model.title}</small>
               </p>
               {refresh && (
                 <button
                   type="button"
-                  className="mt-pop-item"
+                  className={POP_ITEM}
                   onClick={() => void reload()}
                   disabled={busy}
                   aria-busy={busy}
@@ -1592,9 +1712,10 @@ export function MonitoringDashboard({
                   <RefreshCw size={16} /> {busy ? 'Memuat…' : 'Muat ulang data'}
                 </button>
               )}
-              <label className="mt-pop-field">
+              <label className="grid gap-1 px-2 py-1 text-[12px] text-ink-3">
                 <span>Cuaca simulasi</span>
                 <select
+                  className="min-h-10 rounded-[10px] border border-line bg-surface px-2.5 text-ink"
                   aria-label="Cuaca simulasi"
                   value={weather}
                   onChange={(e) => setWeather(e.target.value as Weather)}
@@ -1604,9 +1725,10 @@ export function MonitoringDashboard({
                   <option value="hujan">Hujan</option>
                 </select>
               </label>
-              <label className="mt-pop-field">
+              <label className="grid gap-1 px-2 py-1 text-[12px] text-ink-3">
                 <span>Suasana waktu</span>
                 <select
+                  className="min-h-10 rounded-[10px] border border-line bg-surface px-2.5 text-ink"
                   aria-label="Suasana waktu"
                   value={phase}
                   onChange={(e) => setPhase(e.target.value as typeof phase)}
@@ -1618,35 +1740,38 @@ export function MonitoringDashboard({
                   <option value="malam">Malam</option>
                 </select>
               </label>
-              <Link className="mt-pop-item" href="/settings">
+              <Link className={POP_ITEM} href="/settings">
                 <Settings size={16} /> Pengaturan
               </Link>
-              <Link className="mt-pop-item" href="/home">
+              <Link className={POP_ITEM} href="/home">
                 <Home size={16} /> Kembali ke Beranda
               </Link>
             </div>
           )}
         </div>
       </header>
-      <section className="mt-left" aria-label="Status data">
+      <section
+        className="absolute top-[calc(var(--mt-top)+12px)] right-auto left-4 z-3 flex max-w-[min(520px,calc(100%-32px))] flex-col gap-2.5 empty:hidden"
+        aria-label="Status data"
+      >
         {(error || refreshError) && (
-          <p className="mt-card mt-alert" role="alert">
+          <p className={ALERT} role="alert">
             {error || refreshError}
           </p>
         )}
         {loading && (
-          <p className="mt-card mt-alert" role="status">
+          <p className={ALERT} role="status">
             Memuat data kantor…
           </p>
         )}
         {partial && (
-          <div className="mt-card mt-alert">
+          <div className={ALERT_BOX}>
             <p>Ringkasan baru mencakup data yang sudah dimuat.</p>
             {(Object.keys(more) as Entity[]).map((entity) => (
               <button
                 key={entity}
                 type="button"
-                className="mt-btn"
+                className={BTN}
                 disabled={!!fetching}
                 onClick={() => void loadMore?.(entity)}
               >
@@ -1664,7 +1789,14 @@ export function MonitoringDashboard({
       >
         <QuickActionsPanel onPick={() => setActionsOpen(false)} />
       </Sheet>
-      <nav className="mt-dock mt-card" aria-label="Panel dunia" ref={dock}>
+      <nav
+        className={cn(
+          CARD,
+          'absolute bottom-[max(16px,env(safe-area-inset-bottom))] left-1/2 z-5 flex -translate-x-1/2 gap-1 p-1.5 max-md:bottom-[max(10px,env(safe-area-inset-bottom))] max-md:w-[calc(100%-20px)]',
+        )}
+        aria-label="Panel dunia"
+        ref={dock}
+      >
         {(
           [
             { id: 'detail', label: 'Detail', icon: 'meja' },
@@ -1679,6 +1811,7 @@ export function MonitoringDashboard({
             aria-expanded={panel === t.id}
             aria-controls="world-inspector"
             onClick={() => setPanel(panel === t.id ? null : t.id)}
+            className="flex min-h-12 items-center justify-center gap-1.5 rounded-[12px] border-0 bg-transparent px-3.5 py-1 text-[13px] font-semibold text-ink-2 hover:bg-accent hover:text-accent-strong aria-expanded:bg-accent aria-expanded:text-accent-strong max-md:min-w-0 max-md:flex-1 max-md:flex-col max-md:gap-0.5 max-md:p-1 max-md:text-[11px]"
           >
             <Icon3D kind={t.icon} size={28} />
             <span>{t.label}</span>
@@ -1687,7 +1820,10 @@ export function MonitoringDashboard({
       </nav>
       <section
         id="world-inspector"
-        className="mt-card mt-inspector"
+        className={cn(
+          CARD,
+          'absolute top-[calc(var(--mt-top)+16px)] right-4 bottom-[88px] z-4 flex w-[364px] flex-col overflow-hidden max-lg:right-3 max-lg:w-[320px] max-md:top-auto max-md:right-2.5 max-md:bottom-[calc(88px+env(safe-area-inset-bottom))] max-md:left-2.5 max-md:h-[44dvh] max-md:w-auto',
+        )}
         hidden={!panel}
         aria-label="Informasi dunia"
         onKeyDown={(e) => {
@@ -1697,8 +1833,8 @@ export function MonitoringDashboard({
           }
         }}
       >
-        <header className="mt-inspector-head">
-          <strong>
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-line px-4 py-3">
+          <strong className="text-[13px]">
             {panel === 'ringkasan'
               ? 'Ringkasan'
               : panel === 'daftar'
@@ -1710,28 +1846,28 @@ export function MonitoringDashboard({
           </strong>
           <button
             type="button"
-            className="mt-icon-btn"
+            className={cn(ICON_BTN, 'min-h-11 min-w-11')}
             onClick={closePanel}
             aria-label="Tutup panel informasi"
           >
             <X size={18} />
           </button>
         </header>
-        <div className="mt-inspector-body">
+        <div className="min-h-0 overflow-auto overscroll-contain p-[18px] max-md:p-4">
           <div hidden={panel !== 'detail'}>
-            <aside className="mt-panel" aria-label="Detail pilihan">
+            <aside className="overscroll-contain" aria-label="Detail pilihan">
               {panelBody}
             </aside>
           </div>
           <div hidden={panel !== 'ringkasan'}>
-            <div className="mt-kpis">
+            <div className="grid gap-3">
               {kpis.map((k) => (
                 <KpiCard key={k.label} {...k} />
               ))}
             </div>
             {panel === 'ringkasan' && (
               <ChartList
-                grafik={siteCharts({
+                charts={siteCharts({
                   site,
                   data,
                   model,

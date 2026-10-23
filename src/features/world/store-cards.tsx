@@ -20,9 +20,21 @@ import { ACTION_LABEL, type CharacterPlan } from './character-plan';
 import { STORES, UNIT_STEPS, storeInfo, type StoreId, type StoreInfo } from './store';
 import { ACTION_TONE, itemRow } from './monitor-data';
 import { readiness } from '@/lib/progress';
+import { cn } from '@/lib/utils';
 import {
+  ACTIONS,
+  BTN_PRIMARY,
+  EMPTY,
+  HEAD_NOTE,
+  HEAD_TILE,
   IconTile,
   Links,
+  NOTE,
+  NOTE_LINK,
+  STATUS,
+  TRACKER_BODY,
+  TRACKER_HEAD,
+  TRACKER_TITLE,
   PanelHead,
   Pill,
   Rows,
@@ -149,24 +161,24 @@ export function storeView({
         }
         href={g.unit ? recordHref('units', g.unit) : '/store'}
       />
-      <div className="mt-status">
+      <div className={STATUS}>
         <Pill tone={statusTone}>
           {g.open ? 'Buka' : `Terkunci · ${STATUS_LABEL[g.status] ?? g.status}`}
         </Pill>
         {g.unit?.data.assignee ? <span>PJ {String(g.unit.data.assignee)}</span> : null}
       </div>
       {!g.open && (
-        <p className="mt-note">
+        <p className={cn(NOTE, NOTE_LINK)}>
           Unit ini belum dibuka di web. Ruangnya tampil transparan bergembok sampai statusnya Aktif
           di <Link href="/store">halaman Gerai</Link>.
         </p>
       )}
       {g.id === 'kantor' && (
-        <p className="mt-note">Kantor koperasi selalu terbuka; pintunya menuju ruang kantor.</p>
+        <p className={NOTE}>Kantor koperasi selalu terbuka; pintunya menuju ruang kantor.</p>
       )}
       {door && (
-        <div className="mt-actions">
-          <button type="button" className="mt-btn is-primary" onClick={() => go(door[0])}>
+        <div className={ACTIONS}>
+          <button type="button" className={BTN_PRIMARY} onClick={() => go(door[0])}>
             {(() => {
               const Icon = DOOR_ICON[door[0]];
               return <Icon size={15} />;
@@ -243,7 +255,7 @@ export function storeView({
               empty="Belum ada barang yang ditempatkan di unit ini."
             />
           ) : (
-            <p className="mt-empty">Pencatatan barang belum aktif di server.</p>
+            <p className={EMPTY}>Pencatatan barang belum aktif di server.</p>
           )}
         </>
       )}
@@ -267,23 +279,23 @@ export function storeView({
     icon: stageIcons[i],
   }));
   const tracker = (
-    <section className="mt-card mt-tracker" aria-label="Kesiapan gerai">
-      <header>
-        <IconTile icon={storeIcon(g)} size={24} />
-        <h2>Kesiapan {g.name}</h2>
-        <small>{STATUS_LABEL[g.status] ?? g.status}</small>
+    <section aria-label="Kesiapan gerai">
+      <header className={TRACKER_HEAD}>
+        <IconTile icon={storeIcon(g)} size={24} className={HEAD_TILE} />
+        <h2 className={TRACKER_TITLE}>Kesiapan {g.name}</h2>
+        <small className={HEAD_NOTE}>{STATUS_LABEL[g.status] ?? g.status}</small>
       </header>
       {unavailable ? (
-        <p className="mt-empty">Data belum tersedia.</p>
+        <p className={EMPTY}>Data belum tersedia.</p>
       ) : g.id === 'kantor' ? (
-        <p className="mt-empty">Kantor koperasi tidak memakai tahap kesiapan gerai.</p>
+        <p className={EMPTY}>Kantor koperasi tidak memakai tahap kesiapan gerai.</p>
       ) : !g.unit ? (
-        <p className="mt-empty">
+        <p className={EMPTY}>
           Unit belum tercatat. Tambahkan di <Link href="/store">halaman Gerai</Link> untuk mulai
           dari tahap Rencana.
         </p>
       ) : (
-        <div className="mt-tracker-body">
+        <div className={TRACKER_BODY}>
           <Stepper steps={steps} label="Tahap kesiapan unit" />
         </div>
       )}

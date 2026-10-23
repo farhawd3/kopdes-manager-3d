@@ -266,7 +266,7 @@ export function Icon3D({
       height={size}
       aria-hidden="true"
       focusable="false"
-      className={className ?? 'ikon3d'}
+      className={className}
     >
       <Icon
         x="6"
@@ -274,7 +274,6 @@ export function Icon3D({
         width="36"
         height="36"
         strokeWidth="2.1"
-        className="ikon3d-simbol"
         // Gaya inline: aturan lama `svg { stroke/fill }` di CSS tidak boleh menimpa warna ikon.
         style={{ stroke: 'var(--accent-ink)', fill: 'var(--accent)' }}
       />
@@ -483,14 +482,7 @@ export function itemThumbKind(title: string, unit = ''): ThumbKind {
 export function ItemThumb({ kind, size = 32 }: { kind: ThumbKind; size?: number }) {
   const c = { id: `t${useId().replace(/[^a-zA-Z0-9_-]/g, '')}` };
   return (
-    <svg
-      viewBox="0 0 48 48"
-      width={size}
-      height={size}
-      aria-hidden="true"
-      focusable="false"
-      className="ikon3d"
-    >
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true" focusable="false">
       <ellipse cx={24} cy={42.5} rx={12} ry={2.4} fill="#1e2a4a" fillOpacity={0.12} />
       {THUMB[kind](c)}
     </svg>

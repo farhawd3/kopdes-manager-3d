@@ -20,7 +20,7 @@ Alamat: `/world`. Alamat lama `/dunia-koperasi` dialihkan ke `/world`, parameter
 - Diorama isometrik 3D yang lembut: sudut membulat, material doff pastel, bayangan lembut, perabot membulat.
 - Semua model dibangun dari kode (Three.js, bentuk dasar). Tidak ada berkas model 3D dari luar.
 - Hindari garis tipis dan papan nama melayang. Kode rak, dok, dan nama ruang dicat tipis di lantai. Nama lengkap muncul saat kursor diarahkan.
-- Kartu, bilah, dan ikon dunia (`monitoring.css`, kelas `mt-*`) memakai token warna `globals.css`: ikut tema terang/gelap dan nada sorotan aplikasi, tombol utama biru tua, tanpa gradasi. Benda di scene 3D tetap memakai palet pastel sendiri.
+- Kartu, bilah, dan ikon dunia memakai kelas Tailwind dengan token warna `globals.css` (kelas bersama di `monitor-cards.tsx`): ikut tema terang/gelap dan nada sorotan aplikasi, tombol utama biru tua, tanpa gradasi. Benda di scene 3D tetap memakai palet pastel sendiri.
 - Cahaya dan panorama jendela mengikuti jam Asia/Jakarta (Pagi/Siang/Senja/Malam). Cuaca bisa dipilih dan diberi label simulasi.
 
 ## Lima lokasi
@@ -109,8 +109,7 @@ Semua di `src/features/world/`.
 | `monitoring-dashboard.tsx` | Lokasi, KPI, panel detail, pelacak, daftar bertab, pencarian, keadaan data |
 | `monitoring-stage.tsx` | Jembatan React ke WebGL, lazy load, kontrol peta, label pilihan, fallback |
 | `monitoring-scene.ts` | Kamera, cahaya, lokasi, figur berjalan, pin, raycast, geser/zoom, pembersihan |
-| `monitor-cards.tsx`, `store-cards.tsx`, `site-charts.tsx` | Kartu panel, kartu gerai, grafik ringkas |
-| `monitoring.css` | Gaya dunia (`mt-*`), terpisah dari web; satu-satunya pengecualian gaya kode yang tersisa |
+| `monitor-cards.tsx`, `store-cards.tsx`, `site-charts.tsx` | Kartu panel dan kelas Tailwind bersama (kartu, tombol, nada), kartu gerai, grafik ringkas |
 | `monitor-data.ts`, `character-plan.ts` | Turunan data murni: baris dan angka per ruang, rencana tempat figur |
 | `office-rooms.ts`, `monitoring-room.ts` | Tata ruang kantor, sekat kaca, titik lewat figur, pintu gudang |
 | `store.ts`, `store-room.ts` | Status unit gerai dan model kawasan gerai |

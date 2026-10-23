@@ -7,6 +7,8 @@ import type { Workspace } from '@/features/workspace/use-workspace';
 import { coldRackIds, isBelowMinimum, rackIds, type WorldModel } from './model/world-model';
 import type { Tone } from './monitor-data';
 import type { WorldSite } from './office-rooms';
+import { cn } from '@/lib/utils';
+import { Bar, Section } from './monitor-cards';
 
 type Segment = { label: string; value: number; tone: Tone | 'pink' };
 export type Chart =
@@ -274,23 +276,33 @@ export function siteCharts({
   ];
 }
 
-export function ChartList({ grafik: charts }: { grafik: Chart[] }) {
+const SEGMENT: Record<Segment['tone'], string> = {
+  merah: 'bg-late-ink',
+  biru: 'bg-accent-strong',
+  hijau: 'bg-done-bar',
+  kuning: 'bg-warn-bar',
+  pink: 'bg-late-bar',
+  abu: 'bg-line-strong',
+};
+
+export function ChartList({ charts }: { charts: Chart[] }) {
   return (
-    <div className="mt-grafik-daftar">
+    <div className="mt-[18px] grid gap-[18px]">
       {charts.map((g) => (
-        <section key={g.title} className="mt-grafik" aria-label={g.title}>
-          <h3 className="mt-sub">
-            {g.title}
-            {'meta' in g && <small>{g.meta}</small>}
-          </h3>
-          {g.kind === 'catatan' && <p className="mt-empty">{g.text}</p>}
+        <section
+          key={g.title}
+          className="rounded-[16px] border border-line bg-surface px-4 pt-3.5 pb-4"
+          aria-label={g.title}
+        >
+          <Section title={g.title} meta={'meta' in g ? g.meta : undefined} />
+          {g.kind === 'catatan' && <p className={CHART_EMPTY}>{g.text}</p>}
           {g.kind === 'harian' && <DailyChart {...g} />}
           {g.kind === 'tumpuk' && <StackedChart segments={g.segments} />}
           {g.kind === 'daftar' &&
             (g.rows.length ? (
               <BarList rows={g.rows} />
             ) : (
-              <p className="mt-empty">Belum ada catatan.</p>
+              <p className={CHART_EMPTY}>Belum ada catatan.</p>
             ))}
         </section>
       ))}
@@ -298,21 +310,31 @@ export function ChartList({ grafik: charts }: { grafik: Chart[] }) {
   );
 }
 
+const CHART_EMPTY = 'px-0 pt-1 pb-0 leading-[1.65] text-ink-3';
+
 function DailyChart({ days, format = String, title }: Extract<Chart, { kind: 'harian' }>) {
   const peak = Math.max(1, ...days.map((h) => h.value));
   return (
     <div
-      className="mt-harian"
+      className="grid h-[124px] grid-cols-[repeat(7,minmax(0,1fr))] gap-1.5"
       role="img"
       aria-label={`${title}: ${days.map((h) => `${h.label} ${format(h.value)}`).join(', ')}`}
     >
       {days.map((h, i) => (
-        <div key={i} className={h.highlight ? 'is-sorot' : undefined}>
-          <em>{h.value ? format(h.value) : ''}</em>
-          <span>
-            <i style={{ height: h.value ? `${Math.max(6, (h.value / peak) * 100)}%` : 0 }} />
+        <div key={i} className="grid min-w-0 grid-rows-[auto_1fr_auto] justify-items-center gap-1">
+          <em className="min-h-[14px] text-[10.5px] whitespace-nowrap text-ink-3 not-italic tabular-nums">
+            {h.value ? format(h.value) : ''}
+          </em>
+          <span className="flex w-full max-w-[24px] items-end">
+            <i
+              className={cn(
+                'block w-full rounded-[5px_5px_2px_2px] bg-accent-strong opacity-45',
+                h.highlight && 'opacity-100',
+              )}
+              style={{ height: h.value ? `${Math.max(6, (h.value / peak) * 100)}%` : 0 }}
+            />
           </span>
-          <small>{h.label}</small>
+          <small className="text-[11px] font-semibold text-ink-3">{h.label}</small>
         </div>
       ))}
     </div>
@@ -323,22 +345,26 @@ function StackedChart({ segments }: { segments: Segment[] }) {
   const total = segments.reduce((n, b) => n + b.value, 0);
   return (
     <>
-      <div className="mt-tumpuk" aria-hidden="true">
+      <div className="flex h-3 gap-[3px] overflow-hidden rounded-[99px]" aria-hidden="true">
         {total ? (
           segments
             .filter((b) => b.value)
             .map((b) => (
-              <i key={b.label} className={`is-${b.tone}`} style={{ flexGrow: b.value }} />
+              <i
+                key={b.label}
+                className={cn('block min-w-[6px] rounded-[99px]', SEGMENT[b.tone])}
+                style={{ flexGrow: b.value }}
+              />
             ))
         ) : (
-          <i className="is-kosong" />
+          <i className="block min-w-[6px] grow rounded-[99px] bg-surface-3" />
         )}
       </div>
-      <ul className="mt-legenda">
+      <ul className="flex flex-wrap gap-x-3.5 gap-y-1.5 text-[12px] text-ink-3">
         {segments.map((b) => (
-          <li key={b.label}>
-            <i className={`is-${b.tone}`} aria-hidden="true" />
-            {b.label} <b>{b.value}</b>
+          <li key={b.label} className="inline-flex items-center gap-1.5">
+            <i className={cn('size-[9px] rounded-[3px]', SEGMENT[b.tone])} aria-hidden="true" />
+            {b.label} <b className="text-ink tabular-nums">{b.value}</b>
           </li>
         ))}
       </ul>
@@ -349,14 +375,15 @@ function StackedChart({ segments }: { segments: Segment[] }) {
 function BarList({ rows }: { rows: Extract<Chart, { kind: 'daftar' }>['rows'] }) {
   const peak = Math.max(1, ...rows.map((b) => b.value));
   return (
-    <ul className="mt-batang-daftar">
+    <ul className="m-0 grid list-none gap-2.5 p-0">
       {rows.map((b) => (
-        <li key={b.label}>
-          <span>{b.label}</span>
-          <span className={`mt-bar is-${b.tone || 'biru'}`} aria-hidden="true">
-            <i style={{ width: `${(b.value / peak) * 100}%` }} />
-          </span>
-          <b>{b.note ?? b.value}</b>
+        <li
+          key={b.label}
+          className="grid grid-cols-[minmax(0,7.5rem)_minmax(0,1fr)_auto] items-center gap-2.5 text-[12.5px]"
+        >
+          <span className="truncate">{b.label}</span>
+          <Bar className="h-2" tone={b.tone || 'biru'} width={`${(b.value / peak) * 100}%`} />
+          <b className="whitespace-nowrap tabular-nums">{b.note ?? b.value}</b>
         </li>
       ))}
     </ul>

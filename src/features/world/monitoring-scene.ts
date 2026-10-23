@@ -52,6 +52,8 @@ const START_ANGLE = Math.PI / 4,
 const PIN_SVG =
   '<svg viewBox="0 0 32 40" width="30" height="38" aria-hidden="true"><ellipse cx="16" cy="37" rx="7" ry="2.4" fill="#2f48d6" opacity=".22"/><path d="M16 2a12 12 0 0 1 12 12c0 8.6-9.6 18.4-11.2 21a1 1 0 0 1-1.6 0C13.6 32.4 4 22.6 4 14A12 12 0 0 1 16 2Z" fill="#546fff"/><path d="M16 2a12 12 0 0 1 12 12c0 2-.5 4-1.4 6A12 12 0 0 0 6 11.5 12 12 0 0 1 16 2Z" fill="#fff" opacity=".22"/><circle cx="16" cy="14" r="5" fill="#fff"/></svg>';
 export type AttentionPin = { key: string; label: string };
+const PIN_CLASS =
+  'pointer-events-auto absolute top-0 left-0 block h-[38px] w-[30px] border-0 bg-none p-0 transition-[filter] duration-150 [filter:drop-shadow(0_4px_6px_color-mix(in_srgb,var(--accent-ink)_25%,transparent))] hover:[filter:drop-shadow(0_6px_10px_color-mix(in_srgb,var(--accent-ink)_40%,transparent))_brightness(1.08)] [&_svg]:block';
 const FLOOR_Y = 0.06;
 /** Langkah santai (satuan/detik) dan kecepatan belok; figur berangkat bergiliran. */
 const WALK_SPEED = 2.6;
@@ -832,7 +834,7 @@ export function createMonitoring(
       pins = list.map(({ key, label }) => {
         const el = document.createElement('button');
         el.type = 'button';
-        el.className = 'mt-pin';
+        el.className = PIN_CLASS;
         el.hidden = true;
         el.setAttribute('aria-label', label);
         el.title = label;
