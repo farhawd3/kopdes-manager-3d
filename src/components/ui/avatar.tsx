@@ -23,10 +23,10 @@ export function AvatarStack({ names, max = 3, className }: { names: string[]; ma
   return (
     <span className={cn('flex items-center', className)} aria-label={people.join(', ')}>
       {people.slice(0, max).map((name, index) => (
-        <Avatar key={name + index} name={name} className={index ? '-ml-2' : ''} />
+        <Avatar key={name + index} name={name} className={index ? '-ml-1.5' : ''} />
       ))}
       {people.length > max && (
-        <span className="-ml-2 inline-grid size-8 place-items-center rounded-full bg-surface text-[11px] font-bold text-ink ring-2 ring-surface">
+        <span className="-ml-1.5 inline-grid size-8 place-items-center rounded-full bg-surface text-[11px] font-bold text-ink ring-2 ring-surface">
           +{people.length - max}
         </span>
       )}

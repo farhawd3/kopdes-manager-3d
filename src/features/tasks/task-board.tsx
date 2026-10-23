@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { AnimatePresence } from 'motion/react';
 import * as motion from 'motion/react-m';
-import { Plus } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 import type { Item } from '@/features/records/schemas';
 import type { Workspace } from '@/features/workspace/use-workspace';
 import type { TaskStatus } from '@/lib/task-status';
@@ -61,13 +61,15 @@ export function TaskBoard({
               data-drop={column.status}
               aria-label={`Kolom ${column.label}`}
               className={cn(
-                'flex min-h-80 snap-start flex-col gap-3 rounded-[1.6rem] border border-line bg-surface p-3 transition-colors',
+                'flex min-h-80 snap-start flex-col gap-3 rounded-[var(--radius-card)] border border-line bg-surface-2 p-3 transition-colors',
                 over === column.status && dragging && 'border-accent-strong bg-accent/40',
               )}
             >
-              <header data-tone={column.tone} className="flex items-center gap-2 px-1 pt-1">
-                <span className="size-2.5 rounded-full bg-tone-bar" aria-hidden="true" />
-                <h2 className="flex-1 text-[15px] font-extrabold">{column.label}</h2>
+              <header data-tone={column.tone} className="flex items-center gap-2.5 border-b border-line px-1 pt-1 pb-3">
+                <span className="grid size-5 place-items-center rounded-full bg-tone text-tone-bar" aria-hidden="true">
+                  <ChevronRight className="size-3.5" strokeWidth={2.6} />
+                </span>
+                <h2 className="flex-1 text-[17px] font-extrabold">{column.label}</h2>
                 <span className="tabular rounded-full bg-surface-3 px-2 py-0.5 text-xs font-bold text-ink-2">{items.length}</span>
                 {column.status !== 'dibatalkan' && (
                   <Button size="icon-sm" variant="ghost" aria-label={`Tambah tugas ke ${column.label}`} onClick={() => onAdd(column.status)}>

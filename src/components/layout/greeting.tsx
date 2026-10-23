@@ -9,8 +9,8 @@ export function Greeting({ className }: { className?: string }) {
   const { manager } = organizationInfo(useLoadedWorkspace());
   return (
     <div className={cn('flex-col leading-tight', className)}>
-      <span className="text-[13px] font-semibold text-ink-3">{greeting(now)},</span>
-      <span className="truncate text-[16px] font-extrabold text-ink">{manager || 'Manajer'}</span>
+      <span className="text-[14px] font-semibold text-ink-2">{greeting(now)},</span>
+      <span className="truncate text-[18px] font-extrabold text-ink">{manager || 'Manajer'}</span>
     </div>
   );
 }

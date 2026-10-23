@@ -485,6 +485,7 @@ export function dataContoh(hariIni: string): ItemContoh[] {
     tambah('work-items', {
       title,
       code: `TGS-${String(i + 1).padStart(3, '0')}`,
+      description: i % 4 === 2 ? ['Selesaikan sebelum akhir pekan.', 'Koordinasi dulu dengan bendahara.', 'Bawa nota pembelian ke kantor.'][i % 3] : '',
       status,
       due_date: tgl(due),
       start_date: tgl(Math.min(due, 0) - g.int(1, 4)),

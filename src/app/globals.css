@@ -145,7 +145,7 @@
   --color-tone-line: var(--tone-line);
   --shadow-card: var(--shadow-card);
   --shadow-float: var(--shadow-float);
-  --radius-card: 1rem;
+  --radius-card: 0.875rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 

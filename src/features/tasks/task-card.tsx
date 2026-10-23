@@ -57,6 +57,7 @@ export function TaskCard({
   const progress = taskProgress(task.data as unknown as Task);
   const priority = String(task.data.priority || 'normal');
   const people = [String(task.data.assignee || ''), ...((task.data.followers as string[]) || [])].filter((name, index, all) => name && all.indexOf(name) === index);
+  const note = String(task.data.description || '').split(/\r?\n/)[0].trim();
   const comments = ((task.data.activities as { type?: string }[]) || []).filter((entry) => entry.type === 'comment').length;
   return (
     <article
@@ -76,11 +77,11 @@ export function TaskCard({
     >
       <Wave />
       <div className="relative flex items-center gap-1.5">
-        <span className="max-w-[58%] truncate rounded-full border border-tone-bar/45 bg-surface/35 px-2.5 py-0.5 text-[11px] font-semibold text-tone-ink">
+        <span className="max-w-[58%] truncate rounded-full border border-[color-mix(in_srgb,var(--tone-bar)_45%,transparent)] bg-surface/40 text-[color-mix(in_srgb,var(--tone-bar)_70%,var(--tone-ink))] px-2.5 py-0.5 text-[11px] font-semibold">
           #{project ? String(project.data.title) : 'tanpa proyek'}
         </span>
         {['tinggi', 'mendesak'].includes(priority) && (
-          <span className="rounded-full border border-late-ink/35 bg-surface/35 px-2.5 py-0.5 text-[11px] font-semibold text-late-ink">#{priority === 'mendesak' ? 'mendesak' : 'tinggi'}</span>
+          <span className="rounded-full border border-[color-mix(in_srgb,var(--tone-bar)_45%,transparent)] bg-surface/40 text-[color-mix(in_srgb,var(--tone-bar)_70%,var(--tone-ink))] px-2.5 py-0.5 text-[11px] font-semibold">#{priority === 'mendesak' ? 'mendesak' : 'tinggi'}</span>
         )}
         {Boolean(task.data.recurrence) && task.data.recurrence !== 'tidak' && <Repeat className="size-3.5 opacity-70" aria-label="Berulang" />}
         <span className="ml-auto flex items-center gap-0.5">
@@ -122,12 +123,17 @@ export function TaskCard({
       >
         {String(task.data.title)}
       </button>
+      {note && (
+        <p className="relative line-clamp-1 text-[12px] font-semibold text-ink-2">
+          <span className="text-ink">Catatan:</span> {note}
+        </p>
+      )}
       {subtasks.length > 0 && (
         <div className="relative flex flex-col gap-1.5">
           <span className="flex justify-between text-[12px] font-semibold text-ink-3">
             Progres <span className="tabular font-bold text-ink">{progress}%</span>
           </span>
-          <SegmentBar value={progress} segments={8} label="Progres subtugas" onTone />
+          <SegmentBar value={progress} segments={7} label="Progres subtugas" onTone />
         </div>
       )}
       <div className="relative flex items-center gap-3 text-[12px] font-semibold text-ink-3">

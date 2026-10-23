@@ -26,7 +26,7 @@ export function ProfileMenu({ compact }: { compact?: boolean }) {
         )}
         aria-label="Profil dan tampilan"
       >
-        <Avatar name={name} className="size-10 ring-0" />
+        <Avatar name={name} className={compact ? 'size-10 ring-0' : 'size-11 ring-0'} />
         {compact && (
           <>
             <span className="min-w-0 flex-1 max-lg:hidden">

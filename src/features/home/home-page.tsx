@@ -108,7 +108,7 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <section aria-label="Hari ini" className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-[var(--radius-card)] bg-surface px-5 py-4 shadow-card">
+      <section aria-label="Hari ini" className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-[var(--radius-card)] bg-surface px-5 py-4 shadow-card ring-1 ring-line/60">
         <div className="min-w-0 flex-1 md:flex-none">
           <h1 className="text-[26px] leading-tight font-extrabold tracking-tight text-ink">{monthName(date)}</h1>
           <p className="text-[13px] font-semibold text-ink-3">Hari ini {longDate(date)}</p>
@@ -118,7 +118,8 @@ export function HomePage() {
         </div>
         <span className="hidden h-11 w-px bg-line md:block" aria-hidden="true" />
         <div className="flex items-baseline gap-2 max-md:hidden">
-          <span className="text-[20px] font-extrabold">Kerja harian</span>
+          <span className="text-[22px] font-extrabold tracking-tight">Kerja harian</span>
+          <span className="h-0.5 w-3 self-center rounded-full bg-ink-2" aria-hidden="true" />
           <span className="text-[13px] font-semibold text-ink-3">
             {todayCount} tugas hari ini
             {late > 0 && (

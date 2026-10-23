@@ -37,7 +37,8 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Tab bergeser | `components/ui/tabs.tsx` | Penanda aktif meluncur (Motion) |
 | Ubin angka | `components/ui/stat.tsx` | Ringkasan pastel; catatan kecil menjelaskan arti angka |
 | Kartu tugas | `features/tasks/task-card.tsx` | Label proyek, centang, progres bersegmen, avatar, tenggat |
-| Hiasan | `components/ui/wave.tsx` | Satu-satunya hiasan kartu: lengkung tipis, sangat halus |
+| Hiasan | `components/ui/wave.tsx` | Satu-satunya hiasan kartu: lipatan V di kanan atas (bidang sedikit lebih terang + tepi putih), seperti kartu TaskTrack |
+| Pemilih tampilan | `components/ui/view-menu.tsx` | "Papan — Ganti tampilan ⌄" di kepala halaman Tugas |
 | Logo | `components/ui/logo.tsx`, `app/icon.svg` | Ubin koral dengan atap gerai dan centang; dipakai di sidebar dan halaman PIN |
 | Kepala halaman | `components/layout/page-header.tsx` | Bilah putih: judul dan ringkasan di kiri, aksi di kanan. Beranda memakai bilah tanggal (bulan, hari ini, tim) |
 

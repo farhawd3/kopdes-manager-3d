@@ -36,7 +36,8 @@ import { PageLoading } from '@/features/records/records-page';
 import { displayValue, fieldLabel } from '@/features/records/related';
 import { isProjectHistory } from '@/features/projects/lifecycle';
 import { PageHeader } from '@/components/layout/page-header';
-import { Tabs } from '@/components/ui/tabs';
+import { ViewMenu } from '@/components/ui/view-menu';
+import { AvatarStack } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input, Select } from '@/components/ui/field';
 import { StatTile } from '@/components/ui/stat';
@@ -165,6 +166,7 @@ export function TasksPage() {
   if (loading) return <PageLoading />;
 
   const counts = countTaskStates(tasks, date);
+  const assignees = [...new Set(tasks.filter((t) => isActiveTask(t.data.status)).map((t) => String(t.data.assignee || '')).filter(Boolean))];
   const projectRow = (data.workstreams || []).find((row) => row.id === project);
   const closedProject = projectRow && isProjectHistory(projectRow);
   const people = [...new Set(tasks.map((task) => String(task.data.assignee || '')).filter(Boolean))].sort();
@@ -214,26 +216,31 @@ export function TasksPage() {
       <PageHeader
         title={archive ? (status === 'dibatalkan' ? 'Tugas dibatalkan' : 'Arsip tugas selesai') : projectRow ? String(projectRow.data.title) : 'Tugas'}
         subtitle={archive ? `${filtered.length} tugas` : `${counts.rencana + counts.proses} tugas aktif · ${counts.terlambat} terlambat`}
+        sections={
+          archive
+            ? undefined
+            : [
+                <ViewMenu
+                  key="view"
+                  label="Cara melihat tugas"
+                  caption="Ganti tampilan"
+                  value={view}
+                  onChange={(id) => setParam('view', id === 'list' ? null : id)}
+                  items={[
+                    { id: 'list', label: 'Daftar', icon: <List /> },
+                    { id: 'board', label: 'Papan', icon: <Columns3 /> },
+                    { id: 'calendar', label: 'Kalender', icon: <CalendarDays /> },
+                    { id: 'timeline', label: 'Linimasa', icon: <CalendarRange /> },
+                  ]}
+                />,
+                ...(assignees.length ? [<AvatarStack key="people" names={assignees} max={3} className="max-md:hidden" />] : []),
+              ]
+        }
         actions={
-          <>
-            {!archive && (
-              <Tabs
-                label="Cara melihat tugas"
-                value={view}
-                onChange={(id) => setParam('view', id === 'list' ? null : id)}
-                items={[
-                  { id: 'list', label: 'Daftar', icon: <List /> },
-                  { id: 'board', label: 'Papan', icon: <Columns3 /> },
-                  { id: 'calendar', label: 'Kalender', icon: <CalendarDays /> },
-                  { id: 'timeline', label: 'Linimasa', icon: <CalendarRange /> },
-                ]}
-              />
-            )}
-            <Button variant="primary" onClick={() => addTask()} disabled={closedProject}>
-              <Plus />
-              Tugas baru
-            </Button>
-          </>
+          <Button variant="primary" onClick={() => addTask()} disabled={closedProject}>
+            <Plus />
+            Tugas baru
+          </Button>
         }
       />
       {closedProject && <Notice>Proyek ini sudah masuk riwayat. Buka kembali proyek sebelum menambah tugas baru. Tugas yang sudah ada tetap dapat diperiksa.</Notice>}

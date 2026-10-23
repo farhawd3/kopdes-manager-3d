@@ -1,14 +1,19 @@
-/** Garis lengkung tipis di pojok kanan atas kartu; satu-satunya hiasan kartu, sengaja sangat halus. */
+/**
+ * Lipatan lengkung di kanan atas kartu, seperti kartu TaskTrack: bidang V yang sedikit lebih terang
+ * dengan tepi lembut. Satu-satunya hiasan kartu; warna mengikuti nada kartu lewat putih transparan.
+ */
 export function Wave() {
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 160 90"
-      className="pointer-events-none absolute -top-2 -right-2 h-24 w-40 text-white opacity-60 dark:opacity-10"
+      viewBox="0 0 200 120"
+      preserveAspectRatio="xMaxYMin meet"
+      className="pointer-events-none absolute top-0 right-0 h-[7.5rem] w-[12.5rem] text-white dark:opacity-15"
       fill="none"
     >
-      <path d="M8 -4 C 40 60, 110 20, 168 74" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M40 -6 C 70 40, 120 14, 170 46" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M58 0 L122 70 Q134 83 148 71 L200 24 V0 Z" fill="currentColor" fillOpacity="0.4" />
+      <path d="M58 0 L122 70 Q134 83 148 71 L200 24" stroke="currentColor" strokeOpacity="0.75" strokeWidth="1.4" />
+      <path d="M34 0 L116 90 Q133 107 152 91 L200 48" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1.2" />
     </svg>
   );
 }

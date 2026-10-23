@@ -18,7 +18,8 @@ export function SegmentBar({
   /** Di atas kartu pastel: ruas kosong putih seperti acuan. */
   onTone?: boolean;
 }) {
-  const filled = Math.round((Math.max(0, Math.min(100, value)) / 100) * segments);
+  // Ruas terakhir bisa terisi sebagian (70% = lima ruas dan setengah ruas), seperti batang TaskTrack.
+  const exact = (Math.max(0, Math.min(100, value)) / 100) * segments;
   return (
     <div
       role="progressbar"
@@ -26,21 +27,25 @@ export function SegmentBar({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-label={label}
-      className={cn('flex h-1.5 gap-1', className)}
+      className={cn('flex h-[5px] gap-1', className)}
     >
-      {Array.from({ length: segments }, (_, index) => (
-        <span
-          key={index}
-          className={cn(
-            'flex-1 rounded-full transition-colors duration-500',
-            index < filled
-              ? 'bg-[var(--tone-bar,var(--accent-strong))]'
-              : onTone
-                ? 'bg-surface/80'
-                : 'bg-[color-mix(in_srgb,var(--tone-bar,var(--ink-3))_22%,transparent)]',
-          )}
-        />
-      ))}
+      {Array.from({ length: segments }, (_, index) => {
+        const fill = Math.max(0, Math.min(1, exact - index));
+        return (
+          <span
+            key={index}
+            className={cn(
+              'relative flex-1 overflow-hidden rounded-full',
+              onTone ? 'bg-surface/80' : 'bg-[color-mix(in_srgb,var(--tone-bar,var(--ink-3))_22%,transparent)]',
+            )}
+          >
+            <span
+              className="absolute inset-y-0 left-0 rounded-full bg-[var(--tone-bar,var(--accent-strong))] transition-[width] duration-500"
+              style={{ width: `${fill * 100}%` }}
+            />
+          </span>
+        );
+      })}
     </div>
   );
 }

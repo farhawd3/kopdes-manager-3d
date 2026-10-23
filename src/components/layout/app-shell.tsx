@@ -98,7 +98,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Sidebar />
         </Suspense>
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-30 flex items-center gap-3 bg-canvas/85 px-4 py-3 backdrop-blur-md md:px-8 md:py-5">
+          <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-canvas/90 px-4 py-3 backdrop-blur-md md:px-8 md:py-4">
             <div className="md:hidden">
               <ProfileMenu />
             </div>
@@ -106,19 +106,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => setPalette(true)}
-              className="flex h-11 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 text-sm text-ink-3 shadow-card transition hover:text-ink-2 max-md:w-11 max-md:shrink-0 max-md:justify-center max-md:px-0 md:w-[min(30rem,42vw)] lg:mx-auto"
+              className="flex h-12 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 text-sm font-semibold text-ink-2 shadow-card transition hover:text-ink max-md:size-11 max-md:shrink-0 max-md:justify-center max-md:rounded-full max-md:px-0 max-md:shadow-none max-md:ring-1 max-md:ring-line md:w-[min(34rem,40vw)] lg:mx-auto"
               aria-label="Cari atau buka (Ctrl K)"
             >
               <Search className="size-5 shrink-0" />
               <span className="truncate max-md:hidden">Cari tugas, catatan, atau halaman</span>
-              <kbd className="ml-auto rounded-md bg-surface-3 px-1.5 py-0.5 text-[11px] font-bold max-md:hidden">Ctrl K</kbd>
+              <kbd className="ml-auto flex items-center gap-1.5 text-[12px] font-bold text-ink max-md:hidden"><span className="rounded-md px-1.5 py-0.5 ring-1 ring-line-strong">Ctrl</span>K</kbd>
             </button>
-            <div className="flex items-center gap-2.5 md:max-lg:ml-auto">
+            <div className="flex items-center gap-3 md:max-lg:ml-auto">
               <NotificationBell />
               <Popover.Root open={quick} onOpenChange={setQuick}>
-                <Popover.Trigger className="hidden h-11 items-center gap-2 rounded-2xl bg-action px-4 text-sm font-bold text-on-action shadow-card transition hover:bg-action-hover active:scale-[0.97] md:inline-flex">
+                <Popover.Trigger aria-label="Tambah catatan" title="Tambah" className="hidden size-11 place-items-center rounded-full bg-action text-on-action transition hover:bg-action-hover active:scale-[0.95] md:grid">
                   <Plus className="size-5" strokeWidth={2.4} />
-                  Tambah
                 </Popover.Trigger>
                 <Popover.Portal>
                   <Popover.Content align="end" sideOffset={10} collisionPadding={16} className="pop z-50 w-[min(36rem,calc(100vw-2rem))] rounded-3xl bg-surface p-4 shadow-float">
@@ -131,7 +130,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </header>
-          <main id="main" className="flex-1 px-4 pb-32 md:px-8 md:pb-12">
+          <main id="main" className="flex-1 px-4 pt-4 pb-32 md:px-8 md:pt-6 md:pb-12">
             {children}
           </main>
         </div>
