@@ -148,7 +148,7 @@ export function TaskSheet({
       >
         <div className="flex flex-col gap-6">
           {/* Kepala detail seperti panel acuan: judul besar, lalu deretan ikon aksi kecil. */}
-          <div className="-mt-2 flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <textarea
               value={title}
               rows={1}

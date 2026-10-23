@@ -237,7 +237,7 @@ export function RecordDetailSheet({
     >
       <div className="flex flex-col gap-6">
         {/* Label ringkas di bawah judul, seperti panel detail acuan. */}
-        <div data-tone={cardTone(entity, row, ws)} className="-mt-1 flex flex-col gap-2.5">
+        <div data-tone={cardTone(entity, row, ws)} className="flex flex-col gap-2.5">
           <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
             {statusOf(entity, row) && <Pill tone={statusTone(row.data.status)}>{statusOf(entity, row)}</Pill>}
             {summaryChips(entity, row, ws).map((chip) => (

@@ -41,22 +41,25 @@ export function Sheet({
           {/* Garis sorotan di atas laci, seperti panel detail pada acuan. */}
           <span className="absolute inset-x-0 top-0 hidden h-[3px] bg-accent-strong md:block" aria-hidden="true" />
           <span className="mx-auto mt-2.5 h-1.5 w-11 shrink-0 rounded-full bg-line-strong md:hidden" aria-hidden="true" />
-          <header className="px-5 pt-3 pb-3 md:px-7 md:pt-5">
-            <div className="flex items-center gap-2">
-              <Dialog.Close className="-ml-2 grid size-10 shrink-0 place-items-center rounded-xl text-ink-2 transition hover:bg-surface-2 hover:text-ink" aria-label="Tutup">
-                <X className="size-5" />
-              </Dialog.Close>
-              <span className="flex-1" />
-              {headerExtra}
-            </div>
-            <Dialog.Title className="mt-1 text-[22px] leading-tight font-extrabold tracking-tight text-ink md:text-2xl">{title}</Dialog.Title>
-            {description ? (
-              <Dialog.Description className="mt-1 text-sm text-ink-3">{description}</Dialog.Description>
-            ) : (
-              <Dialog.Description className="sr-only">Formulir</Dialog.Description>
-            )}
+          {/* Hanya baris tutup yang tetap; judul ikut bergulir agar isi tidak tertutup di layar pendek. */}
+          <header className="flex items-center gap-2 px-5 pt-2 pb-1 md:px-7 md:pt-4">
+            <Dialog.Close className="-ml-2 grid size-10 shrink-0 place-items-center rounded-xl text-ink-2 transition hover:bg-surface-2 hover:text-ink" aria-label="Tutup">
+              <X className="size-5" />
+            </Dialog.Close>
+            <span className="flex-1" />
+            {headerExtra}
           </header>
-          <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 md:px-7">{children}</div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 md:px-7">
+            <div className="pt-1 pb-4">
+              <Dialog.Title className="text-[22px] leading-tight font-extrabold tracking-tight text-ink md:text-2xl">{title}</Dialog.Title>
+              {description ? (
+                <Dialog.Description className="mt-1 text-sm text-ink-3">{description}</Dialog.Description>
+              ) : (
+                <Dialog.Description className="sr-only">Formulir</Dialog.Description>
+              )}
+            </div>
+            {children}
+          </div>
           {footer && (
             <footer className="flex items-center gap-2 border-t border-line px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:px-7">
               {footer}
