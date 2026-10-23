@@ -310,7 +310,7 @@ export function TaskSheet({
           </section>
 
           <section className="flex flex-col gap-2">
-            <h3 className="text-xs font-bold text-ink-3">Jadwal berulang</h3>
+            <h3 className="text-[13px] font-semibold text-ink-3">Jadwal berulang</h3>
             <div className="grid gap-2 sm:grid-cols-3">
               <Select value={String(d.recurrence || 'tidak')} onChange={(event) => void save({ recurrence: event.target.value, ...(event.target.value === 'tidak' ? { recurrence_time: '09:00', recurrence_end_date: '' } : {}) }, 'mengubah jadwal berulang')} aria-label="Pengulangan">
                 {RECURRENCE.map(([value, label]) => (
@@ -324,7 +324,7 @@ export function TaskSheet({
           </section>
 
           <section className="flex flex-col gap-2">
-            <h3 className="text-xs font-bold text-ink-3">Tautan hasil kerja</h3>
+            <h3 className="text-[13px] font-semibold text-ink-3">Tautan hasil kerja</h3>
             <div className="flex gap-2">
               <Input type="url" placeholder="https://" value={link} onChange={(event) => setLink(event.target.value)} onBlur={() => link !== String(d.link || '') && void save({ link }, link ? 'memperbarui tautan hasil' : 'menghapus tautan hasil')} />
               {d.link ? (
@@ -346,7 +346,7 @@ export function TaskSheet({
 
           {(meeting || document || groups.length > 0) && (
             <section className="flex flex-col gap-2">
-              <h3 className="text-xs font-bold text-ink-3">Terkait</h3>
+              <h3 className="text-[13px] font-semibold text-ink-3">Terkait</h3>
               <div className="flex flex-wrap gap-2">
                 {join && (
                   <Button asChild size="sm" variant="primary">
@@ -378,7 +378,7 @@ export function TaskSheet({
           )}
 
           <section className="flex flex-col gap-3">
-            <h3 className="text-xs font-bold text-ink-3">Catatan & riwayat</h3>
+            <h3 className="text-[13px] font-semibold text-ink-3">Catatan & riwayat</h3>
             <form
               className="flex gap-2"
               onSubmit={(event) => {

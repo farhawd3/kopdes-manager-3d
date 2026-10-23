@@ -46,8 +46,8 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 
 ## Kerangka
 
-- Laptop (≥ 1024 px): rel ikon 88 px (acuan "Task management") dengan keterangan saat disorot; tombol "Perluas menu" membuka sidebar 256 px berlabel (grup Kerja, Catatan, Usaha, Koperasi, proyek aktif). Pilihan disimpan di peramban (`kopdes-sidebar`).
-- Tablet (768–1023 px): selalu rel ikon 88 px.
+- Laptop (≥ 1024 px): sidebar 264 px dengan grup Kerja, Catatan, Usaha, Koperasi, lalu proyek aktif dan profil.
+- Tablet (768–1023 px): rel ikon 84 px dengan label kecil.
 - HP (< 768 px): bilah atas ringkas + navigasi bawah melayang. Item aktif mengembang menjadi kapsul pastel berlabel yang meluncur; tombol tambah koral (warna logo) di tengah membuka menu tambah cepat. Bilah bawah minggir saat menggulir ke bawah dan muncul lagi saat menggulir ke atas (`lib/use-hide-on-scroll.ts`), agar tidak menutupi isi. Saringan Tugas menjadi satu baris geser.
 - Bilah atas: sapaan dan nama manajer di kiri, cari (Ctrl K) di tengah, lalu satu kapsul putih berisi lonceng dan tombol Tambah, lalu avatar. Di HP: avatar + sapaan, kapsul berisi ikon cari dan lonceng.
 - Menu aktif di sidebar: kapsul putih berbayang dengan ikon berwarna sorotan.

@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import * as motion from 'motion/react-m';
 import {
-  CalendarClock,
+  ChevronRight,
   Download,
   ExternalLink,
   Globe2,
@@ -32,7 +32,6 @@ import { Sheet } from '@/components/ui/sheet';
 import { useConfirm } from '@/components/ui/confirm';
 import { api } from '@/lib/client';
 import { addDays, daysBetween, formatDate, today } from '@/lib/date';
-import { cn } from '@/lib/utils';
 
 const LONG_FIELDS = ['description', 'notes', 'agenda', 'minutes', 'mitigation', 'items', 'reason', 'evidence', 'follow_up', 'goal'];
 const UNDELETABLE: Entity[] = ['organization', 'workstreams', 'stock-movements'];
@@ -236,76 +235,77 @@ export function RecordDetailSheet({
         </>
       }
     >
-      <div className="flex flex-col gap-5">
-        <div data-tone={cardTone(entity, row, ws)} className="relative overflow-hidden rounded-[var(--radius-card)] bg-tone p-4 text-tone-ink">
-          <Wave />
-          <div className="relative flex flex-wrap gap-1.5">
+      <div className="flex flex-col gap-6">
+        {/* Label ringkas di bawah judul, seperti panel detail acuan. */}
+        <div data-tone={cardTone(entity, row, ws)} className="-mt-1 flex flex-col gap-2.5">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
             {statusOf(entity, row) && <Pill tone={statusTone(row.data.status)}>{statusOf(entity, row)}</Pill>}
             {summaryChips(entity, row, ws).map((chip) => (
-              <span key={chip} className="rounded-full border border-tone-line px-2.5 py-0.5 text-xs font-semibold">{chip}</span>
+              <span key={chip} className="rounded-full border border-[color-mix(in_srgb,var(--tone-bar)_45%,transparent)] bg-tone px-2.5 py-1 text-tone-ink">
+                {chip}
+              </span>
             ))}
           </div>
-          {keyFacts(entity, row, ws).length > 0 && (
-            <p className="relative mt-3 text-sm font-bold">{keyFacts(entity, row, ws).join(' · ')}</p>
-          )}
+          {keyFacts(entity, row, ws).length > 0 && <p className="text-sm font-bold text-ink">{keyFacts(entity, row, ws).join(' · ')}</p>}
         </div>
+        {longText.map((field) => (
+          <section key={field} className="flex flex-col gap-1.5">
+            <h3 className="text-[13px] font-semibold text-ink-3">{detailRows(entity, row, ws).find((d) => d.field === field)?.label || field}</h3>
+            <p className="text-sm leading-relaxed whitespace-pre-wrap text-ink">{String(row.data[field])}</p>
+          </section>
+        ))}
         <EntityActions entity={entity} row={row} />
         {details.length > 0 && (
-          <dl className="grid grid-cols-[minmax(7rem,auto)_1fr] gap-x-4 gap-y-2.5 text-sm">
+          <dl className="grid grid-cols-[7.5rem_minmax(0,1fr)] gap-x-4 gap-y-3.5 text-sm sm:grid-cols-[8.5rem_minmax(0,1fr)]">
             {details.map((detail) => (
               <div key={detail.field} className="contents">
-                <dt className="text-ink-3">{detail.label}</dt>
-                <dd className="font-semibold text-ink">{detail.value}</dd>
+                <dt className="font-semibold text-ink-3">{detail.label}</dt>
+                <dd className="min-w-0 font-semibold break-words text-ink">{detail.value}</dd>
               </div>
             ))}
           </dl>
         )}
-        {longText.map((field) => (
-          <section key={field}>
-            <h3 className="mb-1.5 text-xs font-bold tracking-wide text-ink-3 uppercase">{detailRows(entity, row, ws).find((d) => d.field === field)?.label || field}</h3>
-            <p className="rounded-2xl bg-surface-2 p-3 text-sm leading-relaxed whitespace-pre-wrap text-ink">{String(row.data[field])}</p>
-          </section>
-        ))}
         {ideas.length > 0 && (
-          <section>
-            <h3 className="mb-2 text-xs font-bold tracking-wide text-ink-3 uppercase">Saran</h3>
-            <div className="flex flex-col gap-2">
-              {ideas.map((idea) => (
-                <Link key={idea.id} href={idea.href} className="rounded-2xl bg-accent px-4 py-3 text-accent-ink transition hover:brightness-[0.98]">
-                  <span className="block text-sm font-bold">{idea.label}</span>
-                  <span className="block text-xs opacity-80">{idea.reason}</span>
-                </Link>
-              ))}
-            </div>
+          <section className="flex flex-col gap-2">
+            <h3 className="text-[13px] font-semibold text-ink-3">Saran</h3>
+            {ideas.map((idea) => (
+              <Link key={idea.id} href={idea.href} className="rounded-2xl bg-accent px-4 py-3 text-accent-ink transition hover:brightness-[0.98]">
+                <span className="block text-sm font-bold">{idea.label}</span>
+                <span className="block text-xs opacity-80">{idea.reason}</span>
+              </Link>
+            ))}
           </section>
         )}
         {groups.length > 0 && (
-          <section>
-            <h3 className="mb-2 text-xs font-bold tracking-wide text-ink-3 uppercase">Terkait</h3>
-            <div className="flex flex-col gap-3">
-              {groups.map((group) => (
-                <div key={group.entity + group.direction + group.title}>
-                  <p className="mb-1 text-[13px] font-semibold text-ink-2">
-                    {group.title} <span className="text-ink-3">({group.rows.length})</span>
-                  </p>
-                  <ul className="flex flex-col gap-1">
-                    {group.rows.slice(0, 8).map((related) => (
-                      <li key={related.id}>
-                        <Link href={recordLink(group.entity, related.id)} onClick={onClose} className="flex items-center gap-2 rounded-xl bg-surface-2 px-3 py-2 text-sm font-semibold text-ink transition hover:bg-surface-3">
-                          <CalendarClock className="size-4 text-ink-3" />
-                          <span className="truncate">{String(related.data.title || entityTitle(group.entity))}</span>
-                        </Link>
-                      </li>
-                    ))}
-                    {group.rows.length > 8 && <li className="px-3 text-xs text-ink-3">+{group.rows.length - 8} catatan lain</li>}
-                  </ul>
-                </div>
-              ))}
-            </div>
+          <section className="flex flex-col gap-3">
+            <h3 className="text-[13px] font-semibold text-ink-3">Terkait</h3>
+            {groups.map((group) => (
+              <div key={group.entity + group.direction + group.title}>
+                <p className="mb-1.5 text-[13px] font-semibold text-ink-2">
+                  {group.title} <span className="text-ink-3">({group.rows.length})</span>
+                </p>
+                {/* Catatan terkait berupa kapsul bergaris, seperti daftar subtugas pada acuan. */}
+                <ul className="flex flex-col gap-2">
+                  {group.rows.slice(0, 8).map((related) => (
+                    <li key={related.id}>
+                      <Link
+                        href={recordLink(group.entity, related.id)}
+                        onClick={onClose}
+                        className="flex min-h-11 items-center gap-2 rounded-full border border-line py-1 pr-2 pl-4 text-sm font-semibold text-ink transition hover:bg-surface-2"
+                      >
+                        <span className="min-w-0 flex-1 truncate">{String(related.data.title || entityTitle(group.entity))}</span>
+                        <ChevronRight className="size-4 shrink-0 text-ink-3" />
+                      </Link>
+                    </li>
+                  ))}
+                  {group.rows.length > 8 && <li className="px-4 text-xs text-ink-3">+{group.rows.length - 8} catatan lain</li>}
+                </ul>
+              </div>
+            ))}
           </section>
         )}
-        <section>
-          <h3 className="mb-2 text-xs font-bold tracking-wide text-ink-3 uppercase">Riwayat</h3>
+        <section className="flex flex-col gap-2">
+          <h3 className="text-[13px] font-semibold text-ink-3">Riwayat</h3>
           <ol className="flex flex-col gap-2 border-l-2 border-line pl-4 text-sm">
             {history.slice(0, 20).map((entry) => (
               <li key={entry.id}>
@@ -313,7 +313,7 @@ export function RecordDetailSheet({
                 <span className="block text-xs text-ink-3">{entry.user} · {formatDate(entry.created_at)}</span>
               </li>
             ))}
-            {row.updated_at !== row.created_at && <li className={cn('text-ink-2')}>Diubah {formatDate(row.updated_at)}</li>}
+            {row.updated_at !== row.created_at && <li className="text-ink-2">Diubah {formatDate(row.updated_at)}</li>}
             <li className="text-ink-2">Dibuat {formatDate(row.created_at)}</li>
           </ol>
         </section>
