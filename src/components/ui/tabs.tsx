@@ -24,7 +24,7 @@ export function Tabs({
     <div
       role="tablist"
       aria-label={label}
-      className={cn('scrollbar-none inline-flex max-w-full gap-1 overflow-x-auto rounded-2xl bg-surface p-1 shadow-card', className)}
+      className={cn('scrollbar-none inline-flex min-w-0 max-w-full gap-1 overflow-x-auto rounded-2xl bg-surface p-1 shadow-card', className)}
     >
       {items.map((item) => {
         const active = item.id === value;

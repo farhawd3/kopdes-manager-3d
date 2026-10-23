@@ -108,11 +108,9 @@ export function RecordCard({ entity, row, ws, onOpen, index = 0 }: { entity: Ent
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: Math.min(index, 10) * 0.035, ease: [0.16, 1, 0.3, 1] }}
+      style={{ animationDelay: `${Math.min(index, 10) * 35}ms` }}
       data-tone={cardTone(entity, row, ws)}
-      className="group relative flex min-h-36 cursor-pointer flex-col gap-3 overflow-hidden rounded-[var(--radius-card)] bg-tone p-4 text-tone-ink transition-shadow hover:shadow-card"
+      className="enter group relative flex min-h-36 cursor-pointer flex-col gap-3 overflow-hidden rounded-[var(--radius-card)] bg-tone p-4 text-tone-ink transition-shadow hover:shadow-card"
       onClick={onOpen}
     >
       <Wave />

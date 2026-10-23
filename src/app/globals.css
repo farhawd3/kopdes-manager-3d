@@ -219,3 +219,7 @@
 }
 .pop[data-state='open'] { animation: pop-in 0.3s var(--ease-out); }
 .pop[data-state='closed'] { animation: pop-out 0.15s ease-in forwards; }
+
+/* Masuk berurutan dengan CSS: konten tetap tampil walau skrip animasi belum termuat. */
+@keyframes rise-in { from { opacity: 0; transform: translateY(10px); } }
+.enter { animation: rise-in 0.45s var(--ease-out) backwards; }

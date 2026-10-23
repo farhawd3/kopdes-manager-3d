@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import * as motion from 'motion/react-m';
 import { AlarmClock, ArrowRight, ChevronLeft, ChevronRight, CircleCheck, CircleDashed, ClipboardCopy, Globe2, LoaderCircle, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { useWorkspace } from '@/features/workspace/use-workspace';
@@ -171,9 +170,9 @@ export function HomePage() {
         {deadlines.length ? (
           <div ref={carousel} className="scrollbar-none -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:-mx-1 md:px-1">
             {deadlines.map((row, index) => (
-              <motion.div key={row.id} className="w-[min(19rem,80vw)] shrink-0 snap-start" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: Math.min(index, 8) * 0.04 }}>
+              <div key={row.id} className="enter w-[min(19rem,80vw)] shrink-0 snap-start" style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}>
                 <TaskCard task={row} ws={data} refresh={refresh} onOpen={() => setOpenTask(row.id)} className="h-full" />
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (

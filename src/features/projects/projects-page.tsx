@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import * as motion from 'motion/react-m';
 import { FolderKanban, Plus, Search } from 'lucide-react';
 import type { Item, Task } from '@/features/records/schemas';
 import type { Workspace } from '@/features/workspace/use-workspace';
@@ -44,7 +43,7 @@ export function ProjectCard({ project, ws, index = 0 }: { project: Item; ws: Wor
     .sort((a, b) => String(a.data.due_date).localeCompare(String(b.data.due_date)))[0];
   const people = [...new Set([String(project.data.assignee || ''), ...tasks.map((task) => String(task.data.assignee || ''))].filter(Boolean))];
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index, 8) * 0.04, duration: 0.4 }}>
+    <div className="enter" style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}>
       <Link href={`/projects/${project.id}`} data-tone={projectTone(project)} className="relative flex h-full flex-col gap-3 overflow-hidden rounded-[var(--radius-card)] bg-tone p-5 text-tone-ink transition hover:-translate-y-0.5 hover:shadow-card">
         <Wave />
         <span className="relative flex flex-wrap items-center gap-1.5">
@@ -69,7 +68,7 @@ export function ProjectCard({ project, ws, index = 0 }: { project: Item; ws: Wor
           <AvatarStack names={people} />
         </span>
       </Link>
-    </motion.div>
+    </div>
   );
 }
 

@@ -81,7 +81,7 @@ export function TaskBoard({
                     <motion.div
                       key={task.id}
                       layout
-                      initial={{ opacity: 0, scale: 0.96 }}
+                      initial={false}
                       animate={{ opacity: dragging === task.id ? 0.35 : 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.96 }}
                       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}

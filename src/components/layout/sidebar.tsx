@@ -28,7 +28,7 @@ function NavLink({ id, active, open }: { id: PageId; active: boolean; open?: num
       aria-current={active ? 'page' : undefined}
       title={page.label}
       className={cn(
-        'group relative flex h-10 items-center gap-3 rounded-xl px-3 text-[14.5px] font-semibold transition-colors',
+        'group relative flex h-9 items-center gap-3 rounded-xl px-3 text-[14.5px] font-semibold transition-colors',
         'max-lg:h-14 max-lg:flex-col max-lg:justify-center max-lg:gap-0.5 max-lg:px-1 max-lg:text-[10.5px]',
         active ? 'text-accent-ink' : 'text-ink-2 hover:bg-surface-2 hover:text-ink',
       )}
@@ -58,7 +58,6 @@ export function Sidebar() {
   const data = useLoadedWorkspace();
   const active = activePage(pathname);
   const coop = organizationInfo(data).name;
-  const openTasks = (data['work-items'] || []).filter((row) => !['selesai', 'dibatalkan'].includes(String(row.data.status))).length;
   const projects = (data.workstreams || []).filter((row) => !isProjectHistory(row)).slice(0, 6);
   return (
     <aside className="sticky top-0 hidden h-dvh w-[84px] shrink-0 flex-col border-r border-line bg-surface md:flex lg:w-[264px]">
@@ -73,11 +72,11 @@ export function Sidebar() {
       </Link>
       <nav aria-label="Menu utama" className="scrollbar-none flex-1 overflow-y-auto px-3 pb-3">
         {NAV_GROUPS.map((group) => (
-          <div key={group.label} className="mb-3">
+          <div key={group.label} className="mb-2">
             <p className="px-3 pt-2 pb-1.5 text-[11px] font-bold tracking-[0.08em] text-ink-3 uppercase max-lg:hidden">{group.label}</p>
             <div className="flex flex-col gap-0.5 max-lg:border-t max-lg:border-line max-lg:pt-2">
               {group.pages.map((id) => (
-                <NavLink key={id} id={id} active={active === id} open={id === 'tasks' ? openTasks : undefined} />
+                <NavLink key={id} id={id} active={active === id} />
               ))}
             </div>
           </div>

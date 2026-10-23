@@ -46,7 +46,7 @@ function SwipeRow({
   const done = task.data.status === 'selesai';
   const priority = String(task.data.priority || 'normal');
   return (
-    <motion.li layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }} className="relative overflow-hidden rounded-2xl">
+    <motion.li layout initial={false} exit={{ opacity: 0, height: 0 }} className="relative overflow-hidden rounded-2xl">
       <motion.span style={{ opacity: doneOpacity }} className="absolute inset-0 flex items-center bg-done pl-5 text-sm font-bold text-done-ink">
         <CheckIcon className="mr-2 size-4" /> Selesai
       </motion.span>

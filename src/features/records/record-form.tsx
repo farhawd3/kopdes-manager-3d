@@ -497,7 +497,8 @@ function RefField({
   return (
     <Field label={label} error={error} required={required} hint={disabled ? 'Pilih proyek dulu.' : undefined}>
       <span className="flex gap-2">
-        <Select value={value} disabled={disabled} onChange={(event) => set(field, event.target.value)} aria-invalid={Boolean(error) || undefined} className="flex-1">
+        <span className="min-w-0 flex-1">
+        <Select value={value} disabled={disabled} onChange={(event) => set(field, event.target.value)} aria-invalid={Boolean(error) || undefined}>
           <option value="">{required ? 'Pilih…' : empty}</option>
           {rows.map((row) => (
             <option key={row.id} value={row.id}>
@@ -506,6 +507,7 @@ function RefField({
             </option>
           ))}
         </Select>
+        </span>
         {create && !disabled && (
           <Button size="icon" variant="secondary" aria-label={`Buat ${label.toLowerCase()} baru`} onClick={() => setCreating((open) => !open)} className="size-11">
             {creating ? <X /> : <Plus />}

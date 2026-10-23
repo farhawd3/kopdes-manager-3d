@@ -8,7 +8,7 @@ export function PageHeader({ title, subtitle, actions }: { title: ReactNode; sub
         <h1 className="text-[28px] leading-tight font-extrabold tracking-tight text-ink md:text-[32px]">{title}</h1>
         {subtitle && <p className="mt-1 text-[15px] text-ink-3">{subtitle}</p>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+      {actions && <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">{actions}</div>}
     </div>
   );
 }
