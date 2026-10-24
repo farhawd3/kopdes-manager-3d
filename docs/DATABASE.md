@@ -117,6 +117,12 @@ Migrasi 9 tidak punya penanda sederhana. Bila migrasi 10 terpasang, migrasi 9 se
 
 ## 6. Menjalankan migrasi tambahan
 
+**Cara termudah (sekali jalan):** `supabase/upgrade/UPGRADE_KE_TERBARU.sql`. Untuk database yang sudah berisi skema dan data (minimal migrasi 8). Berkas memeriksa sendiri migrasi 9 sampai terbaru yang belum terpasang dan hanya menjalankan itu, semuanya dalam satu transaksi. Aman dijalankan ulang, tidak menghapus tabel atau data, dan menolak berjalan di database kosong. Dibuat dengan `node scripts/build-upgrade.mjs`; buat ulang setelah menambah migrasi (daftar langkah dan penandanya ada di skrip itu).
+
+Langkahnya sama dengan di bawah: unduh cadangan, pastikan project ref, salin seluruh isi berkas ke SQL Editor, Run sekali.
+
+Cara satu per satu:
+
 1. Unduh cadangan JSON dari Pengaturan. Simpan di tempat pribadi.
 2. Buka Supabase, pastikan project ref benar, buka **SQL Editor → New query**.
 3. Salin seluruh isi satu berkas migrasi, jalankan **Run** sekali.
@@ -183,5 +189,5 @@ npm run dev:demo -- -p 3200
 
 1. Buat berkas bernomor baru di `supabase/migrations/`.
 2. Jalankan tes database lokal (PGlite, `tests/database/`).
-3. Buat ulang SQL install dan reset dengan generatornya.
+3. Buat ulang SQL install, reset, dan upgrade dengan generatornya (tambahkan migrasi baru ke daftar di `scripts/build-upgrade.mjs`).
 4. Jangan hapus migrasi lama. Berkas yang pernah dijalankan di cloud adalah jejak audit.

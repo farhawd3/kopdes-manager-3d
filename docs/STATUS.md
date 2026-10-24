@@ -17,7 +17,7 @@ Satu-satunya catatan keadaan untuk semua AI dan manusia. Timpa bagian yang berub
 ## Langkah berikut
 
 1. Pemilik meninjau tampilan di `npm run dev:demo -- -p 3200` (HP, tablet, laptop) dan memberi koreksi.
-2. Pemilik menjalankan migrasi yang belum terpasang (9, 10, 11, 12) di Supabase, lalu seed contoh bila perlu (`docs/DATABASE.md`). Migrasi 12 hanya indeks untuk pemeriksa versi data; tanpa itu aplikasi tetap jalan.
+2. Pemilik menjalankan `supabase/upgrade/UPGRADE_KE_TERBARU.sql` sekali di Supabase (memasang migrasi 9–12 yang belum ada), lalu seed contoh bila perlu (`docs/DATABASE.md`). Migrasi 12 hanya indeks untuk pemeriksa versi data; tanpa itu aplikasi tetap jalan.
 3. Setelah disetujui: `npm run cek:penuh`, push cabang, buka pull request ke `main`.
 4. Belum dikerjakan: halaman Agenda masih tampilan daftar umum (belum kalender pekan khusus); tes perilaku UI baru belum ditulis (hanya tes logika).
 
