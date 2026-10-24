@@ -4,11 +4,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { Popover } from 'radix-ui';
 import { Toaster } from 'sonner';
-import { LazyMotion } from 'motion/react';
+import { LazyMotion, MotionConfig } from 'motion/react';
 import { Plus, Search } from 'lucide-react';
 import { ConfirmProvider } from '@/components/ui/confirm';
 import { Sheet } from '@/components/ui/sheet';
 import { PageIcon } from '@/components/ui/icon';
+import { PopoverContent } from '@/components/ui/menu';
+import { Kbd } from '@/components/ui/kbd';
 import { useTheme } from '@/lib/theme';
 import { Sidebar, activePage } from './sidebar';
 import { MobileDock } from './mobile-dock';
@@ -76,12 +78,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         offset={88}
         mobileOffset={96}
         toastOptions={{
+          // Tanpa gaya bawaan sonner agar semua warna dari token, tanpa !important.
+          unstyled: true,
           classNames: {
+            // Toast di belakang tumpukan menyembunyikan isinya, seperti gaya bawaan sonner.
             toast:
-              '!rounded-2xl !border-0 !bg-action !text-on-action !shadow-float !font-sans !font-semibold',
+              'flex w-(--width) items-center gap-3 rounded-2xl bg-action py-2.5 pr-2.5 pl-4 font-sans text-sm font-semibold text-on-action shadow-float data-[expanded=false]:data-[front=false]:*:opacity-0',
+            icon: 'flex shrink-0 [&_svg]:size-[18px]',
+            content: 'flex min-w-0 flex-1 flex-col gap-0.5 py-1',
+            title: 'leading-snug',
+            description: 'font-medium text-on-action/80',
             actionButton:
-              '!rounded-xl !bg-[color-mix(in_srgb,var(--on-action)_16%,transparent)] !text-on-action !font-bold',
-            description: '!text-on-action/80',
+              'h-9 shrink-0 cursor-pointer rounded-xl bg-on-action/15 px-3.5 text-[13px] font-bold text-on-action outline-none transition-colors hover:bg-on-action/25 focus-visible:ring-2 focus-visible:ring-on-action/60',
           },
         }}
       />
@@ -91,118 +99,117 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (pathname.startsWith('/world'))
     return (
       <LazyMotion features={loadMotion}>
-        <ConfirmProvider>
-          {children}
-          {overlays}
-        </ConfirmProvider>
+        <MotionConfig reducedMotion="user">
+          <ConfirmProvider>
+            {children}
+            {overlays}
+          </ConfirmProvider>
+        </MotionConfig>
       </LazyMotion>
     );
   return (
     <LazyMotion features={loadMotion}>
-      <ConfirmProvider>
-        <div className="flex min-h-dvh">
-          <Suspense fallback={<div className="hidden w-[84px] md:block lg:w-[264px]" />}>
-            <Sidebar />
-          </Suspense>
-          <div className="flex min-w-0 flex-1 flex-col">
-            <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-canvas/90 px-4 py-3 backdrop-blur-md md:px-8 md:py-4">
-              <div className="md:hidden">
-                <ProfileMenu />
-              </div>
-              <Greeting className="flex min-w-0 max-md:flex-1 md:max-lg:hidden" />
-              <button
-                type="button"
-                onClick={() => setPalette(true)}
-                className="hidden h-12 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 text-sm font-semibold text-ink-2 shadow-card transition hover:text-ink md:flex md:w-[min(34rem,40vw)] lg:mx-auto"
-                aria-label="Cari atau buka (Ctrl K)"
-              >
-                <Search className="size-5 shrink-0" />
-                <span className="truncate">Cari tugas, catatan, atau halaman</span>
-                <kbd className="ml-auto flex items-center gap-1.5 text-[12px] font-bold text-ink">
-                  <span className="rounded-md px-1.5 py-0.5 ring-1 ring-line-strong">Ctrl</span>K
-                </kbd>
-              </button>
-              <div className="flex items-center gap-3 md:max-lg:ml-auto">
-                <div className="flex items-center gap-1 rounded-full bg-surface p-1 shadow-card">
-                  <button
-                    type="button"
-                    onClick={() => setPalette(true)}
-                    aria-label="Cari"
-                    className="grid size-10 place-items-center rounded-full text-ink transition hover:bg-surface-2 md:hidden"
-                  >
-                    <Search className="size-5" />
-                  </button>
-                  <NotificationBell />
-                  <Popover.Root open={quick} onOpenChange={setQuick}>
-                    <Popover.Trigger className="hidden h-10 items-center gap-1.5 rounded-full bg-action pr-4 pl-3 text-sm font-bold text-on-action transition hover:bg-action-hover active:scale-[0.97] md:inline-flex">
-                      <Plus className="size-[18px]" strokeWidth={2.6} />
-                      Tambah
-                    </Popover.Trigger>
-                    <Popover.Portal>
-                      <Popover.Content
-                        align="end"
-                        sideOffset={10}
-                        collisionPadding={16}
-                        className="pop z-50 w-[min(36rem,calc(100vw-2rem))] rounded-3xl bg-surface p-4 shadow-float"
-                      >
-                        <QuickActionsPanel onPick={() => setQuick(false)} />
-                      </Popover.Content>
-                    </Popover.Portal>
-                  </Popover.Root>
-                </div>
-                <div className="hidden lg:block">
+      {/* Gerak berkurang di perangkat: Motion hanya memudar, tanpa geser dan pegas. */}
+      <MotionConfig reducedMotion="user">
+        <ConfirmProvider>
+          <div className="flex min-h-dvh">
+            <Suspense fallback={<div className="hidden w-[84px] md:block lg:w-[264px]" />}>
+              <Sidebar />
+            </Suspense>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-line bg-canvas/90 px-4 py-3 backdrop-blur-md md:px-8 md:py-4">
+                <div className="md:hidden">
                   <ProfileMenu />
                 </div>
-              </div>
-            </header>
-            <main id="main" className="flex-1 px-4 pt-4 pb-32 md:px-8 md:pt-6 md:pb-12">
-              {children}
-            </main>
-          </div>
-        </div>
-        <MobileDock
-          onAdd={() => setQuickSheet(true)}
-          onMenu={() => setMenu(true)}
-          adding={quickSheet}
-        />
-        <Sheet
-          open={quickSheet}
-          onOpenChange={setQuickSheet}
-          title="Tambah catatan"
-          description="Pilih yang ingin dicatat"
-        >
-          <QuickActionsPanel onPick={() => setQuickSheet(false)} />
-        </Sheet>
-        <Sheet open={menu} onOpenChange={setMenu} title="Semua menu">
-          <nav aria-label="Semua halaman" className="flex flex-col gap-5">
-            {[...NAV_GROUPS, { label: 'Lainnya', pages: NAV_FOOTER }].map((group) => (
-              <section key={group.label}>
-                <h3 className="mb-2 text-xs font-bold tracking-wide text-ink-3 uppercase">
-                  {group.label}
-                </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {group.pages.map((id) => (
-                    <Link
-                      key={id}
-                      href={`/${id}`}
-                      onClick={() => setMenu(false)}
-                      aria-current={page === id ? 'page' : undefined}
-                      className="flex flex-col items-center gap-2 rounded-2xl bg-surface-2 px-2 py-4 text-center text-[13px] font-bold text-ink-2 aria-[current=page]:bg-accent aria-[current=page]:text-accent-ink"
+                <Greeting className="flex min-w-0 max-md:flex-1 md:max-lg:hidden" />
+                <button
+                  type="button"
+                  onClick={() => setPalette(true)}
+                  className="group hidden h-12 min-w-0 items-center gap-3 rounded-2xl bg-surface px-4 text-sm font-semibold text-ink-3 shadow-card ring-1 ring-transparent transition hover:text-ink-2 hover:ring-line-strong md:flex md:w-[min(34rem,40vw)] lg:mx-auto"
+                  aria-label="Cari atau buka (Ctrl K)"
+                >
+                  <Search className="size-5 shrink-0 text-ink-2 transition-colors group-hover:text-accent-strong" />
+                  <span className="truncate">Cari tugas, catatan, atau menu</span>
+                  <span className="ml-auto flex shrink-0 items-center gap-1" aria-hidden="true">
+                    <Kbd>Ctrl</Kbd>
+                    <Kbd>K</Kbd>
+                  </span>
+                </button>
+                <div className="flex items-center gap-3 md:max-lg:ml-auto">
+                  <div className="flex items-center gap-1 rounded-full bg-surface p-1 shadow-card">
+                    <button
+                      type="button"
+                      onClick={() => setPalette(true)}
+                      aria-label="Cari"
+                      className="grid size-10 place-items-center rounded-full text-ink transition hover:bg-surface-2 md:hidden"
                     >
-                      <PageIcon name={PAGES[id].icon} className="size-6" />
-                      {PAGES[id].label}
-                    </Link>
-                  ))}
+                      <Search className="size-5" />
+                    </button>
+                    <NotificationBell />
+                    <Popover.Root open={quick} onOpenChange={setQuick}>
+                      <Popover.Trigger className="hidden h-10 items-center gap-1.5 rounded-full bg-action pr-4 pl-3 text-sm font-bold text-on-action transition hover:bg-action-hover active:scale-[0.97] md:inline-flex">
+                        <Plus className="size-[18px]" strokeWidth={2.6} />
+                        Tambah
+                      </Popover.Trigger>
+                      <PopoverContent align="end" className="w-[min(36rem,calc(100vw-2rem))] p-4">
+                        <QuickActionsPanel onPick={() => setQuick(false)} />
+                      </PopoverContent>
+                    </Popover.Root>
+                  </div>
+                  <div className="hidden lg:block">
+                    <ProfileMenu />
+                  </div>
                 </div>
-              </section>
-            ))}
-          </nav>
-        </Sheet>
-        <Sheet open={help} onOpenChange={setHelp} title="Pintasan papan ketik">
-          <ShortcutList />
-        </Sheet>
-        {overlays}
-      </ConfirmProvider>
+              </header>
+              <main id="main" className="flex-1 px-4 pt-4 pb-32 md:px-8 md:pt-6 md:pb-12">
+                {children}
+              </main>
+            </div>
+          </div>
+          <MobileDock
+            onAdd={() => setQuickSheet(true)}
+            onMenu={() => setMenu(true)}
+            adding={quickSheet}
+          />
+          <Sheet
+            open={quickSheet}
+            onOpenChange={setQuickSheet}
+            title="Tambah catatan"
+            description="Pilih yang ingin dicatat"
+          >
+            <QuickActionsPanel onPick={() => setQuickSheet(false)} />
+          </Sheet>
+          <Sheet open={menu} onOpenChange={setMenu} title="Semua menu">
+            <nav aria-label="Semua halaman" className="flex flex-col gap-5">
+              {[...NAV_GROUPS, { label: 'Lainnya', pages: NAV_FOOTER }].map((group) => (
+                <section key={group.label}>
+                  <h3 className="mb-2 text-xs font-bold tracking-wide text-ink-3 uppercase">
+                    {group.label}
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    {group.pages.map((id) => (
+                      <Link
+                        key={id}
+                        href={`/${id}`}
+                        onClick={() => setMenu(false)}
+                        aria-current={page === id ? 'page' : undefined}
+                        className="flex flex-col items-center gap-2 rounded-2xl bg-surface-2 px-2 py-4 text-center text-[13px] font-bold text-ink-2 transition active:scale-[0.96] aria-[current=page]:bg-accent aria-[current=page]:text-accent-ink"
+                      >
+                        <PageIcon name={PAGES[id].icon} className="size-6" />
+                        {PAGES[id].label}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </nav>
+          </Sheet>
+          <Sheet open={help} onOpenChange={setHelp} title="Pintasan papan ketik">
+            <ShortcutList />
+          </Sheet>
+          {overlays}
+        </ConfirmProvider>
+      </MotionConfig>
     </LazyMotion>
   );
 }

@@ -40,7 +40,8 @@ export const EMPTY =
 export const NOTE = 'rounded-[10px] bg-surface-2 text-[12px] leading-[1.5] text-ink-2';
 export const NOTE_LINK = '[&_a]:font-semibold [&_a]:text-accent-strong [&_a]:underline';
 export const STATUS = 'mt-3.5 flex flex-wrap items-center gap-2 text-[12px] text-ink-3';
-export const ACTIONS = 'mt-3 flex flex-wrap gap-2';
+/** Tombol aksi panel selebar panel: satu tombol penuh, dua tombol berbagi rata. */
+export const ACTIONS = 'mt-3 grid auto-cols-fr grid-flow-col gap-2 [&>button]:min-h-11';
 /** Judul kecil di kanan kepala pelacak/daftar; disembunyikan di ponsel. */
 export const HEAD_NOTE = 'ml-auto truncate font-semibold text-ink-3 max-md:hidden';
 export const HEAD_TILE = 'size-[34px] rounded-[10px]';
@@ -264,8 +265,9 @@ export function PanelHead({
 
 /** Judul bagian dalam panel dengan keterangan kecil di kanan (mis. "satuan"). */
 export function Section({ title, meta }: { title: string; meta?: string }) {
+  // Berjarak dari isi di atasnya (tombol, angka, saringan); di awal kartu tidak perlu jarak.
   return (
-    <h3 className="flex items-baseline justify-between gap-2 text-[13px] font-extrabold text-ink">
+    <h3 className="flex items-baseline justify-between gap-2 text-[13px] font-extrabold text-ink not-first:mt-5">
       {title}
       {meta && <small className="text-[11px] font-semibold text-ink-3">{meta}</small>}
     </h3>

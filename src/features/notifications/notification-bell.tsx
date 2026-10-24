@@ -14,6 +14,7 @@ import {
   operationEntities,
 } from '@/features/records/constants';
 import { getFollowUps, recordHref, type FollowUp } from './follow-ups';
+import { PopoverContent } from '@/components/ui/menu';
 import { cn } from '@/lib/utils';
 
 const ENTITIES: Entity[] = [
@@ -107,60 +108,55 @@ export function NotificationBell() {
           />
         )}
       </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Content
-          align="end"
-          sideOffset={10}
-          collisionPadding={12}
-          className="pop z-50 w-[min(24rem,calc(100vw-1.5rem))] rounded-3xl bg-surface p-2 shadow-float"
-        >
-          <p className="px-3 pt-2 pb-1 text-base font-bold">Pengingat</p>
-          <div className="max-h-[60vh] overflow-y-auto">
-            {error && <p className="m-2 rounded-2xl bg-late p-3 text-sm text-late-ink">{error}</p>}
-            {!error && !groups.length && (
-              <p className="m-2 rounded-2xl bg-surface-2 p-4 text-sm text-ink-3">
-                Tidak ada pengingat. Semua tenggat dan stok aman.
-              </p>
-            )}
-            {groups.map((group) => (
-              <section key={group.label} className="py-1">
-                <h3 className="px-3 py-1.5 text-xs font-bold text-ink-3 uppercase">
-                  {group.label}
-                </h3>
-                {group.rows.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="flex gap-3 rounded-2xl px-3 py-2.5 transition hover:bg-surface-2"
+      <PopoverContent
+        align="end"
+        collisionPadding={12}
+        className="w-[min(24rem,calc(100vw-1.5rem))] p-2"
+      >
+        <p className="px-3 pt-2 pb-1 text-base font-bold">Pengingat</p>
+        <div className="max-h-[60vh] overflow-y-auto">
+          {error && <p className="m-2 rounded-2xl bg-late p-3 text-sm text-late-ink">{error}</p>}
+          {!error && !groups.length && (
+            <p className="m-2 rounded-2xl bg-surface-2 p-4 text-sm text-ink-3">
+              Tidak ada pengingat. Semua tenggat dan stok aman.
+            </p>
+          )}
+          {groups.map((group) => (
+            <section key={group.label} className="py-1">
+              <h3 className="px-3 py-1.5 text-xs font-bold text-ink-3 uppercase">{group.label}</h3>
+              {group.rows.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="flex gap-3 rounded-2xl px-3 py-2.5 transition hover:bg-surface-2"
+                >
+                  <span
+                    className={cn(
+                      'mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl',
+                      item.urgent ? 'bg-late text-late-ink' : 'bg-warn text-warn-ink',
+                    )}
                   >
-                    <span
-                      className={cn(
-                        'mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl',
-                        item.urgent ? 'bg-late text-late-ink' : 'bg-warn text-warn-ink',
-                      )}
-                    >
-                      {item.urgent ? (
-                        <CircleAlert className="size-4" />
-                      ) : (
-                        <Clock className="size-4" />
-                      )}
+                    {item.urgent ? (
+                      <CircleAlert className="size-4" />
+                    ) : (
+                      <Clock className="size-4" />
+                    )}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-semibold text-ink">
+                      {item.title}
                     </span>
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-semibold text-ink">
-                        {item.title}
-                      </span>
-                      <span className="block text-xs text-ink-3">
-                        {item.kind} · {item.reason}
-                      </span>
+                    <span className="block text-xs text-ink-3">
+                      {item.kind} · {item.reason}
                     </span>
-                  </Link>
-                ))}
-              </section>
-            ))}
-          </div>
-        </Popover.Content>
-      </Popover.Portal>
+                  </span>
+                </Link>
+              ))}
+            </section>
+          ))}
+        </div>
+      </PopoverContent>
     </Popover.Root>
   );
 }

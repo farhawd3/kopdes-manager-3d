@@ -10,8 +10,9 @@ Satu-satunya catatan keadaan untuk semua AI dan manusia. Timpa bagian yang berub
 - Rutin harian pindah ke database (**migrasi 11**, `supabase/migrations/20261023000011_rutin_harian.sql`). Sebelum dijalankan, Beranda menampilkan pesan migrasi; rutin lama di peramban bisa dipindahkan dengan satu tombol setelah migrasi aktif.
 - **Satu gaya kode untuk seluruh proyek**, termasuk Dunia 3D: nama kode, berkas, tes, dan skrip berbahasa Inggris; Dunia 3D memakai kelas Tailwind dan token warna aplikasi (ikut tema gelap), `monitoring.css` dihapus. Nilai string yang tersimpan atau tampil di alamat (`lokasi=`, `pilih=`, kunci ruang) sengaja tetap bahasa Indonesia.
 - Audit kode selesai dan semua temuan diperbaiki: tombol muat ulang selalu ke server, aturan lewat tenggat dan jam WIB masing-masing satu fungsi, sisa kode dunia lama dan dependensi yang tidak dipakai dihapus.
-- Pemeriksaan terakhir: `npm run cek:penuh` lulus (31 berkas tes / 198 tes, build, JS awal halaman utama 406–490 KB dari batas 500 KB).
+- Pemeriksaan terakhir (24 Okt): `npm run cek:penuh` lulus (31 berkas tes / 198 tes, build, JS awal halaman utama 409–496 KB dari batas 500 KB). Tes ruang Dunia 3D bisa melewati batas 5 detik bila mesin sedang sibuk; lulus saat diulang.
 - Mode demo diperiksa di peramban: Beranda, Tugas, dan Dunia 3D (lebar 375, 768/900, 1200, 1440, tema gelap).
+- **Poles tampilan menyeluruh** (24 Okt): kolom isian terlihat jelas dan menyala saat diketik; palet Ctrl K dan pencarian Dunia 3D menandai jenis setiap hasil (Tugas, Proyek, Agenda, Menu, Perintah) dan menyorot kata yang dicari; semua menu dan popover memakai satu komponen (`components/ui/menu.tsx`) dengan gerak pegas; laci di HP bisa ditarik turun untuk menutup; sidebar dan rel tablet muat tanpa terpotong; toast tanpa `!important`; gerak berkurang dihormati. Kolom di laci tugas dan formulir (tanggal, jam, penanggung jawab, referensi) berikon dan rapi; tombol aksi panel Dunia 3D selebar panel. Rincian di [TAMPILAN](TAMPILAN.md).
 
 ## Langkah berikut
 

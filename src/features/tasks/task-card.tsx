@@ -15,6 +15,7 @@ import type { Item } from '@/features/records/schemas';
 import type { Workspace } from '@/features/workspace/use-workspace';
 import { Wave } from '@/components/ui/wave';
 import { Check } from '@/components/ui/check';
+import { MenuContent, MenuItem, MenuSeparator } from '@/components/ui/menu';
 import { SegmentBar } from '@/components/ui/progress';
 import { AvatarStack } from '@/components/ui/avatar';
 import { projectTone } from '@/lib/tones';
@@ -39,9 +40,6 @@ export function dueText(task: Item, date = today()): { text: string; late: boole
   if (diff <= 7) return { text: `${diff} hari lagi`, late: false };
   return { text: formatDate(due), late: false };
 }
-
-const ITEM =
-  'flex h-10 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold text-ink-2 outline-none data-[highlighted]:bg-surface-2 data-[highlighted]:text-ink [&_svg]:size-4';
 
 /** Kartu tugas pastel per proyek (gaya TaskTrack): label proyek, judul, progres bersegmen, orang, tenggat. */
 export function TaskCard({
@@ -116,40 +114,21 @@ export function TaskCard({
             >
               <EllipsisVertical className="size-4" />
             </DropdownMenu.Trigger>
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content
-                align="end"
-                sideOffset={6}
-                className="pop z-50 w-52 rounded-2xl bg-surface p-1.5 shadow-float"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <DropdownMenu.Item
-                  className={ITEM}
-                  onSelect={() => void postponeTask(task, 1, refresh)}
-                >
-                  <CalendarClock />
-                  Tunda 1 hari
-                </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  className={ITEM}
-                  onSelect={() => void postponeTask(task, 7, refresh)}
-                >
-                  <CalendarPlus />
-                  Tunda 1 minggu
-                </DropdownMenu.Item>
-                <DropdownMenu.Separator className="my-1 h-px bg-line" />
-                <DropdownMenu.Item
-                  className={cn(
-                    ITEM,
-                    'data-[highlighted]:bg-late data-[highlighted]:text-late-ink',
-                  )}
-                  onSelect={() => void cancelTask(task, refresh)}
-                >
-                  <XCircle />
-                  Batalkan tugas
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
+            <MenuContent align="end" onClick={(event) => event.stopPropagation()}>
+              <MenuItem onSelect={() => void postponeTask(task, 1, refresh)}>
+                <CalendarClock />
+                Tunda 1 hari
+              </MenuItem>
+              <MenuItem onSelect={() => void postponeTask(task, 7, refresh)}>
+                <CalendarPlus />
+                Tunda 1 minggu
+              </MenuItem>
+              <MenuSeparator />
+              <MenuItem danger onSelect={() => void cancelTask(task, refresh)}>
+                <XCircle />
+                Batalkan tugas
+              </MenuItem>
+            </MenuContent>
           </DropdownMenu.Root>
           <Check
             checked={done}

@@ -1,7 +1,7 @@
 'use client';
 import { useMemo, useState, type ReactNode } from 'react';
 import { AnimatePresence } from 'motion/react';
-import { Download, FileUp, LayoutGrid, Plus, Rows3, Search, X } from 'lucide-react';
+import { Download, FileUp, LayoutGrid, Plus, Rows3, X } from 'lucide-react';
 import { catalog, formatChoiceLabel } from './catalog';
 import type { Entity, Item } from './schemas';
 import { choicesFor, fieldKind } from './fields-meta';
@@ -11,7 +11,7 @@ import { CsvImportSheet, RecordFormSheet } from './lazy';
 import { useRecordParams } from './use-record-params';
 import type { Workspace } from '@/features/workspace/use-workspace';
 import { Button } from '@/components/ui/button';
-import { Input, Select } from '@/components/ui/field';
+import { SearchField, Select, TOOLBAR_CONTROL } from '@/components/ui/field';
 import { EmptyState, Notice } from '@/components/ui/states';
 import { downloadCsv } from '@/lib/ledger';
 import { today } from '@/lib/date';
@@ -160,22 +160,19 @@ export function RecordsView({
       )}
       {metrics && ready && metrics(filtered)}
       <div className="flex flex-wrap items-center gap-2">
-        <label className="relative min-w-0 flex-1 basis-60">
-          <span className="sr-only">Cari {entityTitle(entity).toLowerCase()}</span>
-          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink-3" />
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder={`Cari ${entityTitle(entity).toLowerCase()}…`}
-            className="bg-surface pl-10 shadow-card"
-          />
-        </label>
+        <SearchField
+          value={search}
+          onChange={setSearch}
+          label={`Cari ${entityTitle(entity).toLowerCase()}`}
+          placeholder={`Cari ${entityTitle(entity).toLowerCase()}…`}
+          className="flex-1 basis-60"
+        />
         {hasDate && entity !== 'inventory-items' && (
           <Select
             value={month}
             onChange={(event) => setMonth(event.target.value)}
             aria-label="Saring bulan"
-            className="w-44 bg-surface shadow-card"
+            className={`${TOOLBAR_CONTROL} w-44`}
           >
             <option value="">Semua bulan</option>
             {monthOptions(rows).map((m) => (

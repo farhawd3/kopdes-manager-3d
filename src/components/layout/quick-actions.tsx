@@ -101,19 +101,21 @@ export function QuickActionsPanel({ onPick }: { onPick: () => void }) {
   }, [onPick, router]);
   return (
     <div className="flex flex-col gap-4">
-      {QUICK_ACTIONS.map((group) => (
+      {QUICK_ACTIONS.map((group, groupIndex) => (
         <section key={group.group}>
           <h3 className="mb-2 text-xs font-bold tracking-wide text-ink-3 uppercase">
             {group.group}
           </h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-            {group.items.map((item) => (
+            {group.items.map((item, index) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={onPick}
                 data-tone={item.tone}
-                className="group relative flex flex-col items-start gap-2 rounded-2xl bg-tone p-3 text-tone-ink transition duration-300 hover:-translate-y-0.5 hover:shadow-card"
+                // Ubin naik berurutan lintas kelompok (5 ubin per kelompok).
+                style={{ animationDelay: `${(groupIndex * 5 + index) * 22}ms` }}
+                className="group relative flex animate-[item-in_0.36s_var(--ease-out)_backwards] flex-col items-start gap-2 rounded-2xl bg-tone p-3 text-tone-ink transition duration-300 hover:-translate-y-0.5 hover:shadow-card active:scale-[0.97]"
               >
                 <item.icon className="size-5" aria-hidden="true" />
                 <span className="text-[13px] leading-tight font-bold">{item.label}</span>

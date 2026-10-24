@@ -270,7 +270,7 @@ function Appearance() {
             >
               <span
                 className="grid size-7 place-items-center rounded-full text-white"
-                style={{ background: option.swatch }}
+                style={{ background: `var(--swatch-${option.id})` }}
               >
                 {accent === option.id && <Check className="size-4" strokeWidth={3} />}
               </span>

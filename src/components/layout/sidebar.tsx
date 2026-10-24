@@ -30,9 +30,9 @@ function NavLink({ id, active, open }: { id: PageId; active: boolean; open?: num
       aria-current={active ? 'page' : undefined}
       title={page.label}
       className={cn(
-        'group relative flex h-10 items-center gap-3 rounded-xl px-3 text-[14.5px] font-semibold transition-colors',
-        'max-lg:h-14 max-lg:flex-col max-lg:justify-center max-lg:gap-0.5 max-lg:px-1 max-lg:text-[10.5px]',
-        active ? 'font-bold text-ink' : 'text-ink-2 hover:text-ink',
+        'group relative flex h-9 items-center gap-3 rounded-xl px-3 text-[14.5px] font-semibold transition-colors',
+        'max-lg:h-12 max-lg:flex-col max-lg:justify-center max-lg:gap-0.5 max-lg:px-0.5 max-lg:text-[10.5px]',
+        active ? 'font-bold text-ink' : 'text-ink-2 hover:bg-surface-3/70 hover:text-ink',
       )}
     >
       {active && (
@@ -44,7 +44,10 @@ function NavLink({ id, active, open }: { id: PageId; active: boolean; open?: num
       )}
       <PageIcon
         name={page.icon}
-        className={cn('relative size-[19px] shrink-0', active && 'text-accent-strong')}
+        className={cn(
+          'relative size-[19px] shrink-0 transition-transform duration-200 group-active:scale-90',
+          active && 'text-accent-strong',
+        )}
       />
       <span className="relative truncate max-lg:max-w-full">{page.label}</span>
       {open !== undefined && open > 0 && (
@@ -68,7 +71,7 @@ export function Sidebar() {
     <aside className="sticky top-0 hidden h-dvh w-[84px] shrink-0 flex-col border-r border-line bg-surface-2 md:flex lg:w-[264px]">
       <Link
         href="/home"
-        className="flex items-center gap-3 px-5 pt-6 pb-6 max-lg:justify-center max-lg:px-0"
+        className="flex items-center gap-3 px-5 pt-5 pb-4 max-lg:justify-center max-lg:px-0"
         aria-label="Kopdes, ke Beranda"
       >
         <LogoMark />
@@ -81,13 +84,17 @@ export function Sidebar() {
           </span>
         </span>
       </Link>
-      <nav aria-label="Menu utama" className="scrollbar-none flex-1 overflow-y-auto px-3 pb-3">
+      {/* Di layar pendek menu bergulir; bilah gulir tipis tetap terlihat agar Kas dan Tim tidak "hilang". */}
+      <nav
+        aria-label="Menu utama"
+        className="flex-1 overflow-y-auto overscroll-contain px-3 pb-3 max-lg:px-2"
+      >
         {NAV_GROUPS.map((group) => (
-          <div key={group.label} className="mb-2">
-            <p className="px-3 pt-2 pb-1.5 text-[11px] font-bold tracking-[0.08em] text-ink-3 uppercase max-lg:hidden">
+          <div key={group.label} className="mb-1.5">
+            <p className="px-3 pt-1.5 pb-1 text-[11px] font-bold tracking-[0.08em] text-ink-3 uppercase max-lg:hidden">
               {group.label}
             </p>
-            <div className="flex flex-col gap-0.5 max-lg:border-t max-lg:border-line max-lg:pt-2">
+            <div className="flex flex-col gap-0.5 max-lg:border-t max-lg:border-line max-lg:pt-1.5">
               {group.pages.map((id) => (
                 <NavLink key={id} id={id} active={active === id} />
               ))}
@@ -110,7 +117,9 @@ export function Sidebar() {
                   data-tone={projectTone(project)}
                   className={cn(
                     'flex h-9 items-center gap-3 rounded-xl px-3 text-[13.5px] font-semibold transition-colors',
-                    current ? 'bg-tone text-tone-ink' : 'text-ink-2 hover:bg-surface',
+                    current
+                      ? 'bg-tone text-tone-ink'
+                      : 'text-ink-2 hover:bg-surface-3/70 hover:text-ink',
                   )}
                 >
                   <span className="size-2.5 shrink-0 rounded-[4px] bg-tone-bar" />
@@ -121,7 +130,7 @@ export function Sidebar() {
           </div>
         )}
       </nav>
-      <div className="flex flex-col gap-0.5 border-t border-line px-3 pt-2">
+      <div className="flex flex-col gap-0.5 border-t border-line px-3 pt-2 max-lg:px-2">
         {NAV_FOOTER.map((id) => (
           <NavLink key={id} id={id} active={active === id} />
         ))}

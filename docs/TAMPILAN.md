@@ -22,6 +22,8 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Sorotan | `accent`, `accent-ink`, `accent-strong` | menu aktif, tab, hari terpilih, fokus; 5 pilihan pengguna |
 | Status | `plan`, `doing`, `done`, `late`, `warn` (+ `-ink`) | rencana, dikerjakan, selesai, terlambat, perhatian |
 | Nada kartu | `tone`, `tone-ink`, `tone-bar`, `tone-line` | dipasang lewat `data-tone="rose\|peach\|sky\|lavender\|mint\|lemon\|slate"` |
+| Kolom isian | `field`, `field-line` | latar dan garis kolom yang terlihat saat diam; saat diketik menyala warna sorotan |
+| Contoh sorotan | `swatch-lavender`, `swatch-sky`, `swatch-mint`, `swatch-peach`, `swatch-rose` | bulatan pemilih warna di profil dan Pengaturan |
 
 - Tema terang dan gelap: `data-theme` di `<html>`, pilihan tersimpan di `localStorage` (`kopdes-theme`, `kopdes-accent`), diterapkan sebelum halaman tampil.
 - Warna kartu tugas dan proyek mengikuti **proyek** (`lib/tones.ts`, kolom `color` proyek). Kartu catatan lain mengikuti artinya: kas masuk mint, keluar mawar; stok habis mawar, menipis peach (`features/records/card-tone.ts`).
@@ -31,31 +33,40 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 
 | Komponen | Berkas | Catatan |
 |---|---|---|
-| Laci / lembar bawah | `components/ui/sheet.tsx` | Semua formulir dan detail. Panel penuh tinggi menempel di kanan (garis sorotan di atas, tutup di kiri atas, judul besar) di tablet/laptop; dari bawah di HP. Detail tugas memakai daftar label–nilai dan subtugas berupa kapsul |
+| Laci / lembar bawah | `components/ui/sheet.tsx` | Semua formulir dan detail. Panel penuh tinggi menempel di kanan (garis sorotan di atas, tutup di kiri atas, judul besar) di tablet/laptop; dari bawah di HP. Di HP lembar bisa ditarik turun dari pegangan untuk menutup (lebih dari sepertiga atau dikibas cepat), kurang dari itu kembali ke tempat. Detail tugas memakai daftar label–nilai dan subtugas berupa kapsul |
+| Kolom isian | `components/ui/field.tsx` | `Input`, `Select`, `Textarea`, `Field` (label, wajib, petunjuk, galat berikon), `SearchField` (ikon menyala, tombol hapus, Esc mengosongkan). Kolom di bilah alat memakai `TOOLBAR_CONTROL` (kartu putih). Kolom tanggal/jam berikon kalender/jam di kiri dan seluruh kolom membuka pemilih; `Select` dan `Input` menerima `icon` |
+| Menu dan popover | `components/ui/menu.tsx` | `MenuContent`, `MenuItem` (`danger` untuk batalkan/hapus), `MenuSeparator`, `PopoverContent`. Satu bentuk untuk semua menu tarik-turun dan popover |
+| Palet Ctrl K | `components/layout/command-palette.tsx` | Setiap hasil bertanda jenis: ubin ikon dan label di kanan. Catatan berwarna menurut kelompok menunya (Kerja lavender, Catatan langit, Usaha peach, Koperasi mint) dengan label pendek (Tugas, Proyek, Agenda…); Perintah dan Menu berubin netral. Kata yang dicari ditandai. Urutan: Hasil, Perintah, Menu, lalu Buat tugas paling bawah |
+| Petunjuk tombol | `components/ui/kbd.tsx` | Satu bentuk tombol papan ketik di bilah atas, palet, Dunia 3D, dan daftar pintasan |
 | Linimasa (Gantt) | `features/tasks/task-timeline.tsx` | Satu baris per proyek (tugas yang bertumpuk turun ke lajur berikut), kisi hari, kolom hari ini berbayang, garis jam sekarang, batang kapsul berisi avatar; batang terpilih berwarna penuh |
 | Pengaturan | `features/settings/settings-page.tsx` | Satu halaman tanpa tab: kartu profil, tema lewat pratinjau mini, warna sorotan berupa kapsul, keamanan dan data sebagai baris berkelompok; Ganti PIN di laci |
 | Konfirmasi | `components/ui/confirm.tsx` | Satu-satunya dialog di tengah, hanya untuk tindakan yang tak bisa diurungkan |
-| Toast + Urungkan | `sonner` di kerangka | Hasil aksi; perubahan tugas selalu bisa diurungkan |
+| Toast + Urungkan | `sonner` di kerangka | Hasil aksi; perubahan tugas selalu bisa diurungkan. Gaya bawaan sonner dimatikan (`unstyled`), semua kelas dari token |
 | Tab bergeser | `components/ui/tabs.tsx` | Penanda aktif meluncur (Motion) |
 | Ubin angka | `components/ui/stat.tsx` | Ringkasan pastel; catatan kecil menjelaskan arti angka |
 | Kartu tugas | `features/tasks/task-card.tsx` | Label proyek, centang, progres bersegmen, avatar, tenggat |
 | Hiasan | `components/ui/wave.tsx` | Satu-satunya hiasan kartu: lipatan timbul di kanan atas (dua bidang V lebih terang dengan bayangan lembut berwarna kartu), seperti kartu TaskTrack |
+| Detail tugas | `features/tasks/task-sheet.tsx` | Sifat tugas (penanggung jawab dengan avatar, status, prioritas bendera, tenggat, proyek) berupa kolom lunak berikon; jadwal berulang berlabel Ulangi/Jam/Sampai tanggal |
 | Pemilih tampilan | `components/ui/view-menu.tsx` | "Papan — Ganti tampilan ⌄" di kepala halaman Tugas |
 | Logo | `components/ui/logo.tsx`, `app/icon.svg` | Ubin koral dengan atap gerai dan centang; dipakai di sidebar dan halaman PIN |
 | Kepala halaman | `components/layout/page-header.tsx` | Bilah putih: judul dan ringkasan di kiri, aksi di kanan. Beranda memakai bilah tanggal (bulan, hari ini, tim) |
 
 ## Kerangka
 
-- Laptop (≥ 1024 px): sidebar 264 px dengan grup Kerja, Catatan, Usaha, Koperasi, lalu proyek aktif dan profil.
-- Tablet (768–1023 px): rel ikon 84 px dengan label kecil.
+- Laptop (≥ 1024 px): sidebar 264 px dengan grup Kerja, Catatan, Usaha, Koperasi, lalu proyek aktif dan profil. Menu utama muat utuh di layar setinggi 900 px; di layar lebih pendek menu bergulir dengan bilah gulir tipis yang terlihat.
+- Tablet (768–1023 px): rel ikon 84 px dengan label kecil; semua menu muat di layar 1024 px.
 - HP (< 768 px): bilah atas ringkas + navigasi bawah melayang. Item aktif mengembang menjadi kapsul pastel berlabel yang meluncur; tombol tambah koral (warna logo) di tengah membuka menu tambah cepat. Bilah bawah minggir saat menggulir ke bawah dan muncul lagi saat menggulir ke atas (`lib/use-hide-on-scroll.ts`), agar tidak menutupi isi. Saringan Tugas menjadi satu baris geser.
 - Bilah atas: sapaan dan nama manajer di kiri, cari (Ctrl K) di tengah, lalu satu kapsul putih berisi lonceng dan tombol Tambah, lalu avatar. Di HP: avatar + sapaan, kapsul berisi ikon cari dan lonceng.
 - Menu aktif di sidebar: kapsul putih berbayang dengan ikon berwarna sorotan.
 
 ## Gerak
 
-- Satu bahasa gerak: `ease-out` cepat (`--ease-out`), 0,2–0,45 detik.
-- Yang bergerak: kartu masuk berurutan, penanda menu/tab meluncur, centang pop, kartu berpindah kolom, laci meluncur, konfeti kecil saat semua rutin selesai.
+- Tiga kurva di `globals.css`: `--ease-out` (masuk biasa, 0,2–0,45 detik), `--ease-spring` (pegas lembut yang sedikit melewati lalu kembali: menu, popover, palet, dialog), `--ease-sheet` (laci: cepat di awal, mendarat pelan).
+- Menu dan popover (`.menu`) tumbuh dari tombol pemicunya (asal gerak dari Radix); butirnya naik berurutan 25 ms.
+- Palet (`.palette`) turun dengan pegas; tinggi daftar mengikuti jumlah hasil; baris naik berurutan hanya saat dibuka (saat mengetik cmdk memindah baris, animasi berulang terasa berkedip).
+- Laci (`.sheet`) meluncur dari kanan (tablet/laptop) atau bawah (HP); judul lalu isinya menyusul. Ubin tambah cepat naik berurutan.
+- Yang lain: kartu masuk berurutan, penanda menu/tab meluncur, centang pop, kartu berpindah kolom, konfeti kecil saat semua rutin selesai.
+- Gerak berkurang (`prefers-reduced-motion`): lapisan hanya memudar 0,15 detik, animasi berurutan tanpa jeda, dan Motion ikut (`MotionConfig reducedMotion="user"`).
 - Animasi dimuat lewat `LazyMotion` agar tidak memperbesar unduhan awal.
 
 ## Kata-kata di layar

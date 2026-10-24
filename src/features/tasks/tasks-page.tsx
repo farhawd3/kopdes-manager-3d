@@ -21,7 +21,6 @@ import {
   ListChecks,
   LoaderCircle,
   Plus,
-  Search,
   Target,
   X,
 } from 'lucide-react';
@@ -39,10 +38,11 @@ import { PageHeader } from '@/components/layout/page-header';
 import { ViewMenu } from '@/components/ui/view-menu';
 import { AvatarStack } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Input, Select } from '@/components/ui/field';
+import { Input, SearchField, Select, TOOLBAR_CONTROL } from '@/components/ui/field';
 import { StatTile } from '@/components/ui/stat';
 import { EmptyState, ErrorState, Notice } from '@/components/ui/states';
 import { Sheet } from '@/components/ui/sheet';
+import { MenuContent, MenuItem, PopoverContent } from '@/components/ui/menu';
 import { SegmentBar } from '@/components/ui/progress';
 import { usePreference } from '@/lib/use-preference';
 import { downloadCsv } from '@/lib/ledger';
@@ -60,8 +60,8 @@ import { TaskRow } from './task-card';
 import { saveTask } from './task-actions';
 
 type View = 'list' | 'board' | 'calendar' | 'timeline';
-const MENU_ITEM =
-  'flex h-10 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold text-ink-2 outline-none data-[highlighted]:bg-surface-2 data-[highlighted]:text-ink [&_svg]:size-4';
+/** Saringan di bilah alat: selebar pilihan yang aktif, bukan terpotong di lebar tetap. */
+const FILTER_SELECT = `${TOOLBAR_CONTROL} w-auto max-w-60 shrink-0 field-sizing-content`;
 const LEGACY_VIEWS: Record<string, View> = {
   daftar: 'list',
   harian: 'list',
@@ -394,23 +394,21 @@ export function TasksPage() {
       )}
 
       <div className="flex flex-wrap items-center gap-2">
-        <label className="relative min-w-0 flex-1 basis-56">
-          <span className="sr-only">Cari tugas</span>
-          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink-3" />
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Cari tugas…"
-            className="bg-surface pl-10 shadow-card"
-          />
-        </label>
-        {/* Di HP dan tablet kecil saringan jadi satu baris geser di bawah pencarian, agar tidak menumpuk tiga baris. */}
-        <div className="scrollbar-none -mx-4 flex w-[calc(100%+2rem)] gap-2 overflow-x-auto px-4 py-1 max-md:order-last md:-mx-0 md:contents md:px-0">
+        <SearchField
+          value={search}
+          onChange={setSearch}
+          label="Cari tugas"
+          placeholder="Cari tugas…"
+          className="flex-1 basis-40 sm:basis-56"
+        />
+        {/* Saringan selalu di baris kedua, di bawah pencarian dan tombol aksi: di HP satu baris geser,
+            di tablet dan laptop baris yang boleh membungkus, agar tidak terpotong atau tercecer. */}
+        <div className="scrollbar-none order-last -mx-4 flex w-[calc(100%+2rem)] gap-2 overflow-x-auto px-4 py-1 md:mx-0 md:w-full md:flex-wrap md:overflow-visible md:px-0 md:py-0">
           <Select
             aria-label="Proyek"
             value={project}
             onChange={(event) => setParam('project', event.target.value || null)}
-            className="w-40 shrink-0 bg-surface shadow-card"
+            className={FILTER_SELECT}
           >
             <option value="">Semua proyek</option>
             {(data.workstreams || []).map((row) => (
@@ -423,7 +421,7 @@ export function TasksPage() {
             aria-label="Penanggung jawab"
             value={assignee}
             onChange={(event) => setAssignee(event.target.value)}
-            className="w-40 shrink-0 bg-surface shadow-card"
+            className={FILTER_SELECT}
           >
             <option value="">Semua orang</option>
             <option value="-">Belum ada penanggung jawab</option>
@@ -437,7 +435,7 @@ export function TasksPage() {
             aria-label="Prioritas"
             value={priority}
             onChange={(event) => setPriority(event.target.value)}
-            className="w-40 shrink-0 bg-surface shadow-card"
+            className={FILTER_SELECT}
           >
             <option value="">Semua prioritas</option>
             {['mendesak', 'tinggi', 'normal', 'rendah'].map((p) => (
@@ -451,7 +449,7 @@ export function TasksPage() {
               aria-label="Periode kerja"
               value={sprint}
               onChange={(event) => setSprint(event.target.value)}
-              className="w-40 shrink-0 bg-surface shadow-card"
+              className={FILTER_SELECT}
             >
               <option value="">Semua periode</option>
               {(data.sprints || []).map((row) => (
@@ -466,7 +464,7 @@ export function TasksPage() {
               aria-label="Urutkan"
               value={sort}
               onChange={(event) => setSort(event.target.value)}
-              className="w-40 shrink-0 bg-surface shadow-card"
+              className={FILTER_SELECT}
             >
               <option value="due">Tenggat terdekat</option>
               <option value="priority">Prioritas</option>
@@ -486,30 +484,22 @@ export function TasksPage() {
               <Bookmark />
             </Button>
           </Popover.Trigger>
-          <Popover.Portal>
-            <Popover.Content
-              align="end"
-              sideOffset={8}
-              className="pop z-50 w-72 rounded-3xl bg-surface p-3 shadow-float"
-            >
-              <SavedViews
-                saved={saved}
-                onApply={applyView}
-                onSave={(name) =>
-                  setSavedText(
-                    JSON.stringify(
-                      [...saved.filter((s) => s.name !== name), { ...currentView, name }].slice(
-                        -10,
-                      ),
-                    ),
-                  )
-                }
-                onDelete={(name) =>
-                  setSavedText(JSON.stringify(saved.filter((s) => s.name !== name)))
-                }
-              />
-            </Popover.Content>
-          </Popover.Portal>
+          <PopoverContent align="end" className="w-72 p-3">
+            <SavedViews
+              saved={saved}
+              onApply={applyView}
+              onSave={(name) =>
+                setSavedText(
+                  JSON.stringify(
+                    [...saved.filter((s) => s.name !== name), { ...currentView, name }].slice(-10),
+                  ),
+                )
+              }
+              onDelete={(name) =>
+                setSavedText(JSON.stringify(saved.filter((s) => s.name !== name)))
+              }
+            />
+          </PopoverContent>
         </Popover.Root>
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
@@ -522,37 +512,29 @@ export function TasksPage() {
               <Ellipsis />
             </Button>
           </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              align="end"
-              sideOffset={8}
-              className="pop z-50 w-56 rounded-2xl bg-surface p-1.5 shadow-float"
-            >
-              <DropdownMenu.Item className={MENU_ITEM} onSelect={() => setSprints(true)}>
-                <Target />
-                Periode kerja
-              </DropdownMenu.Item>
-              <DropdownMenu.Item className={MENU_ITEM} onSelect={exportCsv}>
-                <Download />
-                Unduh CSV
-              </DropdownMenu.Item>
-              <DropdownMenu.Item className={MENU_ITEM} onSelect={() => setImporting(true)}>
-                <FileUp />
-                Impor CSV
-              </DropdownMenu.Item>
-              <DropdownMenu.Item
-                className={MENU_ITEM}
-                onSelect={() => setParam('status', 'dibatalkan')}
-              >
-                <ArchiveRestore />
-                Tugas dibatalkan
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
+          <MenuContent align="end" className="w-56">
+            <MenuItem onSelect={() => setSprints(true)}>
+              <Target />
+              Periode kerja
+            </MenuItem>
+            <MenuItem onSelect={exportCsv}>
+              <Download />
+              Unduh CSV
+            </MenuItem>
+            <MenuItem onSelect={() => setImporting(true)}>
+              <FileUp />
+              Impor CSV
+            </MenuItem>
+            <MenuItem onSelect={() => setParam('status', 'dibatalkan')}>
+              <ArchiveRestore />
+              Tugas dibatalkan
+            </MenuItem>
+          </MenuContent>
         </DropdownMenu.Root>
         {view === 'list' && !archive && (
           <Button
-            className="shadow-card"
+            // Di HP cukup ikon agar cari, simpanan, lainnya, dan pilih muat satu baris.
+            className="shadow-card max-sm:w-11 max-sm:px-0"
             variant={selecting ? 'primary' : 'secondary'}
             onClick={() => {
               setSelecting(!selecting);
@@ -560,7 +542,7 @@ export function TasksPage() {
             }}
           >
             <ListChecks />
-            {selecting ? 'Selesai memilih' : 'Pilih'}
+            <span className="max-sm:sr-only">{selecting ? 'Selesai memilih' : 'Pilih'}</span>
           </Button>
         )}
       </div>
@@ -725,7 +707,7 @@ export function TasksPage() {
               >
                 Tunda 1 hari
               </Button>
-              <label className="flex h-9 items-center gap-2 rounded-xl bg-surface px-2 text-[13px] font-semibold text-ink">
+              <label className="flex h-9 items-center gap-2 rounded-xl bg-surface px-2 text-[13px] font-semibold text-ink focus-within:ring-2 focus-within:ring-accent-strong">
                 Tenggat
                 <input
                   type="date"

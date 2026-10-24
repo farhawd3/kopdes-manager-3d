@@ -3,20 +3,44 @@ import { Command } from 'cmdk';
 import { Dialog } from 'radix-ui';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { CornerDownLeft, ListPlus, Moon, Search, Sun, Zap } from 'lucide-react';
+import { ListPlus, Moon, Search, Sun, X, Zap } from 'lucide-react';
 import { PageIcon } from '@/components/ui/icon';
-import { NAV_FOOTER, NAV_GROUPS, PAGES, recordLink } from './nav';
+import { Kbd } from '@/components/ui/kbd';
+import { Highlight } from '@/components/ui/highlight';
+import { NAV_FOOTER, NAV_GROUPS, PAGES, entityHome, recordLink } from './nav';
 import { useLoadedWorkspace } from '@/features/workspace/use-loaded-workspace';
 import { searchWorkspace } from '@/features/notifications/follow-ups';
 import { parseQuickAdd } from '@/features/home/quick-add';
+import type { Entity } from '@/features/records/schemas';
 import { useTheme } from '@/lib/theme';
-import { today } from '@/lib/date';
+import { formatDate, today } from '@/lib/date';
+import { cn } from '@/lib/utils';
 import { QUICK_ACTIONS } from './quick-actions';
 
 const ITEM =
-  'flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold text-ink-2 data-[selected=true]:bg-accent data-[selected=true]:text-accent-ink [&_svg]:size-[18px] [&_svg]:shrink-0';
+  'flex min-h-12 cursor-pointer items-center gap-3 rounded-2xl px-2.5 py-1.5 text-sm font-semibold text-ink-2 data-[selected=true]:bg-accent data-[selected=true]:text-accent-ink';
 const GROUP =
   '[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:pb-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-bold [&_[cmdk-group-heading]]:text-ink-3';
+/** Ubin ikon di kiri hasil; warnanya membedakan catatan, menu, dan perintah. */
+const TILE = 'grid size-9 shrink-0 place-items-center rounded-xl [&_svg]:size-[18px]';
+/** Label jenis di kanan hasil: Tugas, Proyek, Menu, Perintah. */
+const KIND = 'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold';
+const NEUTRAL_TILE = 'bg-surface-2 text-ink-2 ring-1 ring-line ring-inset';
+// Label Perintah/Menu hanya saat mencari: tanpa kata kunci, judul kelompok sudah cukup.
+const NEUTRAL_KIND = 'hidden bg-surface-3 text-ink-2 group-data-[searching]/palette:inline';
+/** Warna catatan mengikuti kelompok menunya: Kerja, Catatan, Usaha, Koperasi. */
+const AREA_TONES = ['lavender', 'sky', 'peach', 'mint'];
+
+function recordMarker(entity: Entity, kind: string) {
+  const { page } = entityHome(entity);
+  const area = NAV_GROUPS.findIndex((group) => group.pages.includes(page));
+  return {
+    icon: PAGES[page].icon,
+    tone: AREA_TONES[area] ?? 'slate',
+    // Nama tab lebih pendek dari judul katalog ("Proyek", bukan "Proyek & bidang kerja").
+    label: PAGES[page].tabs?.find((tab) => tab.entity === entity)?.label ?? kind,
+  };
+}
 
 /**
  * Palet Ctrl K: buka halaman, jalankan perintah, cari catatan yang sudah dimuat, atau buat tugas
@@ -60,60 +84,86 @@ export function CommandPalette({
           .map(([key, value]) => [`fill.${key}`, String(value)]),
       ).toString()
     : '';
+  const draftDetails = draft
+    ? [
+        draft.due_date && formatDate(draft.due_date),
+        draft.assignee,
+        draft.workstream_id &&
+          `#${String(data.workstreams?.find((row) => row.id === draft.workstream_id)?.data.title)}`,
+        draft.priority && draft.priority !== 'normal' && `Prioritas ${draft.priority}`,
+      ]
+        .filter(Boolean)
+        .join(' · ')
+    : '';
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="overlay fixed inset-0 z-50 bg-[var(--scrim)] backdrop-blur-[2px]" />
-        <Dialog.Content className="pop fixed top-[10vh] left-1/2 z-50 w-[min(40rem,calc(100vw-1.5rem))] -translate-x-1/2 overflow-hidden rounded-3xl bg-surface shadow-float">
+        <Dialog.Content
+          data-searching={query ? '' : undefined}
+          className="group/palette palette fixed top-[10vh] left-1/2 z-50 w-[min(40rem,calc(100vw-1.5rem))] -translate-x-1/2 overflow-hidden rounded-3xl bg-surface shadow-float ring-1 ring-line/70 outline-none max-md:top-3"
+        >
           <Dialog.Title className="sr-only">Cari dan buka</Dialog.Title>
           <Dialog.Description className="sr-only">
             Cari halaman, perintah, atau catatan
           </Dialog.Description>
-          <Command label="Cari dan buka" loop shouldFilter>
+          <Command label="Cari dan buka" loop>
             <div className="flex items-center gap-3 border-b border-line px-4">
-              <Search className="size-5 text-ink-3" aria-hidden="true" />
+              <Search className="size-5 shrink-0 text-accent-strong" aria-hidden="true" />
               <Command.Input
                 value={query}
                 onValueChange={setQuery}
-                placeholder="Cari tugas, halaman, atau tulis tugas baru…"
-                className="h-14 flex-1 bg-transparent text-base font-semibold text-ink outline-none placeholder:text-ink-3"
+                placeholder="Cari tugas, menu, atau tulis tugas baru…"
+                className="h-14 min-w-0 flex-1 bg-transparent text-base font-semibold text-ink outline-none placeholder:font-medium placeholder:text-ink-3"
               />
-              <kbd className="rounded-md bg-surface-3 px-1.5 py-0.5 text-[11px] font-bold text-ink-3">
-                Esc
-              </kbd>
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery('')}
+                  aria-label="Hapus pencarian"
+                  className="grid size-8 shrink-0 animate-[item-in_0.2s_var(--ease-out)] place-items-center rounded-lg text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
+              <Dialog.Close className="-mr-1 h-9 shrink-0 rounded-lg px-2 text-sm font-bold text-accent-strong md:hidden">
+                Batal
+              </Dialog.Close>
             </div>
-            <Command.List className="max-h-[60vh] overflow-y-auto p-2">
+            <Command.List className="overflow-y-auto overscroll-contain p-2">
               <Command.Empty className="p-6 text-center text-sm text-ink-3">
                 Tidak ada yang cocok. Coba kata lain.
               </Command.Empty>
-              {draft && (
-                <Command.Group heading="Buat" className={GROUP}>
-                  <Command.Item
-                    value={`buat tugas ${query}`}
-                    onSelect={() => go(draftHref)}
-                    className={ITEM}
-                  >
-                    <ListPlus />
-                    <span className="truncate">
-                      Buat tugas: <span className="text-ink">{draft.title}</span>
-                    </span>
-                    <CornerDownLeft className="ml-auto opacity-50" />
-                  </Command.Item>
-                </Command.Group>
-              )}
               {results.length > 0 && (
-                <Command.Group heading="Catatan" className={GROUP}>
-                  {results.map((result) => (
-                    <Command.Item
-                      key={result.id}
-                      value={`${result.title} ${result.kind} ${result.context} ${result.id}`}
-                      onSelect={() => go(recordLink(result.entity, result.id.split(':')[1]))}
-                      className={ITEM}
-                    >
-                      <span className="min-w-0 flex-1 truncate text-ink">{result.title}</span>
-                      <span className="shrink-0 text-xs text-ink-3">{result.kind}</span>
-                    </Command.Item>
-                  ))}
+                <Command.Group heading="Hasil" className={GROUP}>
+                  {results.map((result) => {
+                    const marker = recordMarker(result.entity, result.kind);
+                    return (
+                      <Command.Item
+                        key={result.id}
+                        value={`${result.title} ${result.kind} ${result.context} ${result.id}`}
+                        onSelect={() => go(recordLink(result.entity, result.id.split(':')[1]))}
+                        className={ITEM}
+                      >
+                        <span data-tone={marker.tone} className={cn(TILE, 'bg-tone text-tone-ink')}>
+                          <PageIcon name={marker.icon} />
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-ink">
+                            <Highlight text={result.title} query={query} />
+                          </span>
+                          {result.context && (
+                            <span className="block truncate text-xs font-medium text-ink-3">
+                              {result.context}
+                            </span>
+                          )}
+                        </span>
+                        <span data-tone={marker.tone} className={cn(KIND, 'bg-tone text-tone-ink')}>
+                          {marker.label}
+                        </span>
+                      </Command.Item>
+                    );
+                  })}
                 </Command.Group>
               )}
               <Command.Group heading="Perintah" className={GROUP}>
@@ -124,8 +174,13 @@ export function CommandPalette({
                     onSelect={() => go(action.href)}
                     className={ITEM}
                   >
-                    <action.icon />
-                    Tambah {action.label.toLowerCase()}
+                    <span className={cn(TILE, NEUTRAL_TILE)}>
+                      <action.icon />
+                    </span>
+                    <span className="min-w-0 flex-1 truncate">
+                      Tambah {action.label.toLowerCase()}
+                    </span>
+                    <span className={cn(KIND, NEUTRAL_KIND)}>Perintah</span>
                   </Command.Item>
                 ))}
                 <Command.Item
@@ -133,8 +188,11 @@ export function CommandPalette({
                   onSelect={() => go('/tasks?status=terlambat')}
                   className={ITEM}
                 >
-                  <Zap />
-                  Lihat tugas terlambat
+                  <span className={cn(TILE, NEUTRAL_TILE)}>
+                    <Zap />
+                  </span>
+                  <span className="min-w-0 flex-1 truncate">Lihat tugas terlambat</span>
+                  <span className={cn(KIND, NEUTRAL_KIND)}>Perintah</span>
                 </Command.Item>
                 <Command.Item
                   value={theme === 'dark' ? 'pakai tema terang' : 'pakai tema gelap'}
@@ -144,24 +202,84 @@ export function CommandPalette({
                   }}
                   className={ITEM}
                 >
-                  {theme === 'dark' ? <Sun /> : <Moon />}
-                  {theme === 'dark' ? 'Pakai tema terang' : 'Pakai tema gelap'}
+                  <span className={cn(TILE, NEUTRAL_TILE)}>
+                    {theme === 'dark' ? <Sun /> : <Moon />}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate">
+                    {theme === 'dark' ? 'Pakai tema terang' : 'Pakai tema gelap'}
+                  </span>
+                  <span className={cn(KIND, NEUTRAL_KIND)}>Perintah</span>
                 </Command.Item>
               </Command.Group>
-              <Command.Group heading="Halaman" className={GROUP}>
-                {[...NAV_GROUPS.flatMap((group) => group.pages), ...NAV_FOOTER].map((id) => (
+              <Command.Group heading="Menu" className={GROUP}>
+                {[...NAV_GROUPS.flatMap((group) => group.pages), ...NAV_FOOTER].map((id) => {
+                  const page = PAGES[id];
+                  const tabs = page.tabs && page.tabs.length > 1 ? page.tabs : [];
+                  return (
+                    <Command.Item
+                      key={id}
+                      value={`buka ${page.label}`}
+                      onSelect={() => go(`/${id}`)}
+                      className={ITEM}
+                    >
+                      <span className={cn(TILE, NEUTRAL_TILE)}>
+                        <PageIcon name={page.icon} />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-ink">{page.label}</span>
+                        {tabs.length > 0 && (
+                          <span className="block truncate text-xs font-medium text-ink-3">
+                            {tabs.map((tab) => tab.label).join(' · ')}
+                          </span>
+                        )}
+                      </span>
+                      <span className={cn(KIND, NEUTRAL_KIND)}>Menu</span>
+                    </Command.Item>
+                  );
+                })}
+              </Command.Group>
+              {/* Paling bawah: kalimat yang cocok dengan catatan, perintah, atau menu membuka itu dulu;
+                  kalimat tugas baru biasanya tidak cocok apa pun sehingga "Buat" jadi satu-satunya pilihan. */}
+              {draft && (
+                <Command.Group heading="Buat" className={GROUP}>
                   <Command.Item
-                    key={id}
-                    value={`buka ${PAGES[id].label}`}
-                    onSelect={() => go(`/${id}`)}
+                    value={`buat tugas ${query}`}
+                    onSelect={() => go(draftHref)}
                     className={ITEM}
                   >
-                    <PageIcon name={PAGES[id].icon} />
-                    {PAGES[id].label}
+                    <span className={cn(TILE, 'bg-action text-on-action')}>
+                      <ListPlus />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate">
+                        Buat tugas: <span className="text-ink">{draft.title || '…'}</span>
+                      </span>
+                      {draftDetails && (
+                        <span className="block truncate text-xs font-medium text-ink-3">
+                          {draftDetails}
+                        </span>
+                      )}
+                    </span>
+                    <span className={cn(KIND, NEUTRAL_KIND)}>Baru</span>
                   </Command.Item>
-                ))}
-              </Command.Group>
+                </Command.Group>
+              )}
             </Command.List>
+            <div className="hidden items-center gap-4 border-t border-line px-4 py-2.5 text-xs font-semibold text-ink-3 md:flex">
+              <span className="flex items-center gap-1.5">
+                <Kbd>↑</Kbd>
+                <Kbd>↓</Kbd>
+                pilih
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Kbd>↵</Kbd>
+                buka
+              </span>
+              <span className="ml-auto flex items-center gap-1.5">
+                <Kbd>Esc</Kbd>
+                tutup
+              </span>
+            </div>
           </Command>
         </Dialog.Content>
       </Dialog.Portal>

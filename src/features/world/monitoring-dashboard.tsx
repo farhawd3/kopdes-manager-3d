@@ -104,6 +104,8 @@ import type { AttentionPin } from './monitoring-scene';
 import { Icon3D, itemThumbKind, type Icon3DKind } from '@/features/world/icon-3d';
 import { linkTarget } from './link-target';
 import { Sheet } from '@/components/ui/sheet';
+import { Highlight } from '@/components/ui/highlight';
+import { Kbd } from '@/components/ui/kbd';
 import { QuickActionsPanel } from '@/components/layout/quick-actions';
 
 const ROOT =
@@ -1527,12 +1529,9 @@ export function MonitoringDashboard({
             onChange={(e) => setQuery(e.target.value)}
             className="h-[38px] min-w-0 flex-1 border-0 bg-transparent text-ink outline-none"
           />
-          <kbd
-            aria-hidden="true"
-            className="grid h-[22px] min-w-[22px] place-items-center rounded-[6px] border border-line bg-surface-2 [font:600_11px/1_var(--font-sans)] text-ink-3 max-md:group-data-[search]/top:hidden"
-          >
+          <Kbd aria-hidden="true" className="max-md:group-data-[search]/top:hidden">
             /
-          </kbd>
+          </Kbd>
           <button
             type="button"
             className="hidden size-9 place-items-center rounded-[8px] border-0 bg-transparent text-ink-3 max-md:group-data-[search]/top:grid"
@@ -1557,10 +1556,16 @@ export function MonitoringDashboard({
                   <li key={r.key}>
                     <Link
                       href={recordHref(r.entity, r.item)}
-                      className="flex min-h-11 items-center justify-between gap-2.5 rounded-[9px] px-2.5 py-2 text-ink hover:bg-accent"
+                      className="flex min-h-12 items-center gap-2.5 rounded-[9px] px-2 py-1.5 text-ink hover:bg-accent focus-visible:bg-accent"
                     >
-                      <strong>{String(r.item.data.title)}</strong>
-                      <small className="text-ink-3">{r.kind}</small>
+                      {/* Ikon dan label jenis: tugas, rapat, barang, dan lainnya terbedakan sekilas. */}
+                      <Icon3D kind={ENTITY_3D[r.entity] ?? 'tim'} size={28} />
+                      <strong className="min-w-0 flex-1 truncate">
+                        <Highlight text={String(r.item.data.title)} query={query} />
+                      </strong>
+                      <small className="shrink-0 rounded-full bg-surface-3 px-2 py-0.5 text-[11px] font-bold text-ink-2">
+                        {r.kind}
+                      </small>
                     </Link>
                   </li>
                 ))

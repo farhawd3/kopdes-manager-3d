@@ -36,7 +36,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
       <AlertDialog.Root open={Boolean(options)} onOpenChange={(open) => !open && finish(false)}>
         <AlertDialog.Portal>
           <AlertDialog.Overlay className="overlay fixed inset-0 z-[60] bg-[var(--scrim)]" />
-          <AlertDialog.Content className="pop fixed top-1/2 left-1/2 z-[60] w-[min(26rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-surface p-6 shadow-float">
+          <AlertDialog.Content className="pop fixed top-1/2 left-1/2 z-[60] w-[min(26rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-surface p-6 shadow-float outline-none">
             <AlertDialog.Title className="text-lg font-bold text-ink">
               {options?.title}
             </AlertDialog.Title>
@@ -52,7 +52,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
                   variant="primary"
                   className={
                     options?.danger
-                      ? 'bg-late-ink text-white hover:bg-late-ink hover:brightness-110'
+                      ? 'bg-late-ink text-surface hover:bg-late-ink hover:brightness-110'
                       : ''
                   }
                   onClick={() => finish(true)}

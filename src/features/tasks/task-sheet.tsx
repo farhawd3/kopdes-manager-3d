@@ -9,14 +9,15 @@ import {
   CircleCheck,
   CircleDot,
   CircleSlash,
-  Clock,
   Copy,
   Ellipsis,
   ExternalLink,
   FileText,
+  Flag,
   Globe2,
   Link2,
-  ListFilter,
+  Plus,
+  Repeat,
   Send,
   SquarePen,
   Trash2,
@@ -38,9 +39,11 @@ import { recordLink } from '@/components/layout/nav';
 import { Sheet } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Check } from '@/components/ui/check';
-import { Input, Select } from '@/components/ui/field';
+import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { DateField, TimeField } from '@/components/ui/date-time-field';
 import { Avatar } from '@/components/ui/avatar';
 import { useConfirm } from '@/components/ui/confirm';
+import { MenuContent, MenuItem } from '@/components/ui/menu';
 import { projectTone } from '@/lib/tones';
 import { taskProgress } from '@/lib/progress';
 import { formatDateTime } from '@/lib/date';
@@ -69,18 +72,17 @@ const RECURRENCE = [
 
 const ICON_BUTTON =
   'grid size-9 place-items-center rounded-xl text-ink-2 transition hover:bg-surface-2 hover:text-ink [&_svg]:size-[18px]';
-const MENU_ITEM =
-  'flex h-10 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold text-ink-2 outline-none data-[highlighted]:bg-surface-2 data-[highlighted]:text-ink [&_svg]:size-4';
-const VALUE_ICON = 'size-7 shrink-0 p-1 text-ink-3';
-const VALUE_SELECT =
-  'h-9 border-transparent bg-transparent pl-1.5 font-medium text-ink hover:bg-surface-2';
+/** Nilai sifat tugas: kolom lunak berikon yang jelas bisa diubah; menyala saat dipilih. */
+const PROPERTY =
+  'h-10 border-transparent bg-surface-2 font-semibold hover:border-transparent hover:bg-surface-3';
+const BADGE = 'tabular shrink-0 rounded-md px-1.5 py-0.5 text-xs font-semibold';
 
 /** Ikon status seperti lingkaran "Started" pada acuan: kosong untuk rencana, setengah untuk dikerjakan, centang untuk selesai. */
 function StatusIcon({ status }: { status: string }) {
-  if (status === 'selesai') return <CircleCheck className="size-7 shrink-0 p-1 text-done-ink" />;
-  if (status === 'proses') return <CircleDot className="size-7 shrink-0 p-1 text-accent-strong" />;
-  if (status === 'dibatalkan') return <CircleSlash className="size-7 shrink-0 p-1 text-ink-3" />;
-  return <Circle className="size-7 shrink-0 p-1 text-accent-strong" />;
+  if (status === 'selesai') return <CircleCheck className="text-done-ink" />;
+  if (status === 'proses') return <CircleDot className="text-accent-strong" />;
+  if (status === 'dibatalkan') return <CircleSlash />;
+  return <Circle className="text-accent-strong" />;
 }
 
 type Activity = { id: string; user: string; text: string; created_at: string; type: string };
@@ -214,7 +216,7 @@ export function TaskSheet({
                 void save({ title: title.trim() }, 'mengubah judul')
               }
               className={cn(
-                'field-sizing-content -mx-2 w-[calc(100%+1rem)] resize-none rounded-xl bg-transparent px-2 py-1 text-[26px] leading-tight font-bold tracking-tight text-ink outline-none hover:bg-surface-2 focus:bg-surface-2',
+                'field-sizing-content -mx-2 w-[calc(100%+1rem)] resize-none rounded-xl bg-transparent px-2 py-1 text-[26px] leading-tight font-bold tracking-tight text-ink outline-none transition-[background-color,box-shadow] hover:bg-surface-2 focus:bg-surface-2 focus:ring-2 focus:ring-accent',
                 d.status === 'selesai' && 'text-ink-3 line-through',
               )}
             />
@@ -244,43 +246,35 @@ export function TaskSheet({
                 >
                   <Ellipsis />
                 </DropdownMenu.Trigger>
-                <DropdownMenu.Portal>
-                  <DropdownMenu.Content
-                    align="start"
-                    sideOffset={6}
-                    className="pop z-[60] w-56 rounded-2xl bg-surface p-1.5 shadow-float ring-1 ring-line/60"
-                  >
-                    <DropdownMenu.Item className={MENU_ITEM} onSelect={() => setFullForm(true)}>
-                      <SquarePen />
-                      Formulir lengkap
-                    </DropdownMenu.Item>
-                    {d.status !== 'dibatalkan' && (
-                      <DropdownMenu.Item
-                        className={cn(
-                          MENU_ITEM,
-                          'text-late-ink data-[highlighted]:bg-late data-[highlighted]:text-late-ink',
-                        )}
-                        onSelect={async () => {
-                          if (
-                            await confirm({
-                              title: `Batalkan tugas "${String(d.title)}"?`,
-                              description:
-                                'Tugas pindah ke arsip dibatalkan dan bisa dibuka lagi kapan saja.',
-                              confirmLabel: 'Batalkan tugas',
-                              danger: true,
-                            })
-                          ) {
-                            await cancelTask(task, refresh, manager);
-                            onClose();
-                          }
-                        }}
-                      >
-                        <XCircle />
-                        Batalkan tugas
-                      </DropdownMenu.Item>
-                    )}
-                  </DropdownMenu.Content>
-                </DropdownMenu.Portal>
+                {/* Di atas laci (z-50), jadi menu memakai lapisan berikutnya. */}
+                <MenuContent align="start" className="z-[60] w-56">
+                  <MenuItem onSelect={() => setFullForm(true)}>
+                    <SquarePen />
+                    Formulir lengkap
+                  </MenuItem>
+                  {d.status !== 'dibatalkan' && (
+                    <MenuItem
+                      danger
+                      onSelect={async () => {
+                        if (
+                          await confirm({
+                            title: `Batalkan tugas "${String(d.title)}"?`,
+                            description:
+                              'Tugas pindah ke arsip dibatalkan dan bisa dibuka lagi kapan saja.',
+                            confirmLabel: 'Batalkan tugas',
+                            danger: true,
+                          })
+                        ) {
+                          await cancelTask(task, refresh, manager);
+                          onClose();
+                        }
+                      }}
+                    >
+                      <XCircle />
+                      Batalkan tugas
+                    </MenuItem>
+                  )}
+                </MenuContent>
               </DropdownMenu.Root>
               {d.code ? (
                 <span className="ml-auto text-xs font-semibold text-ink-3">{String(d.code)}</span>
@@ -290,7 +284,7 @@ export function TaskSheet({
 
           <section className="flex flex-col gap-1">
             <h3 className="text-[13px] font-medium text-ink-3">Uraian</h3>
-            <textarea
+            <Textarea
               value={description}
               rows={2}
               placeholder="Tulis uraian singkat tugas ini"
@@ -300,22 +294,24 @@ export function TaskSheet({
                 description !== String(d.description || '') &&
                 void save({ description }, 'mengubah uraian')
               }
-              className="field-sizing-content -mx-2 min-h-12 w-[calc(100%+1rem)] resize-none rounded-xl bg-transparent px-2 py-1 text-sm leading-relaxed text-ink outline-none placeholder:text-ink-3 hover:bg-surface-2 focus:bg-surface-2"
+              className={cn(PROPERTY, 'field-sizing-content min-h-20 resize-none text-sm')}
             />
           </section>
 
           {/* Sifat tugas: label di kiri, nilai berikon di kanan, seperti panel detail acuan. */}
-          <dl className="grid grid-cols-[7rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2.5 text-sm sm:grid-cols-[8rem_minmax(0,1fr)] [&>dd]:min-w-0 [&>dd]:flex-wrap [&>dd>span.block]:min-w-0 [&>dd>span.block]:flex-1">
+          <dl className="grid grid-cols-1 items-center gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-y-2 [&>dt]:text-[13px] max-sm:[&>dt:not(:first-child)]:mt-2 [&>dd]:flex [&>dd]:min-w-0 [&>dd]:items-center [&>dd]:gap-2 [&>dd>span.block]:flex-1">
             <dt className="text-ink-3">Penanggung jawab</dt>
-            <dd className="flex items-center gap-1">
-              {d.assignee ? (
-                <Avatar name={String(d.assignee)} className="size-7 text-[10px] ring-0" />
-              ) : (
-                <UserRound className={VALUE_ICON} />
-              )}
+            <dd>
               <Select
                 value={String(d.assignee || '')}
                 aria-label="Penanggung jawab"
+                icon={
+                  d.assignee ? (
+                    <Avatar name={String(d.assignee)} className="size-6 text-[9px] ring-0" />
+                  ) : (
+                    <UserRound />
+                  )
+                }
                 onChange={(event) =>
                   void save(
                     { assignee: event.target.value },
@@ -324,7 +320,7 @@ export function TaskSheet({
                       : 'mengosongkan penanggung jawab',
                   )
                 }
-                className={VALUE_SELECT}
+                className={cn(PROPERTY, Boolean(d.assignee) && 'pl-11')}
               >
                 <option value="">Belum ada</option>
                 {people.map((person) => (
@@ -335,15 +331,15 @@ export function TaskSheet({
               </Select>
             </dd>
             <dt className="text-ink-3">Status</dt>
-            <dd className="flex items-center gap-1">
-              <StatusIcon status={String(d.status)} />
+            <dd>
               <Select
                 value={String(d.status)}
                 aria-label="Status"
+                icon={<StatusIcon status={String(d.status)} />}
                 onChange={(event) =>
                   void setTaskStatus(task, event.target.value as TaskStatus, refresh, manager)
                 }
-                className={cn(VALUE_SELECT, 'w-auto')}
+                className={PROPERTY}
               >
                 {STATUSES.map(([value, label]) => (
                   <option key={value} value={value}>
@@ -353,31 +349,32 @@ export function TaskSheet({
                 {d.status === 'dibatalkan' && <option value="dibatalkan">Dibatalkan</option>}
               </Select>
               {subtasks.length > 0 && (
-                <span className="tabular shrink-0 rounded-md bg-accent px-1.5 py-0.5 text-xs font-semibold text-accent-ink">
+                <span className={cn(BADGE, 'bg-accent text-accent-ink')}>
                   {taskProgress(d as unknown as Task)}%
                 </span>
               )}
             </dd>
             <dt className="text-ink-3">Prioritas</dt>
-            <dd className="flex items-center gap-1">
-              <ListFilter
-                className={cn(
-                  VALUE_ICON,
-                  ['tinggi', 'mendesak'].includes(String(d.priority))
-                    ? 'text-late-ink'
-                    : 'text-warn-ink',
-                )}
-              />
+            <dd>
               <Select
                 value={String(d.priority || 'normal')}
                 aria-label="Prioritas"
+                icon={
+                  <Flag
+                    className={
+                      ['tinggi', 'mendesak'].includes(String(d.priority))
+                        ? 'text-late-ink'
+                        : undefined
+                    }
+                  />
+                }
                 onChange={(event) =>
                   void save(
                     { priority: event.target.value },
                     `mengubah prioritas menjadi ${PRIORITIES.find(([v]) => v === event.target.value)?.[1]}`,
                   )
                 }
-                className={VALUE_SELECT}
+                className={PROPERTY}
               >
                 {PRIORITIES.map(([value, label]) => (
                   <option key={value} value={value}>
@@ -387,42 +384,30 @@ export function TaskSheet({
               </Select>
             </dd>
             <dt className="text-ink-3">Tenggat</dt>
-            <dd className="flex items-center gap-1">
-              <Clock className={cn(VALUE_ICON, 'text-accent-strong')} />
-              <Input
-                type="date"
+            <dd>
+              <DateField
                 aria-label="Tenggat"
                 value={String(d.due_date || '')}
-                onChange={(event) =>
-                  event.target.value &&
-                  void save(
-                    { due_date: event.target.value },
-                    `memindah tenggat ke ${event.target.value}`,
-                  )
+                onChange={(value) =>
+                  value && void save({ due_date: value }, `memindah tenggat ke ${value}`)
                 }
-                className="h-9 w-auto border-transparent bg-transparent px-1.5 hover:bg-surface-2"
+                className={cn(PROPERTY, 'flex-1')}
               />
-              {due.late && (
-                <span className="shrink-0 rounded-md bg-late px-1.5 py-0.5 text-xs font-semibold text-late-ink">
-                  {due.text}
-                </span>
-              )}
+              {due.late && <span className={cn(BADGE, 'bg-late text-late-ink')}>{due.text}</span>}
             </dd>
             <dt className="text-ink-3">Proyek</dt>
-            <dd data-tone={projectTone(project)} className="flex items-center gap-1">
-              <span className="grid size-7 shrink-0 place-items-center">
-                <span className="size-3 rounded-[4px] bg-tone-bar" />
-              </span>
+            <dd data-tone={projectTone(project)}>
               <Select
                 value={String(d.workstream_id || '')}
                 aria-label="Proyek"
+                icon={<span className="block size-3 rounded-[4px] bg-tone-bar" />}
                 onChange={(event) =>
                   void save(
                     { workstream_id: event.target.value, milestone_id: '' },
                     'mengubah proyek',
                   )
                 }
-                className={VALUE_SELECT}
+                className={PROPERTY}
               >
                 <option value="">Tugas mandiri (tanpa proyek)</option>
                 {projects.map((row) => (
@@ -508,6 +493,9 @@ export function TaskSheet({
                 value={subtask}
                 onChange={(event) => setSubtask(event.target.value)}
                 placeholder="Tambah subtugas"
+                aria-label="Subtugas baru"
+                icon={<Plus />}
+                wrapperClassName="flex-1"
                 className="rounded-full"
               />
               <Button
@@ -523,50 +511,52 @@ export function TaskSheet({
 
           <section className="flex flex-col gap-2">
             <h3 className="text-[13px] font-semibold text-ink-3">Jadwal berulang</h3>
-            <div className="grid gap-2 sm:grid-cols-3">
-              <Select
-                value={String(d.recurrence || 'tidak')}
-                onChange={(event) =>
-                  void save(
-                    {
-                      recurrence: event.target.value,
-                      ...(event.target.value === 'tidak'
-                        ? { recurrence_time: '09:00', recurrence_end_date: '' }
-                        : {}),
-                    },
-                    'mengubah jadwal berulang',
-                  )
-                }
-                aria-label="Pengulangan"
-              >
-                {RECURRENCE.map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </Select>
-              <Input
-                type="time"
-                aria-label="Jam"
-                disabled={d.recurrence === 'tidak'}
-                value={String(d.recurrence_time || '09:00')}
-                onChange={(event) =>
-                  event.target.value &&
-                  void save({ recurrence_time: event.target.value }, 'mengubah jam pengulangan')
-                }
-              />
-              <Input
-                type="date"
-                aria-label="Berulang sampai"
-                disabled={d.recurrence === 'tidak'}
-                value={String(d.recurrence_end_date || '')}
-                onChange={(event) =>
-                  void save(
-                    { recurrence_end_date: event.target.value },
-                    'mengubah batas pengulangan',
-                  )
-                }
-              />
+            <div className="grid gap-3 sm:grid-cols-3">
+              <Field label="Ulangi">
+                <Select
+                  value={String(d.recurrence || 'tidak')}
+                  icon={<Repeat />}
+                  onChange={(event) =>
+                    void save(
+                      {
+                        recurrence: event.target.value,
+                        ...(event.target.value === 'tidak'
+                          ? { recurrence_time: '09:00', recurrence_end_date: '' }
+                          : {}),
+                      },
+                      'mengubah jadwal berulang',
+                    )
+                  }
+                >
+                  {RECURRENCE.map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+              <Field label="Jam">
+                <TimeField
+                  aria-label="Jam"
+                  disabled={d.recurrence === 'tidak'}
+                  value={String(d.recurrence_time || '09:00')}
+                  onChange={(value) =>
+                    void save({ recurrence_time: value }, 'mengubah jam pengulangan')
+                  }
+                />
+              </Field>
+              <Field label="Sampai tanggal">
+                <DateField
+                  aria-label="Berulang sampai"
+                  placeholder="Tanpa batas"
+                  clearable
+                  disabled={d.recurrence === 'tidak'}
+                  value={String(d.recurrence_end_date || '')}
+                  onChange={(value) =>
+                    void save({ recurrence_end_date: value }, 'mengubah batas pengulangan')
+                  }
+                />
+              </Field>
             </div>
             <p className="text-xs text-ink-3">
               Saat tugas berulang ditandai selesai, tugas berikutnya dibuat otomatis. Jam bukan
@@ -580,6 +570,9 @@ export function TaskSheet({
               <Input
                 type="url"
                 placeholder="https://"
+                aria-label="Tautan hasil kerja"
+                icon={<Link2 />}
+                wrapperClassName="flex-1"
                 value={link}
                 onChange={(event) => setLink(event.target.value)}
                 onBlur={() =>
@@ -587,7 +580,7 @@ export function TaskSheet({
                   void save({ link }, link ? 'memperbarui tautan hasil' : 'menghapus tautan hasil')
                 }
               />
-              {d.link ? (
+              {Boolean(d.link) && (
                 <>
                   <Button
                     size="icon"
@@ -612,8 +605,6 @@ export function TaskSheet({
                     </a>
                   </Button>
                 </>
-              ) : (
-                <Link2 className="m-3 size-5 shrink-0 text-ink-3" aria-hidden="true" />
               )}
             </div>
           </section>

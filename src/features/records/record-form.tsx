@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useId, useMemo, useState } from 'react';
-import { ChevronDown, Plus, Trash2, X } from 'lucide-react';
+import { ChevronDown, Plus, Trash2, UserRound, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { catalog, formatChoiceLabel, references } from './catalog';
 import { schemas, type Entity, type Item } from './schemas';
@@ -15,8 +15,11 @@ import { organizationInfo } from '@/features/workspace/use-loaded-workspace';
 import { Sheet } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { DateField, TimeField } from '@/components/ui/date-time-field';
 import { Check } from '@/components/ui/check';
 import { Avatar } from '@/components/ui/avatar';
+import { PageIcon } from '@/components/ui/icon';
+import { PAGES, entityHome } from '@/components/layout/nav';
 import { useConfirm } from '@/components/ui/confirm';
 import { api } from '@/lib/client';
 import { rupiah } from '@/lib/ledger';
@@ -432,7 +435,8 @@ function FieldControl({
           ) : undefined
         }
       >
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={label}>
+        {/* Kisi dua kolom yang sama lebar: nama dan jabatan sejajar, mudah dipindai. */}
+        <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label={label}>
           {[{ name: '', role: '' }, ...people].map((person) => {
             const active = text.toLowerCase() === person.name.toLowerCase();
             return (
@@ -443,18 +447,25 @@ function FieldControl({
                 aria-checked={active}
                 onClick={() => set(field, person.name)}
                 className={cn(
-                  'flex h-11 items-center gap-2 rounded-full border pr-3.5 pl-1.5 text-sm font-semibold transition',
+                  'flex h-13 min-w-0 items-center gap-2.5 rounded-2xl border pr-3 pl-2 text-left text-sm font-semibold transition active:scale-[0.98]',
                   active
                     ? 'border-transparent bg-accent text-accent-ink'
-                    : 'border-line bg-surface text-ink-2 hover:border-line-strong',
-                  !person.name && 'pl-3.5',
+                    : 'border-line bg-surface text-ink-2 hover:border-line-strong hover:bg-surface-2',
                 )}
               >
-                {person.name && <Avatar name={person.name} className="size-8 ring-0" />}
-                <span className="flex flex-col items-start leading-tight">
-                  {person.name || 'Belum ada'}
+                {person.name ? (
+                  <Avatar name={person.name} className="size-8 ring-0" />
+                ) : (
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-surface-3 text-ink-3">
+                    <UserRound className="size-4" />
+                  </span>
+                )}
+                <span className="flex min-w-0 flex-col leading-tight">
+                  <span className="truncate">{person.name || 'Belum ada'}</span>
                   {person.role && (
-                    <span className="text-[11px] font-medium opacity-70">{person.role}</span>
+                    <span className="truncate text-[11px] font-medium opacity-70">
+                      {person.role}
+                    </span>
                   )}
                 </span>
               </button>
@@ -591,6 +602,26 @@ function FieldControl({
         </span>
       </Field>
     );
+  if (kind === 'date' || kind === 'time') {
+    const Picker = kind === 'date' ? DateField : TimeField;
+    return (
+      <Field
+        label={label}
+        error={error}
+        required={required && !recurrenceOff}
+        hint={recurrenceOff ? 'Aktif bila tugas berulang.' : undefined}
+      >
+        <Picker
+          aria-label={label}
+          value={text}
+          disabled={recurrenceOff}
+          clearable={!required}
+          onChange={(next) => set(field, next)}
+          className={error ? 'border-late-ink' : undefined}
+        />
+      </Field>
+    );
+  }
   const readOnly = entity === 'stock-counts' && field === 'book_quantity';
   return (
     <Field
@@ -606,9 +637,7 @@ function FieldControl({
       }
     >
       <Input
-        type={
-          kind === 'date' ? 'date' : kind === 'time' ? 'time' : kind === 'link' ? 'url' : 'text'
-        }
+        type={kind === 'link' ? 'url' : 'text'}
         inputMode={kind === 'integer' ? 'numeric' : undefined}
         value={text}
         readOnly={readOnly}
@@ -698,6 +727,7 @@ function RefField({
           <Select
             value={value}
             disabled={disabled}
+            icon={<PageIcon name={PAGES[entityHome(target).page].icon} />}
             onChange={(event) => set(field, event.target.value)}
             aria-invalid={Boolean(error) || undefined}
           >
@@ -805,6 +835,7 @@ function SubtaskEditor({
         <Input
           value={text}
           placeholder="Tambah subtugas lalu tekan Enter"
+          icon={<Plus />}
           onChange={(event) => setText(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {

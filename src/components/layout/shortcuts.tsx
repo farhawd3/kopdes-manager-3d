@@ -1,3 +1,5 @@
+import { Kbd } from '@/components/ui/kbd';
+
 export const SHORTCUTS: [string, string[]][] = [
   ['Cari dan buka apa saja', ['Ctrl', 'K']],
   ['Tambah tugas', ['N']],
@@ -18,12 +20,9 @@ export function ShortcutList() {
           <dt className="text-sm font-semibold text-ink-2">{label}</dt>
           <dd className="flex gap-1">
             {keys.map((key) => (
-              <kbd
-                key={key}
-                className="rounded-lg bg-surface-3 px-2 py-1 text-xs font-bold text-ink-2"
-              >
+              <Kbd key={key} className="h-6 min-w-6 px-2 text-xs">
                 {key}
-              </kbd>
+              </Kbd>
             ))}
           </dd>
         </div>

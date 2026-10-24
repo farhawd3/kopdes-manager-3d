@@ -37,7 +37,7 @@ export function Check({
         'relative grid shrink-0 place-items-center rounded-full border-2 transition-colors before:absolute before:-inset-2.5 disabled:opacity-50',
         size === 'md' ? 'size-6' : 'size-5',
         checked
-          ? 'border-[var(--tone-bar,var(--action))] bg-[var(--tone-bar,var(--action))] text-white dark:text-[var(--canvas)]'
+          ? 'border-[var(--tone-bar,var(--action))] bg-[var(--tone-bar,var(--action))] text-on-action'
           : 'border-line-strong bg-surface text-transparent hover:border-[var(--tone-bar,var(--action))]',
         className,
       )}

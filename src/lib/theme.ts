@@ -2,12 +2,13 @@
 import { usePreference } from './use-preference';
 import { useEffect } from 'react';
 
+/** Contoh warnanya ada di token `--swatch-<id>` (globals.css). */
 export const ACCENTS = [
-  { id: 'lavender', label: 'Lavender', swatch: '#7a66e8' },
-  { id: 'sky', label: 'Langit', swatch: '#4f8fe0' },
-  { id: 'mint', label: 'Mint', swatch: '#36b37e' },
-  { id: 'peach', label: 'Peach', swatch: '#ef8a3c' },
-  { id: 'rose', label: 'Mawar', swatch: '#ec6a8a' },
+  { id: 'lavender', label: 'Lavender' },
+  { id: 'sky', label: 'Langit' },
+  { id: 'mint', label: 'Mint' },
+  { id: 'peach', label: 'Peach' },
+  { id: 'rose', label: 'Mawar' },
 ] as const;
 export type Accent = (typeof ACCENTS)[number]['id'];
 export type Theme = 'light' | 'dark';
