@@ -43,6 +43,7 @@ import { StatTile } from '@/components/ui/stat';
 import { EmptyState, ErrorState, Notice } from '@/components/ui/states';
 import { Sheet } from '@/components/ui/sheet';
 import { MenuContent, MenuItem, PopoverContent } from '@/components/ui/menu';
+import { DateField } from '@/components/ui/date-time-field';
 import { SegmentBar } from '@/components/ui/progress';
 import { usePreference } from '@/lib/use-preference';
 import { downloadCsv } from '@/lib/ledger';
@@ -707,19 +708,15 @@ export function TasksPage() {
               >
                 Tunda 1 hari
               </Button>
-              <label className="flex h-9 items-center gap-2 rounded-xl bg-surface px-2 text-[13px] font-semibold text-ink focus-within:ring-2 focus-within:ring-accent-strong">
-                Tenggat
-                <input
-                  type="date"
-                  className="bg-transparent outline-none"
-                  onChange={(event) =>
-                    event.target.value &&
-                    void batch(`memindah tenggat ke ${event.target.value}`, () => ({
-                      due_date: event.target.value,
-                    }))
-                  }
-                />
-              </label>
+              <DateField
+                value=""
+                placeholder="Ubah tenggat"
+                aria-label="Ubah tenggat tugas terpilih"
+                className="h-9 w-auto border-transparent bg-surface text-[13px] font-semibold"
+                onChange={(value) =>
+                  value && void batch(`memindah tenggat ke ${value}`, () => ({ due_date: value }))
+                }
+              />
             </span>
           </motion.div>
         )}

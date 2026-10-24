@@ -1,3 +1,5 @@
+'use client';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 /**
@@ -20,6 +22,28 @@ export function SegmentBar({
 }) {
   // Ruas terakhir bisa terisi sebagian (70% = lima ruas dan setengah ruas), seperti batang TaskTrack.
   const exact = (Math.max(0, Math.min(100, value)) / 100) * segments;
+  // Isi mengalir dari ruas pertama: tampil mulai 0, lalu tiap ruas menunggu ruas sebelumnya penuh.
+  const [fill, setFill] = useState({ from: 0, to: 0 });
+  useEffect(() => {
+    const frame = requestAnimationFrame(() =>
+      setFill((current) => ({ from: current.to, to: exact })),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [exact]);
+  const fills = (amount: number) =>
+    Array.from({ length: segments }, (_, index) => Math.max(0, Math.min(1, amount - index)));
+  const before = fills(fill.from);
+  const after = fills(fill.to);
+  // Mengisi berurutan dari kiri, mengosongkan dari kanan; satu ruas penuh 180 ms.
+  const filling = fill.to >= fill.from;
+  const timing: { delay: number; duration: number }[] = [];
+  let elapsed = 0;
+  for (let step = 0; step < segments; step++) {
+    const index = filling ? step : segments - 1 - step;
+    const duration = Math.abs(after[index] - before[index]) * 180;
+    timing[index] = { delay: elapsed, duration };
+    elapsed += duration;
+  }
   return (
     <div
       role="progressbar"
@@ -30,7 +54,6 @@ export function SegmentBar({
       className={cn('flex h-[5px] gap-1', className)}
     >
       {Array.from({ length: segments }, (_, index) => {
-        const fill = Math.max(0, Math.min(1, exact - index));
         return (
           <span
             key={index}
@@ -42,8 +65,12 @@ export function SegmentBar({
             )}
           >
             <span
-              className="absolute inset-y-0 left-0 rounded-full bg-[var(--tone-bar,var(--accent-strong))] transition-[width] duration-500"
-              style={{ width: `${fill * 100}%` }}
+              className="absolute inset-y-0 left-0 rounded-full bg-[var(--tone-bar,var(--accent-strong))] transition-[width] ease-linear"
+              style={{
+                width: `${after[index] * 100}%`,
+                transitionDuration: `${timing[index].duration}ms`,
+                transitionDelay: `${timing[index].delay}ms`,
+              }}
             />
           </span>
         );

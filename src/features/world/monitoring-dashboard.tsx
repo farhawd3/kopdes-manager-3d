@@ -1708,7 +1708,7 @@ export function MonitoringDashboard({
               <label className="grid gap-1 px-2 py-1 text-[12px] text-ink-3">
                 <span>Cuaca simulasi</span>
                 <select
-                  className="min-h-10 rounded-[10px] border border-line bg-surface px-2.5 text-ink"
+                  className="field-select min-h-10 rounded-[10px] border border-line bg-surface px-2.5 text-ink"
                   aria-label="Cuaca simulasi"
                   value={weather}
                   onChange={(e) => setWeather(e.target.value as Weather)}
@@ -1721,7 +1721,7 @@ export function MonitoringDashboard({
               <label className="grid gap-1 px-2 py-1 text-[12px] text-ink-3">
                 <span>Suasana waktu</span>
                 <select
-                  className="min-h-10 rounded-[10px] border border-line bg-surface px-2.5 text-ink"
+                  className="field-select min-h-10 rounded-[10px] border border-line bg-surface px-2.5 text-ink"
                   aria-label="Suasana waktu"
                   value={phase}
                   onChange={(e) => setPhase(e.target.value as typeof phase)}

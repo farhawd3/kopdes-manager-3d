@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import type { ReportSnapshot } from './report-snapshot';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Textarea } from '@/components/ui/field';
+import { DateField } from '@/components/ui/date-time-field';
 import { Tabs } from '@/components/ui/tabs';
 import { StatTile } from '@/components/ui/stat';
 import { EmptyState, ErrorState } from '@/components/ui/states';
@@ -159,17 +160,17 @@ export function Reports() {
           </Field>
           <div className="grid grid-cols-2 gap-2">
             <Field label="Dari">
-              <Input
-                type="date"
+              <DateField
+                aria-label="Dari"
                 value={form.start}
-                onChange={(e) => setForm({ ...form, start: e.target.value })}
+                onChange={(value) => setForm({ ...form, start: value })}
               />
             </Field>
             <Field label="Sampai">
-              <Input
-                type="date"
+              <DateField
+                aria-label="Sampai"
                 value={form.end}
-                onChange={(e) => setForm({ ...form, end: e.target.value })}
+                onChange={(value) => setForm({ ...form, end: value })}
               />
             </Field>
           </div>

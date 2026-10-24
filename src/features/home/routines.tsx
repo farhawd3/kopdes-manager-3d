@@ -9,6 +9,7 @@ import { Check } from '@/components/ui/check';
 import { Button } from '@/components/ui/button';
 import { Sheet } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/field';
+import { TimeField } from '@/components/ui/date-time-field';
 import { Notice } from '@/components/ui/states';
 import { SegmentBar } from '@/components/ui/progress';
 import { Wave } from '@/components/ui/wave';
@@ -27,6 +28,75 @@ export const DEFAULT_ROUTINES = [
   { time: '17:00', title: 'Cek keamanan, inventaris, dan kunci gerai' },
 ];
 const DAY_LABELS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+const EVERY_DAY = [1, 2, 3, 4, 5, 6, 7];
+
+/** Hari aktif rutin: "Setiap hari" atau "Hari tertentu" (baru tampil pilihan harinya). */
+function RoutineDays({ days, onChange }: { days: number[]; onChange: (days: number[]) => void }) {
+  const [custom, setCustom] = useState(days.length < 7);
+  const option = (on: boolean) =>
+    cn(
+      'h-8 flex-1 rounded-lg px-3 text-[13px] font-semibold text-ink-3 transition',
+      on && 'bg-surface text-ink shadow-card',
+    );
+  return (
+    <div className="flex flex-col gap-2">
+      <div
+        className="flex gap-1 rounded-xl bg-surface-2 p-1"
+        role="radiogroup"
+        aria-label="Hari aktif"
+      >
+        <button
+          type="button"
+          role="radio"
+          aria-checked={!custom}
+          className={option(!custom)}
+          onClick={() => {
+            setCustom(false);
+            if (days.length < 7) onChange(EVERY_DAY);
+          }}
+        >
+          Setiap hari
+        </button>
+        <button
+          type="button"
+          role="radio"
+          aria-checked={custom}
+          className={option(custom)}
+          onClick={() => setCustom(true)}
+        >
+          Hari tertentu
+        </button>
+      </div>
+      {custom && (
+        <div
+          className="flex animate-[item-in_0.25s_var(--ease-out)] gap-1"
+          role="group"
+          aria-label="Pilih hari"
+        >
+          {DAY_LABELS.map((label, index) => {
+            const day = index + 1;
+            const on = days.includes(day);
+            return (
+              <button
+                key={label}
+                type="button"
+                aria-pressed={on}
+                onClick={() => {
+                  const next = on ? days.filter((d) => d !== day) : [...days, day].sort();
+                  if (next.length) onChange(next);
+                  else toast('Pilih minimal satu hari.');
+                }}
+                className="h-9 flex-1 rounded-full border border-line text-xs font-bold text-ink-3 transition hover:border-line-strong aria-pressed:border-transparent aria-pressed:bg-accent aria-pressed:text-accent-ink"
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 const LEGACY_KEY = 'kdmp_manager_routine_config';
 
 /** Hari ISO 1 (Senin) … 7 (Minggu) untuk tanggal YYYY-MM-DD. */
@@ -390,7 +460,7 @@ function RoutineManager({
     >
       <div className="flex flex-col gap-4">
         <form
-          className="flex flex-wrap gap-2 rounded-2xl bg-surface-2 p-3"
+          className="grid grid-cols-[auto_minmax(0,1fr)] gap-2 rounded-2xl bg-surface-2 p-3 sm:grid-cols-[auto_minmax(0,1fr)_auto]"
           onSubmit={async (event) => {
             event.preventDefault();
             if (!title.trim()) return;
@@ -406,23 +476,27 @@ function RoutineManager({
             }
           }}
         >
-          <Input
-            type="time"
+          <TimeField
             value={time}
-            onChange={(event) => setTime(event.target.value)}
-            className="w-32"
+            onChange={setTime}
             aria-label="Jam"
-            required
+            className="w-28 bg-surface sm:w-[8.5rem]"
           />
           <Input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Nama rutin baru"
             maxLength={120}
-            className="min-w-40 flex-1"
+            className="min-w-0 flex-1 bg-surface"
             aria-label="Nama rutin"
           />
-          <Button type="submit" variant="primary" busy={busy} disabled={!title.trim()}>
+          <Button
+            type="submit"
+            variant="primary"
+            busy={busy}
+            disabled={!title.trim()}
+            className="max-sm:col-span-2"
+          >
             <Plus />
             Tambah
           </Button>
@@ -436,20 +510,19 @@ function RoutineManager({
                 className="flex flex-col gap-2 rounded-2xl border border-line p-3"
               >
                 <div className="flex items-center gap-2">
-                  <Input
-                    type="time"
-                    defaultValue={String(routine.data.time)}
-                    className="w-28"
+                  <TimeField
+                    value={String(routine.data.time)}
                     aria-label="Jam"
-                    onBlur={(event) =>
-                      event.target.value !== routine.data.time &&
-                      void update(routine, { time: event.target.value })
+                    className="w-28 shrink-0 sm:w-[8.5rem]"
+                    onChange={(next) =>
+                      next !== routine.data.time && void update(routine, { time: next })
                     }
                   />
                   <Input
                     defaultValue={String(routine.data.title)}
                     maxLength={120}
                     aria-label="Nama rutin"
+                    className="min-w-0 flex-1"
                     onBlur={(event) =>
                       event.target.value.trim() &&
                       event.target.value !== routine.data.title &&
@@ -465,27 +538,10 @@ function RoutineManager({
                     <Trash2 />
                   </Button>
                 </div>
-                <div className="flex gap-1" role="group" aria-label="Hari aktif">
-                  {DAY_LABELS.map((label, index) => {
-                    const day = index + 1;
-                    const on = days.includes(day);
-                    return (
-                      <button
-                        key={label}
-                        type="button"
-                        aria-pressed={on}
-                        onClick={() => {
-                          const next = on ? days.filter((d) => d !== day) : [...days, day].sort();
-                          if (next.length) void update(routine, { days: next });
-                          else toast('Pilih minimal satu hari.');
-                        }}
-                        className="h-9 flex-1 rounded-xl bg-surface-2 text-xs font-bold text-ink-3 transition aria-pressed:bg-accent aria-pressed:text-accent-ink"
-                      >
-                        {label}
-                      </button>
-                    );
-                  })}
-                </div>
+                <RoutineDays
+                  days={days}
+                  onChange={(next) => void update(routine, { days: next })}
+                />
               </li>
             );
           })}

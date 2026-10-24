@@ -170,7 +170,7 @@ export function TimeField({
         <span className={cn('tabular flex-1 truncate', !value && 'text-ink-3')}>
           {value || placeholder}
         </span>
-        <ChevronDown className="size-4 text-ink-3 transition-transform group-data-[state=open]:rotate-180" />
+        <ChevronDown className="size-4 max-sm:hidden text-ink-3 transition-transform group-data-[state=open]:rotate-180" />
       </Popover.Trigger>
       <PopoverContent align="start" className="z-[60] w-44 p-1.5">
         <div
