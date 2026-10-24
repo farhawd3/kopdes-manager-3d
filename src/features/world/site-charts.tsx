@@ -292,7 +292,7 @@ export function ChartList({ charts }: { charts: Chart[] }) {
       {charts.map((g) => (
         <section
           key={g.title}
-          className="rounded-[16px] border border-line bg-surface px-4 pt-3.5 pb-4"
+          className="rounded-[var(--radius-card)] border border-line/70 bg-surface px-4 pt-3.5 pb-4"
           aria-label={g.title}
         >
           <Section title={g.title} meta={'meta' in g ? g.meta : undefined} />

@@ -18,7 +18,8 @@ import { cn } from '@/lib/utils';
 import type { Tone } from './monitor-data';
 import { Icon3D, ItemThumb, type Icon3DKind, type ThumbKind } from '@/features/world/icon-3d';
 
-export const CARD = 'rounded-[16px] border border-line bg-surface shadow-card';
+// Bentuk kartu, tombol, pil, dan tab sama dengan komponen aplikasi (radius, garis, sorotan).
+export const CARD = 'rounded-[var(--radius-card)] border border-line/70 bg-surface shadow-card';
 /** Panggung 3D di antara bilah atas dan dok; menyempit saat inspektur terbuka. */
 export const STAGE =
   'absolute inset-x-0 top-(--mt-top) bottom-[88px] group-data-[panel]/root:right-[396px] max-lg:group-data-[panel]/root:right-[344px] max-md:bottom-[calc(88px+env(safe-area-inset-bottom))] max-md:group-data-[panel]/root:right-0 max-md:group-data-[panel]/root:bottom-[calc(44dvh+100px+env(safe-area-inset-bottom))]';
@@ -26,25 +27,28 @@ export const STAGE =
 export const POP =
   'absolute top-[calc(100%+8px)] right-0 z-9 min-w-[260px] p-1.5 max-md:fixed max-md:top-[calc(var(--mt-top)+6px)] max-md:right-2.5 max-md:left-2.5 max-md:w-auto max-md:min-w-0';
 const BTN_BASE =
-  'inline-flex min-h-10 items-center justify-center gap-1.5 rounded-[10px] border border-line bg-surface font-semibold transition-[border-color,color,background-color] duration-150 hover:border-line-strong hover:text-accent-strong';
+  'inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-line bg-surface font-semibold transition-[border-color,color,background-color,scale] duration-150 hover:border-line-strong hover:bg-surface-2 active:scale-[0.97]';
 export const BTN = cn(BTN_BASE, 'px-3.5 disabled:cursor-wait disabled:opacity-60');
 export const BTN_PRIMARY = cn(
   BTN,
   'border-action bg-action text-on-action shadow-[0_6px_14px_color-mix(in_srgb,var(--accent-strong)_25%,transparent)] hover:bg-action-hover hover:text-on-action',
 );
-export const ICON_BTN = cn(BTN_BASE, 'relative w-10 min-w-10 p-0 text-ink-3');
-export const ICON_BTN_SMALL = cn(ICON_BTN, 'w-8 min-w-8 min-h-8 rounded-[8px]');
+export const ICON_BTN = cn(
+  BTN_BASE,
+  'relative w-10 min-w-10 border-transparent bg-transparent p-0 text-ink-3 hover:border-transparent hover:bg-surface-2 hover:text-ink',
+);
+export const ICON_BTN_SMALL = cn(ICON_BTN, 'w-8 min-w-8 min-h-8 rounded-lg');
 /** Teks kosong; di dalam inspektur diberi ruang lebih lega. */
 export const EMPTY =
   'leading-[1.6] text-ink-3 in-[#world-inspector]:px-1 in-[#world-inspector]:py-5 in-[#world-inspector]:leading-[1.65]';
-export const NOTE = 'rounded-[10px] bg-surface-2 text-[12px] leading-[1.5] text-ink-2';
+export const NOTE = 'rounded-xl bg-surface-2 text-[12px] leading-[1.5] text-ink-2';
 export const NOTE_LINK = '[&_a]:font-semibold [&_a]:text-accent-strong [&_a]:underline';
 export const STATUS = 'mt-3.5 flex flex-wrap items-center gap-2 text-[12px] text-ink-3';
 /** Tombol aksi panel selebar panel: satu tombol penuh, dua tombol berbagi rata. */
 export const ACTIONS = 'mt-3 grid auto-cols-fr grid-flow-col gap-2 [&>button]:min-h-11';
 /** Judul kecil di kanan kepala pelacak/daftar; disembunyikan di ponsel. */
 export const HEAD_NOTE = 'ml-auto truncate font-semibold text-ink-3 max-md:hidden';
-export const HEAD_TILE = 'size-[34px] rounded-[10px]';
+export const HEAD_TILE = 'size-[34px] rounded-xl';
 export const TRACKER_HEAD = 'flex min-w-0 items-center gap-2.5';
 export const TRACKER_TITLE = 'text-[15px] font-extrabold tracking-[-0.2px] whitespace-nowrap';
 export const TRACKER_BODY = 'mt-3 flex flex-col items-stretch gap-5';
@@ -73,7 +77,7 @@ export function Pill({ tone, children }: { tone: Tone; children: ReactNode }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-[7px] px-[9px] py-[3px] text-[11px] leading-[1.45] font-semibold whitespace-nowrap',
+        'inline-flex items-center rounded-full px-2.5 py-[3px] text-[11px] leading-[1.45] font-semibold whitespace-nowrap',
         PILL_TONE[tone],
       )}
     >
@@ -201,7 +205,7 @@ export function Stats({ items }: { items: Stat[] }) {
   return (
     <div className="mt-3 grid grid-cols-[1fr_1fr] gap-2">
       {items.map((s) => (
-        <div key={s.label} className="rounded-[12px] border border-line bg-surface px-3 py-2.5">
+        <div key={s.label} className="rounded-xl bg-surface-2 px-3 py-2.5">
           <small className="block text-[11px] font-semibold text-ink-3">{s.label}</small>
           <strong className="mt-0.5 mb-1.5 block text-[18px] font-extrabold tracking-[-0.4px] tabular-nums max-md:text-[16px]">
             {s.value}
@@ -234,7 +238,7 @@ export function PanelHead({
   href?: string;
   onClose?: () => void;
 }) {
-  const action = cn(ICON_BTN, 'w-[34px] min-w-[34px] min-h-[34px] rounded-[9px]');
+  const action = cn(ICON_BTN, 'w-[34px] min-w-[34px] min-h-[34px] rounded-xl');
   // Tautan mewarisi warna teks kepala (bukan abu tombol ikon), sama seperti tampilan sebelumnya.
   const link = cn(action, 'text-inherit');
   return (
@@ -287,7 +291,7 @@ export function Links({ items }: { items: { href: string; label: string; isNew?:
           key={l.href}
           href={l.href}
           className={cn(
-            'inline-flex min-h-8 items-center gap-1 rounded-[8px] bg-accent px-2.5 text-[12px] font-bold text-accent-ink hover:bg-accent',
+            'inline-flex min-h-8 items-center gap-1 rounded-lg bg-accent px-2.5 text-[12px] font-bold text-accent-ink hover:bg-accent',
             l.isNew &&
               'bg-action text-on-action shadow-[0_4px_10px_color-mix(in_srgb,var(--accent-strong)_25%,transparent)] hover:bg-action-hover',
           )}
@@ -321,8 +325,8 @@ export type RowView = {
   unit?: string;
 };
 const ROW =
-  'flex min-h-12 w-full items-center gap-2.5 rounded-[10px] border-0 bg-transparent px-1.5 py-[7px] text-left hover:bg-accent aria-pressed:bg-accent';
-const ROW_ICON = 'grid size-9 shrink-0 place-items-center rounded-[10px] bg-surface-2';
+  'flex min-h-12 w-full items-center gap-2.5 rounded-xl border-0 bg-transparent px-1.5 py-[7px] text-left transition-colors hover:bg-surface-2 aria-pressed:bg-accent';
+const ROW_ICON = 'grid size-9 shrink-0 place-items-center rounded-xl bg-surface-2';
 export function Rows({ rows, empty }: { rows: RowView[]; empty: string }) {
   if (!rows.length) return <p className={EMPTY}>{empty}</p>;
   return (
@@ -501,7 +505,7 @@ export function TabsCard({
         <div
           role="tablist"
           aria-label={label}
-          className="flex w-full min-w-0 flex-wrap gap-1 overflow-x-auto rounded-[10px] bg-surface-3 p-[3px] [scrollbar-width:none]"
+          className="flex w-full min-w-0 flex-wrap gap-1 overflow-x-auto rounded-2xl bg-surface-2 p-1 [scrollbar-width:none]"
         >
           {tabs.map((t) => (
             <button
@@ -511,7 +515,7 @@ export function TabsCard({
               role="tab"
               aria-selected={t.id === tab?.id}
               onClick={() => setCurrent(t.id)}
-              className="min-h-11 flex-[1_1_auto] rounded-[8px] border-0 bg-transparent px-2.5 text-[12px] font-bold whitespace-nowrap text-ink-3 aria-selected:bg-surface aria-selected:text-ink aria-selected:shadow-[0_1px_4px_color-mix(in_srgb,var(--ink)_12%,transparent)]"
+              className="min-h-11 flex-[1_1_auto] rounded-xl border-0 bg-transparent px-2.5 text-[12px] font-bold whitespace-nowrap text-ink-3 transition-colors hover:text-ink aria-selected:bg-accent aria-selected:text-accent-ink"
             >
               {t.label} <span className="ml-0.5 font-semibold text-ink-3">{t.count}</span>
             </button>
@@ -534,7 +538,7 @@ export function TabsCard({
 
 export type SiteOption = { id: string; code: string; label: string; sub: string };
 const BADGE =
-  'grid h-8 min-w-[38px] place-items-center rounded-[8px] bg-action px-1.5 text-[11px] font-extrabold tracking-[0.3px] text-on-action max-md:h-7 max-md:min-w-8 max-md:text-[10px]';
+  'grid h-8 min-w-[38px] place-items-center rounded-lg bg-action px-1.5 text-[11px] font-extrabold tracking-[0.3px] text-on-action max-md:h-7 max-md:min-w-8 max-md:text-[10px]';
 /** Pemilih lokasi ala "WH-01 Riverside Hub": lencana kode, nama, ringkasan, daftar pilihan. */
 export function SitePicker({
   value,
@@ -553,7 +557,7 @@ export function SitePicker({
       <button
         ref={trigger}
         type="button"
-        className="flex min-h-11 items-center gap-2.5 rounded-[12px] border border-line bg-surface py-1 pr-2.5 pl-[5px] text-left hover:border-line-strong max-md:gap-1.5 max-md:pr-1.5"
+        className="flex min-h-11 items-center gap-2.5 rounded-2xl border border-line bg-surface py-1 pr-2.5 pl-[5px] text-left hover:border-line-strong max-md:gap-1.5 max-md:pr-1.5"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={list}
@@ -581,7 +585,7 @@ export function SitePicker({
               <button
                 type="button"
                 className={cn(
-                  'flex min-h-12 w-full items-center gap-2.5 rounded-[10px] border-0 bg-transparent px-2 py-1.5 text-left hover:bg-accent',
+                  'flex min-h-12 w-full items-center gap-2.5 rounded-xl border-0 bg-transparent px-2 py-1.5 text-left transition-colors hover:bg-surface-2',
                   o.id === value && 'bg-accent',
                 )}
                 onClick={() => {

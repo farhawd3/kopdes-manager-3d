@@ -114,9 +114,9 @@ const TOP_BAR =
   'group/top absolute top-0 right-0 left-0 z-5 flex h-(--mt-top) items-center gap-3.5 border-b border-line bg-[color-mix(in_srgb,var(--surface)_90%,transparent)] px-(--mt-gap) max-xl:gap-2.5 max-md:gap-1.5 max-md:pr-[max(10px,env(safe-area-inset-right))] max-md:pl-[max(10px,env(safe-area-inset-left))]';
 /** Kotak cari; di ponsel tersembunyi sampai tombol cari dibuka, lalu menutupi bilah atas. */
 const SEARCH =
-  'relative ml-[18px] flex h-10 min-w-0 flex-[0_1_380px] items-center gap-2 rounded-[10px] border border-line bg-surface pr-2 pl-3 text-ink-3 focus-within:border-accent-strong focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent-strong)_14%,transparent)] max-xl:ml-1.5 max-xl:basis-[260px] max-md:hidden max-md:group-data-[search]/top:absolute max-md:group-data-[search]/top:inset-[8px_10px] max-md:group-data-[search]/top:z-2 max-md:group-data-[search]/top:m-0 max-md:group-data-[search]/top:flex max-md:group-data-[search]/top:h-auto';
+  'relative ml-[18px] flex h-10 min-w-0 flex-[0_1_380px] items-center gap-2 rounded-xl border border-field-line bg-field pr-2 pl-3 text-ink-3 transition-[border-color,background-color,box-shadow] focus-within:border-accent-strong focus-within:bg-surface focus-within:text-accent-strong focus-within:ring-4 focus-within:ring-accent max-xl:ml-1.5 max-xl:basis-[260px] max-md:hidden max-md:group-data-[search]/top:absolute max-md:group-data-[search]/top:inset-[8px_10px] max-md:group-data-[search]/top:z-2 max-md:group-data-[search]/top:m-0 max-md:group-data-[search]/top:flex max-md:group-data-[search]/top:h-auto';
 const POP_ITEM =
-  'flex min-h-11 items-center gap-2.5 rounded-[10px] border-0 bg-transparent px-2 text-left font-semibold hover:bg-accent hover:text-accent-strong [&_svg]:text-ink-3';
+  'flex min-h-11 items-center gap-2.5 rounded-xl border-0 bg-transparent px-2 text-left font-semibold text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink [&_svg]:text-ink-3';
 // Peringatan berupa <p> tidak berjarak dalam (direset seperti paragraf lain di dunia); kotak
 // berisi tombol memakai ALERT_BOX.
 const ALERT = cn(
@@ -125,11 +125,10 @@ const ALERT = cn(
 );
 const ALERT_BOX = cn(ALERT, 'px-3 py-2.5 max-md:mx-3');
 const SEGMENT =
-  'min-h-[34px] rounded-[8px] border-0 bg-transparent px-3 text-[12px] font-semibold text-ink-3 aria-pressed:bg-surface aria-pressed:text-ink aria-pressed:shadow-[0_1px_4px_color-mix(in_srgb,var(--ink)_12%,transparent)]';
+  'min-h-[34px] rounded-xl border-0 bg-transparent px-3 text-[12px] font-semibold text-ink-3 transition-colors hover:text-ink aria-pressed:bg-accent aria-pressed:text-accent-ink';
 const MINI =
-  'flex min-w-0 flex-none items-center gap-3 rounded-[14px] border border-line bg-surface-2 px-3 py-2.5 hover:border-line-strong hover:bg-surface';
-const MINI_ART =
-  'grid size-14 shrink-0 place-items-center rounded-[12px] bg-surface max-xl:size-11';
+  'flex min-w-0 flex-none items-center gap-3 rounded-2xl border border-line bg-surface-2 px-3 py-2.5 hover:border-line-strong hover:bg-surface';
+const MINI_ART = 'grid size-14 shrink-0 place-items-center rounded-xl bg-surface max-xl:size-11';
 const MINI_TEXT = 'flex min-w-0 flex-1 flex-col items-start gap-[3px]';
 const MINI_STRONG = 'max-w-full truncate text-[13px]';
 const MINI_SMALL = 'max-w-full truncate text-[11px] text-ink-3';
@@ -824,7 +823,7 @@ export function MonitoringDashboard({
         {!unavailable && <Stats items={roomStats(room, ctx).map(toStat)} />}
         {room === 'kerja' && (
           <div
-            className="mt-3 inline-flex gap-0.5 rounded-[10px] bg-surface-3 p-[3px]"
+            className="mt-3 inline-flex gap-1 rounded-2xl bg-surface-2 p-1"
             role="group"
             aria-label="Saring tugas"
           >
@@ -1513,7 +1512,7 @@ export function MonitoringDashboard({
               Dunia Koperasi
             </strong>
             {(DEMO || preview) && (
-              <small className="mt-px inline-block rounded-[6px] bg-warn px-[7px] py-px text-[10px] font-bold text-warn-ink max-md:hidden">
+              <small className="mt-px inline-block rounded-full bg-warn px-2 py-px text-[10px] font-bold text-warn-ink max-md:hidden">
                 {DEMO ? 'Mode demo' : 'Pratinjau'}
               </small>
             )}
@@ -1534,7 +1533,7 @@ export function MonitoringDashboard({
           </Kbd>
           <button
             type="button"
-            className="hidden size-9 place-items-center rounded-[8px] border-0 bg-transparent text-ink-3 max-md:group-data-[search]/top:grid"
+            className="hidden size-9 place-items-center rounded-lg border-0 bg-transparent text-ink-3 max-md:group-data-[search]/top:grid"
             aria-label="Tutup pencarian"
             onClick={() => {
               setSearchOpen(false);
@@ -1556,7 +1555,7 @@ export function MonitoringDashboard({
                   <li key={r.key}>
                     <Link
                       href={recordHref(r.entity, r.item)}
-                      className="flex min-h-12 items-center gap-2.5 rounded-[9px] px-2 py-1.5 text-ink hover:bg-accent focus-visible:bg-accent"
+                      className="flex min-h-12 items-center gap-2.5 rounded-xl px-2 py-1.5 text-ink transition-colors hover:bg-surface-2 focus-visible:bg-surface-2"
                     >
                       {/* Ikon dan label jenis: tugas, rapat, barang, dan lainnya terbedakan sekilas. */}
                       <Icon3D kind={ENTITY_3D[r.entity] ?? 'tim'} size={28} />
@@ -1667,7 +1666,7 @@ export function MonitoringDashboard({
           <button
             ref={userTrigger}
             type="button"
-            className="flex min-h-11 items-center gap-2.5 rounded-[12px] border-0 bg-transparent py-0.5 pr-1 pl-0.5 text-left hover:bg-surface-2"
+            className="flex min-h-11 items-center gap-2.5 rounded-2xl border-0 bg-transparent py-0.5 pr-1 pl-0.5 text-left hover:bg-surface-2"
             aria-label={`Menu ${model.manager}`}
             aria-expanded={userOpen}
             onClick={() => setUserOpen(!userOpen)}
@@ -1708,7 +1707,7 @@ export function MonitoringDashboard({
               <label className="grid gap-1 px-2 py-1 text-[12px] text-ink-3">
                 <span>Cuaca simulasi</span>
                 <select
-                  className="field-select min-h-10 rounded-[10px] border border-line bg-surface px-2.5 text-ink"
+                  className="field-select min-h-10 rounded-xl border border-field-line bg-field px-3 text-ink"
                   aria-label="Cuaca simulasi"
                   value={weather}
                   onChange={(e) => setWeather(e.target.value as Weather)}
@@ -1721,7 +1720,7 @@ export function MonitoringDashboard({
               <label className="grid gap-1 px-2 py-1 text-[12px] text-ink-3">
                 <span>Suasana waktu</span>
                 <select
-                  className="field-select min-h-10 rounded-[10px] border border-line bg-surface px-2.5 text-ink"
+                  className="field-select min-h-10 rounded-xl border border-field-line bg-field px-3 text-ink"
                   aria-label="Suasana waktu"
                   value={phase}
                   onChange={(e) => setPhase(e.target.value as typeof phase)}
@@ -1804,7 +1803,7 @@ export function MonitoringDashboard({
             aria-expanded={panel === t.id}
             aria-controls="world-inspector"
             onClick={() => setPanel(panel === t.id ? null : t.id)}
-            className="flex min-h-12 items-center justify-center gap-1.5 rounded-[12px] border-0 bg-transparent px-3.5 py-1 text-[13px] font-semibold text-ink-2 hover:bg-accent hover:text-accent-strong aria-expanded:bg-accent aria-expanded:text-accent-strong max-md:min-w-0 max-md:flex-1 max-md:flex-col max-md:gap-0.5 max-md:p-1 max-md:text-[11px]"
+            className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border-0 bg-transparent px-3.5 py-1 text-[13px] font-semibold text-ink-2 hover:bg-accent hover:text-accent-strong aria-expanded:bg-accent aria-expanded:text-accent-strong max-md:min-w-0 max-md:flex-1 max-md:flex-col max-md:gap-0.5 max-md:p-1 max-md:text-[11px]"
           >
             <Icon3D kind={t.icon} size={28} />
             <span>{t.label}</span>
