@@ -119,10 +119,19 @@ export type DailyReportInput = {
 };
 
 const dotted = (time: string) => time.replace(':', '.');
+const SHORT_DATE = new Intl.DateTimeFormat('id-ID', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: 'UTC',
+});
+const shortDate = (value: string) => SHORT_DATE.format(new Date(value + 'T12:00:00Z'));
+const lateDays = (due: string, date: string) =>
+  Math.round((Date.parse(date + 'T12:00:00Z') - Date.parse(due + 'T12:00:00Z')) / 86400000);
 
 /**
- * Menyusun laporan kerja harian berupa teks polos yang siap ditempel ke grup WhatsApp pengurus.
- * Bagian yang datanya tidak dimuat (undefined) dilewati, bukan ditulis "tidak ada".
+ * Menyusun laporan kerja harian berupa teks polos yang siap ditempel ke grup WhatsApp pengurus:
+ * judul tebal (*…*), ringkasan angka di atas, lalu rincian bernomor per bagian.
+ * Bagian yang datanya tidak dimuat (undefined) atau kosong dilewati, bukan ditulis "tidak ada".
  */
 export function buildDailyReport(input: DailyReportInput): string {
   const date = new Intl.DateTimeFormat('id-ID', {
@@ -137,44 +146,65 @@ export function buildDailyReport(input: DailyReportInput): string {
     (t) => t.status === 'selesai' && t.completedAt === input.date,
   );
   const dueToday = input.tasks.filter((t) => open(t.status) && t.due === input.date);
-  const late = input.tasks.filter((t) => open(t.status) && Boolean(t.due) && t.due < input.date);
-  const who = (name?: string) => (name ? ` (${name})` : '');
-  const lines: string[] = ['Laporan kerja harian', [date, input.coop].filter(Boolean).join(' · ')];
-  const section = (title: string, body: string[]) => {
-    if (body.length) lines.push('', title, ...body);
-  };
-  if (input.routines.length) {
-    const finished = input.routines.filter((r) => r.done).length;
-    section(
-      `Rutin harian: ${finished} dari ${input.routines.length} selesai`,
-      input.routines.map((r) => `${r.done ? '✓' : '○'} ${dotted(r.time)} ${r.title}`),
-    );
+  const late = input.tasks
+    .filter((t) => open(t.status) && Boolean(t.due) && t.due < input.date)
+    .sort((a, b) => a.due.localeCompare(b.due));
+  const who = (name?: string) => (name ? ` — ${name}` : '');
+  const finished = input.routines.filter((r) => r.done).length;
+
+  const lines: string[] = ['*LAPORAN KERJA HARIAN*', date];
+  if (input.coop) lines.push(input.coop);
+
+  const summary = [
+    input.routines.length && `• Rutin: ${finished} dari ${input.routines.length} selesai`,
+    `• Tugas selesai hari ini: ${doneToday.length}`,
+    `• Jatuh tempo hari ini: ${dueToday.length}`,
+    `• Terlambat: ${late.length}`,
+  ].filter((line): line is string => Boolean(line));
+  const empty =
+    !input.routines.length &&
+    !doneToday.length &&
+    !dueToday.length &&
+    !late.length &&
+    !input.meetings?.length &&
+    !input.activities?.length;
+  if (empty) {
+    lines.push('', 'Belum ada pekerjaan tercatat hari ini.');
+    return lines.join('\n');
   }
+  lines.push('', '*Ringkasan*', ...summary);
+
+  let number = 0;
+  const section = (title: string, body: string[]) => {
+    if (!body.length) return;
+    number += 1;
+    lines.push('', `*${number}. ${title}*`, ...body);
+  };
+  const numbered = (items: string[]) => items.map((item, index) => `${index + 1}. ${item}`);
   section(
-    `Tugas selesai hari ini (${doneToday.length})`,
-    doneToday.map((t) => `- ${t.title}${who(t.assignee)}`),
+    `Rutin harian (${finished}/${input.routines.length})`,
+    input.routines.map((r) => `${r.done ? '✅' : '⬜'} ${dotted(r.time)} ${r.title}`),
   );
+  section('Tugas selesai hari ini', numbered(doneToday.map((t) => `${t.title}${who(t.assignee)}`)));
+  section('Jatuh tempo hari ini', numbered(dueToday.map((t) => `${t.title}${who(t.assignee)}`)));
   section(
-    `Jatuh tempo hari ini (${dueToday.length})`,
-    dueToday.map((t) => `- ${t.title}${who(t.assignee)}`),
-  );
-  section(
-    `Terlambat (${late.length})`,
-    late.map((t) => `- ${t.title}${who(t.assignee)}, tenggat ${t.due}`),
-  );
-  if (input.meetings)
-    section(
-      'Agenda hari ini',
-      input.meetings.map(
-        (m) =>
-          `- ${m.time ? dotted(m.time) + ' ' : ''}${m.title}${m.kind && m.kind !== 'Rapat' ? ` (${m.kind.toLowerCase()})` : ''}`,
+    'Terlambat',
+    numbered(
+      late.map(
+        (t) =>
+          `${t.title}${who(t.assignee)} (tenggat ${shortDate(t.due)}, lewat ${lateDays(t.due, input.date)} hari)`,
       ),
-    );
-  if (input.activities)
-    section(
-      'Kegiatan tercatat',
-      input.activities.map((a) => `- ${a.title}`),
-    );
-  if (lines.length === 2) lines.push('', 'Belum ada pekerjaan tercatat hari ini.');
+    ),
+  );
+  section(
+    'Agenda hari ini',
+    numbered(
+      (input.meetings || []).map(
+        (m) =>
+          `${m.time ? dotted(m.time) + ' ' : ''}${m.title}${m.kind && m.kind !== 'Rapat' ? ` (${m.kind.toLowerCase()})` : ''}`,
+      ),
+    ),
+  );
+  section('Kegiatan tercatat', numbered((input.activities || []).map((a) => a.title)));
   return lines.join('\n');
 }

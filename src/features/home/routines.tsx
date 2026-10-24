@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence } from 'motion/react';
 import * as motion from 'motion/react-m';
-import { PartyPopper, Plus, Settings2, Trash2 } from 'lucide-react';
+import { CalendarDays, PartyPopper, Plus, Settings2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Item } from '@/features/records/schemas';
 import { Check } from '@/components/ui/check';
@@ -30,18 +30,32 @@ export const DEFAULT_ROUTINES = [
 const DAY_LABELS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 const EVERY_DAY = [1, 2, 3, 4, 5, 6, 7];
 
+/** Ringkasan hari aktif: "Setiap hari", "Sen–Jum", atau daftar hari. */
+function daysLabel(days: number[]) {
+  const key = [...days].sort().join('');
+  if (key === '1234567') return 'Setiap hari';
+  if (key === '123456') return 'Sen–Sab';
+  if (key === '12345') return 'Sen–Jum';
+  return (
+    [...days]
+      .sort()
+      .map((day) => DAY_LABELS[day - 1])
+      .join(', ') || 'Tidak ada hari'
+  );
+}
+
 /** Hari aktif rutin: "Setiap hari" atau "Hari tertentu" (baru tampil pilihan harinya). */
 function RoutineDays({ days, onChange }: { days: number[]; onChange: (days: number[]) => void }) {
   const [custom, setCustom] = useState(days.length < 7);
   const option = (on: boolean) =>
     cn(
-      'h-8 flex-1 rounded-lg px-3 text-[13px] font-semibold text-ink-3 transition',
+      'h-8 flex-1 rounded-lg px-3 text-[13px] font-semibold text-ink-3 transition hover:text-ink',
       on && 'bg-surface text-ink shadow-card',
     );
   return (
     <div className="flex flex-col gap-2">
       <div
-        className="flex gap-1 rounded-xl bg-surface-2 p-1"
+        className="flex gap-1 rounded-xl bg-surface-3 p-1"
         role="radiogroup"
         aria-label="Hari aktif"
       >
@@ -86,7 +100,7 @@ function RoutineDays({ days, onChange }: { days: number[]; onChange: (days: numb
                   if (next.length) onChange(next);
                   else toast('Pilih minimal satu hari.');
                 }}
-                className="h-9 flex-1 rounded-full border border-line text-xs font-bold text-ink-3 transition hover:border-line-strong aria-pressed:border-transparent aria-pressed:bg-accent aria-pressed:text-accent-ink"
+                className="h-9 flex-1 rounded-full bg-surface text-xs font-bold text-ink-3 ring-1 ring-line transition hover:text-ink aria-pressed:bg-action aria-pressed:text-on-action aria-pressed:ring-transparent"
               >
                 {label}
               </button>
@@ -425,6 +439,10 @@ function EmptyRoutines({ refresh }: { refresh: () => Promise<void> | void }) {
   );
 }
 
+/** Jam rutin: kapsul ringkas di kiri baris, sama di form tambah dan daftar. */
+const TIME =
+  'h-10 w-[5.75rem] shrink-0 gap-2 border-transparent bg-accent px-3 font-bold text-accent-ink hover:border-transparent [&>svg]:text-accent-ink [&>svg:last-child]:hidden';
+
 /** Atur rutin: jam, judul, hari aktif. Menghapus = menonaktifkan agar riwayat centang tetap utuh. */
 function RoutineManager({
   open,
@@ -440,6 +458,7 @@ function RoutineManager({
   const [time, setTime] = useState('08:00');
   const [title, setTitle] = useState('');
   const [busy, setBusy] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
   const active = routines
     .filter((routine) => routine.data.active !== false)
     .sort((a, b) => String(a.data.time).localeCompare(String(b.data.time)));
@@ -460,7 +479,7 @@ function RoutineManager({
     >
       <div className="flex flex-col gap-4">
         <form
-          className="grid grid-cols-[auto_minmax(0,1fr)] gap-2 rounded-2xl bg-surface-2 p-3 sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+          className="flex items-center gap-2 rounded-2xl bg-surface-2 p-2"
           onSubmit={async (event) => {
             event.preventDefault();
             if (!title.trim()) return;
@@ -476,18 +495,14 @@ function RoutineManager({
             }
           }}
         >
-          <TimeField
-            value={time}
-            onChange={setTime}
-            aria-label="Jam"
-            className="w-28 bg-surface sm:w-[8.5rem]"
-          />
+          <TimeField value={time} onChange={setTime} aria-label="Jam" className={TIME} />
           <Input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Nama rutin baru"
             maxLength={120}
-            className="min-w-0 flex-1 bg-surface"
+            className="h-10 min-w-0 border-transparent bg-surface"
+            wrapperClassName="flex-1"
             aria-label="Nama rutin"
           />
           <Button
@@ -495,25 +510,24 @@ function RoutineManager({
             variant="primary"
             busy={busy}
             disabled={!title.trim()}
-            className="max-sm:col-span-2"
+            aria-label="Tambah rutin"
+            className="h-10 rounded-xl max-sm:w-10 max-sm:px-0"
           >
             <Plus />
-            Tambah
+            <span className="max-sm:sr-only">Tambah</span>
           </Button>
         </form>
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col divide-y divide-line rounded-2xl ring-1 ring-line">
           {active.map((routine) => {
             const days = (routine.data.days as number[]) || [];
+            const open = editing === routine.id;
             return (
-              <li
-                key={routine.id}
-                className="flex flex-col gap-2 rounded-2xl border border-line p-3"
-              >
+              <li key={routine.id} className="group flex flex-col gap-2 p-2">
                 <div className="flex items-center gap-2">
                   <TimeField
                     value={String(routine.data.time)}
                     aria-label="Jam"
-                    className="w-28 shrink-0 sm:w-[8.5rem]"
+                    className={TIME}
                     onChange={(next) =>
                       next !== routine.data.time && void update(routine, { time: next })
                     }
@@ -522,26 +536,42 @@ function RoutineManager({
                     defaultValue={String(routine.data.title)}
                     maxLength={120}
                     aria-label="Nama rutin"
-                    className="min-w-0 flex-1"
+                    className="h-10 min-w-0 border-transparent bg-transparent px-2.5 font-semibold hover:border-transparent hover:bg-surface-2"
+                    wrapperClassName="flex-1"
                     onBlur={(event) =>
                       event.target.value.trim() &&
                       event.target.value !== routine.data.title &&
                       void update(routine, { title: event.target.value.trim() })
                     }
                   />
+                  <button
+                    type="button"
+                    aria-expanded={open}
+                    aria-label={`Hari aktif: ${daysLabel(days)}`}
+                    onClick={() => setEditing(open ? null : routine.id)}
+                    className="flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-surface-2 px-3 text-xs font-bold text-ink-2 transition hover:bg-surface-3 aria-expanded:bg-accent aria-expanded:text-accent-ink"
+                  >
+                    <CalendarDays className="size-3.5" />
+                    <span className="max-sm:hidden">{daysLabel(days)}</span>
+                  </button>
                   <Button
-                    size="icon"
+                    size="icon-sm"
                     variant="danger"
                     aria-label={`Hapus ${String(routine.data.title)}`}
                     onClick={() => void update(routine, { active: false })}
+                    className="opacity-60 group-hover:opacity-100 focus-visible:opacity-100 max-md:opacity-100"
                   >
                     <Trash2 />
                   </Button>
                 </div>
-                <RoutineDays
-                  days={days}
-                  onChange={(next) => void update(routine, { days: next })}
-                />
+                {open && (
+                  <div className="animate-[item-in_0.25s_var(--ease-out)] rounded-xl bg-surface-2 p-2">
+                    <RoutineDays
+                      days={days}
+                      onChange={(next) => void update(routine, { days: next })}
+                    />
+                  </div>
+                )}
               </li>
             );
           })}

@@ -24,7 +24,7 @@ export function sampleSeedSql(rows: SampleItem[], baseDate: string): string {
 -- Tujuan: proyek yang baru direset (<project-ref>). Jalankan SETELAH berkas reset.
 -- Semua nama, nomor, dan angka adalah contoh acak; id diawali ${SAMPLE_ID_PREFIX}.
 -- Hapus seluruhnya dengan HAPUS_DATA_CONTOH.sql sebelum mencatat data nyata.
--- Dibuat oleh scripts/build-seed.mjs dari src/features/demo/data-contoh.ts; jangan diedit tangan.
+-- Dibuat oleh scripts/build-seed.mjs dari src/features/demo/sample-data.ts; jangan diedit tangan.
 begin;
 DO $$
 begin

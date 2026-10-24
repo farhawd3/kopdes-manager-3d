@@ -103,17 +103,34 @@ describe('buildDailyReport', () => {
       ],
       activities: [{ title: 'Survei lokasi' }],
     });
-    expect(text).toContain('Senin, 19 Oktober 2026 · KDMP Contoh');
-    expect(text).toContain('Rutin harian: 1 dari 2 selesai');
-    expect(text).toContain('✓ 07.30 Buka gerai');
-    expect(text).toContain('○ 15.00 Setor kas');
-    expect(text).toContain('Tugas selesai hari ini (1)\n- Pasang rak (Ayu)');
-    expect(text).toContain('Jatuh tempo hari ini (1)\n- Cek timbangan');
-    expect(text).toContain('Terlambat (1)\n- Kirim undangan (Sinta), tenggat 2026-10-14');
+    expect(text).toContain(`*LAPORAN KERJA HARIAN*
+Senin, 19 Oktober 2026
+KDMP Contoh`);
     expect(text).toContain(
-      'Agenda hari ini\n- 10.00 Rapat pengurus\n- 13.00 Ke gudang pemasok (kunjungan)',
+      `*Ringkasan*
+• Rutin: 1 dari 2 selesai
+• Tugas selesai hari ini: 1
+• Jatuh tempo hari ini: 1
+• Terlambat: 1`,
     );
-    expect(text).toContain('- Survei lokasi');
+    expect(text).toContain(`*1. Rutin harian (1/2)*
+✅ 07.30 Buka gerai`);
+    expect(text).toContain('⬜ 15.00 Setor kas');
+    expect(text).toContain(`*2. Tugas selesai hari ini*
+1. Pasang rak — Ayu`);
+    expect(text).toContain(`*3. Jatuh tempo hari ini*
+1. Cek timbangan`);
+    expect(text).toContain(
+      `*4. Terlambat*
+1. Kirim undangan — Sinta (tenggat 14 Okt, lewat 5 hari)`,
+    );
+    expect(text).toContain(
+      `*5. Agenda hari ini*
+1. 10.00 Rapat pengurus
+2. 13.00 Ke gudang pemasok (kunjungan)`,
+    );
+    expect(text).toContain(`*6. Kegiatan tercatat*
+1. Survei lokasi`);
     expect(text).not.toContain('Selesai kemarin');
     expect(text).not.toContain('Dibatalkan');
   });

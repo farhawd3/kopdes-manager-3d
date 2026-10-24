@@ -23,10 +23,15 @@ type View = {
 
 const sum = (rows: Item[], field: string) =>
   rows.reduce((total, row) => total + Number(row.data[field] || 0), 0);
-const short = (value: number) =>
-  value >= 1_000_000
-    ? `Rp ${(value / 1_000_000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} jt`
-    : rupiah(value);
+// Tanda minus menempel pada angka (spasi tak terputus) agar "−Rp 1,6 jt" tidak pecah baris.
+const short = (value: number) => {
+  const amount = Math.abs(value);
+  const text =
+    amount >= 1_000_000
+      ? `Rp ${(amount / 1_000_000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} jt`
+      : rupiah(amount);
+  return value < 0 ? `−${text}` : text;
+};
 
 const QUICK_LINK =
   'flex h-9 items-center gap-1.5 rounded-xl bg-surface/70 px-3 text-xs font-bold text-tone-ink transition hover:bg-surface [&_svg]:size-3.5';

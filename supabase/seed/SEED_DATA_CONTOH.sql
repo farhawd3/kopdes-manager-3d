@@ -2,7 +2,7 @@
 -- Tujuan: proyek yang baru direset (<project-ref>). Jalankan SETELAH berkas reset.
 -- Semua nama, nomor, dan angka adalah contoh acak; id diawali c0de0000.
 -- Hapus seluruhnya dengan HAPUS_DATA_CONTOH.sql sebelum mencatat data nyata.
--- Dibuat oleh scripts/build-seed.mjs dari src/features/demo/data-contoh.ts; jangan diedit tangan.
+-- Dibuat oleh scripts/build-seed.mjs dari src/features/demo/sample-data.ts; jangan diedit tangan.
 begin;
 DO $$
 begin

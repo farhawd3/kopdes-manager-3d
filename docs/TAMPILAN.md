@@ -23,7 +23,7 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Status | `plan`, `doing`, `done`, `late`, `warn` (+ `-ink`) | rencana, dikerjakan, selesai, terlambat, perhatian |
 | Nada kartu | `tone`, `tone-ink`, `tone-bar`, `tone-line` | dipasang lewat `data-tone="rose\|peach\|sky\|lavender\|mint\|lemon\|slate"` |
 | Kolom isian | `field`, `field-line` | latar dan garis kolom yang terlihat saat diam; saat diketik menyala warna sorotan |
-| Contoh sorotan | `swatch-lavender`, `swatch-sky`, `swatch-mint`, `swatch-peach`, `swatch-rose` | bulatan pemilih warna di profil dan Pengaturan |
+| Contoh sorotan | `swatch-lavender`, `swatch-sky`, `swatch-mint`, `swatch-peach`, `swatch-rose` | bulatan pemilih warna di Pengaturan |
 
 - Tema terang dan gelap: `data-theme` di `<html>`, pilihan tersimpan di `localStorage` (`kopdes-theme`, `kopdes-accent`), diterapkan sebelum halaman tampil.
 - Warna kartu tugas dan proyek mengikuti **proyek** (`lib/tones.ts`, kolom `color` proyek). Kartu catatan lain mengikuti artinya: kas masuk mint, keluar mawar; stok habis mawar, menipis peach (`features/records/card-tone.ts`).
@@ -39,7 +39,7 @@ Gaya yang berlaku sekarang (arahan pemilik 23 Oktober 2026) mengacu pada desain 
 | Palet Ctrl K | `components/layout/command-palette.tsx` | Setiap hasil bertanda jenis: ubin ikon dan label di kanan. Catatan berwarna menurut kelompok menunya (Kerja lavender, Catatan langit, Usaha peach, Koperasi mint) dengan label pendek (Tugas, Proyek, Agenda…); Perintah dan Menu berubin netral. Kata yang dicari ditandai. Urutan: Hasil, Perintah, Menu, lalu Buat tugas paling bawah |
 | Petunjuk tombol | `components/ui/kbd.tsx` | Satu bentuk tombol papan ketik di bilah atas, palet, Dunia 3D, dan daftar pintasan |
 | Linimasa (Gantt) | `features/tasks/task-timeline.tsx` | Satu baris per proyek (tugas yang bertumpuk turun ke lajur berikut), kisi hari, kolom hari ini berbayang, garis jam sekarang, batang kapsul berisi avatar; batang terpilih berwarna penuh |
-| Pengaturan | `features/settings/settings-page.tsx` | Satu halaman tanpa tab: kartu profil, tema lewat pratinjau mini, warna sorotan berupa kapsul, keamanan dan data sebagai baris berkelompok; Ganti PIN di laci |
+| Pengaturan | `features/settings/settings-page.tsx` | Satu halaman tanpa tab: kartu profil, tema lewat pratinjau mini, warna sorotan berupa kapsul, keamanan dan data sebagai baris berkelompok; Ganti PIN di laci. Tema dan warna sorotan hanya diatur di sini; menu profil berisi Pengaturan dan Kunci aplikasi saja |
 | Konfirmasi | `components/ui/confirm.tsx` | Satu-satunya dialog di tengah, hanya untuk tindakan yang tak bisa diurungkan |
 | Toast + Urungkan | `sonner` di kerangka | Hasil aksi; perubahan tugas selalu bisa diurungkan. Gaya bawaan sonner dimatikan (`unstyled`), semua kelas dari token |
 | Tab bergeser | `components/ui/tabs.tsx` | Penanda aktif meluncur (Motion) |

@@ -69,7 +69,7 @@ export function HelpPage() {
           </Link>
         ))}
       </section>
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <section className="rounded-[var(--radius-card)] bg-surface p-5 shadow-card">
           <h2 className="mb-3 text-lg font-extrabold">Aturan penting</h2>
           <dl className="flex flex-col gap-3">
