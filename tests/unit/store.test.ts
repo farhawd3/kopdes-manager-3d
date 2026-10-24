@@ -57,9 +57,9 @@ it('kawasan gerai: sepuluh ruang, pintu ke kantor/gudang/cold storage, ruang ter
   expect(areas.get('g:sembako')!.material.transparent).toBe(false);
   const locked = info.filter((g) => !g.open).length;
   // Satu mesh ruang per gerai ditambah satu gembok per gerai yang belum buka.
-  const geraiMesh = root.children.filter(
+  const storeMeshes = root.children.filter(
     (c) => c instanceof Mesh && String(c.userData.areaKey).startsWith('g:'),
   );
-  expect(geraiMesh.length).toBe(STORE_IDS.length + locked);
+  expect(storeMeshes.length).toBe(STORE_IDS.length + locked);
   expect(slots.sembako).toHaveLength(3);
 });

@@ -62,35 +62,35 @@ describe('klien demo', () => {
   it('daftar, cari, simpan tugas, dan mutasi stok lewat layanan yang sama', async () => {
     const { listPage, save, list } = await import('@/features/records/service');
     const base = { offset: 0, limit: 50 } as const;
-    const kini = await listPage('work-items', { ...base, scope: 'current' } as never);
-    expect(kini.items.length).toBeGreaterThan(5);
+    const current = await listPage('work-items', { ...base, scope: 'current' } as never);
+    expect(current.items.length).toBeGreaterThan(5);
     expect(
-      kini.items.every(
+      current.items.every(
         (t) => ['rencana', 'proses'].includes(String(t.data.status)) || t.data.completed_at,
       ),
     ).toBe(true);
-    const cari = await listPage('members', { ...base, q: 'a' } as never);
-    expect(cari.items.length).toBeGreaterThan(0);
+    const search = await listPage('members', { ...base, q: 'a' } as never);
+    expect(search.items.length).toBeGreaterThan(0);
 
-    const tugas = await save('work-items', { title: 'Tugas uji demo', due_date: '2026-10-12' });
-    expect(tugas.id).toBeTruthy();
-    expect((await list('work-items')).some((t) => t.id === tugas.id)).toBe(true);
+    const task = await save('work-items', { title: 'Tugas uji demo', due_date: '2026-10-12' });
+    expect(task.id).toBeTruthy();
+    expect((await list('work-items')).some((t) => t.id === task.id)).toBe(true);
 
-    const barang = (await list('inventory-items'))[0];
-    const awal = Number(barang.data.book_quantity);
+    const stockItem = (await list('inventory-items'))[0];
+    const before = Number(stockItem.data.book_quantity);
     await save('stock-movements', {
       title: 'Uji',
-      item_id: barang.id,
+      item_id: stockItem.id,
       kind: 'keluar',
       quantity: 1,
       date: '2026-10-10',
     });
-    const sesudah = (await list('inventory-items')).find((b) => b.id === barang.id)!;
-    expect(sesudah.data.book_quantity).toBe(awal - 1);
+    const after = (await list('inventory-items')).find((b) => b.id === stockItem.id)!;
+    expect(after.data.book_quantity).toBe(before - 1);
     await expect(
       save('stock-movements', {
         title: 'Uji',
-        item_id: barang.id,
+        item_id: stockItem.id,
         kind: 'keluar',
         quantity: 10 ** 8,
         date: '2026-10-10',
@@ -100,9 +100,9 @@ describe('klien demo', () => {
 
   it('menolak hapus catatan yang masih dirujuk', async () => {
     const { db } = await import('@/lib/server/db');
-    const proyek = (await db().from('hub_records').select('*').eq('entity', 'units').limit(1))
+    const unitRow = (await db().from('hub_records').select('*').eq('entity', 'units').limit(1))
       .data![0];
-    const { error } = await db().from('hub_records').delete().eq('id', proyek.id);
+    const { error } = await db().from('hub_records').delete().eq('id', unitRow.id);
     expect(error).not.toBeNull();
   });
   it('menyimpan ulang atau membuka kembali tugas selesai tidak menggandakan pengulangan demo', async () => {

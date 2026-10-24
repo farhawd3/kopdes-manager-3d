@@ -14,9 +14,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"tests/**/*.{ts,tsx}\"",
-    "ukur:bundel": "node scripts/ukur-bundel.mjs",
+    "ukur:bundel": "node scripts/measure-bundle.mjs",
     "cek": "tsc --noEmit && eslint src tests && npm run format:check && vitest run --changed",
-    "cek:penuh": "tsc --noEmit && eslint src tests && npm run format:check && vitest run && next build && node scripts/ukur-bundel.mjs",
+    "cek:penuh": "tsc --noEmit && eslint src tests && npm run format:check && vitest run && next build && node scripts/measure-bundle.mjs",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"tests/**/*.{ts,tsx}\""
   },
   "dependencies": {
@@ -38,7 +38,6 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.8",
     "@tailwindcss/postcss": "^4.3.3",
-    "@testing-library/react": "^16.2.0",
     "@types/node": "^22.13.9",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",

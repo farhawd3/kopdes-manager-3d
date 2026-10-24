@@ -76,11 +76,11 @@ it('bingkai pilihan mengikuti ukuran objek di layar, suasana memakai jam Jakarta
   cam.position.set(0, 20, 0);
   cam.lookAt(0, 0, 0);
   cam.updateMatrixWorld();
-  const kecil = screenRect(new Box3(new Vector3(-1, 0, -1), new Vector3(1, 1, 1)), cam, 200, 200);
-  const besar = screenRect(new Box3(new Vector3(-4, 0, -2), new Vector3(4, 1, 2)), cam, 200, 200);
-  expect(kecil.x1 - kecil.x0).toBeCloseTo(20, 0);
-  expect(besar.x1 - besar.x0).toBeCloseTo(80, 0);
-  expect(besar.y1 - besar.y0).toBeCloseTo(40, 0);
+  const small = screenRect(new Box3(new Vector3(-1, 0, -1), new Vector3(1, 1, 1)), cam, 200, 200);
+  const large = screenRect(new Box3(new Vector3(-4, 0, -2), new Vector3(4, 1, 2)), cam, 200, 200);
+  expect(small.x1 - small.x0).toBeCloseTo(20, 0);
+  expect(large.x1 - large.x0).toBeCloseTo(80, 0);
+  expect(large.y1 - large.y0).toBeCloseTo(40, 0);
   expect(ambienceAt(new Date('2026-10-08T23:00:00Z'), 'hujan')).toEqual({
     weather: 'hujan',
     phase: 'pagi',
@@ -102,12 +102,12 @@ it('tempat figur dan titik lewatnya berada di dalam ruangnya', () => {
 });
 
 it('figur keluar lewat titik lewat, menyusuri lorong, lalu masuk ke tempat baru', () => {
-  const lama = SLOT.kerja[0];
-  const pos = new Vector3(lama.x, 0.06, lama.z);
-  const tujuan = SLOT.gym[0];
-  const path = walkPath(pos, { area: 'kerja', slot: lama }, 'gym', tujuan);
+  const previous = SLOT.kerja[0];
+  const pos = new Vector3(previous.x, 0.06, previous.z);
+  const target = SLOT.gym[0];
+  const path = walkPath(pos, { area: 'kerja', slot: previous }, 'gym', target);
   const xz = (p: { x: number; z: number }) => [+p.x.toFixed(2), +p.z.toFixed(2)];
-  const keluar = [...lama.via].reverse().map(xz);
+  const exit = [...previous.via].reverse().map(xz);
   const [dk, pk, dg, pg] = [
     roomInside('kerja'),
     roomDoor('kerja'),
@@ -115,24 +115,24 @@ it('figur keluar lewat titik lewat, menyusuri lorong, lalu masuk ke tempat baru'
     roomDoor('gym'),
   ];
   expect(path.map(xz)).toEqual([
-    ...keluar.filter((p) => p.join() !== xz(lama).join()),
+    ...exit.filter((p) => p.join() !== xz(previous).join()),
     xz(dk), // dalam pintu ruang kerja
     xz(pk),
     [xz(pk)[0], 0], // lorong
     [xz(pg)[0], 0],
     xz(pg),
     xz(dg), // dalam pintu gym
-    ...tujuan.via.map(xz),
-    xz(tujuan),
+    ...target.via.map(xz),
+    xz(target),
   ]);
   expect(advance(pos, path, 1)).not.toBeNull();
   expect(advance(pos, path, 200)).toBeNull();
   expect(path).toHaveLength(0);
-  expect([pos.x, pos.z]).toEqual([tujuan.x, tujuan.z]);
+  expect([pos.x, pos.z]).toEqual([target.x, target.z]);
   // Pindah tempat di ruang yang sama tetap lewat titik dalam pintu, tidak memotong meja.
-  const sama = walkPath(pos, { area: 'gym', slot: tujuan }, 'gym', SLOT.gym[3]);
-  expect(sama.some((p) => p.x === 10 && p.z === -2.25)).toBe(true);
-  expect(sama.some((p) => p.z === 0)).toBe(false);
+  const sameRoom = walkPath(pos, { area: 'gym', slot: target }, 'gym', SLOT.gym[3]);
+  expect(sameRoom.some((p) => p.x === 10 && p.z === -2.25)).toBe(true);
+  expect(sameRoom.some((p) => p.z === 0)).toBe(false);
 });
 
 it('gudang dan cold storage mengikuti data rak dan truk', () => {
@@ -149,8 +149,8 @@ it('gudang dan cold storage mengikuti data rak dan truk', () => {
     },
     new Date('2026-10-09T03:00:00Z'),
   );
-  const gudang = buildWarehouse({ model, stock: true, deliveries: true }, false);
-  expect([...gudang.areas.keys()]).toEqual([
+  const warehouse = buildWarehouse({ model, stock: true, deliveries: true }, false);
+  expect([...warehouse.areas.keys()]).toEqual([
     'rak-A',
     'rak-B',
     'rak-C',
@@ -166,10 +166,10 @@ it('gudang dan cold storage mengikuti data rak dan truk', () => {
     'kirim-d1',
     'kirim-d2',
   ]);
-  const tanpaData = buildWarehouse({ model, stock: false, deliveries: false }, false);
-  expect([...tanpaData.areas.keys()].some((k) => k.startsWith('kirim-'))).toBe(false);
+  const noData = buildWarehouse({ model, stock: false, deliveries: false }, false);
+  expect([...noData.areas.keys()].some((k) => k.startsWith('kirim-'))).toBe(false);
   const cold = buildWarehouse({ model, stock: true, deliveries: true }, true);
   expect([...cold.areas.keys()]).toEqual(['rak-C1', 'rak-C2', 'rak-C3', 'pintu-gudang']);
-  for (const r of [gudang.root, cold.root])
+  for (const r of [warehouse.root, cold.root])
     for (const c of r.children) if (c instanceof Mesh) expect(valid(c)).toBe(true);
 });

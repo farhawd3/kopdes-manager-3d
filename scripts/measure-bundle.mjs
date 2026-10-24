@@ -4,18 +4,18 @@
 // dan Motion (animasi) disepakati pemilik; formulir, Zod, dan palet Ctrl K tetap dimuat belakangan.
 import fs from 'node:fs';
 
-const BATAS_KB = 500;
-const halaman = ['home', 'tasks', 'projects', 'goods'];
-let gagal = false;
-for (const nama of halaman) {
-  const manifest = `.next/server/app/(app)/${nama}/page_client-reference-manifest.js`;
+const LIMIT_KB = 500;
+const pages = ['home', 'tasks', 'projects', 'goods'];
+let failed = false;
+for (const page of pages) {
+  const manifest = `.next/server/app/(app)/${page}/page_client-reference-manifest.js`;
   if (!fs.existsSync(manifest)) throw new Error('Jalankan `npm run build` dulu.');
   const chunks = [...new Set(fs.readFileSync(manifest, 'utf8').match(/static\/chunks\/[^"]+\.js/g) || [])];
   const kb = Math.round(chunks.reduce((total, chunk) => total + fs.statSync(`.next/${chunk}`).size, 0) / 1024);
-  console.log(`/${nama}: ${kb} KB JS awal dari ${chunks.length} chunk (batas ${BATAS_KB} KB).`);
-  if (kb > BATAS_KB) gagal = true;
+  console.log(`/${page}: ${kb} KB JS awal dari ${chunks.length} chunk (batas ${LIMIT_KB} KB).`);
+  if (kb > LIMIT_KB) failed = true;
 }
-if (gagal) {
+if (failed) {
   console.error('Melebihi batas: pindahkan komponen berat ke next/dynamic.');
   process.exit(1);
 }

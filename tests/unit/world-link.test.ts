@@ -12,37 +12,39 @@ const data: Workspace = {};
 for (const r of rows) (data[r.entity] ??= []).push(r);
 const model = getWorldModel(data, new Date('2026-10-10T03:00:00Z'));
 const plans = monitoringPlans(model);
-const gerai = storeInfo(model);
-const buka = (url: string) =>
-  linkTarget(new URLSearchParams(url.split('?')[1]), model, plans, gerai);
+const stores = storeInfo(model);
+const targetOf = (url: string) =>
+  linkTarget(new URLSearchParams(url.split('?')[1]), model, plans, stores);
 
 describe('tautan web → dunia', () => {
   it('barang di rak gudang, rak pendingin, dan unit gerai', () => {
-    const cari = (judul: string) => rows.find((r) => r.data.title === judul)!;
-    expect(buka(worldHref('inventory-items', cari('Minyak goreng 1 L').id))).toEqual({
+    const byTitle = (title: string) => rows.find((r) => r.data.title === title)!;
+    expect(targetOf(worldHref('inventory-items', byTitle('Minyak goreng 1 L').id))).toEqual({
       site: 'gudang',
       pick: 'rak-A',
     });
-    expect(buka(worldHref('inventory-items', cari('Ikan nila beku').id))).toEqual({
+    expect(targetOf(worldHref('inventory-items', byTitle('Ikan nila beku').id))).toEqual({
       site: 'pendingin',
       pick: 'rak-C1',
     });
-    expect(buka(worldHref('inventory-items', cari('Paracetamol 500 mg').id))?.site).toBe('gerai');
+    expect(targetOf(worldHref('inventory-items', byTitle('Paracetamol 500 mg').id))?.site).toBe(
+      'gerai',
+    );
   });
   it('unit gerai, staf, pengiriman, dan lokasi langsung', () => {
     const unit = rows.find((r) => r.entity === 'units' && r.data.kind === 'apotek')!;
-    expect(buka(worldHref('units', unit.id))).toEqual({ site: 'gerai', pick: 'g:apotek' });
-    const staf = plans.find((p) => !p.mascot)!;
-    expect(buka(worldHref('staff', staf.id))?.pick).toBe(`orang:${staf.id}`);
-    const kirim = model.trucks.find((t) => t.place === 'dok')!;
-    expect(buka(worldHref('deliveries', kirim.delivery.id))).toEqual({
+    expect(targetOf(worldHref('units', unit.id))).toEqual({ site: 'gerai', pick: 'g:apotek' });
+    const staffPlan = plans.find((p) => !p.mascot)!;
+    expect(targetOf(worldHref('staff', staffPlan.id))?.pick).toBe(`orang:${staffPlan.id}`);
+    const truck = model.trucks.find((t) => t.place === 'dok')!;
+    expect(targetOf(worldHref('deliveries', truck.delivery.id))).toEqual({
       site: 'gudang',
-      pick: `kirim-${kirim.delivery.id}`,
+      pick: `kirim-${truck.delivery.id}`,
     });
-    expect(buka('/world?lokasi=pendingin&pilih=rak-C2')).toEqual({
+    expect(targetOf('/world?lokasi=pendingin&pilih=rak-C2')).toEqual({
       site: 'pendingin',
       pick: 'rak-C2',
     });
-    expect(buka('/world?barang=tidak-ada')).toBeNull();
+    expect(targetOf('/world?barang=tidak-ada')).toBeNull();
   });
 });

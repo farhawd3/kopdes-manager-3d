@@ -10,11 +10,11 @@ const model = {
     coldRacks: { C1: [], C2: [], C3: [] },
   },
 } as unknown as WorldModel;
-const dasar = { model, day: '2026-10-15', stock: true, shipping: true, unavailable: false };
+const base = { model, day: '2026-10-15', stock: true, shipping: true, unavailable: false };
 
 it('tugas terbuka dipisah: lewat tenggat, dikerjakan, rencana', () => {
-  const [tumpuk] = siteCharts({
-    ...dasar,
+  const [stacked] = siteCharts({
+    ...base,
     site: 'kantor',
     data: {
       'work-items': [
@@ -25,7 +25,7 @@ it('tugas terbuka dipisah: lewat tenggat, dikerjakan, rencana', () => {
       ],
     },
   });
-  expect(tumpuk).toMatchObject({
+  expect(stacked).toMatchObject({
     kind: 'tumpuk',
     segments: [
       { label: 'Lewat tenggat', value: 1 },
@@ -36,12 +36,12 @@ it('tugas terbuka dipisah: lewat tenggat, dikerjakan, rencana', () => {
 });
 
 it('gerai tanpa migrasi 10 menulis belum aktif, bukan nol', () => {
-  const [grafik] = siteCharts({ ...dasar, site: 'gerai', data: {} });
-  expect(grafik).toMatchObject({ kind: 'catatan', text: expect.stringContaining('belum aktif') });
+  const [chart] = siteCharts({ ...base, site: 'gerai', data: {} });
+  expect(chart).toMatchObject({ kind: 'catatan', text: expect.stringContaining('belum aktif') });
 });
 
 it('data belum tersedia tidak menghasilkan angka', () => {
-  expect(siteCharts({ ...dasar, unavailable: true, site: 'gudang', data: {} })).toEqual([
+  expect(siteCharts({ ...base, unavailable: true, site: 'gudang', data: {} })).toEqual([
     { kind: 'catatan', title: 'Grafik', text: 'Data belum tersedia.' },
   ]);
 });

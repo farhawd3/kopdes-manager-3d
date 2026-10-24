@@ -56,14 +56,14 @@ describe('Migrasi 8: pengiriman dan mutasi stok', () => {
       minimum_quantity: 5,
       measurement: 'karung',
     });
-    const masuk = await post({ title: 'Terima', item_id: item, kind: 'masuk', quantity: 15 });
+    const incoming = await post({ title: 'Terima', item_id: item, kind: 'masuk', quantity: 15 });
     expect(await stockOf(item)).toBe(25);
     await post({ title: 'Kirim ke gerai', item_id: item, kind: 'keluar', quantity: 5 });
     await post({ title: 'Koreksi opname', item_id: item, kind: 'koreksi kurang', quantity: 2 });
     expect(await stockOf(item)).toBe(18);
     const row = await database.query<{ before: number; after: number }>(
       "select (data->>'book_before')::int as before, (data->>'book_after')::int as after from public.hub_records where id=$1",
-      [masuk.rows[0].id],
+      [incoming.rows[0].id],
     );
     expect(row.rows[0]).toEqual({ before: 10, after: 25 });
   });
