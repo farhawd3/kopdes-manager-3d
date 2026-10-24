@@ -102,7 +102,7 @@ export function MobileDock({
         onClick={onAdd}
         aria-label="Tambah catatan"
         aria-expanded={adding}
-        className="grid size-[52px] shrink-0 place-items-center rounded-[18px] bg-brand text-on-brand shadow-[0_10px_22px_-8px_var(--brand)] transition active:scale-95"
+        className="grid size-[52px] shrink-0 place-items-center rounded-[18px] bg-action text-on-action shadow-[0_10px_22px_-8px_var(--action)] transition hover:bg-action-hover active:scale-95"
       >
         <Plus
           className={cn('size-6 transition-transform duration-300', adding && 'rotate-45')}

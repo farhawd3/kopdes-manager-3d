@@ -105,19 +105,20 @@
   --ink: #eceef6;
   --ink-2: #b1b7ce;
   --ink-3: #9198b3;
-  --action: #dfe5fb;
-  --action-hover: #ffffff;
-  --on-action: #121729;
+  /* Biru tua yang sama dengan tema terang, sedikit lebih terang agar tetap terbaca di latar malam. */
+  --action: #4152a0;
+  --action-hover: #4d5fb2;
+  --on-action: #ffffff;
   --brand: #f36b79;
-  --plan: #2a2650;
+  --plan: #2d2d4d;
   --plan-ink: #c6bcff;
-  --doing: #1c2d47;
+  --doing: #22304a;
   --doing-ink: #a4cdfa;
-  --done: #173728;
+  --done: #1d3538;
   --done-ink: #8fe0b9;
-  --late: #3d1d27;
+  --late: #382a3a;
   --late-ink: #ffadbc;
-  --warn: #3a2e14;
+  --warn: #39322a;
   --warn-ink: #f2c66a;
   --done-bar: #4cc890;
   --warn-bar: #f2b53a;
@@ -198,44 +199,45 @@
   --tone-bar: #7a839c;
   --tone-line: #cfd4e1;
 }
+/* Nada gelap: sedikit warna batang di atas biru malam permukaan, agar kartu menyatu dengan latar. */
 [data-theme='dark'] [data-tone='rose'],
 [data-theme='dark'][data-tone='rose'] {
-  --tone: #3b1f29;
+  --tone: #3d2b3c;
   --tone-ink: #ffc0ce;
   --tone-bar: #f07a97;
   --tone-line: #5a2c3b;
 }
 [data-theme='dark'] [data-tone='peach'],
 [data-theme='dark'][data-tone='peach'] {
-  --tone: #3a281a;
+  --tone: #3e3130;
   --tone-ink: #ffcfa6;
   --tone-bar: #f39a52;
   --tone-line: #5a3d26;
 }
 [data-theme='dark'] [data-tone='sky'],
 [data-theme='dark'][data-tone='sky'] {
-  --tone: #1a2b45;
+  --tone: #25324c;
   --tone-ink: #b5d5fb;
   --tone-bar: #6aa3ef;
   --tone-line: #29446b;
 }
 [data-theme='dark'] [data-tone='lavender'],
 [data-theme='dark'][data-tone='lavender'] {
-  --tone: #2a2550;
+  --tone: #2d2d4d;
   --tone-ink: #d0c7ff;
   --tone-bar: #9583f5;
   --tone-line: #403874;
 }
 [data-theme='dark'] [data-tone='mint'],
 [data-theme='dark'][data-tone='mint'] {
-  --tone: #16362a;
+  --tone: #1e383a;
   --tone-ink: #9de6c2;
   --tone-bar: #43c48b;
   --tone-line: #23523f;
 }
 [data-theme='dark'] [data-tone='lemon'],
 [data-theme='dark'][data-tone='lemon'] {
-  --tone: #362d12;
+  --tone: #3b3629;
   --tone-ink: #f4d77c;
   --tone-bar: #e4b52d;
   --tone-line: #54461c;

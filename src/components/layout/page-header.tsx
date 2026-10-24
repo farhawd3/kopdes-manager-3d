@@ -22,7 +22,8 @@ export function PageHeader({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-3 rounded-[var(--radius-card)] lg:gap-x-6 bg-surface px-4 py-3.5 shadow-card ring-1 ring-line/60 md:px-5 md:py-4">
-      <div className="min-w-0 max-lg:flex-1">
+      {/* Judul minimal 11rem: bila aksi tidak muat, aksi turun ke baris berikut, judul tidak terjepit. */}
+      <div className="min-w-44 flex-1 lg:flex-none">
         <h1 className="text-[22px] leading-tight font-extrabold tracking-tight text-ink md:text-[24px]">
           {title}
         </h1>
