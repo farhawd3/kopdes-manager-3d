@@ -872,6 +872,16 @@ create function public.hub_routines_ready() returns boolean language sql stable 
 revoke all on function public.hub_validate_routines(), public.hub_routines_ready() from public, anon, authenticated;
 grant execute on function public.hub_routines_ready() to service_role;
 
+
+-- Sumber: 20261024000012_versi_data.sql
+-- Migrasi 12: indeks waktu ubah untuk pemeriksa versi data (/api/version).
+-- Jalankan di cloud hanya setelah disetujui pemilik pada proyek <project-ref>.
+-- Aplikasi bertanya "ada perubahan?" setiap membuka halaman; kueri itu mengambil catatan dengan
+-- updated_at terbaru. Indeks ini membuatnya tetap cepat walau catatan bertambah banyak.
+-- Hanya menambah indeks: tidak mengubah tabel, data, fungsi, atau izin RLS. Aman diulang.
+
+create index if not exists hub_records_updated_idx on public.hub_records (updated_at desc);
+
 -- Indeks pemisahan tegas Tugas (work-items) vs Kegiatan Lapangan (journal)
 create index if not exists hub_task_entity_due_idx on public.hub_records ((data->>'due_date')) where entity = 'work-items';
 create index if not exists hub_task_entity_status_idx on public.hub_records ((data->>'status')) where entity = 'work-items';

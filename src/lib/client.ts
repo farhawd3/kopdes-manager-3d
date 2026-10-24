@@ -1,3 +1,5 @@
+import { clearDeviceCache } from './device-cache';
+
 // Cache baca di memori browser: bacaan yang sama dalam 60 detik tidak meminta ulang ke server;
 // setiap penyimpanan mengosongkan cache.
 type CacheEntry<T> = { data: T; expiry: number };
@@ -5,6 +7,9 @@ const clientCache = new Map<string, CacheEntry<unknown>>();
 const pendingReads = new Map<string, Promise<unknown>>();
 let cacheGeneration = 0;
 const DEFAULT_TTL_MS = 60_000;
+
+/** Naik setiap kali cache dibuang (termasuk setelah menyimpan); dipakai pemeriksa versi data. */
+export const cacheGenerationNow = () => cacheGeneration;
 
 export function invalidateCache(pathPrefix?: string) {
   cacheGeneration++;
@@ -140,5 +145,6 @@ export function resetAuthNavigation(path: '/pin' | '/home') {
       /* Storage may be disabled. */
     }
   }
-  window.location.assign(path);
+  // Catatan yang tersimpan di perangkat dihapus dulu: aplikasi terkunci tidak meninggalkan data.
+  void clearDeviceCache().finally(() => window.location.assign(path));
 }

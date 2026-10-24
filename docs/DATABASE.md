@@ -72,6 +72,7 @@ Semua berkas di `supabase/migrations/`. Jalankan berurutan, masing-masing **seka
 | 9 | `20261013000009_report_backup.sql` | Status laporan draf/final tetap terjaga saat pemulihan cadangan |
 | 10 | `20261015000010_administrasi_usaha.sql` | `assets`, `attendance`, `purchase-orders`, `sales`, `savings`; relasi `purchase_id`; `hub_administration_ready` |
 | 11 | `20261023000011_rutin_harian.sql` | `routines` (judul, jam, hari aktif 1–7) dan `routine-checks` (satu centang per rutin per hari); `hub_routines_ready` |
+| 12 | `20261024000012_versi_data.sql` | Indeks `updated_at` untuk pemeriksa versi data (`/api/version`). Hanya indeks; aman diulang |
 
 Catatan per migrasi:
 
@@ -80,7 +81,7 @@ Catatan per migrasi:
 - Migrasi 11: jam rutin harus `HH:MM`. Centang wajib menyebut rutin dan tanggal. Dua perangkat yang mencentang bersamaan tidak membuat centang ganda.
 - Fungsi `*_ready` dan fungsi stok hanya bisa dipanggil `service_role`. Tidak ada migrasi yang menghapus tabel, data, atau RLS.
 
-Keadaan cloud yang tercatat (lihat `docs/STATUS.md`): migrasi 8 sudah dijalankan pemilik. Migrasi 9, 10, dan 11 belum. Status migrasi 6 dan beberapa sebelumnya belum terbukti. Jangan menebak; periksa dulu.
+Keadaan cloud yang tercatat (lihat `docs/STATUS.md`): migrasi 8 sudah dijalankan pemilik. Migrasi 9, 10, 11, dan 12 belum. Status migrasi 6 dan beberapa sebelumnya belum terbukti. Jangan menebak; periksa dulu.
 
 ## 5. Cek migrasi yang sudah terpasang
 
@@ -127,7 +128,7 @@ Migrasi 9 tidak punya penanda sederhana. Bila migrasi 10 terpasang, migrasi 9 se
 
 Untuk proyek yang **belum punya skema aplikasi sama sekali**: `supabase/install/INSTALL_SCHEMA_KOSONG.sql`. Berkas ini menggabungkan semua migrasi dalam satu transaksi. Berkas menolak berjalan bila tabel aplikasi sudah ada.
 
-Berkas ini dibuat dengan `node scripts/build-install.mjs` dari semua berkas di `supabase/migrations/` (saat ini migrasi 1–11). Setelah menambah migrasi, jalankan generator lagi.
+Berkas ini dibuat dengan `node scripts/build-install.mjs` dari semua berkas di `supabase/migrations/` (saat ini migrasi 1–12). Setelah menambah migrasi, jalankan generator lagi.
 
 ## 8. Reset
 
@@ -137,7 +138,7 @@ Berkas ini dibuat dengan `node scripts/build-install.mjs` dari semua berkas di `
 - Tabel lain, Supabase Auth, dan Storage tidak disentuh.
 - Semua langkah dalam satu transaksi.
 - `RESET_DATABASE_FORCE_CLEAN.sql` menghapus tabel **walau berisi data**. Bukan bagian prosedur normal. Jangan dipakai tanpa keputusan tegas pemilik.
-- Berkas dibuat dengan `node scripts/build-reset.mjs` dan `node scripts/build-force-reset.mjs` dari semua migrasi (saat ini 1–11). Buat ulang setelah menambah migrasi.
+- Berkas dibuat dengan `node scripts/build-reset.mjs` dan `node scripts/build-force-reset.mjs` dari semua migrasi (saat ini 1–12). Buat ulang setelah menambah migrasi.
 
 Langkah reset:
 
