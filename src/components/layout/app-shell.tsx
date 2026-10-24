@@ -10,6 +10,7 @@ import { ConfirmProvider } from '@/components/ui/confirm';
 import { Sheet } from '@/components/ui/sheet';
 import { PageIcon } from '@/components/ui/icon';
 import { PopoverContent } from '@/components/ui/menu';
+import { prefetchWorkspace } from '@/features/workspace/use-workspace';
 import { Kbd } from '@/components/ui/kbd';
 import { useTheme } from '@/lib/theme';
 import { Sidebar, activePage } from './sidebar';
@@ -192,6 +193,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         key={id}
                         href={`/${id}`}
                         onClick={() => setMenu(false)}
+                        onTouchStart={() => prefetchWorkspace(id)}
                         aria-current={page === id ? 'page' : undefined}
                         className="flex flex-col items-center gap-2 rounded-2xl bg-surface-2 px-2 py-4 text-center text-[13px] font-bold text-ink-2 transition active:scale-[0.96] aria-[current=page]:bg-accent aria-[current=page]:text-accent-ink"
                       >

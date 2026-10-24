@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Popover } from 'radix-ui';
 import { Bell, CircleAlert, Clock } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { api } from '@/lib/client';
+import { apiBatch } from '@/lib/client';
 import { addDays, today } from '@/lib/date';
 import { usePreference } from '@/lib/use-preference';
 import { loadCapabilities, type Workspace } from '@/features/workspace/use-workspace';
@@ -35,16 +35,13 @@ async function loadReminders(): Promise<FollowUp[]> {
       (capabilities.logistics || !logisticsEntities.includes(entity)) &&
       (capabilities.administration || !administrationEntities.includes(entity)),
   );
-  const pages = await Promise.all(
-    allowed.map(
-      async (entity) =>
-        [
-          entity,
-          (await api<{ items: Item[] }>(`${entity}?limit=100&scope=current`)).items,
-        ] as const,
-    ),
+  // Satu permintaan untuk semua jenis catatan pengingat.
+  const pages = await apiBatch<{ items: Item[] }>(
+    allowed.map((entity) => `${entity}?limit=100&scope=current`),
   );
-  const data: Workspace = Object.fromEntries(pages);
+  const data: Workspace = Object.fromEntries(
+    allowed.map((entity, index) => [entity, pages[index].items]),
+  );
   const date = today();
   const tomorrow = (data['work-items'] || [])
     .filter(

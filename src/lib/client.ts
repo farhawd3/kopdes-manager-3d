@@ -85,6 +85,49 @@ export async function api<T>(
   }
 }
 
+/**
+ * Banyak bacaan dalam satu permintaan ke /api/batch. Hasil disimpan per alamat di cache yang sama
+ * dengan `api`, jadi bacaan berikutnya (halaman lain, muat ulang ringan) langsung dari memori.
+ */
+export async function apiBatch<T>(paths: string[]): Promise<T[]> {
+  const now = Date.now();
+  const missing = [
+    ...new Set(
+      paths.filter((path) => {
+        const cached = clientCache.get(path);
+        return !(cached && cached.expiry > now) && !pendingReads.has(path);
+      }),
+    ),
+  ];
+  if (missing.length) {
+    const generation = cacheGeneration;
+    const request = api<{ results: T[] }>(
+      'batch?' + new URLSearchParams(missing.map((path) => ['r', path])).toString(),
+      undefined,
+      'GET',
+      { bypassCache: true },
+    ).then(({ results }) => {
+      if (generation === cacheGeneration)
+        missing.forEach((path, index) =>
+          clientCache.set(path, { data: results[index], expiry: Date.now() + DEFAULT_TTL_MS }),
+        );
+      return results;
+    });
+    missing.forEach((path, index) => {
+      const result = request.then((results) => results[index]);
+      // Galat dilaporkan lewat `await request` di bawah; janji turunan tidak boleh jadi galat liar.
+      result.catch(() => undefined);
+      pendingReads.set(path, result);
+    });
+    try {
+      await request;
+    } finally {
+      missing.forEach((path) => pendingReads.delete(path));
+    }
+  }
+  return Promise.all(paths.map((path) => api<T>(path)));
+}
+
 // Muat ulang penuh setelah perubahan sesi agar cache halaman privat ikut dibuang.
 export function resetAuthNavigation(path: '/pin' | '/home') {
   invalidateCache();

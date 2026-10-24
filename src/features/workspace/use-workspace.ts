@@ -7,7 +7,7 @@ import {
   operationEntities,
   routineEntities,
 } from '../records/constants';
-import { api, invalidateCache } from '@/lib/client';
+import { api, apiBatch, invalidateCache } from '@/lib/client';
 import { pageEntities } from './scope';
 import type { ListQuery } from '../records/query';
 export type Workspace = Partial<Record<Entity, Item[]>>;
@@ -48,6 +48,33 @@ export function loadCapabilities() {
     throw error;
   });
   return capabilitiesRequest;
+}
+
+/** Jenis catatan halaman yang tabelnya sudah ada di server (migrasi yang belum dipasang dilewati). */
+function availableEntities(slug: string, capabilities: Capabilities) {
+  return pageEntities(slug)
+    .filter((entity) => capabilities.operations || !operationEntities.includes(entity))
+    .filter((entity) => capabilities.logistics || !logisticsEntities.includes(entity))
+    .filter((entity) => capabilities.administration || !administrationEntities.includes(entity))
+    .filter((entity) => capabilities.routines || !routineEntities.includes(entity));
+}
+
+/**
+ * Muat data halaman lebih dulu (saat kursor/jari menyentuh menu) dengan saringan bawaan halaman,
+ * sehingga saat halaman dibuka datanya sudah ada di cache baca.
+ */
+export function prefetchWorkspace(slug: string) {
+  // Halaman Proyek membaca semua proyek (aktif dan riwayat); halaman lain hanya yang berjalan.
+  const scope = slug === 'world' || slug === 'projects' ? 'all' : 'current';
+  void loadCapabilities()
+    .then((capabilities) =>
+      apiBatch(
+        availableEntities(slug, capabilities).map(
+          (entity) => `${entity}?${new URLSearchParams({ limit: '50', offset: '0', scope })}`,
+        ),
+      ),
+    )
+    .catch(() => undefined);
 }
 
 export function invalidateWorkspaceCache(pattern?: string) {
@@ -122,34 +149,29 @@ export function useWorkspace(
     setFetching(null);
     try {
       const capabilities = await loadCapabilities();
+      const entities = availableEntities(slug, capabilities);
+      // Halaman pertama semua jenis catatan dalam satu permintaan (satu cek sesi di server).
+      const firstPages = await apiBatch<Page>(entities.map((entity) => pathFor(entity)));
       const entries = await Promise.all(
-        pageEntities(slug)
-          .filter((entity) => capabilities.operations || !operationEntities.includes(entity))
-          // Migrasi 8 belum terpasang: jangan meminta domain yang belum ada.
-          .filter((entity) => capabilities.logistics || !logisticsEntities.includes(entity))
-          .filter(
-            (entity) => capabilities.administration || !administrationEntities.includes(entity),
-          )
-          .filter((entity) => capabilities.routines || !routineEntities.includes(entity))
-          .map(async (entity) => {
-            let page = await api<Page>(pathFor(entity));
-            if (slug === 'world') {
-              // Ringkasan, rak, dan jadwal harus membaca semua halaman, bukan hanya 50 catatan pertama.
-              const rows = new Map(page.items.map((row) => [row.id, row]));
-              let offset = 0;
-              while (page.hasMore && current === generation.current) {
-                if (page.nextOffset <= offset || page.nextOffset > 10000)
-                  throw new Error(
-                    'Catatan dunia belum dapat dimuat lengkap. Buka halaman operasional atau coba lagi.',
-                  );
-                offset = page.nextOffset;
-                page = await api<Page>(pathFor(entity, offset));
-                for (const row of page.items) rows.set(row.id, row);
-              }
-              page = { ...page, items: [...rows.values()] };
+        entities.map(async (entity, index) => {
+          let page = firstPages[index];
+          if (slug === 'world') {
+            // Ringkasan, rak, dan jadwal harus membaca semua halaman, bukan hanya 50 catatan pertama.
+            const rows = new Map(page.items.map((row) => [row.id, row]));
+            let offset = 0;
+            while (page.hasMore && current === generation.current) {
+              if (page.nextOffset <= offset || page.nextOffset > 10000)
+                throw new Error(
+                  'Catatan dunia belum dapat dimuat lengkap. Buka halaman operasional atau coba lagi.',
+                );
+              offset = page.nextOffset;
+              page = await api<Page>(pathFor(entity, offset));
+              for (const row of page.items) rows.set(row.id, row);
             }
-            return [entity, page] as const;
-          }),
+            page = { ...page, items: [...rows.values()] };
+          }
+          return [entity, page] as const;
+        }),
       );
       if (current !== generation.current) return;
       const next: Workspace = Object.fromEntries(

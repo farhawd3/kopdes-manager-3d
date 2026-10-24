@@ -10,6 +10,7 @@ import { projectTone } from '@/lib/tones';
 import { isProjectHistory } from '@/features/projects/lifecycle';
 import { ProfileMenu } from './profile-menu';
 import { cn } from '@/lib/utils';
+import { prefetchWorkspace } from '@/features/workspace/use-workspace';
 
 export const activePage = (pathname: string): PageId | undefined =>
   (Object.keys(PAGES) as PageId[]).find(
@@ -29,6 +30,9 @@ function NavLink({ id, active, open }: { id: PageId; active: boolean; open?: num
       href={`/${id}`}
       aria-current={active ? 'page' : undefined}
       title={page.label}
+      // Data halaman dimuat saat kursor atau fokus tiba, sebelum diklik.
+      onPointerEnter={() => prefetchWorkspace(id)}
+      onFocus={() => prefetchWorkspace(id)}
       className={cn(
         'group relative flex h-9 items-center gap-3 rounded-xl px-3 text-[14.5px] font-semibold transition-colors',
         'max-lg:h-12 max-lg:flex-col max-lg:justify-center max-lg:gap-0.5 max-lg:px-0.5 max-lg:text-[10.5px]',

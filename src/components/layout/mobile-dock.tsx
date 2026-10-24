@@ -8,6 +8,7 @@ import { DOCK, PAGES } from './nav';
 import { activePage } from './sidebar';
 import { cn } from '@/lib/utils';
 import { useHideOnScroll } from '@/lib/use-hide-on-scroll';
+import { prefetchWorkspace } from '@/features/workspace/use-workspace';
 
 const CAPSULE = { type: 'spring', stiffness: 460, damping: 36 } as const;
 
@@ -71,6 +72,8 @@ export function MobileDock({
         aria-current={isActive ? 'page' : undefined}
         aria-label={label}
         className={className}
+        onTouchStart={() => prefetchWorkspace(id)}
+        onPointerEnter={() => prefetchWorkspace(id)}
       >
         {content}
       </Link>

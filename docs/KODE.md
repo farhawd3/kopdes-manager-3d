@@ -65,7 +65,7 @@ Alamat lama berbahasa Indonesia (`/tugas`, `/keuangan`, `/dunia-koperasi`, …) 
 ## Aliran data
 
 1. Halaman memanggil `useWorkspace(page)`; daftar jenis catatan per halaman ada di `features/workspace/scope.ts`.
-2. Klien (`lib/client.ts`) meminta `GET /api/<entity>?limit=50&scope=…`; hasil disimpan sementara 60 detik dan dibuang setiap ada perubahan.
+2. Klien (`lib/client.ts`) meminta halaman pertama semua jenis catatan sekaligus lewat `GET /api/batch?r=<entity>?limit=50&scope=…` (satu cek sesi, satu perjalanan jaringan); halaman berikutnya dan muat-lebih memakai `GET /api/<entity>`. Hasil disimpan per alamat 60 detik dan dibuang setiap ada perubahan. Menu (sidebar, dok HP, menu lengkap) memanggil `prefetchWorkspace` saat disentuh kursor/jari, jadi halaman tujuan biasanya tampil tanpa menunggu.
 3. Simpan: `api(entity, { id?, data })` mengirim data utuh. Server (`features/records/service.ts`) memvalidasi dengan Zod, memeriksa rujukan, lalu menyimpan. Hapus: `api(entity, { id }, 'DELETE')`.
 4. Kemampuan server (`/api/capabilities`) menentukan modul yang sudah dimigrasi: pencatatan, logistik (migrasi 8), administrasi (migrasi 10), rutin (migrasi 11). Modul yang belum aktif menampilkan pesan, bukan daftar kosong.
 5. Data yang sudah dimuat disiarkan lewat event `hub-workspace` agar kerangka (pencarian, profil) tidak meminta ulang.
